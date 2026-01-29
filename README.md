@@ -1,0 +1,37 @@
+# go-ooxml
+
+A Go library for reading, writing, and manipulating Office Open XML (OOXML) documents.
+
+Supports Word (.docx), Excel (.xlsx), and PowerPoint (.pptx) formats.
+
+## Installation
+
+```bash
+go get github.com/rcarmo/go-ooxml
+```
+
+## Development
+
+```bash
+# Show available targets
+make help
+
+# Full build (clean + deps + lint + test + build)
+make build-all
+
+# Run tests
+make test
+
+# Run tests with coverage
+make coverage
+
+# Format code
+make format
+
+# Lint code
+make lint
+```
+
+## License
+
+MIT
