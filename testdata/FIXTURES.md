@@ -2,6 +2,18 @@
 
 These fixtures must be created in **actual Microsoft Office applications** (not programmatically generated) to ensure realistic testing. OOXML files created by Office have subtle differences from programmatically generated ones.
 
+## Online References for Validation
+
+Until we have real fixtures, use these resources to validate our implementation:
+
+- **[officeopenxml.com](http://officeopenxml.com/)** - User-friendly element reference
+  - [Document structure](http://officeopenxml.com/WPdocument.php)
+  - [Paragraphs](http://officeopenxml.com/WPparagraph.php)
+  - [Tables](http://officeopenxml.com/WPtable.php)
+  - [Styles](http://officeopenxml.com/WPstyles.php)
+- **[ECMA-376 Spec](https://www.ecma-international.org/publications-and-standards/standards/ecma-376/)** - Official standard (free PDF)
+- **[Microsoft Open XML SDK docs](https://learn.microsoft.com/en-us/office/open-xml/open-xml-sdk)** - API reference with examples
+
 ## Word Documents (`testdata/word/`)
 
 - [ ] `minimal.docx` - Empty document with just body element
