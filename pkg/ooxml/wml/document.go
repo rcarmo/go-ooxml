@@ -20,8 +20,72 @@ type Document struct {
 
 // Body contains the block-level content of the document.
 type Body struct {
-	Content []interface{} `xml:",any"`
+	Content []interface{} `xml:"-"` // Handled by custom unmarshaler
 	SectPr  *SectPr       `xml:"sectPr,omitempty"`
+}
+
+// UnmarshalXML implements custom XML unmarshaling for Body.
+func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			return err
+		}
+
+		switch t := tok.(type) {
+		case xml.StartElement:
+			switch t.Name.Local {
+			case "p":
+				p := &P{}
+				if err := d.DecodeElement(p, &t); err != nil {
+					return err
+				}
+				b.Content = append(b.Content, p)
+			case "tbl":
+				tbl := &Tbl{}
+				if err := d.DecodeElement(tbl, &t); err != nil {
+					return err
+				}
+				b.Content = append(b.Content, tbl)
+			case "sectPr":
+				b.SectPr = &SectPr{}
+				if err := d.DecodeElement(b.SectPr, &t); err != nil {
+					return err
+				}
+			default:
+				// Skip unknown elements
+				if err := d.Skip(); err != nil {
+					return err
+				}
+			}
+		case xml.EndElement:
+			if t.Name == start.Name {
+				return nil
+			}
+		}
+	}
+}
+
+// MarshalXML implements custom XML marshaling for Body.
+func (b *Body) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name = xml.Name{Local: "w:body"}
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+
+	for _, elem := range b.Content {
+		if err := e.Encode(elem); err != nil {
+			return err
+		}
+	}
+
+	if b.SectPr != nil {
+		if err := e.Encode(b.SectPr); err != nil {
+			return err
+		}
+	}
+
+	return e.EncodeToken(start.End())
 }
 
 // SectPr represents section properties.
