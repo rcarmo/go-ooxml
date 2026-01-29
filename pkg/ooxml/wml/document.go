@@ -68,7 +68,7 @@ func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 
 // MarshalXML implements custom XML marshaling for Body.
 func (b *Body) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	start.Name = xml.Name{Local: "w:body"}
+	start.Name = xml.Name{Space: NS, Local: "body"}
 	if err := e.EncodeToken(start); err != nil {
 		return err
 	}

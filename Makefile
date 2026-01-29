@@ -1,8 +1,10 @@
-.PHONY: help install lint format test coverage check clean clean-all build build-all bump-patch push
+.PHONY: help install lint format test coverage check clean clean-all build build-all bump-patch push validate
 
 GO ?= go
 GOFMT ?= gofumpt
 GOLINT ?= golangci-lint
+DOTNET_ROOT ?= /home/linuxbrew/.linuxbrew/opt/dotnet/libexec
+VALIDATOR ?= tools/validator/OoxmlValidator
 
 # Binary name
 BINARY_NAME = go-ooxml
@@ -81,3 +83,17 @@ push: ## Push commits and current tag to origin
 	else \
 		echo "No tag on current commit"; \
 	fi
+
+# =============================================================================
+# OOXML Validation (requires .NET SDK)
+# =============================================================================
+
+validate: ## Validate OOXML files in testdata/ using official SDK
+	@if [ ! -f $(VALIDATOR)/bin/Release/net10.0/OoxmlValidator.dll ]; then \
+		echo "Building validator..."; \
+		export DOTNET_ROOT=$(DOTNET_ROOT) && cd $(VALIDATOR) && dotnet build -c Release -q; \
+	fi
+	@export DOTNET_ROOT=$(DOTNET_ROOT) && \
+	for f in testdata/*.docx testdata/*.xlsx testdata/*.pptx 2>/dev/null; do \
+		[ -f "$$f" ] && dotnet $(VALIDATOR)/bin/Release/net10.0/OoxmlValidator.dll "$$f" || true; \
+	done
