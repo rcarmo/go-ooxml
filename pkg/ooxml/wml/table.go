@@ -161,3 +161,78 @@ type TcMar struct {
 	Bottom *TblWidth `xml:"bottom,omitempty"`
 	Right  *TblWidth `xml:"right,omitempty"`
 }
+
+// UnmarshalXML implements custom unmarshaling for table cells to properly parse nested elements.
+func (tc *Tc) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	tc.XMLName = start.Name
+	tc.Content = nil
+
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			return err
+		}
+
+		switch t := tok.(type) {
+		case xml.StartElement:
+			switch t.Name.Local {
+			case "tcPr":
+				var tcPr TcPr
+				if err := d.DecodeElement(&tcPr, &t); err != nil {
+					return err
+				}
+				tc.TcPr = &tcPr
+			case "p":
+				var p P
+				if err := d.DecodeElement(&p, &t); err != nil {
+					return err
+				}
+				tc.Content = append(tc.Content, &p)
+			case "tbl":
+				var tbl Tbl
+				if err := d.DecodeElement(&tbl, &t); err != nil {
+					return err
+				}
+				tc.Content = append(tc.Content, &tbl)
+			default:
+				// Skip unknown elements
+				if err := d.Skip(); err != nil {
+					return err
+				}
+			}
+		case xml.EndElement:
+			if t == start.End() {
+				return nil
+			}
+		}
+	}
+}
+
+// MarshalXML implements custom marshaling for table cells.
+func (tc *Tc) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name = xml.Name{Space: NS, Local: "tc"}
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+
+	if tc.TcPr != nil {
+		if err := e.EncodeElement(tc.TcPr, xml.StartElement{Name: xml.Name{Space: NS, Local: "tcPr"}}); err != nil {
+			return err
+		}
+	}
+
+	for _, elem := range tc.Content {
+		switch v := elem.(type) {
+		case *P:
+			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "p"}}); err != nil {
+				return err
+			}
+		case *Tbl:
+			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "tbl"}}); err != nil {
+				return err
+			}
+		}
+	}
+
+	return e.EncodeToken(start.End())
+}
