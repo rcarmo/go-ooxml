@@ -6,7 +6,82 @@ import "encoding/xml"
 type R struct {
 	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main r"`
 	RPr     *RPr     `xml:"rPr,omitempty"`
-	Content []interface{} `xml:",any"`
+	Content []interface{} `xml:"-"` // Handled by custom unmarshaler
+}
+
+// UnmarshalXML implements custom XML unmarshaling for R.
+func (r *R) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			return err
+		}
+
+		switch t := tok.(type) {
+		case xml.StartElement:
+			switch t.Name.Local {
+			case "rPr":
+				r.RPr = &RPr{}
+				if err := d.DecodeElement(r.RPr, &t); err != nil {
+					return err
+				}
+			case "t":
+				text := &T{}
+				if err := d.DecodeElement(text, &t); err != nil {
+					return err
+				}
+				r.Content = append(r.Content, text)
+			case "br":
+				br := &Br{}
+				if err := d.DecodeElement(br, &t); err != nil {
+					return err
+				}
+				r.Content = append(r.Content, br)
+			case "tab":
+				tab := &Tab{}
+				if err := d.DecodeElement(tab, &t); err != nil {
+					return err
+				}
+				r.Content = append(r.Content, tab)
+			case "delText":
+				dt := &DelText{}
+				if err := d.DecodeElement(dt, &t); err != nil {
+					return err
+				}
+				r.Content = append(r.Content, dt)
+			default:
+				if err := d.Skip(); err != nil {
+					return err
+				}
+			}
+		case xml.EndElement:
+			if t.Name == start.Name {
+				return nil
+			}
+		}
+	}
+}
+
+// MarshalXML implements custom XML marshaling for R.
+func (r *R) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name = xml.Name{Space: NS, Local: "r"}
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+
+	if r.RPr != nil {
+		if err := e.Encode(r.RPr); err != nil {
+			return err
+		}
+	}
+
+	for _, elem := range r.Content {
+		if err := e.Encode(elem); err != nil {
+			return err
+		}
+	}
+
+	return e.EncodeToken(start.End())
 }
 
 // RPr represents run properties.

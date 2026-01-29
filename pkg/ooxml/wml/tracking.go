@@ -1,6 +1,9 @@
 package wml
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"fmt"
+)
 
 // Ins represents an insertion (tracked change).
 type Ins struct {
@@ -8,7 +11,52 @@ type Ins struct {
 	ID      int      `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main id,attr"`
 	Author  string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main author,attr,omitempty"`
 	Date    string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main date,attr,omitempty"`
-	Content []interface{} `xml:",any"`
+	Content []interface{} `xml:"-"` // Runs inside insertion
+}
+
+// UnmarshalXML implements custom XML unmarshaling for Ins.
+func (ins *Ins) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	// Parse attributes
+	for _, attr := range start.Attr {
+		switch attr.Name.Local {
+		case "id":
+			var id int
+			if _, err := fmt.Sscanf(attr.Value, "%d", &id); err == nil {
+				ins.ID = id
+			}
+		case "author":
+			ins.Author = attr.Value
+		case "date":
+			ins.Date = attr.Value
+		}
+	}
+
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			return err
+		}
+
+		switch t := tok.(type) {
+		case xml.StartElement:
+			switch t.Name.Local {
+			case "r":
+				r := &R{}
+				if err := d.DecodeElement(r, &t); err != nil {
+					return err
+				}
+				ins.Content = append(ins.Content, r)
+			default:
+				if err := d.Skip(); err != nil {
+					return err
+				}
+			}
+		case xml.EndElement:
+			if t.Name == start.Name {
+				return nil
+			}
+		}
+	}
 }
 
 // Del represents a deletion (tracked change).
@@ -17,7 +65,52 @@ type Del struct {
 	ID      int      `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main id,attr"`
 	Author  string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main author,attr,omitempty"`
 	Date    string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main date,attr,omitempty"`
-	Content []interface{} `xml:",any"`
+	Content []interface{} `xml:"-"` // Runs inside deletion
+}
+
+// UnmarshalXML implements custom XML unmarshaling for Del.
+func (del *Del) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	// Parse attributes
+	for _, attr := range start.Attr {
+		switch attr.Name.Local {
+		case "id":
+			var id int
+			if _, err := fmt.Sscanf(attr.Value, "%d", &id); err == nil {
+				del.ID = id
+			}
+		case "author":
+			del.Author = attr.Value
+		case "date":
+			del.Date = attr.Value
+		}
+	}
+
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			return err
+		}
+
+		switch t := tok.(type) {
+		case xml.StartElement:
+			switch t.Name.Local {
+			case "r":
+				r := &R{}
+				if err := d.DecodeElement(r, &t); err != nil {
+					return err
+				}
+				del.Content = append(del.Content, r)
+			default:
+				if err := d.Skip(); err != nil {
+					return err
+				}
+			}
+		case xml.EndElement:
+			if t.Name == start.Name {
+				return nil
+			}
+		}
+	}
 }
 
 // DelText represents deleted text.
