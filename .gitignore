@@ -26,3 +26,5 @@ vendor/
 # OS
 .DS_Store
 Thumbs.db
+# Large binary files - consider using Git LFS
+# docs/*.pdf
