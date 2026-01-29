@@ -1,0 +1,356 @@
+// Package document provides track changes functionality.
+package document
+
+import (
+	"errors"
+	"time"
+
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
+)
+
+// ErrInvalidIndex is returned when an index is out of bounds.
+var ErrInvalidIndex = errors.New("invalid index")
+
+// RevisionType represents the type of a tracked change.
+type RevisionType int
+
+const (
+	RevisionInsert RevisionType = iota
+	RevisionDelete
+	RevisionFormat
+)
+
+func (rt RevisionType) String() string {
+	switch rt {
+	case RevisionInsert:
+		return "insert"
+	case RevisionDelete:
+		return "delete"
+	case RevisionFormat:
+		return "format"
+	default:
+		return "unknown"
+	}
+}
+
+// Revision represents a tracked change in the document.
+type Revision struct {
+	doc       *Document
+	id        int
+	revType   RevisionType
+	author    string
+	date      time.Time
+	paragraph *Paragraph
+	ins       *wml.Ins
+	del       *wml.Del
+}
+
+// ID returns the revision ID.
+func (r *Revision) ID() int {
+	return r.id
+}
+
+// Type returns the revision type.
+func (r *Revision) Type() RevisionType {
+	return r.revType
+}
+
+// Author returns the author of the change.
+func (r *Revision) Author() string {
+	return r.author
+}
+
+// Date returns when the change was made.
+func (r *Revision) Date() time.Time {
+	return r.date
+}
+
+// Text returns the text content of the revision.
+func (r *Revision) Text() string {
+	if r.ins != nil {
+		var text string
+		for _, elem := range r.ins.Content {
+			if run, ok := elem.(*wml.R); ok {
+				for _, runElem := range run.Content {
+					if t, ok := runElem.(*wml.T); ok {
+						text += t.Text
+					}
+				}
+			}
+		}
+		return text
+	}
+	if r.del != nil {
+		var text string
+		for _, elem := range r.del.Content {
+			if run, ok := elem.(*wml.R); ok {
+				for _, runElem := range run.Content {
+					if dt, ok := runElem.(*wml.DelText); ok {
+						text += dt.Text
+					}
+				}
+			}
+		}
+		return text
+	}
+	return ""
+}
+
+// Accept accepts this revision, making the change permanent.
+func (r *Revision) Accept() error {
+	if r.paragraph == nil {
+		return nil
+	}
+	
+	switch r.revType {
+	case RevisionInsert:
+		// Move content from ins to paragraph
+		return r.paragraph.acceptInsertion(r.ins)
+	case RevisionDelete:
+		// Remove the del element and its content
+		return r.paragraph.acceptDeletion(r.del)
+	}
+	return nil
+}
+
+// Reject rejects this revision, undoing the change.
+func (r *Revision) Reject() error {
+	if r.paragraph == nil {
+		return nil
+	}
+	
+	switch r.revType {
+	case RevisionInsert:
+		// Remove the ins element
+		return r.paragraph.rejectInsertion(r.ins)
+	case RevisionDelete:
+		// Convert del content back to normal
+		return r.paragraph.rejectDeletion(r.del)
+	}
+	return nil
+}
+
+// =============================================================================
+// TrackChanges methods on Document
+// =============================================================================
+
+// Insertions returns all tracked insertions in the document.
+func (d *Document) Insertions() []*Revision {
+	return d.revisionsByType(RevisionInsert)
+}
+
+// Deletions returns all tracked deletions in the document.
+func (d *Document) Deletions() []*Revision {
+	return d.revisionsByType(RevisionDelete)
+}
+
+// AllRevisions returns all tracked changes in the document.
+func (d *Document) AllRevisions() []*Revision {
+	var revisions []*Revision
+	
+	for i, elem := range d.document.Body.Content {
+		if p, ok := elem.(*wml.P); ok {
+			para := &Paragraph{doc: d, p: p, index: i}
+			revisions = append(revisions, para.revisions()...)
+		}
+	}
+	
+	return revisions
+}
+
+func (d *Document) revisionsByType(revType RevisionType) []*Revision {
+	var revisions []*Revision
+	for _, rev := range d.AllRevisions() {
+		if rev.Type() == revType {
+			revisions = append(revisions, rev)
+		}
+	}
+	return revisions
+}
+
+// AcceptAllRevisions accepts all tracked changes.
+func (d *Document) AcceptAllRevisions() {
+	for _, rev := range d.AllRevisions() {
+		rev.Accept()
+	}
+}
+
+// RejectAllRevisions rejects all tracked changes.
+func (d *Document) RejectAllRevisions() {
+	for _, rev := range d.AllRevisions() {
+		rev.Reject()
+	}
+}
+
+// InsertTrackedText inserts text at the end of a paragraph with tracking.
+func (p *Paragraph) InsertTrackedText(text string) *Run {
+	if !p.doc.trackChanges {
+		return p.AddRun()
+	}
+	
+	now := time.Now()
+	ins := &wml.Ins{
+		ID:     p.doc.nextRevID(),
+		Author: p.doc.trackAuthor,
+		Date:   now.Format(time.RFC3339),
+		Content: []interface{}{
+			&wml.R{Content: []interface{}{wml.NewT(text)}},
+		},
+	}
+	
+	p.p.Content = append(p.p.Content, ins)
+	
+	// Return a wrapper for the run inside the insertion
+	if run, ok := ins.Content[0].(*wml.R); ok {
+		return &Run{doc: p.doc, r: run}
+	}
+	return nil
+}
+
+// DeleteTrackedText marks text for deletion with tracking.
+func (p *Paragraph) DeleteTrackedText(runIndex int) error {
+	if runIndex < 0 || runIndex >= len(p.p.Content) {
+		return ErrInvalidIndex
+	}
+	
+	run, ok := p.p.Content[runIndex].(*wml.R)
+	if !ok {
+		return ErrInvalidIndex
+	}
+	
+	if !p.doc.trackChanges {
+		// Just remove it
+		p.p.Content = append(p.p.Content[:runIndex], p.p.Content[runIndex+1:]...)
+		return nil
+	}
+	
+	// Convert text to deletion
+	now := time.Now()
+	del := &wml.Del{
+		ID:     p.doc.nextRevID(),
+		Author: p.doc.trackAuthor,
+		Date:   now.Format(time.RFC3339),
+	}
+	
+	// Convert T elements to DelText
+	newRun := &wml.R{RPr: run.RPr}
+	for _, elem := range run.Content {
+		if t, ok := elem.(*wml.T); ok {
+			newRun.Content = append(newRun.Content, &wml.DelText{Text: t.Text})
+		}
+	}
+	del.Content = []interface{}{newRun}
+	
+	// Replace the run with the deletion
+	p.p.Content[runIndex] = del
+	return nil
+}
+
+// =============================================================================
+// Paragraph helper methods for revisions
+// =============================================================================
+
+func (p *Paragraph) revisions() []*Revision {
+	var revisions []*Revision
+	
+	for _, elem := range p.p.Content {
+		switch v := elem.(type) {
+		case *wml.Ins:
+			rev := &Revision{
+				doc:       p.doc,
+				id:        v.ID,
+				revType:   RevisionInsert,
+				author:    v.Author,
+				paragraph: p,
+				ins:       v,
+			}
+			if v.Date != "" {
+				rev.date, _ = time.Parse(time.RFC3339, v.Date)
+			}
+			revisions = append(revisions, rev)
+			
+		case *wml.Del:
+			rev := &Revision{
+				doc:       p.doc,
+				id:        v.ID,
+				revType:   RevisionDelete,
+				author:    v.Author,
+				paragraph: p,
+				del:       v,
+			}
+			if v.Date != "" {
+				rev.date, _ = time.Parse(time.RFC3339, v.Date)
+			}
+			revisions = append(revisions, rev)
+		}
+	}
+	
+	return revisions
+}
+
+func (p *Paragraph) acceptInsertion(ins *wml.Ins) error {
+	// Find and replace the ins with its content
+	for i, elem := range p.p.Content {
+		if elem == ins {
+			// Remove the ins and insert the runs in its place
+			newContent := make([]interface{}, 0, len(p.p.Content)-1+len(ins.Content))
+			newContent = append(newContent, p.p.Content[:i]...)
+			for _, c := range ins.Content {
+				newContent = append(newContent, c)
+			}
+			newContent = append(newContent, p.p.Content[i+1:]...)
+			p.p.Content = newContent
+			return nil
+		}
+	}
+	return nil
+}
+
+func (p *Paragraph) acceptDeletion(del *wml.Del) error {
+	// Remove the del element entirely
+	for i, elem := range p.p.Content {
+		if elem == del {
+			p.p.Content = append(p.p.Content[:i], p.p.Content[i+1:]...)
+			return nil
+		}
+	}
+	return nil
+}
+
+func (p *Paragraph) rejectInsertion(ins *wml.Ins) error {
+	// Remove the ins element entirely
+	for i, elem := range p.p.Content {
+		if elem == ins {
+			p.p.Content = append(p.p.Content[:i], p.p.Content[i+1:]...)
+			return nil
+		}
+	}
+	return nil
+}
+
+func (p *Paragraph) rejectDeletion(del *wml.Del) error {
+	// Convert del back to normal runs with T instead of DelText
+	for i, elem := range p.p.Content {
+		if elem == del {
+			newContent := make([]interface{}, 0, len(p.p.Content)-1+len(del.Content))
+			newContent = append(newContent, p.p.Content[:i]...)
+			
+			for _, c := range del.Content {
+				if r, ok := c.(*wml.R); ok {
+					newRun := &wml.R{RPr: r.RPr}
+					for _, runElem := range r.Content {
+						if dt, ok := runElem.(*wml.DelText); ok {
+							newRun.Content = append(newRun.Content, wml.NewT(dt.Text))
+						}
+					}
+					newContent = append(newContent, newRun)
+				}
+			}
+			
+			newContent = append(newContent, p.p.Content[i+1:]...)
+			p.p.Content = newContent
+			return nil
+		}
+	}
+	return nil
+}

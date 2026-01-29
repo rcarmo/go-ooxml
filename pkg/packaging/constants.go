@@ -40,11 +40,14 @@ const (
 	ContentTypeWorkbook         = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
 	ContentTypePresentation     = "application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"
 	ContentTypeStyles           = "application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"
+	ContentTypeWordStyles       = ContentTypeStyles
 	ContentTypeSettings         = "application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"
 	ContentTypeComments         = "application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml"
 	ContentTypeNumbering        = "application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"
 	ContentTypeHeader           = "application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"
+	ContentTypeWordHeader       = ContentTypeHeader
 	ContentTypeFooter           = "application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"
+	ContentTypeWordFooter       = ContentTypeFooter
 	ContentTypeWorksheet        = "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"
 	ContentTypeSharedStrings    = "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"
 	ContentTypeSlide            = "application/vnd.openxmlformats-officedocument.presentationml.slide+xml"

@@ -140,3 +140,43 @@ type Cols struct {
 type DocGrid struct {
 	LinePitch int64 `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main linePitch,attr,omitempty"`
 }
+
+// Header represents a header part.
+type Header struct {
+	XMLName xml.Name      `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main hdr"`
+	Content []interface{} `xml:"-"` // Paragraphs, tables, etc.
+}
+
+// MarshalXML implements custom XML marshaling for Header.
+func (h *Header) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name = xml.Name{Space: NS, Local: "hdr"}
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+	for _, elem := range h.Content {
+		if err := e.Encode(elem); err != nil {
+			return err
+		}
+	}
+	return e.EncodeToken(start.End())
+}
+
+// Footer represents a footer part.
+type Footer struct {
+	XMLName xml.Name      `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main ftr"`
+	Content []interface{} `xml:"-"` // Paragraphs, tables, etc.
+}
+
+// MarshalXML implements custom XML marshaling for Footer.
+func (f *Footer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name = xml.Name{Space: NS, Local: "ftr"}
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+	for _, elem := range f.Content {
+		if err := e.Encode(elem); err != nil {
+			return err
+		}
+	}
+	return e.EncodeToken(start.End())
+}

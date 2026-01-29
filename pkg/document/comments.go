@@ -1,0 +1,331 @@
+// Package document provides comment functionality.
+package document
+
+import (
+	"fmt"
+	"time"
+
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
+	"github.com/rcarmo/go-ooxml/pkg/packaging"
+	"github.com/rcarmo/go-ooxml/pkg/utils"
+)
+
+// Comment represents a comment in the document.
+type Comment struct {
+	doc     *Document
+	comment *wml.Comment
+}
+
+// ID returns the comment ID.
+func (c *Comment) ID() int {
+	return c.comment.ID
+}
+
+// Author returns the comment author.
+func (c *Comment) Author() string {
+	return c.comment.Author
+}
+
+// SetAuthor sets the comment author.
+func (c *Comment) SetAuthor(author string) {
+	c.comment.Author = author
+}
+
+// Initials returns the author's initials.
+func (c *Comment) Initials() string {
+	return c.comment.Initials
+}
+
+// SetInitials sets the author's initials.
+func (c *Comment) SetInitials(initials string) {
+	c.comment.Initials = initials
+}
+
+// Date returns when the comment was created.
+func (c *Comment) Date() time.Time {
+	if c.comment.Date == "" {
+		return time.Time{}
+	}
+	t, _ := time.Parse(time.RFC3339, c.comment.Date)
+	return t
+}
+
+// Text returns the comment text.
+func (c *Comment) Text() string {
+	var text string
+	for _, p := range c.comment.Content {
+		for _, elem := range p.Content {
+			if r, ok := elem.(*wml.R); ok {
+				for _, re := range r.Content {
+					if t, ok := re.(*wml.T); ok {
+						text += t.Text
+					}
+				}
+			}
+		}
+	}
+	return text
+}
+
+// SetText sets the comment text.
+func (c *Comment) SetText(text string) {
+	c.comment.Content = []*wml.P{
+		{
+			Content: []interface{}{
+				&wml.R{
+					Content: []interface{}{
+						wml.NewT(text),
+					},
+				},
+			},
+		},
+	}
+}
+
+// =============================================================================
+// Document comment methods
+// =============================================================================
+
+// Comments returns all comments in the document.
+func (d *Document) Comments() []*Comment {
+	if d.comments == nil {
+		return nil
+	}
+	
+	result := make([]*Comment, len(d.comments.Comment))
+	for i, c := range d.comments.Comment {
+		result[i] = &Comment{doc: d, comment: c}
+	}
+	return result
+}
+
+// CommentByID returns a comment by its ID.
+func (d *Document) CommentByID(id int) *Comment {
+	if d.comments == nil {
+		return nil
+	}
+	
+	for _, c := range d.comments.Comment {
+		if c.ID == id {
+			return &Comment{doc: d, comment: c}
+		}
+	}
+	return nil
+}
+
+// AddComment adds a new comment to the document.
+// The comment is not anchored to any text until you call AnchorComment.
+func (d *Document) AddComment(author, text string) *Comment {
+	if d.comments == nil {
+		d.comments = &wml.Comments{}
+	}
+	
+	now := time.Now()
+	id := d.nextCommentID
+	d.nextCommentID++
+	
+	comment := &wml.Comment{
+		ID:       id,
+		Author:   author,
+		Date:     now.Format(time.RFC3339),
+		Initials: initials(author),
+		Content: []*wml.P{
+			{
+				Content: []interface{}{
+					&wml.R{
+						Content: []interface{}{
+							wml.NewT(text),
+						},
+					},
+				},
+			},
+		},
+	}
+	
+	d.comments.Comment = append(d.comments.Comment, comment)
+	return &Comment{doc: d, comment: comment}
+}
+
+// DeleteComment removes a comment by ID.
+func (d *Document) DeleteComment(id int) error {
+	if d.comments == nil {
+		return fmt.Errorf("comment %d not found", id)
+	}
+	
+	for i, c := range d.comments.Comment {
+		if c.ID == id {
+			d.comments.Comment = append(d.comments.Comment[:i], d.comments.Comment[i+1:]...)
+			// Also remove comment ranges from document
+			d.removeCommentRanges(id)
+			return nil
+		}
+	}
+	return fmt.Errorf("comment %d not found", id)
+}
+
+// AnchorComment anchors a comment to text within a paragraph.
+// startRun and endRun are the indices of runs that mark the anchor range.
+func (p *Paragraph) AnchorComment(commentID int, startRun, endRun int) error {
+	// Add comment range start before startRun
+	rangeStart := &wml.CommentRangeStart{ID: commentID}
+	rangeEnd := &wml.CommentRangeEnd{ID: commentID}
+	ref := &wml.R{
+		Content: []interface{}{
+			&wml.CommentReference{ID: commentID},
+		},
+	}
+	
+	// Build new content with comment markers
+	newContent := make([]interface{}, 0, len(p.p.Content)+3)
+	
+	for i, elem := range p.p.Content {
+		if i == startRun {
+			newContent = append(newContent, rangeStart)
+		}
+		newContent = append(newContent, elem)
+		if i == endRun {
+			newContent = append(newContent, rangeEnd, ref)
+		}
+	}
+	
+	// Handle case where markers go at the end
+	if startRun >= len(p.p.Content) {
+		newContent = append(newContent, rangeStart)
+	}
+	if endRun >= len(p.p.Content) {
+		newContent = append(newContent, rangeEnd, ref)
+	}
+	
+	p.p.Content = newContent
+	return nil
+}
+
+// CommentedText returns the text that a comment is attached to.
+func (d *Document) CommentedText(commentID int) string {
+	var collecting bool
+	var text string
+	
+	for _, elem := range d.document.Body.Content {
+		if p, ok := elem.(*wml.P); ok {
+			for _, pElem := range p.Content {
+				switch v := pElem.(type) {
+				case *wml.CommentRangeStart:
+					if v.ID == commentID {
+						collecting = true
+					}
+				case *wml.CommentRangeEnd:
+					if v.ID == commentID {
+						collecting = false
+					}
+				case *wml.R:
+					if collecting {
+						for _, rElem := range v.Content {
+							if t, ok := rElem.(*wml.T); ok {
+								text += t.Text
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	return text
+}
+
+func (d *Document) removeCommentRanges(id int) {
+	for _, elem := range d.document.Body.Content {
+		if p, ok := elem.(*wml.P); ok {
+			newContent := make([]interface{}, 0, len(p.Content))
+			for _, pElem := range p.Content {
+				switch v := pElem.(type) {
+				case *wml.CommentRangeStart:
+					if v.ID != id {
+						newContent = append(newContent, pElem)
+					}
+				case *wml.CommentRangeEnd:
+					if v.ID != id {
+						newContent = append(newContent, pElem)
+					}
+				case *wml.R:
+					// Filter out comment references
+					newRContent := make([]interface{}, 0, len(v.Content))
+					for _, rElem := range v.Content {
+						if ref, ok := rElem.(*wml.CommentReference); ok {
+							if ref.ID != id {
+								newRContent = append(newRContent, rElem)
+							}
+						} else {
+							newRContent = append(newRContent, rElem)
+						}
+					}
+					if len(newRContent) > 0 {
+						v.Content = newRContent
+						newContent = append(newContent, v)
+					}
+				default:
+					newContent = append(newContent, pElem)
+				}
+			}
+			p.Content = newContent
+		}
+	}
+}
+
+// initials extracts initials from a name.
+func initials(name string) string {
+	if name == "" {
+		return ""
+	}
+	
+	var init string
+	words := splitName(name)
+	for _, w := range words {
+		if len(w) > 0 {
+			init += string(w[0])
+		}
+	}
+	return init
+}
+
+func splitName(name string) []string {
+	var words []string
+	var word string
+	for _, c := range name {
+		if c == ' ' || c == '.' || c == '-' {
+			if word != "" {
+				words = append(words, word)
+				word = ""
+			}
+		} else {
+			word += string(c)
+		}
+	}
+	if word != "" {
+		words = append(words, word)
+	}
+	return words
+}
+
+// =============================================================================
+// Comments marshaling
+// =============================================================================
+
+func (d *Document) saveComments() error {
+	if d.comments == nil || len(d.comments.Comment) == 0 {
+		return nil
+	}
+	
+	data, err := utils.MarshalXMLWithHeader(d.comments)
+	if err != nil {
+		return err
+	}
+	
+	_, err = d.pkg.AddPart("word/comments.xml", packaging.ContentTypeComments, data)
+	if err != nil {
+		return err
+	}
+	d.pkg.AddRelationship(packaging.WordDocumentPath, "comments.xml", packaging.RelTypeComments)
+	
+	return nil
+}
