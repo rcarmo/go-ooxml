@@ -150,9 +150,11 @@ func (p *Package) WriteTo(w io.Writer) error {
 		if len(rels.Relationships) == 0 {
 			continue
 		}
-		relsPath := RelationshipsPathForPart(sourceURI)
-		if sourceURI == "" {
+		var relsPath string
+		if sourceURI == "" || sourceURI == "." {
 			relsPath = PackageRelsPath
+		} else {
+			relsPath = RelationshipsPathForPart(sourceURI)
 		}
 		relsData, err := xml.Marshal(rels)
 		if err != nil {
@@ -329,6 +331,7 @@ func (p *Package) parseRelationships() error {
 				sourceURI = dir + "/" + base
 			}
 		}
+		sourceURI = normalizePath(sourceURI)
 
 		p.relationships[sourceURI] = rels
 	}

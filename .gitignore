@@ -15,6 +15,7 @@ coverage.out
 
 # Dependency directories
 vendor/
+node_modules/
 
 # IDE
 .idea/
@@ -26,5 +27,14 @@ vendor/
 # OS
 .DS_Store
 Thumbs.db
+
+# Node.js
+package.json
+package-lock.json
+
+# .NET build artifacts
+tools/validator/*/bin/
+tools/validator/*/obj/
+
 # Large binary files - consider using Git LFS
 # docs/*.pdf
