@@ -4,8 +4,8 @@ import "encoding/xml"
 
 // Comments represents the comments part.
 type Comments struct {
-	XMLName  xml.Name   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main comments"`
-	Comments []*Comment `xml:"comment,omitempty"`
+	XMLName xml.Name   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main comments"`
+	Comment []*Comment `xml:"comment,omitempty"`
 }
 
 // Comment represents a document comment.
@@ -15,7 +15,7 @@ type Comment struct {
 	Author   string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main author,attr,omitempty"`
 	Date     string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main date,attr,omitempty"`
 	Initials string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main initials,attr,omitempty"`
-	Content  []interface{} `xml:",any"` // Paragraphs
+	Content  []*P     `xml:"p,omitempty"`
 }
 
 // CommentRangeStart marks the start of a comment range.

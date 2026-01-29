@@ -1,0 +1,781 @@
+// Package document provides tests for Phase 3 advanced features.
+package document
+
+import (
+	"strings"
+	"testing"
+)
+
+// =============================================================================
+// Track Changes Tests
+// =============================================================================
+
+func TestEnableDisableTrackChanges(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	// Initially disabled
+	if doc.TrackChangesEnabled() {
+		t.Error("Track changes should be disabled by default")
+	}
+
+	// Enable with author
+	doc.EnableTrackChanges("Test Author")
+	if !doc.TrackChangesEnabled() {
+		t.Error("Track changes should be enabled")
+	}
+	if doc.TrackAuthor() != "Test Author" {
+		t.Errorf("Expected author 'Test Author', got %q", doc.TrackAuthor())
+	}
+
+	// Disable
+	doc.DisableTrackChanges()
+	if doc.TrackChangesEnabled() {
+		t.Error("Track changes should be disabled")
+	}
+}
+
+func TestSetTrackAuthor(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	doc.SetTrackAuthor("Jane Doe")
+	if doc.TrackAuthor() != "Jane Doe" {
+		t.Errorf("Expected author 'Jane Doe', got %q", doc.TrackAuthor())
+	}
+}
+
+func TestInsertTrackedText(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	doc.EnableTrackChanges("Editor")
+	p := doc.AddParagraph()
+	p.InsertTrackedText("Inserted text")
+
+	// Should have insertion revisions
+	insertions := doc.Insertions()
+	if len(insertions) != 1 {
+		t.Fatalf("Expected 1 insertion, got %d", len(insertions))
+	}
+
+	rev := insertions[0]
+	if rev.Type() != RevisionInsert {
+		t.Error("Expected RevisionInsert type")
+	}
+	if rev.Author() != "Editor" {
+		t.Errorf("Expected author 'Editor', got %q", rev.Author())
+	}
+	if !strings.Contains(rev.Text(), "Inserted text") {
+		t.Errorf("Expected text to contain 'Inserted text', got %q", rev.Text())
+	}
+}
+
+func TestDeleteTrackedText(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	// Add text without tracking
+	p := doc.AddParagraph()
+	p.SetText("Original text")
+
+	// Enable tracking and delete
+	doc.EnableTrackChanges("Editor")
+	err = p.DeleteTrackedText(0)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Should have deletion revision
+	deletions := doc.Deletions()
+	if len(deletions) != 1 {
+		t.Fatalf("Expected 1 deletion, got %d", len(deletions))
+	}
+
+	rev := deletions[0]
+	if rev.Type() != RevisionDelete {
+		t.Error("Expected RevisionDelete type")
+	}
+}
+
+func TestDeleteTextWithoutTracking(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	// Add text
+	p := doc.AddParagraph()
+	p.SetText("Original text")
+
+	// Delete without tracking - should just remove
+	err = p.DeleteTrackedText(0)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Should have no deletions
+	deletions := doc.Deletions()
+	if len(deletions) != 0 {
+		t.Errorf("Expected 0 deletions when not tracking, got %d", len(deletions))
+	}
+}
+
+func TestAcceptAllRevisions(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	doc.EnableTrackChanges("Editor")
+	p := doc.AddParagraph()
+	p.InsertTrackedText("New text")
+
+	// Should have 1 revision
+	if len(doc.AllRevisions()) != 1 {
+		t.Fatal("Expected 1 revision")
+	}
+
+	// Accept all
+	doc.AcceptAllRevisions()
+
+	// Should have 0 revisions after accept
+	if len(doc.AllRevisions()) != 0 {
+		t.Errorf("Expected 0 revisions after accept, got %d", len(doc.AllRevisions()))
+	}
+}
+
+func TestRejectAllRevisions(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	doc.EnableTrackChanges("Editor")
+	p := doc.AddParagraph()
+	p.InsertTrackedText("New text")
+
+	// Should have 1 revision
+	if len(doc.AllRevisions()) != 1 {
+		t.Fatal("Expected 1 revision")
+	}
+
+	// Reject all
+	doc.RejectAllRevisions()
+
+	// Should have 0 revisions after reject
+	if len(doc.AllRevisions()) != 0 {
+		t.Errorf("Expected 0 revisions after reject, got %d", len(doc.AllRevisions()))
+	}
+}
+
+func TestRevisionDate(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	doc.EnableTrackChanges("Editor")
+	p := doc.AddParagraph()
+	p.InsertTrackedText("Dated text")
+
+	revisions := doc.AllRevisions()
+	if len(revisions) == 0 {
+		t.Fatal("Expected at least 1 revision")
+	}
+
+	// Date should be set (not zero)
+	date := revisions[0].Date()
+	if date.IsZero() {
+		t.Error("Revision date should not be zero")
+	}
+}
+
+// =============================================================================
+// Comments Tests
+// =============================================================================
+
+func TestAddComment(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	c := doc.AddComment("Test Author", "This is a comment")
+	if c == nil {
+		t.Fatal("Expected comment to be created")
+	}
+
+	if c.Author() != "Test Author" {
+		t.Errorf("Expected author 'Test Author', got %q", c.Author())
+	}
+	if c.Text() != "This is a comment" {
+		t.Errorf("Expected text 'This is a comment', got %q", c.Text())
+	}
+}
+
+func TestCommentInitials(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	c := doc.AddComment("John Doe", "Comment text")
+	c.SetInitials("JD")
+
+	if c.Initials() != "JD" {
+		t.Errorf("Expected initials 'JD', got %q", c.Initials())
+	}
+}
+
+func TestCommentSetText(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	c := doc.AddComment("Author", "Original")
+	c.SetText("Updated comment")
+
+	if c.Text() != "Updated comment" {
+		t.Errorf("Expected text 'Updated comment', got %q", c.Text())
+	}
+}
+
+func TestComments(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	// Initially no comments
+	if len(doc.Comments()) != 0 {
+		t.Error("Expected 0 comments initially")
+	}
+
+	// Add multiple comments
+	doc.AddComment("Author 1", "Comment 1")
+	doc.AddComment("Author 2", "Comment 2")
+	doc.AddComment("Author 3", "Comment 3")
+
+	comments := doc.Comments()
+	if len(comments) != 3 {
+		t.Errorf("Expected 3 comments, got %d", len(comments))
+	}
+}
+
+func TestCommentByID(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	c1 := doc.AddComment("Author", "Comment 1")
+	c2 := doc.AddComment("Author", "Comment 2")
+
+	// Find by ID
+	found := doc.CommentByID(c1.ID())
+	if found == nil {
+		t.Fatal("Expected to find comment")
+	}
+	if found.Text() != "Comment 1" {
+		t.Errorf("Found wrong comment: %q", found.Text())
+	}
+
+	found2 := doc.CommentByID(c2.ID())
+	if found2 == nil {
+		t.Fatal("Expected to find comment 2")
+	}
+	if found2.Text() != "Comment 2" {
+		t.Errorf("Found wrong comment: %q", found2.Text())
+	}
+
+	// Non-existent ID
+	notFound := doc.CommentByID(9999)
+	if notFound != nil {
+		t.Error("Expected nil for non-existent ID")
+	}
+}
+
+func TestDeleteComment(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	c := doc.AddComment("Author", "To delete")
+	id := c.ID()
+
+	// Delete it
+	err = doc.DeleteComment(id)
+	if err != nil {
+		t.Errorf("DeleteComment failed: %v", err)
+	}
+
+	// Should no longer exist
+	if doc.CommentByID(id) != nil {
+		t.Error("Comment should have been deleted")
+	}
+
+	// Delete non-existent - should error
+	err = doc.DeleteComment(9999)
+	if err == nil {
+		t.Error("Expected DeleteComment to error for non-existent")
+	}
+}
+
+// =============================================================================
+// Styles Tests
+// =============================================================================
+
+func TestAddParagraphStyle(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	s := doc.AddParagraphStyle("CustomPara", "Custom Paragraph")
+	if s == nil {
+		t.Fatal("Expected style to be created")
+	}
+
+	if s.ID() != "CustomPara" {
+		t.Errorf("Expected ID 'CustomPara', got %q", s.ID())
+	}
+	if s.Name() != "Custom Paragraph" {
+		t.Errorf("Expected name 'Custom Paragraph', got %q", s.Name())
+	}
+	if s.Type() != StyleTypeParagraph {
+		t.Errorf("Expected type StyleTypeParagraph, got %v", s.Type())
+	}
+}
+
+func TestAddCharacterStyle(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	s := doc.AddCharacterStyle("CustomChar", "Custom Character")
+	if s.Type() != StyleTypeCharacter {
+		t.Errorf("Expected type StyleTypeCharacter, got %v", s.Type())
+	}
+}
+
+func TestAddTableStyle(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	s := doc.AddTableStyle("CustomTable", "Custom Table")
+	if s.Type() != StyleTypeTable {
+		t.Errorf("Expected type StyleTypeTable, got %v", s.Type())
+	}
+}
+
+func TestStyleByID(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	doc.AddParagraphStyle("Style1", "Style One")
+	doc.AddParagraphStyle("Style2", "Style Two")
+
+	s := doc.StyleByID("Style1")
+	if s == nil {
+		t.Fatal("Expected to find style")
+	}
+	if s.Name() != "Style One" {
+		t.Errorf("Found wrong style: %q", s.Name())
+	}
+
+	// Non-existent
+	notFound := doc.StyleByID("NotExists")
+	if notFound != nil {
+		t.Error("Expected nil for non-existent style")
+	}
+}
+
+func TestStyleByName(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	doc.AddParagraphStyle("Style1", "Named Style")
+
+	s := doc.StyleByName("Named Style")
+	if s == nil {
+		t.Fatal("Expected to find style")
+	}
+	if s.ID() != "Style1" {
+		t.Errorf("Found wrong style: %q", s.ID())
+	}
+}
+
+func TestDeleteStyle(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	doc.AddParagraphStyle("ToDelete", "Delete Me")
+
+	deleted := doc.DeleteStyle("ToDelete")
+	if !deleted {
+		t.Error("Expected DeleteStyle to return true")
+	}
+
+	if doc.StyleByID("ToDelete") != nil {
+		t.Error("Style should have been deleted")
+	}
+
+	// Delete non-existent
+	deleted = doc.DeleteStyle("NotExists")
+	if deleted {
+		t.Error("Expected DeleteStyle to return false for non-existent")
+	}
+}
+
+func TestStyleFormatting(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	s := doc.AddParagraphStyle("Formatted", "Formatted Style")
+
+	// Set formatting
+	s.SetBold(true)
+	s.SetItalic(true)
+	s.SetFontSize(14.0)
+	s.SetFontName("Arial")
+	s.SetColor("FF0000")
+	s.SetAlignment("center")
+	s.SetSpacingBefore(240)
+	s.SetSpacingAfter(120)
+
+	// Verify properties were set (basic check - they don't error)
+	if s.ParagraphProperties() == nil {
+		t.Error("Expected paragraph properties to be set")
+	}
+	if s.RunProperties() == nil {
+		t.Error("Expected run properties to be set")
+	}
+}
+
+func TestStyleBasedOn(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	doc.AddParagraphStyle("BaseStyle", "Base")
+	s := doc.AddParagraphStyle("DerivedStyle", "Derived")
+	s.SetBasedOn("BaseStyle")
+
+	if s.BasedOn() != "BaseStyle" {
+		t.Errorf("Expected BasedOn 'BaseStyle', got %q", s.BasedOn())
+	}
+
+	// Clear BasedOn
+	s.SetBasedOn("")
+	if s.BasedOn() != "" {
+		t.Error("Expected empty BasedOn after clearing")
+	}
+}
+
+func TestStyleDefault(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	s := doc.AddParagraphStyle("DefaultPara", "Default Paragraph")
+	s.SetDefault(true)
+
+	if !s.IsDefault() {
+		t.Error("Expected style to be default")
+	}
+
+	// Check DefaultParagraphStyle returns it
+	defaultStyle := doc.DefaultParagraphStyle()
+	if defaultStyle == nil {
+		t.Fatal("Expected to find default paragraph style")
+	}
+	if defaultStyle.ID() != "DefaultPara" {
+		t.Errorf("Wrong default style: %q", defaultStyle.ID())
+	}
+}
+
+func TestStyles(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	// Initially no styles
+	if len(doc.Styles()) != 0 {
+		t.Error("Expected 0 styles initially")
+	}
+
+	// Add styles
+	doc.AddParagraphStyle("Para1", "Paragraph 1")
+	doc.AddCharacterStyle("Char1", "Character 1")
+	doc.AddTableStyle("Table1", "Table 1")
+
+	styles := doc.Styles()
+	if len(styles) != 3 {
+		t.Errorf("Expected 3 styles, got %d", len(styles))
+	}
+}
+
+// =============================================================================
+// Headers/Footers Tests
+// =============================================================================
+
+func TestAddHeader(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	h := doc.AddHeader(HeaderFooterDefault)
+	if h == nil {
+		t.Fatal("Expected header to be created")
+	}
+	if h.Type() != HeaderFooterDefault {
+		t.Errorf("Expected type 'default', got %v", h.Type())
+	}
+}
+
+func TestAddFooter(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	f := doc.AddFooter(HeaderFooterDefault)
+	if f == nil {
+		t.Fatal("Expected footer to be created")
+	}
+	if f.Type() != HeaderFooterDefault {
+		t.Errorf("Expected type 'default', got %v", f.Type())
+	}
+}
+
+func TestHeaderAddParagraph(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	h := doc.AddHeader(HeaderFooterDefault)
+	p := h.AddParagraph()
+	if p == nil {
+		t.Fatal("Expected paragraph to be added")
+	}
+}
+
+func TestHeaderSetText(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	h := doc.AddHeader(HeaderFooterDefault)
+	h.SetText("Header Text")
+
+	if !strings.Contains(h.Text(), "Header Text") {
+		t.Errorf("Expected header to contain 'Header Text', got %q", h.Text())
+	}
+}
+
+func TestFooterSetText(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	f := doc.AddFooter(HeaderFooterDefault)
+	f.SetText("Footer Text")
+
+	if !strings.Contains(f.Text(), "Footer Text") {
+		t.Errorf("Expected footer to contain 'Footer Text', got %q", f.Text())
+	}
+}
+
+func TestMultipleHeaderTypes(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	doc.AddHeader(HeaderFooterDefault)
+	doc.AddHeader(HeaderFooterFirst)
+	doc.AddHeader(HeaderFooterEven)
+
+	headers := doc.Headers()
+	if len(headers) != 3 {
+		t.Errorf("Expected 3 headers, got %d", len(headers))
+	}
+}
+
+func TestHeaderFooterGetByType(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	doc.AddHeader(HeaderFooterDefault)
+	doc.AddHeader(HeaderFooterFirst)
+
+	h := doc.Header(HeaderFooterDefault)
+	if h == nil {
+		t.Error("Expected to find default header")
+	}
+
+	h2 := doc.Header(HeaderFooterFirst)
+	if h2 == nil {
+		t.Error("Expected to find first-page header")
+	}
+
+	// Non-existent type
+	h3 := doc.Header(HeaderFooterEven)
+	if h3 != nil {
+		t.Error("Expected nil for non-existent header type")
+	}
+}
+
+// =============================================================================
+// Parameterized Tests
+// =============================================================================
+
+func TestRevisionTypes(t *testing.T) {
+	tests := []struct {
+		name     string
+		revType  RevisionType
+		expected string
+	}{
+		{"Insert", RevisionInsert, "insert"},
+		{"Delete", RevisionDelete, "delete"},
+		{"Format", RevisionFormat, "format"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.revType.String()
+			if got != tt.expected {
+				t.Errorf("RevisionType.String() = %q, want %q", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestStyleTypes(t *testing.T) {
+	tests := []struct {
+		name      string
+		styleType StyleType
+	}{
+		{"Paragraph", StyleTypeParagraph},
+		{"Character", StyleTypeCharacter},
+		{"Table", StyleTypeTable},
+		{"Numbering", StyleTypeNumbering},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			doc, err := New()
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer doc.Close()
+
+			var s *Style
+			switch tt.styleType {
+			case StyleTypeParagraph:
+				s = doc.AddParagraphStyle("Test"+tt.name, "Test "+tt.name)
+			case StyleTypeCharacter:
+				s = doc.AddCharacterStyle("Test"+tt.name, "Test "+tt.name)
+			case StyleTypeTable:
+				s = doc.AddTableStyle("Test"+tt.name, "Test "+tt.name)
+			}
+
+			if s != nil && s.Type() != tt.styleType {
+				t.Errorf("Style type = %v, want %v", s.Type(), tt.styleType)
+			}
+		})
+	}
+}
+
+func TestHeaderFooterTypes(t *testing.T) {
+	tests := []struct {
+		name   string
+		hfType HeaderFooterType
+	}{
+		{"Default", HeaderFooterDefault},
+		{"First", HeaderFooterFirst},
+		{"Even", HeaderFooterEven},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			doc, err := New()
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer doc.Close()
+
+			h := doc.AddHeader(tt.hfType)
+			if h.Type() != tt.hfType {
+				t.Errorf("Header type = %v, want %v", h.Type(), tt.hfType)
+			}
+
+			f := doc.AddFooter(tt.hfType)
+			if f.Type() != tt.hfType {
+				t.Errorf("Footer type = %v, want %v", f.Type(), tt.hfType)
+			}
+		})
+	}
+}

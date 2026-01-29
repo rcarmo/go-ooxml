@@ -92,7 +92,7 @@ func (d *Document) updatePackage() error {
 	}
 
 	// Update comments.xml if we have comments
-	if d.comments != nil && len(d.comments.Comments) > 0 {
+	if d.comments != nil && len(d.comments.Comment) > 0 {
 		commentsData, err := utils.MarshalXMLWithHeader(d.comments)
 		if err != nil {
 			return err
@@ -214,7 +214,7 @@ func (d *Document) parseComments() error {
 	}
 
 	// Track max comment ID
-	for _, c := range d.comments.Comments {
+	for _, c := range d.comments.Comment {
 		if c.ID >= d.nextCommentID {
 			d.nextCommentID = c.ID + 1
 		}
