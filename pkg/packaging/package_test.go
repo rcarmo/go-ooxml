@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
 )
 
 func TestNewPackage(t *testing.T) {
@@ -315,5 +317,105 @@ func TestPart_Size(t *testing.T) {
 
 	if part.Size() != 20 {
 		t.Errorf("Size() = %d, want 20", part.Size())
+	}
+}
+
+func TestPackage_CorePropertiesRoundTrip(t *testing.T) {
+	pkg := New()
+
+	props := &common.CoreProperties{
+		Title:          "Test Title",
+		Creator:        "Test Author",
+		Subject:        "Test Subject",
+		Description:    "Test Description",
+		Keywords:       "one;two",
+		Category:       "Category",
+		Language:       "en-US",
+		ContentStatus:  "Draft",
+		Identifier:     "urn:example:123",
+		LastModifiedBy: "Reviewer",
+		Revision:       "2",
+		Version:        "1.0",
+		Created:        &common.DCDate{Type: "dcterms:W3CDTF", Value: "2026-01-30T00:00:00Z"},
+		Modified:       &common.DCDate{Type: "dcterms:W3CDTF", Value: "2026-01-30T01:00:00Z"},
+		LastPrinted:    &common.DCDate{Type: "dcterms:W3CDTF", Value: "2026-01-30T02:00:00Z"},
+	}
+
+	if err := pkg.SetCoreProperties(props); err != nil {
+		t.Fatalf("SetCoreProperties() error = %v", err)
+	}
+
+	got, err := pkg.CoreProperties()
+	if err != nil {
+		t.Fatalf("CoreProperties() error = %v", err)
+	}
+
+	if got.Title != props.Title {
+		t.Errorf("Title = %q, want %q", got.Title, props.Title)
+	}
+	if got.Creator != props.Creator {
+		t.Errorf("Creator = %q, want %q", got.Creator, props.Creator)
+	}
+	if got.Subject != props.Subject {
+		t.Errorf("Subject = %q, want %q", got.Subject, props.Subject)
+	}
+	if got.Description != props.Description {
+		t.Errorf("Description = %q, want %q", got.Description, props.Description)
+	}
+	if got.Keywords != props.Keywords {
+		t.Errorf("Keywords = %q, want %q", got.Keywords, props.Keywords)
+	}
+	if got.Category != props.Category {
+		t.Errorf("Category = %q, want %q", got.Category, props.Category)
+	}
+	if got.Language != props.Language {
+		t.Errorf("Language = %q, want %q", got.Language, props.Language)
+	}
+	if got.ContentStatus != props.ContentStatus {
+		t.Errorf("ContentStatus = %q, want %q", got.ContentStatus, props.ContentStatus)
+	}
+	if got.Identifier != props.Identifier {
+		t.Errorf("Identifier = %q, want %q", got.Identifier, props.Identifier)
+	}
+	if got.LastModifiedBy != props.LastModifiedBy {
+		t.Errorf("LastModifiedBy = %q, want %q", got.LastModifiedBy, props.LastModifiedBy)
+	}
+	if got.Revision != props.Revision {
+		t.Errorf("Revision = %q, want %q", got.Revision, props.Revision)
+	}
+	if got.Version != props.Version {
+		t.Errorf("Version = %q, want %q", got.Version, props.Version)
+	}
+	if got.Created == nil || got.Created.Value != props.Created.Value {
+		t.Errorf("Created = %v, want %v", got.Created, props.Created)
+	}
+	if got.Modified == nil || got.Modified.Value != props.Modified.Value {
+		t.Errorf("Modified = %v, want %v", got.Modified, props.Modified)
+	}
+	if got.LastPrinted == nil || got.LastPrinted.Value != props.LastPrinted.Value {
+		t.Errorf("LastPrinted = %v, want %v", got.LastPrinted, props.LastPrinted)
+	}
+
+	rels := pkg.GetRelationshipsByType("", RelTypeCoreProps)
+	if len(rels) != 1 {
+		t.Fatalf("expected 1 core properties relationship, got %d", len(rels))
+	}
+	if rels[0].Target != CorePropertiesPath {
+		t.Errorf("core properties target = %q, want %q", rels[0].Target, CorePropertiesPath)
+	}
+}
+
+func TestPackage_CoreProperties_Default(t *testing.T) {
+	pkg := New()
+
+	props, err := pkg.CoreProperties()
+	if err != nil {
+		t.Fatalf("CoreProperties() error = %v", err)
+	}
+	if props == nil {
+		t.Fatal("CoreProperties() returned nil")
+	}
+	if props.Title != "" || props.Creator != "" {
+		t.Errorf("expected empty default core properties, got title=%q creator=%q", props.Title, props.Creator)
 	}
 }
