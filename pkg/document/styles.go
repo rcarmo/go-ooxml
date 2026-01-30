@@ -156,6 +156,11 @@ func (d *Document) AddTableStyle(id, name string) *Style {
 	return d.addStyle(id, name, StyleTypeTable)
 }
 
+// AddNumberingStyle adds a new numbering style.
+func (d *Document) AddNumberingStyle(id, name string) *Style {
+	return d.addStyle(id, name, StyleTypeNumbering)
+}
+
 func (d *Document) addStyle(id, name string, styleType StyleType) *Style {
 	if d.styles == nil {
 		d.styles = &wml.Styles{}

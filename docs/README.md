@@ -9,6 +9,13 @@ This directory contains the official ECMA-376 specification documents for Office
 | `ECMA-376-Part1-Fundamentals.pdf` | Fundamentals and Markup Language Reference (5th Edition, Dec 2016) | ~34 MB |
 | `ECMA-376-Part2-OpenPackagingConventions.pdf` | Open Packaging Conventions (5th Edition, Dec 2021) | ~2 MB |
 
+## Derived References
+
+- `ECMA-376-Phase3-Reference.md` - Focused Phase 3 excerpts (track changes, comments, styles, headers/footers).
+- `ECMA-376-WML-Phase3.md` - WordprocessingML Phase 3 quick reference.
+- `ECMA-376-Part2-OPC.md` - Extracted OPC sections (relationships, content types, core properties).
+- `FIT-GAP-ANALYSIS.md` - Feature coverage table vs ECMA-376.
+
 ## Parts Overview
 
 The ECMA-376 standard consists of 4 parts:

@@ -235,6 +235,8 @@ func TestStyles_Parameterized(t *testing.T) {
 				s = d.AddCharacterStyle(tc.StyleID, tc.StyleName)
 			case StyleTypeTable:
 				s = d.AddTableStyle(tc.StyleID, tc.StyleName)
+			case StyleTypeNumbering:
+				s = d.AddNumberingStyle(tc.StyleID, tc.StyleName)
 			default:
 				t.Skipf("Style type %v not implemented", tc.StyleType)
 				return

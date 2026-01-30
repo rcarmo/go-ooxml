@@ -399,12 +399,11 @@ func TestECMA376_StyleTypes(t *testing.T) {
 				s = doc.AddCharacterStyle("Test", "Test Style")
 			case StyleTypeTable:
 				s = doc.AddTableStyle("Test", "Test Style")
+			case StyleTypeNumbering:
+				s = doc.AddNumberingStyle("Test", "Test Style")
 			}
 
 			if s == nil {
-				if tt.styleType == StyleTypeNumbering {
-					t.Skip("Numbering style not implemented")
-				}
 				t.Fatal("Failed to create style")
 			}
 

@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
+	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
 // Paragraph represents a paragraph in a Word document.
@@ -160,6 +161,56 @@ func (p *Paragraph) SetKeepWithNext(v bool) {
 		p.p.PPr.KeepNext = wml.NewOnOffEnabled()
 	} else {
 		p.p.PPr.KeepNext = nil
+	}
+}
+
+// ListLevel returns the list level for the paragraph or -1 if not a list item.
+func (p *Paragraph) ListLevel() int {
+	if p.p.PPr == nil || p.p.PPr.NumPr == nil || p.p.PPr.NumPr.Ilvl == nil {
+		return -1
+	}
+	return p.p.PPr.NumPr.Ilvl.Val
+}
+
+// SetListLevel sets the list level (0-8) for the paragraph.
+func (p *Paragraph) SetListLevel(level int) error {
+	if level < 0 || level > 8 {
+		return utils.ErrInvalidIndex
+	}
+	p.ensureNumPr()
+	p.p.PPr.NumPr.Ilvl = &wml.Ilvl{Val: level}
+	return nil
+}
+
+// ListNumberingID returns the numbering definition ID or 0 if not set.
+func (p *Paragraph) ListNumberingID() int {
+	if p.p.PPr == nil || p.p.PPr.NumPr == nil || p.p.PPr.NumPr.NumID == nil {
+		return 0
+	}
+	return p.p.PPr.NumPr.NumID.Val
+}
+
+// SetListNumberingID sets the numbering definition ID for the paragraph.
+func (p *Paragraph) SetListNumberingID(numID int) {
+	p.ensureNumPr()
+	p.p.PPr.NumPr.NumID = &wml.NumID{Val: numID}
+}
+
+// SetList sets the list numbering ID and level on the paragraph.
+func (p *Paragraph) SetList(numID, level int) error {
+	if err := p.SetListLevel(level); err != nil {
+		return err
+	}
+	p.SetListNumberingID(numID)
+	return nil
+}
+
+func (p *Paragraph) ensureNumPr() {
+	if p.p.PPr == nil {
+		p.p.PPr = &wml.PPr{}
+	}
+	if p.p.PPr.NumPr == nil {
+		p.p.PPr.NumPr = &wml.NumPr{}
 	}
 }
 
