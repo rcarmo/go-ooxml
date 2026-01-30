@@ -43,6 +43,15 @@ func (r *Relationships) Add(relType, target string, targetMode TargetMode) *Rela
 
 // AddWithID adds a relationship with a specific ID.
 func (r *Relationships) AddWithID(id, relType, target string, targetMode TargetMode) *Relationship {
+	for i := range r.Relationships {
+		if r.Relationships[i].ID == id {
+			r.Relationships[i].Type = relType
+			r.Relationships[i].Target = target
+			r.Relationships[i].TargetMode = targetMode
+			return &r.Relationships[i]
+		}
+	}
+
 	rel := Relationship{
 		ID:         id,
 		Type:       relType,

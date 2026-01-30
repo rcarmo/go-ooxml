@@ -61,6 +61,25 @@ func TestRelationshipsAdd(t *testing.T) {
 	}
 }
 
+func TestRelationshipsAddWithID_UpdatesExisting(t *testing.T) {
+	rels := NewRelationships()
+	rel := rels.AddWithID("rId5", RelTypeStyles, "styles.xml", TargetModeInternal)
+	if rel.ID != "rId5" {
+		t.Fatalf("AddWithID ID = %q, want rId5", rel.ID)
+	}
+
+	updated := rels.AddWithID("rId5", RelTypeSettings, "settings.xml", TargetModeInternal)
+	if len(rels.Relationships) != 1 {
+		t.Fatalf("len(Relationships) = %d, want 1", len(rels.Relationships))
+	}
+	if updated.Type != RelTypeSettings {
+		t.Errorf("Type = %q, want %q", updated.Type, RelTypeSettings)
+	}
+	if updated.Target != "settings.xml" {
+		t.Errorf("Target = %q, want settings.xml", updated.Target)
+	}
+}
+
 func TestRelationshipsByType(t *testing.T) {
 	rels := NewRelationships()
 	rels.Add(RelTypeStyles, "styles.xml", TargetModeInternal)
