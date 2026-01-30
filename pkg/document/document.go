@@ -22,6 +22,10 @@ type Document struct {
 	trackAuthor      string
 	nextRevisionID   int
 	nextCommentID    int
+
+	// Headers and footers (keyed by relID)
+	headers map[string]*Header
+	footers map[string]*Footer
 }
 
 // New creates a new empty Word document.
@@ -41,6 +45,8 @@ func New() (*Document, error) {
 		},
 		styles:   &wml.Styles{},
 		settings: &wml.Settings{},
+		headers:  make(map[string]*Header),
+		footers:  make(map[string]*Footer),
 	}
 
 	// Initialize package structure
@@ -71,7 +77,9 @@ func OpenReader(r io.ReaderAt, size int64) (*Document, error) {
 
 func openFromPackage(pkg *packaging.Package) (*Document, error) {
 	doc := &Document{
-		pkg: pkg,
+		pkg:     pkg,
+		headers: make(map[string]*Header),
+		footers: make(map[string]*Footer),
 	}
 
 	// Parse document.xml

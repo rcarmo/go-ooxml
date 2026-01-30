@@ -60,7 +60,7 @@ func TestParagraph_SetText(t *testing.T) {
 }
 
 func TestParagraph_SetStyle(t *testing.T) {
-	for _, tc := range CommonStyleCases {
+	for _, tc := range CommonHeadingStyleCases {
 		t.Run(tc.Name, func(t *testing.T) {
 			h := NewTestHelper(t)
 			doc := h.CreateDocument(nil)

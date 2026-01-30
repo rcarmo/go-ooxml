@@ -322,16 +322,16 @@ var CommonTextCases = []TextTestCase{
 	{"long_text", strings.Repeat("Lorem ipsum dolor sit amet. ", 100)},
 }
 
-// StyleTestCase represents a test case for paragraph styles.
-type StyleTestCase struct {
+// HeadingStyleTestCase represents a test case for paragraph heading styles.
+type HeadingStyleTestCase struct {
 	Name         string
 	StyleID      string
 	IsHeading    bool
 	HeadingLevel int
 }
 
-// CommonStyleCases provides standard style test cases.
-var CommonStyleCases = []StyleTestCase{
+// CommonHeadingStyleCases provides standard heading style test cases.
+var CommonHeadingStyleCases = []HeadingStyleTestCase{
 	{"heading1", "Heading1", true, 1},
 	{"heading2", "Heading2", true, 2},
 	{"heading3", "Heading3", true, 3},
