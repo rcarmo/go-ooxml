@@ -1,7 +1,10 @@
 // Package utils provides shared utilities for OOXML manipulation.
 package utils
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 // Standard errors for the library
 var (
@@ -28,7 +31,7 @@ type ValidationError struct {
 
 func (e *ValidationError) Error() string {
 	if e.Value != nil {
-		return e.Field + ": " + e.Message
+		return fmt.Sprintf("%s: %s (value: %v)", e.Field, e.Message, e.Value)
 	}
 	return e.Field + ": " + e.Message
 }

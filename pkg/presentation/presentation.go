@@ -202,10 +202,16 @@ func (p *Presentation) InsertSlide(index int) *Slide {
 	if p.presentation.SldIdLst == nil {
 		p.presentation.SldIdLst = &pml.SldIdLst{}
 	}
-	p.presentation.SldIdLst.SldId = append(p.presentation.SldIdLst.SldId, &pml.SldId{
+	newSldID := &pml.SldId{
 		ID:  slide.id,
 		RID: relID,
-	})
+	}
+	if index >= len(p.presentation.SldIdLst.SldId) {
+		p.presentation.SldIdLst.SldId = append(p.presentation.SldIdLst.SldId, newSldID)
+	} else {
+		p.presentation.SldIdLst.SldId = append(p.presentation.SldIdLst.SldId[:index+1], p.presentation.SldIdLst.SldId[index:]...)
+		p.presentation.SldIdLst.SldId[index] = newSldID
+	}
 
 	return slide
 }
@@ -468,17 +474,13 @@ func copyCSld(src *pml.CSld) *pml.CSld {
 	if src == nil {
 		return nil
 	}
-	// For now, create a new CSld with empty shape tree
-	// TODO: Deep copy shapes
-	return &pml.CSld{
-		Name: src.Name,
-		SpTree: &pml.SpTree{
-			NvGrpSpPr: &pml.NvGrpSpPr{
-				CNvPr:      &pml.CNvPr{ID: 1, Name: ""},
-				CNvGrpSpPr: &pml.CNvGrpSpPr{},
-				NvPr:       &pml.NvPr{},
-			},
-			GrpSpPr: &pml.GrpSpPr{},
-		},
+	data, err := utils.MarshalXMLWithHeader(src)
+	if err != nil {
+		return &pml.CSld{Name: src.Name}
 	}
+	copied := &pml.CSld{}
+	if err := utils.UnmarshalXML(data, copied); err != nil {
+		return &pml.CSld{Name: src.Name}
+	}
+	return copied
 }

@@ -17,7 +17,7 @@ func TestValidationError(t *testing.T) {
 			field:   "cellRef",
 			message: "invalid format",
 			value:   "ZZZ999999",
-			want:    "cellRef: invalid format",
+			want:    "cellRef: invalid format (value: ZZZ999999)",
 		},
 		{
 			name:    "without value",
@@ -31,7 +31,7 @@ func TestValidationError(t *testing.T) {
 			field:   "row",
 			message: "must be positive",
 			value:   -1,
-			want:    "row: must be positive",
+			want:    "row: must be positive (value: -1)",
 		},
 	}
 
