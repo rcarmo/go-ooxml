@@ -14,6 +14,30 @@ type Ins struct {
 	Content []interface{} `xml:"-"` // Runs inside insertion
 }
 
+// MarshalXML implements custom XML marshaling for Ins.
+func (ins *Ins) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name = xml.Name{Space: NS, Local: "ins"}
+	start.Attr = []xml.Attr{
+		{Name: xml.Name{Space: NS, Local: "id"}, Value: fmt.Sprintf("%d", ins.ID)},
+	}
+	if ins.Author != "" {
+		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Space: NS, Local: "author"}, Value: ins.Author})
+	}
+	if ins.Date != "" {
+		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Space: NS, Local: "date"}, Value: ins.Date})
+	}
+	
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+	for _, elem := range ins.Content {
+		if err := e.Encode(elem); err != nil {
+			return err
+		}
+	}
+	return e.EncodeToken(start.End())
+}
+
 // UnmarshalXML implements custom XML unmarshaling for Ins.
 func (ins *Ins) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	// Parse attributes
@@ -66,6 +90,30 @@ type Del struct {
 	Author  string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main author,attr,omitempty"`
 	Date    string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main date,attr,omitempty"`
 	Content []interface{} `xml:"-"` // Runs inside deletion
+}
+
+// MarshalXML implements custom XML marshaling for Del.
+func (del *Del) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name = xml.Name{Space: NS, Local: "del"}
+	start.Attr = []xml.Attr{
+		{Name: xml.Name{Space: NS, Local: "id"}, Value: fmt.Sprintf("%d", del.ID)},
+	}
+	if del.Author != "" {
+		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Space: NS, Local: "author"}, Value: del.Author})
+	}
+	if del.Date != "" {
+		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Space: NS, Local: "date"}, Value: del.Date})
+	}
+	
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+	for _, elem := range del.Content {
+		if err := e.Encode(elem); err != nil {
+			return err
+		}
+	}
+	return e.EncodeToken(start.End())
 }
 
 // UnmarshalXML implements custom XML unmarshaling for Del.
