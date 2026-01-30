@@ -94,3 +94,30 @@ func TestCommonTestData(t *testing.T) {
 		t.Error("CommonRangeCases is empty")
 	}
 }
+
+type testCloser struct{ closed bool }
+
+func (t *testCloser) Close() error {
+	t.closed = true
+	return nil
+}
+
+func TestResourceHelpers(t *testing.T) {
+	t.Run("NewResource", func(t *testing.T) {
+		resource := NewResource(t, func() (*testCloser, error) {
+			return &testCloser{}, nil
+		})
+		if resource == nil || resource.closed {
+			t.Fatal("NewResource returned invalid resource")
+		}
+	})
+
+	t.Run("OpenResource", func(t *testing.T) {
+		resource := OpenResource(t, func(path string) (*testCloser, error) {
+			return &testCloser{}, nil
+		}, "dummy")
+		if resource == nil || resource.closed {
+			t.Fatal("OpenResource returned invalid resource")
+		}
+	})
+}

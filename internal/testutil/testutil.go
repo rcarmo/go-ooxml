@@ -26,6 +26,37 @@ func NewHelper(t *testing.T) *Helper {
 	}
 }
 
+// Closer represents a resource that can be closed.
+type Closer interface {
+	Close() error
+}
+
+// NewResource creates a new resource and registers cleanup.
+func NewResource[T Closer](t *testing.T, create func() (T, error)) T {
+	t.Helper()
+	resource, err := create()
+	if err != nil {
+		t.Fatalf("create resource: %v", err)
+	}
+	t.Cleanup(func() {
+		_ = resource.Close()
+	})
+	return resource
+}
+
+// OpenResource opens an existing resource and registers cleanup.
+func OpenResource[T Closer](t *testing.T, open func(string) (T, error), path string) T {
+	t.Helper()
+	resource, err := open(path)
+	if err != nil {
+		t.Fatalf("open resource: %v", err)
+	}
+	t.Cleanup(func() {
+		_ = resource.Close()
+	})
+	return resource
+}
+
 // TempFile returns a path for a temporary file with the given name.
 func (h *Helper) TempFile(name string) string {
 	return filepath.Join(h.TempDir, name)
