@@ -4,7 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-	"time"
+
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 )
 
 // =============================================================================
@@ -12,11 +13,7 @@ import (
 // =============================================================================
 
 func TestNew(t *testing.T) {
-	w, err := New()
-	if err != nil {
-		t.Fatalf("New() error = %v", err)
-	}
-	defer w.Close()
+	w := testutil.NewResource(t, New)
 
 	// New workbook should have one sheet
 	if got := w.SheetCount(); got != 1 {
@@ -35,8 +32,7 @@ func TestNew(t *testing.T) {
 // =============================================================================
 
 func TestAddSheet(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
+	w := testutil.NewResource(t, New)
 
 	sheet2 := w.AddSheet("Sheet2")
 	if sheet2 == nil {
@@ -57,8 +53,7 @@ func TestAddSheet(t *testing.T) {
 }
 
 func TestDeleteSheet(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
+	w := testutil.NewResource(t, New)
 
 	w.AddSheet("Sheet2")
 	w.AddSheet("Sheet3")
@@ -88,8 +83,7 @@ func TestDeleteSheet(t *testing.T) {
 }
 
 func TestSheet(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
+	w := testutil.NewResource(t, New)
 
 	w.AddSheet("MySheet")
 
@@ -119,8 +113,7 @@ func TestSheet(t *testing.T) {
 }
 
 func TestSheetProperties(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
+	w := testutil.NewResource(t, New)
 
 	sheet := w.Sheets()[0]
 
@@ -150,187 +143,14 @@ func TestSheetProperties(t *testing.T) {
 // Cell Tests
 // =============================================================================
 
-func TestCellByReference(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
-
-	sheet := w.Sheets()[0]
-
-	cell := sheet.Cell("A1")
-	if cell == nil {
-		t.Fatal("Cell(A1) returned nil")
-	}
-
-	if cell.Reference() != "A1" {
-		t.Errorf("Reference() = %q, want %q", cell.Reference(), "A1")
-	}
-
-	if cell.Row() != 1 || cell.Column() != 1 {
-		t.Errorf("Row/Col = (%d, %d), want (1, 1)", cell.Row(), cell.Column())
-	}
-}
-
-func TestCellByRC(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
-
-	sheet := w.Sheets()[0]
-
-	cell := sheet.CellByRC(5, 3) // E3
-	if cell == nil {
-		t.Fatal("CellByRC(5, 3) returned nil")
-	}
-
-	if cell.Reference() != "C5" {
-		t.Errorf("Reference() = %q, want %q", cell.Reference(), "C5")
-	}
-}
-
-func TestCellStringValue(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
-
-	sheet := w.Sheets()[0]
-	cell := sheet.Cell("A1")
-
-	cell.SetValue("Hello World")
-
-	if cell.String() != "Hello World" {
-		t.Errorf("String() = %q, want %q", cell.String(), "Hello World")
-	}
-
-	if cell.Type() != CellTypeString {
-		t.Errorf("Type() = %d, want CellTypeString", cell.Type())
-	}
-}
-
-func TestCellNumericValue(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
-
-	sheet := w.Sheets()[0]
-
-	tests := []struct {
-		name  string
-		value interface{}
-		want  float64
-	}{
-		{"int", 42, 42},
-		{"int64", int64(100), 100},
-		{"float64", 3.14159, 3.14159},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			cell := sheet.Cell("B1")
-			cell.SetValue(tc.value)
-
-			got, err := cell.Float64()
-			if err != nil {
-				t.Fatalf("Float64() error = %v", err)
-			}
-
-			if got != tc.want {
-				t.Errorf("Float64() = %f, want %f", got, tc.want)
-			}
-
-			if cell.Type() != CellTypeNumber {
-				t.Errorf("Type() = %d, want CellTypeNumber", cell.Type())
-			}
-		})
-	}
-}
-
-func TestCellBooleanValue(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
-
-	sheet := w.Sheets()[0]
-	cell := sheet.Cell("A1")
-
-	cell.SetValue(true)
-	got, err := cell.Bool()
-	if err != nil || !got {
-		t.Errorf("Bool() = (%v, %v), want (true, nil)", got, err)
-	}
-
-	cell.SetValue(false)
-	got, err = cell.Bool()
-	if err != nil || got {
-		t.Errorf("Bool() = (%v, %v), want (false, nil)", got, err)
-	}
-
-	if cell.Type() != CellTypeBoolean {
-		t.Errorf("Type() = %d, want CellTypeBoolean", cell.Type())
-	}
-}
-
-func TestCellDateValue(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
-
-	sheet := w.Sheets()[0]
-	cell := sheet.Cell("A1")
-
-	// Set a date
-	testDate := time.Date(2024, 1, 15, 12, 30, 0, 0, time.UTC)
-	cell.SetValue(testDate)
-
-	got, err := cell.Time()
-	if err != nil {
-		t.Fatalf("Time() error = %v", err)
-	}
-
-	// Check date components (time may have slight differences due to float precision)
-	if got.Year() != testDate.Year() || got.Month() != testDate.Month() || got.Day() != testDate.Day() {
-		t.Errorf("Time() date = %v, want %v", got.Format("2006-01-02"), testDate.Format("2006-01-02"))
-	}
-}
-
-func TestCellFormula(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
-
-	sheet := w.Sheets()[0]
-	cell := sheet.Cell("C1")
-
-	cell.SetFormula("A1+B1")
-
-	if cell.Formula() != "A1+B1" {
-		t.Errorf("Formula() = %q, want %q", cell.Formula(), "A1+B1")
-	}
-
-	if !cell.HasFormula() {
-		t.Error("HasFormula() should be true")
-	}
-
-	if cell.Type() != CellTypeFormula {
-		t.Errorf("Type() = %d, want CellTypeFormula", cell.Type())
-	}
-}
-
-func TestCellClear(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
-
-	sheet := w.Sheets()[0]
-	cell := sheet.Cell("A1")
-
-	cell.SetValue("Test")
-	cell.SetValue(nil)
-
-	if cell.Type() != CellTypeEmpty {
-		t.Errorf("Type() = %d, want CellTypeEmpty", cell.Type())
-	}
-}
+// Cell access/value tests live in parameterized_test.go
 
 // =============================================================================
 // Range Tests
 // =============================================================================
 
 func TestRange(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
+	w := testutil.NewResource(t, New)
 
 	sheet := w.Sheets()[0]
 	rng := sheet.Range("A1:C3")
@@ -353,8 +173,7 @@ func TestRange(t *testing.T) {
 }
 
 func TestRangeSetValue(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
+	w := testutil.NewResource(t, New)
 
 	sheet := w.Sheets()[0]
 	rng := sheet.Range("A1:B2")
@@ -372,8 +191,7 @@ func TestRangeSetValue(t *testing.T) {
 }
 
 func TestRangeForEach(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
+	w := testutil.NewResource(t, New)
 
 	sheet := w.Sheets()[0]
 	rng := sheet.Range("A1:B2")
@@ -394,8 +212,7 @@ func TestRangeForEach(t *testing.T) {
 // =============================================================================
 
 func TestRow(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
+	w := testutil.NewResource(t, New)
 
 	sheet := w.Sheets()[0]
 	row := sheet.Row(5)
@@ -420,8 +237,7 @@ func TestRow(t *testing.T) {
 // =============================================================================
 
 func TestMergeCells(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
+	w := testutil.NewResource(t, New)
 
 	sheet := w.Sheets()[0]
 
@@ -445,8 +261,7 @@ func TestMergeCells(t *testing.T) {
 // =============================================================================
 
 func TestDimensions(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
+	w := testutil.NewResource(t, New)
 
 	sheet := w.Sheets()[0]
 
@@ -469,8 +284,7 @@ func TestDimensions(t *testing.T) {
 }
 
 func TestUsedRange(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
+	w := testutil.NewResource(t, New)
 
 	sheet := w.Sheets()[0]
 
@@ -494,7 +308,7 @@ func TestUsedRange(t *testing.T) {
 // =============================================================================
 
 func TestSaveAs(t *testing.T) {
-	w, _ := New()
+	w := testutil.NewResource(t, New)
 
 	sheet := w.Sheets()[0]
 	sheet.Cell("A1").SetValue("Test")
@@ -506,7 +320,7 @@ func TestSaveAs(t *testing.T) {
 	if err := w.SaveAs(path); err != nil {
 		t.Fatalf("SaveAs() error = %v", err)
 	}
-	w.Close()
+	_ = w.Close()
 
 	// Verify file exists
 	if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -515,7 +329,7 @@ func TestSaveAs(t *testing.T) {
 }
 
 func TestRoundTrip(t *testing.T) {
-	w, _ := New()
+	w := testutil.NewResource(t, New)
 
 	sheet1 := w.Sheets()[0]
 	sheet1.SetName("Data")
@@ -533,7 +347,7 @@ func TestRoundTrip(t *testing.T) {
 	if err := w.SaveAs(path); err != nil {
 		t.Fatalf("SaveAs() error = %v", err)
 	}
-	w.Close()
+	_ = w.Close()
 
 	// Reopen
 	w2, err := Open(path)
@@ -565,8 +379,7 @@ func TestRoundTrip(t *testing.T) {
 // =============================================================================
 
 func TestSharedStrings(t *testing.T) {
-	w, _ := New()
-	defer w.Close()
+	w := testutil.NewResource(t, New)
 
 	sheet := w.Sheets()[0]
 

@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 )
 
 // =============================================================================
@@ -12,11 +14,7 @@ import (
 // =============================================================================
 
 func TestNew(t *testing.T) {
-	p, err := New()
-	if err != nil {
-		t.Fatalf("New() error = %v", err)
-	}
-	defer p.Close()
+	p := testutil.NewResource(t, New)
 
 	// Check default dimensions (4:3)
 	w, h := p.SlideSize()
@@ -31,11 +29,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestNewWidescreen(t *testing.T) {
-	p, err := NewWidescreen()
-	if err != nil {
-		t.Fatalf("NewWidescreen() error = %v", err)
-	}
-	defer p.Close()
+	p := testutil.NewResource(t, NewWidescreen)
 
 	w, h := p.SlideSize()
 	if w != SlideWidth16x9 || h != SlideHeight16x9 {
@@ -47,11 +41,9 @@ func TestNewWithSize(t *testing.T) {
 	customWidth := int64(7200000)  // 8 inches
 	customHeight := int64(5400000) // 6 inches
 
-	p, err := NewWithSize(customWidth, customHeight)
-	if err != nil {
-		t.Fatalf("NewWithSize() error = %v", err)
-	}
-	defer p.Close()
+	p := testutil.NewResource(t, func() (*Presentation, error) {
+		return NewWithSize(customWidth, customHeight)
+	})
 
 	w, h := p.SlideSize()
 	if w != customWidth || h != customHeight {
@@ -64,8 +56,7 @@ func TestNewWithSize(t *testing.T) {
 // =============================================================================
 
 func TestAddSlide(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
+	p := testutil.NewResource(t, New)
 
 	// Add first slide
 	slide1 := p.AddSlide()
@@ -90,8 +81,7 @@ func TestAddSlide(t *testing.T) {
 }
 
 func TestInsertSlide(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
+	p := testutil.NewResource(t, New)
 
 	// Add two slides
 	p.AddSlide()
@@ -115,8 +105,7 @@ func TestInsertSlide(t *testing.T) {
 }
 
 func TestDeleteSlide(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
+	p := testutil.NewResource(t, New)
 
 	p.AddSlide()
 	p.AddSlide()
@@ -138,8 +127,7 @@ func TestDeleteSlide(t *testing.T) {
 }
 
 func TestDuplicateSlide(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
+	p := testutil.NewResource(t, New)
 
 	slide1 := p.AddSlide()
 	tb := slide1.AddTextBox(100, 100, 500, 200)
@@ -160,8 +148,7 @@ func TestDuplicateSlide(t *testing.T) {
 }
 
 func TestReorderSlides(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
+	p := testutil.NewResource(t, New)
 
 	slide1 := p.AddSlide()
 	slide2 := p.AddSlide()
@@ -199,8 +186,7 @@ func TestReorderSlides(t *testing.T) {
 // =============================================================================
 
 func TestSlideHidden(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
+	p := testutil.NewResource(t, New)
 
 	slide := p.AddSlide()
 
@@ -224,104 +210,8 @@ func TestSlideHidden(t *testing.T) {
 // Shape Tests
 // =============================================================================
 
-func TestAddTextBox(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
-
-	slide := p.AddSlide()
-	tb := slide.AddTextBox(100000, 200000, 3000000, 500000)
-
-	if tb == nil {
-		t.Fatal("AddTextBox() returned nil")
-	}
-
-	if tb.Left() != 100000 {
-		t.Errorf("Left() = %d, want 100000", tb.Left())
-	}
-	if tb.Top() != 200000 {
-		t.Errorf("Top() = %d, want 200000", tb.Top())
-	}
-	if tb.Width() != 3000000 {
-		t.Errorf("Width() = %d, want 3000000", tb.Width())
-	}
-	if tb.Height() != 500000 {
-		t.Errorf("Height() = %d, want 500000", tb.Height())
-	}
-
-	if tb.Type() != ShapeTypeTextBox {
-		t.Errorf("Type() = %d, want ShapeTypeTextBox", tb.Type())
-	}
-}
-
-func TestAddShape(t *testing.T) {
-	tests := []struct {
-		shapeType ShapeType
-		name      string
-	}{
-		{ShapeTypeRectangle, "rectangle"},
-		{ShapeTypeEllipse, "ellipse"},
-		{ShapeTypeRoundRect, "rounded rect"},
-		{ShapeTypeTriangle, "triangle"},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			p, _ := New()
-			defer p.Close()
-
-			slide := p.AddSlide()
-			shape := slide.AddShape(tc.shapeType, 0, 0, 1000000, 1000000)
-
-			if shape == nil {
-				t.Fatal("AddShape() returned nil")
-			}
-			if shape.Type() != tc.shapeType {
-				t.Errorf("Type() = %d, want %d", shape.Type(), tc.shapeType)
-			}
-		})
-	}
-}
-
-func TestShapeText(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
-
-	slide := p.AddSlide()
-	tb := slide.AddTextBox(0, 0, 1000000, 500000)
-
-	tb.SetText("Hello World")
-	if tb.Text() != "Hello World" {
-		t.Errorf("Text() = %q, want %q", tb.Text(), "Hello World")
-	}
-
-	// Multi-line text
-	tb.SetText("Line 1\nLine 2\nLine 3")
-	if !strings.Contains(tb.Text(), "Line 1") || !strings.Contains(tb.Text(), "Line 3") {
-		t.Errorf("Multi-line text not preserved: %q", tb.Text())
-	}
-}
-
-func TestShapePosition(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
-
-	slide := p.AddSlide()
-	shape := slide.AddTextBox(100, 200, 300, 400)
-
-	shape.SetPosition(1000, 2000)
-	if shape.Left() != 1000 || shape.Top() != 2000 {
-		t.Errorf("Position = (%d, %d), want (1000, 2000)", shape.Left(), shape.Top())
-	}
-
-	shape.SetSize(5000, 6000)
-	if shape.Width() != 5000 || shape.Height() != 6000 {
-		t.Errorf("Size = (%d, %d), want (5000, 6000)", shape.Width(), shape.Height())
-	}
-}
-
 func TestDeleteShape(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
+	p := testutil.NewResource(t, New)
 
 	slide := p.AddSlide()
 	slide.AddTextBox(0, 0, 100, 100)
@@ -337,115 +227,14 @@ func TestDeleteShape(t *testing.T) {
 	}
 }
 
-// =============================================================================
-// TextFrame Tests
-// =============================================================================
-
-func TestTextFrame(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
-
-	slide := p.AddSlide()
-	tb := slide.AddTextBox(0, 0, 1000000, 500000)
-
-	tf := tb.TextFrame()
-	if tf == nil {
-		t.Fatal("TextFrame() returned nil")
-	}
-
-	tf.SetText("Test text")
-	if tf.Text() != "Test text" {
-		t.Errorf("Text() = %q, want %q", tf.Text(), "Test text")
-	}
-}
-
-func TestTextParagraph(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
-
-	slide := p.AddSlide()
-	tb := slide.AddTextBox(0, 0, 1000000, 500000)
-	tf := tb.TextFrame()
-
-	para := tf.AddParagraph()
-	para.SetText("Paragraph text")
-
-	if para.Text() != "Paragraph text" {
-		t.Errorf("Text() = %q, want %q", para.Text(), "Paragraph text")
-	}
-
-	// Test level
-	para.SetLevel(2)
-	if para.Level() != 2 {
-		t.Errorf("Level() = %d, want 2", para.Level())
-	}
-
-	// Test bullet
-	para.SetBulletType(BulletCharacter)
-	if para.BulletType() != BulletCharacter {
-		t.Errorf("BulletType() = %d, want BulletCharacter", para.BulletType())
-	}
-
-	// Test alignment
-	para.SetAlignment(AlignmentCenter)
-	if para.Alignment() != AlignmentCenter {
-		t.Errorf("Alignment() = %d, want AlignmentCenter", para.Alignment())
-	}
-}
-
-func TestTextRun(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
-
-	slide := p.AddSlide()
-	tb := slide.AddTextBox(0, 0, 1000000, 500000)
-	tf := tb.TextFrame()
-	para := tf.AddParagraph()
-	run := para.AddRun()
-
-	run.SetText("Formatted")
-	if run.Text() != "Formatted" {
-		t.Errorf("Text() = %q, want %q", run.Text(), "Formatted")
-	}
-
-	run.SetBold(true)
-	if !run.Bold() {
-		t.Error("Bold() should be true")
-	}
-
-	run.SetItalic(true)
-	if !run.Italic() {
-		t.Error("Italic() should be true")
-	}
-
-	run.SetUnderline(true)
-	if !run.Underline() {
-		t.Error("Underline() should be true")
-	}
-
-	run.SetFontSize(24)
-	if run.FontSize() != 24 {
-		t.Errorf("FontSize() = %f, want 24", run.FontSize())
-	}
-
-	run.SetFontName("Arial")
-	if run.FontName() != "Arial" {
-		t.Errorf("FontName() = %q, want Arial", run.FontName())
-	}
-
-	run.SetColor("FF0000")
-	if run.Color() != "FF0000" {
-		t.Errorf("Color() = %q, want FF0000", run.Color())
-	}
-}
+// Shape/text tests live in parameterized_test.go
 
 // =============================================================================
 // Notes Tests
 // =============================================================================
 
 func TestSlideNotes(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
+	p := testutil.NewResource(t, New)
 
 	slide := p.AddSlide()
 
@@ -474,7 +263,7 @@ func TestSlideNotes(t *testing.T) {
 // =============================================================================
 
 func TestSaveAs(t *testing.T) {
-	p, _ := New()
+	p := testutil.NewResource(t, New)
 
 	slide := p.AddSlide()
 	tb := slide.AddTextBox(100000, 100000, 5000000, 1000000)
@@ -486,7 +275,7 @@ func TestSaveAs(t *testing.T) {
 	if err := p.SaveAs(path); err != nil {
 		t.Fatalf("SaveAs() error = %v", err)
 	}
-	p.Close()
+	_ = p.Close()
 
 	// Verify file exists
 	if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -496,7 +285,7 @@ func TestSaveAs(t *testing.T) {
 
 func TestRoundTrip(t *testing.T) {
 	// Create presentation
-	p, _ := New()
+	p := testutil.NewResource(t, New)
 
 	slide1 := p.AddSlide()
 	tb := slide1.AddTextBox(100000, 100000, 5000000, 1000000)
@@ -511,7 +300,7 @@ func TestRoundTrip(t *testing.T) {
 	if err := p.SaveAs(path); err != nil {
 		t.Fatalf("SaveAs() error = %v", err)
 	}
-	p.Close()
+	_ = p.Close()
 
 	// Reopen
 	p2, err := Open(path)
@@ -531,8 +320,7 @@ func TestRoundTrip(t *testing.T) {
 // =============================================================================
 
 func TestAutofit(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
+	p := testutil.NewResource(t, New)
 
 	slide := p.AddSlide()
 	tb := slide.AddTextBox(0, 0, 1000000, 500000)
@@ -559,8 +347,7 @@ func TestAutofit(t *testing.T) {
 // =============================================================================
 
 func TestShapeFill(t *testing.T) {
-	p, _ := New()
-	defer p.Close()
+	p := testutil.NewResource(t, New)
 
 	slide := p.AddSlide()
 	shape := slide.AddShape(ShapeTypeRectangle, 0, 0, 1000000, 1000000)
