@@ -211,7 +211,7 @@ func (d *Document) Footer(hfType HeaderFooterType) *Footer {
 // AddHeader adds a header of the specified type.
 func (d *Document) AddHeader(hfType HeaderFooterType) *Header {
 	// Generate unique filename
-	num := len(d.Headers()) + 1
+	num := len(d.headers) + 1
 	filename := fmt.Sprintf("header%d.xml", num)
 	relID := fmt.Sprintf("rId%d", 100+num)
 	
@@ -237,6 +237,7 @@ func (d *Document) AddHeader(hfType HeaderFooterType) *Header {
 		hfType: hfType,
 	}
 	
+	d.headers[relID] = h
 	d.pkg.AddRelationship(packaging.WordDocumentPath, filename, packaging.RelTypeHeader)
 	
 	return h
@@ -245,7 +246,7 @@ func (d *Document) AddHeader(hfType HeaderFooterType) *Header {
 // AddFooter adds a footer of the specified type.
 func (d *Document) AddFooter(hfType HeaderFooterType) *Footer {
 	// Generate unique filename
-	num := len(d.Footers()) + 1
+	num := len(d.footers) + 1
 	filename := fmt.Sprintf("footer%d.xml", num)
 	relID := fmt.Sprintf("rId%d", 200+num)
 	
@@ -271,18 +272,25 @@ func (d *Document) AddFooter(hfType HeaderFooterType) *Footer {
 		hfType: hfType,
 	}
 	
+	d.footers[relID] = f
 	d.pkg.AddRelationship(packaging.WordDocumentPath, filename, packaging.RelTypeFooter)
 	
 	return f
 }
 
 func (d *Document) headerByRelID(relID string) *Header {
-	// TODO: Implement header storage and lookup
+	if h, ok := d.headers[relID]; ok {
+		return h
+	}
+	// Return empty header for unknown relIDs (e.g., from loaded documents)
 	return &Header{doc: d, relID: relID}
 }
 
 func (d *Document) footerByRelID(relID string) *Footer {
-	// TODO: Implement footer storage and lookup
+	if f, ok := d.footers[relID]; ok {
+		return f
+	}
+	// Return empty footer for unknown relIDs (e.g., from loaded documents)
 	return &Footer{doc: d, relID: relID}
 }
 
@@ -291,17 +299,19 @@ func (d *Document) footerByRelID(relID string) *Footer {
 // =============================================================================
 
 func (d *Document) saveHeaders() error {
-	for i, h := range d.Headers() {
+	i := 0
+	for _, h := range d.headers {
 		if h.header == nil {
 			continue
 		}
+		i++
 		
 		data, err := utils.MarshalXMLWithHeader(h.header)
 		if err != nil {
 			return err
 		}
 		
-		filename := fmt.Sprintf("word/header%d.xml", i+1)
+		filename := fmt.Sprintf("word/header%d.xml", i)
 		_, err = d.pkg.AddPart(filename, packaging.ContentTypeHeader, data)
 		if err != nil {
 			return err
@@ -311,17 +321,19 @@ func (d *Document) saveHeaders() error {
 }
 
 func (d *Document) saveFooters() error {
-	for i, f := range d.Footers() {
+	i := 0
+	for _, f := range d.footers {
 		if f.footer == nil {
 			continue
 		}
+		i++
 		
 		data, err := utils.MarshalXMLWithHeader(f.footer)
 		if err != nil {
 			return err
 		}
 		
-		filename := fmt.Sprintf("word/footer%d.xml", i+1)
+		filename := fmt.Sprintf("word/footer%d.xml", i)
 		_, err = d.pkg.AddPart(filename, packaging.ContentTypeFooter, data)
 		if err != nil {
 			return err

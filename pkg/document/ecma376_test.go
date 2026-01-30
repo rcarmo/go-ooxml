@@ -36,7 +36,7 @@ func TestECMA376_ParagraphStyles(t *testing.T) {
 	validator := NewValidator()
 	validator.Skip(t)
 
-	for _, tc := range CommonStyleCases {
+	for _, tc := range CommonHeadingStyleCases {
 		t.Run(tc.Name, func(t *testing.T) {
 			h := NewTestHelper(t)
 			doc := h.CreateDocument(func(d *Document) {

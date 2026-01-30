@@ -98,19 +98,20 @@ const (
 
 // File paths in OPC package
 const (
-	ContentTypesPath     = "[Content_Types].xml"
-	PackageRelsPath      = "_rels/.rels"
-	CorePropertiesPath   = "docProps/core.xml"
-	AppPropertiesPath    = "docProps/app.xml"
-	WordDocumentPath     = "word/document.xml"
-	WordStylesPath       = "word/styles.xml"
-	WordSettingsPath     = "word/settings.xml"
-	WordNumberingPath    = "word/numbering.xml"
-	WordCommentsPath     = "word/comments.xml"
-	ExcelWorkbookPath    = "xl/workbook.xml"
-	ExcelStylesPath      = "xl/styles.xml"
+	ContentTypesPath       = "[Content_Types].xml"
+	PackageRelsPath        = "_rels/.rels"
+	CorePropertiesPath     = "docProps/core.xml"
+	AppPropertiesPath      = "docProps/app.xml"
+	WordDocumentPath       = "word/document.xml"
+	WordStylesPath         = "word/styles.xml"
+	WordSettingsPath       = "word/settings.xml"
+	WordNumberingPath      = "word/numbering.xml"
+	WordCommentsPath       = "word/comments.xml"
+	ExcelWorkbookPath      = "xl/workbook.xml"
+	ExcelStylesPath        = "xl/styles.xml"
 	ExcelSharedStringsPath = "xl/sharedStrings.xml"
-	PPTXPresentationPath = "ppt/presentation.xml"
+	PresentationPath       = "ppt/presentation.xml"
+	PPTXPresentationPath   = PresentationPath // Alias for backward compatibility
 )
 
 // TargetMode indicates whether the relationship target is internal or external.
