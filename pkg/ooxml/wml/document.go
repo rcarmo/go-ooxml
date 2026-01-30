@@ -41,6 +41,12 @@ func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 					return err
 				}
 				b.Content = append(b.Content, p)
+			case "sdt":
+				sdt := &Sdt{}
+				if err := d.DecodeElement(sdt, &t); err != nil {
+					return err
+				}
+				b.Content = append(b.Content, sdt)
 			case "tbl":
 				tbl := &Tbl{}
 				if err := d.DecodeElement(tbl, &t); err != nil {
@@ -74,8 +80,23 @@ func (b *Body) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 
 	for _, elem := range b.Content {
-		if err := e.Encode(elem); err != nil {
-			return err
+		switch v := elem.(type) {
+		case *P:
+			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "p"}}); err != nil {
+				return err
+			}
+		case *Tbl:
+			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "tbl"}}); err != nil {
+				return err
+			}
+		case *Sdt:
+			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "sdt"}}); err != nil {
+				return err
+			}
+		default:
+			if err := e.Encode(elem); err != nil {
+				return err
+			}
 		}
 	}
 

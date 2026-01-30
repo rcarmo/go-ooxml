@@ -25,6 +25,7 @@ type Document struct {
 	nextCommentID    int
 	nextAbstractNumID int
 	nextNumID         int
+	nextBookmarkID    int
 
 	// Headers and footers (keyed by relID)
 	headers map[string]*Header
@@ -52,6 +53,7 @@ func New() (*Document, error) {
 		footers:  make(map[string]*Footer),
 		nextAbstractNumID: 1,
 		nextNumID:         1,
+		nextBookmarkID:    1,
 	}
 
 	// Initialize package structure
@@ -102,6 +104,7 @@ func openFromPackage(pkg *packaging.Package) (*Document, error) {
 	_ = doc.parseComments()
 	// Parse numbering.xml (optional)
 	_ = doc.parseNumbering()
+	doc.parseBookmarks()
 
 	return doc, nil
 }

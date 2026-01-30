@@ -260,9 +260,15 @@ func (p *Package) GetRelationships(sourceURI string) *Relationships {
 
 // AddRelationship adds a relationship from a source part.
 func (p *Package) AddRelationship(sourceURI, targetURI, relType string) *Relationship {
+	return p.AddRelationshipWithTargetMode(sourceURI, targetURI, relType, TargetModeInternal)
+}
+
+// AddRelationshipWithTargetMode adds a relationship with the specified target mode.
+func (p *Package) AddRelationshipWithTargetMode(sourceURI, targetURI, relType string, targetMode TargetMode) *Relationship {
 	sourceURI = normalizePath(sourceURI)
 	rels := p.GetRelationships(sourceURI)
-	rel := rels.Add(relType, targetURI, TargetModeInternal)
+	id := rels.NextID()
+	rel := rels.AddWithID(id, relType, targetURI, targetMode)
 	p.modified = true
 	return rel
 }

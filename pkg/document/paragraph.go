@@ -1,6 +1,7 @@
 package document
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
@@ -16,11 +17,7 @@ type Paragraph struct {
 
 // Text returns the combined text of all runs in the paragraph.
 func (p *Paragraph) Text() string {
-	var sb strings.Builder
-	for _, run := range p.Runs() {
-		sb.WriteString(run.Text())
-	}
-	return sb.String()
+	return textFromParagraph(p.p)
 }
 
 // SetText sets the paragraph text, replacing all existing runs.
@@ -39,6 +36,75 @@ func (p *Paragraph) Runs() []*Run {
 	for _, elem := range p.p.Content {
 		if r, ok := elem.(*wml.R); ok {
 			result = append(result, &Run{doc: p.doc, r: r})
+		}
+	}
+	return result
+}
+
+// AddBookmark inserts a bookmark start/end around the specified run range.
+func (p *Paragraph) AddBookmark(name string, startRun, endRun int) error {
+	if name == "" {
+		return fmt.Errorf("bookmark name cannot be empty")
+	}
+	if len(p.p.Content) == 0 {
+		return utils.ErrInvalidIndex
+	}
+	if startRun < 0 || endRun < startRun {
+		return utils.ErrInvalidIndex
+	}
+	runCount := 0
+	for _, elem := range p.p.Content {
+		if _, ok := elem.(*wml.R); ok {
+			runCount++
+		}
+	}
+	if runCount == 0 || startRun >= runCount || endRun >= runCount {
+		return utils.ErrInvalidIndex
+	}
+	if p.doc == nil {
+		return fmt.Errorf("document not available")
+	}
+
+	id := p.doc.nextBookmarkID
+	p.doc.nextBookmarkID++
+	start := &wml.BookmarkStart{ID: id, Name: name}
+	end := &wml.BookmarkEnd{ID: id}
+
+	newContent := make([]interface{}, 0, len(p.p.Content)+2)
+	runIndex := 0
+	for _, elem := range p.p.Content {
+		if _, ok := elem.(*wml.R); ok {
+			if runIndex == startRun {
+				newContent = append(newContent, start)
+			}
+			runIndex++
+		}
+		newContent = append(newContent, elem)
+		if _, ok := elem.(*wml.R); ok && runIndex-1 == endRun {
+			newContent = append(newContent, end)
+		}
+	}
+	p.p.Content = newContent
+	return nil
+}
+
+// Hyperlinks returns all hyperlinks in the paragraph.
+func (p *Paragraph) Hyperlinks() []*Hyperlink {
+	var result []*Hyperlink
+	for _, elem := range p.p.Content {
+		if h, ok := elem.(*wml.Hyperlink); ok {
+			result = append(result, &Hyperlink{doc: p.doc, h: h})
+		}
+	}
+	return result
+}
+
+// ContentControls returns all content controls in the paragraph.
+func (p *Paragraph) ContentControls() []*ContentControl {
+	var result []*ContentControl
+	for _, elem := range p.p.Content {
+		if sdt, ok := elem.(*wml.Sdt); ok {
+			result = append(result, &ContentControl{doc: p.doc, sdt: sdt})
 		}
 	}
 	return result
