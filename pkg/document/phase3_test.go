@@ -261,6 +261,168 @@ func TestCommentSetText(t *testing.T) {
 	}
 }
 
+// =============================================================================
+// Content Controls Tests
+// =============================================================================
+
+func TestContentControlParagraph(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	p := doc.AddParagraph()
+	cc := p.AddContentControl("Customer", "Customer Name", "Ada Lovelace")
+	if cc.Tag() != "Customer" {
+		t.Errorf("Tag() = %q, want %q", cc.Tag(), "Customer")
+	}
+	if cc.Alias() != "Customer Name" {
+		t.Errorf("Alias() = %q, want %q", cc.Alias(), "Customer Name")
+	}
+	if cc.Text() != "Ada Lovelace" {
+		t.Errorf("Text() = %q, want %q", cc.Text(), "Ada Lovelace")
+	}
+}
+
+func TestContentControlBlock(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	cc := doc.AddBlockContentControl("OrderId", "Order ID", "SO-123")
+	if cc.Tag() != "OrderId" {
+		t.Errorf("Tag() = %q, want %q", cc.Tag(), "OrderId")
+	}
+	if len(doc.Body().ContentControls()) != 1 {
+		t.Error("Expected one block content control")
+	}
+}
+
+// =============================================================================
+// Hyperlink/Bookmark Tests
+// =============================================================================
+
+func TestAddHyperlink(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	p := doc.AddParagraph()
+	link, err := p.AddHyperlink("https://example.com", "Example")
+	if err != nil {
+		t.Fatalf("AddHyperlink() error = %v", err)
+	}
+	if link.URL() != "https://example.com" {
+		t.Errorf("URL() = %q, want %q", link.URL(), "https://example.com")
+	}
+	if link.Text() != "Example" {
+		t.Errorf("Text() = %q, want %q", link.Text(), "Example")
+	}
+}
+
+func TestAddBookmarkAndLink(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	p := doc.AddParagraph()
+	p.AddRun().SetText("Go")
+	p.AddRun().SetText("OOXML")
+	if err := p.AddBookmark("DocStart", 0, 1); err != nil {
+		t.Fatalf("AddBookmark() error = %v", err)
+	}
+	link, err := p.AddBookmarkLink("DocStart", "Jump")
+	if err != nil {
+		t.Fatalf("AddBookmarkLink() error = %v", err)
+	}
+	if link.Anchor() != "DocStart" {
+		t.Errorf("Anchor() = %q, want %q", link.Anchor(), "DocStart")
+	}
+}
+
+// =============================================================================
+// Fields Tests
+// =============================================================================
+
+func TestAddField(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	p := doc.AddParagraph()
+	field, err := p.AddField("PAGE", "1")
+	if err != nil {
+		t.Fatalf("AddField() error = %v", err)
+	}
+	if field.Instruction != "PAGE" {
+		t.Errorf("Instruction = %q, want %q", field.Instruction, "PAGE")
+	}
+	if !strings.Contains(p.Text(), "1") {
+		t.Error("Expected field display text in paragraph")
+	}
+}
+
+func TestHyperlinkRoundTrip(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.CreateDocument(func(d *Document) {
+		p := d.AddParagraph()
+		_, err := p.AddHyperlink("https://example.com", "Example")
+		if err != nil {
+			t.Fatalf("AddHyperlink() error = %v", err)
+		}
+	})
+	defer doc.Close()
+
+	path := h.SaveDocument(doc, "hyperlink_roundtrip.docx")
+	doc.Close()
+
+	doc2 := h.OpenDocument(path)
+	defer doc2.Close()
+
+	paras := doc2.Paragraphs()
+	if len(paras) == 0 {
+		t.Fatal("Expected paragraph after round-trip")
+	}
+	links := paras[0].Hyperlinks()
+	if len(links) == 0 {
+		t.Fatal("Expected hyperlink after round-trip")
+	}
+	if links[0].URL() != "https://example.com" {
+		t.Errorf("URL() = %q, want %q", links[0].URL(), "https://example.com")
+	}
+}
+
+func TestContentControlRoundTrip(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.CreateDocument(func(d *Document) {
+		d.AddBlockContentControl("Customer", "Customer Name", "Ada")
+	})
+	defer doc.Close()
+
+	path := h.SaveDocument(doc, "sdt_roundtrip.docx")
+	doc.Close()
+
+	doc2 := h.OpenDocument(path)
+	defer doc2.Close()
+
+	ccs := doc2.Body().ContentControls()
+	if len(ccs) == 0 {
+		t.Fatal("Expected content control after round-trip")
+	}
+	if ccs[0].Tag() != "Customer" {
+		t.Errorf("Tag() = %q, want %q", ccs[0].Tag(), "Customer")
+	}
+}
+
 func TestComments(t *testing.T) {
 	doc, err := New()
 	if err != nil {

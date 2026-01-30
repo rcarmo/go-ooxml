@@ -28,6 +28,17 @@ func (b *Body) Paragraphs() []*Paragraph {
 	return result
 }
 
+// ContentControls returns all block-level content controls in the body.
+func (b *Body) ContentControls() []*ContentControl {
+	var result []*ContentControl
+	for _, elem := range b.body().Content {
+		if sdt, ok := elem.(*wml.Sdt); ok {
+			result = append(result, &ContentControl{doc: b.doc, sdt: sdt})
+		}
+	}
+	return result
+}
+
 // Tables returns all tables in the body.
 func (b *Body) Tables() []*Table {
 	var result []*Table

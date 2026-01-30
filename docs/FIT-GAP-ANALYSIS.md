@@ -273,16 +273,16 @@ Based on ECMA-376 Part 1, §17.
 
 | Feature | Section | Status | Notes |
 |---------|---------|--------|-------|
-| Simple fields | §17.16.19 | ❌ Not implemented | |
-| Complex fields | §17.16 | ❌ Not implemented | |
-| Field codes | §17.16.5 | ❌ Not implemented | |
+| Simple fields | §17.16.19 | ⚠️ Partial | `Paragraph.AddField()` (no evaluation) |
+| Complex fields | §17.16 | ⚠️ Partial | `fldChar`/`instrText` support |
+| Field codes | §17.16.5 | ⚠️ Partial | Instruction text only |
 
 ### §17.17 Miscellaneous
 
 | Feature | Section | Status | Notes |
 |---------|---------|--------|-------|
-| Bookmarks | §17.17.2 | ❌ Not implemented | |
-| Hyperlinks | §17.17.4 | ❌ Not implemented | |
+| Bookmarks | §17.17.2 | ✅ Implemented | `Paragraph.AddBookmark()` |
+| Hyperlinks | §17.17.4 | ✅ Implemented | `Paragraph.AddHyperlink()` |
 | Permissions | §17.17.7 | ❌ Not implemented | |
 | Spelling/grammar | §17.17.8 | ❌ Not implemented | |
 
@@ -290,11 +290,11 @@ Based on ECMA-376 Part 1, §17.
 
 | Feature | Section | Status | Notes |
 |---------|---------|--------|-------|
-| `<w:sdt>` | §17.5.2 | ❌ Not implemented | Planned |
-| `<w:sdtPr>` | §17.5.2 | ❌ Not implemented | |
-| `<w:sdtContent>` | §17.5.2 | ❌ Not implemented | |
-| Rich text control | §17.5.2 | ❌ Not implemented | |
-| Plain text control | §17.5.2 | ❌ Not implemented | |
+| `<w:sdt>` | §17.5.2 | ✅ Implemented | Run/block SDT |
+| `<w:sdtPr>` | §17.5.2 | ✅ Implemented | Tag/alias/id/lock |
+| `<w:sdtContent>` | §17.5.2 | ✅ Implemented | Run/paragraph content |
+| Rich text control | §17.5.2 | ⚠️ Partial | Basic content only |
+| Plain text control | §17.5.2 | ⚠️ Partial | Basic content only |
 | Drop-down list | §17.5.2 | ❌ Not implemented | |
 | Date picker | §17.5.2 | ❌ Not implemented | |
 

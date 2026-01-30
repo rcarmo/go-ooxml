@@ -3,6 +3,7 @@ package document
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
@@ -68,30 +69,20 @@ func (r *Revision) Date() time.Time {
 // Text returns the text content of the revision.
 func (r *Revision) Text() string {
 	if r.ins != nil {
-		var text string
-		for _, elem := range r.ins.Content {
-			if run, ok := elem.(*wml.R); ok {
-				for _, runElem := range run.Content {
-					if t, ok := runElem.(*wml.T); ok {
-						text += t.Text
-					}
-				}
-			}
-		}
-		return text
+		return textFromInlineContent(r.ins.Content)
 	}
 	if r.del != nil {
-		var text string
+		var sb strings.Builder
 		for _, elem := range r.del.Content {
 			if run, ok := elem.(*wml.R); ok {
 				for _, runElem := range run.Content {
 					if dt, ok := runElem.(*wml.DelText); ok {
-						text += dt.Text
+						sb.WriteString(dt.Text)
 					}
 				}
 			}
 		}
-		return text
+		return sb.String()
 	}
 	return ""
 }

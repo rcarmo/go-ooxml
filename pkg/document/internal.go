@@ -110,6 +110,7 @@ func (d *Document) updatePackage() error {
 			}
 		}
 	}
+
 	// Update numbering.xml if we have numbering definitions
 	if d.numbering != nil {
 		numberingData, err := utils.MarshalXMLWithHeader(d.numbering)
@@ -277,4 +278,52 @@ func (d *Document) parseNumbering() error {
 	}
 
 	return nil
+}
+
+// parseBookmarks scans the document and initializes nextBookmarkID.
+func (d *Document) parseBookmarks() {
+	maxID := 0
+	for _, elem := range d.document.Body.Content {
+		if p, ok := elem.(*wml.P); ok {
+			maxID = maxBookmarkIDInContent(maxID, p.Content)
+		} else if sdt, ok := elem.(*wml.Sdt); ok {
+			maxID = maxBookmarkIDInSdt(maxID, sdt)
+		}
+	}
+	if maxID >= d.nextBookmarkID {
+		d.nextBookmarkID = maxID + 1
+	}
+}
+
+func maxBookmarkIDInSdt(current int, sdt *wml.Sdt) int {
+	if sdt == nil || sdt.SdtContent == nil {
+		return current
+	}
+	for _, elem := range sdt.SdtContent.Content {
+		switch v := elem.(type) {
+		case *wml.P:
+			current = maxBookmarkIDInContent(current, v.Content)
+		case *wml.Sdt:
+			current = maxBookmarkIDInSdt(current, v)
+		}
+	}
+	return current
+}
+
+func maxBookmarkIDInContent(current int, content []interface{}) int {
+	for _, elem := range content {
+		switch v := elem.(type) {
+		case *wml.BookmarkStart:
+			if v.ID > current {
+				current = v.ID
+			}
+		case *wml.P:
+			current = maxBookmarkIDInContent(current, v.Content)
+		case *wml.Hyperlink:
+			current = maxBookmarkIDInContent(current, v.Content)
+		case *wml.Sdt:
+			current = maxBookmarkIDInSdt(current, v)
+		}
+	}
+	return current
 }

@@ -67,6 +67,18 @@ func (p *P) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 					return err
 				}
 				p.Content = append(p.Content, be)
+			case "hyperlink":
+				h := &Hyperlink{}
+				if err := d.DecodeElement(h, &t); err != nil {
+					return err
+				}
+				p.Content = append(p.Content, h)
+			case "sdt":
+				sdt := &Sdt{}
+				if err := d.DecodeElement(sdt, &t); err != nil {
+					return err
+				}
+				p.Content = append(p.Content, sdt)
 			default:
 				if err := d.Skip(); err != nil {
 					return err
@@ -114,6 +126,217 @@ type BookmarkEnd struct {
 	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main bookmarkEnd"`
 	ID      int      `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main id,attr"`
 }
+
+// Hyperlink represents a hyperlink in a paragraph.
+type Hyperlink struct {
+	XMLName xml.Name      `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main hyperlink"`
+	ID      string        `xml:"http://schemas.openxmlformats.org/officeDocument/2006/relationships id,attr,omitempty"`
+	Anchor  string        `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main anchor,attr,omitempty"`
+	Tooltip string        `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main tooltip,attr,omitempty"`
+	History *bool         `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main history,attr,omitempty"`
+	Content []interface{} `xml:"-"` // runs and other content
+}
+
+// UnmarshalXML implements custom XML unmarshaling for Hyperlink.
+func (h *Hyperlink) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	h.XMLName = start.Name
+	for _, attr := range start.Attr {
+		switch attr.Name.Local {
+		case "id":
+			h.ID = attr.Value
+		case "anchor":
+			h.Anchor = attr.Value
+		case "tooltip":
+			h.Tooltip = attr.Value
+		case "history":
+			val := attr.Value == "1" || attr.Value == "true"
+			h.History = &val
+		}
+	}
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			return err
+		}
+		switch t := tok.(type) {
+		case xml.StartElement:
+			switch t.Name.Local {
+			case "r":
+				r := &R{}
+				if err := d.DecodeElement(r, &t); err != nil {
+					return err
+				}
+				h.Content = append(h.Content, r)
+			default:
+				if err := d.Skip(); err != nil {
+					return err
+				}
+			}
+		case xml.EndElement:
+			if t.Name == start.Name {
+				return nil
+			}
+		}
+	}
+}
+
+// MarshalXML implements custom XML marshaling for Hyperlink.
+func (h *Hyperlink) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name = xml.Name{Space: NS, Local: "hyperlink"}
+	if h.ID != "" {
+		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Space: NSR, Local: "id"}, Value: h.ID})
+	}
+	if h.Anchor != "" {
+		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Space: NS, Local: "anchor"}, Value: h.Anchor})
+	}
+	if h.Tooltip != "" {
+		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Space: NS, Local: "tooltip"}, Value: h.Tooltip})
+	}
+	if h.History != nil {
+		val := "0"
+		if *h.History {
+			val = "1"
+		}
+		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Space: NS, Local: "history"}, Value: val})
+	}
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+	for _, elem := range h.Content {
+		if err := e.Encode(elem); err != nil {
+			return err
+		}
+	}
+	return e.EncodeToken(start.End())
+}
+
+// Sdt represents a content control.
+type Sdt struct {
+	XMLName    xml.Name    `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main sdt"`
+	SdtPr      *SdtPr      `xml:"sdtPr,omitempty"`
+	SdtContent *SdtContent `xml:"sdtContent,omitempty"`
+}
+
+// SdtPr represents content control properties.
+type SdtPr struct {
+	Alias         *SdtString `xml:"alias,omitempty"`
+	Tag           *SdtString `xml:"tag,omitempty"`
+	ID            *SdtID     `xml:"id,omitempty"`
+	ShowingPlcHdr *OnOff     `xml:"showingPlcHdr,omitempty"`
+	Lock          *SdtLock   `xml:"lock,omitempty"`
+}
+
+// SdtContent represents content control contents.
+type SdtContent struct {
+	XMLName xml.Name      `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main sdtContent"`
+	Content []interface{} `xml:"-"` // paragraphs, runs, tables
+}
+
+// UnmarshalXML implements custom XML unmarshaling for SdtContent.
+func (c *SdtContent) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			return err
+		}
+		switch t := tok.(type) {
+		case xml.StartElement:
+			switch t.Name.Local {
+			case "p":
+				p := &P{}
+				if err := d.DecodeElement(p, &t); err != nil {
+					return err
+				}
+				c.Content = append(c.Content, p)
+			case "tbl":
+				tbl := &Tbl{}
+				if err := d.DecodeElement(tbl, &t); err != nil {
+					return err
+				}
+				c.Content = append(c.Content, tbl)
+			case "r":
+				r := &R{}
+				if err := d.DecodeElement(r, &t); err != nil {
+					return err
+				}
+				c.Content = append(c.Content, r)
+			case "hyperlink":
+				h := &Hyperlink{}
+				if err := d.DecodeElement(h, &t); err != nil {
+					return err
+				}
+				c.Content = append(c.Content, h)
+			case "sdt":
+				sdt := &Sdt{}
+				if err := d.DecodeElement(sdt, &t); err != nil {
+					return err
+				}
+				c.Content = append(c.Content, sdt)
+			default:
+				if err := d.Skip(); err != nil {
+					return err
+				}
+			}
+		case xml.EndElement:
+			if t.Name == start.Name {
+				return nil
+			}
+		}
+	}
+}
+
+// MarshalXML implements custom XML marshaling for SdtContent.
+func (c *SdtContent) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name = xml.Name{Space: NS, Local: "sdtContent"}
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+	for _, elem := range c.Content {
+		switch v := elem.(type) {
+		case *P:
+			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "p"}}); err != nil {
+				return err
+			}
+		case *Tbl:
+			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "tbl"}}); err != nil {
+				return err
+			}
+		case *R:
+			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "r"}}); err != nil {
+				return err
+			}
+		case *Hyperlink:
+			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "hyperlink"}}); err != nil {
+				return err
+			}
+		case *Sdt:
+			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "sdt"}}); err != nil {
+				return err
+			}
+		default:
+			if err := e.Encode(elem); err != nil {
+				return err
+			}
+		}
+	}
+	return e.EncodeToken(start.End())
+}
+
+// SdtString represents a string property for content controls.
+type SdtString struct {
+	Val string `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main val,attr"`
+}
+
+// SdtID represents a content control ID.
+type SdtID struct {
+	Val int `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main val,attr"`
+}
+
+// SdtLock represents a content control lock setting.
+type SdtLock struct {
+	Val string `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main val,attr"`
+}
+
 
 // PPr represents paragraph properties.
 type PPr struct {
