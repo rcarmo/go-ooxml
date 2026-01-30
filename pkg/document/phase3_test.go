@@ -557,10 +557,76 @@ func TestStyles(t *testing.T) {
 	doc.AddParagraphStyle("Para1", "Paragraph 1")
 	doc.AddCharacterStyle("Char1", "Character 1")
 	doc.AddTableStyle("Table1", "Table 1")
+	doc.AddNumberingStyle("Num1", "Numbering 1")
 
 	styles := doc.Styles()
-	if len(styles) != 3 {
-		t.Errorf("Expected 3 styles, got %d", len(styles))
+	if len(styles) != 4 {
+		t.Errorf("Expected 4 styles, got %d", len(styles))
+	}
+}
+
+// =============================================================================
+// Numbering Tests
+// =============================================================================
+
+func TestAddNumberedListStyle(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	numID, err := doc.AddNumberedListStyle()
+	if err != nil {
+		t.Fatalf("AddNumberedListStyle() error = %v", err)
+	}
+	if numID == 0 {
+		t.Error("Expected non-zero numbering ID")
+	}
+
+	p := doc.AddParagraph()
+	if err := p.SetList(numID, 0); err != nil {
+		t.Fatalf("SetList() error = %v", err)
+	}
+
+	if p.ListNumberingID() != numID {
+		t.Errorf("ListNumberingID() = %d, want %d", p.ListNumberingID(), numID)
+	}
+	if p.ListLevel() != 0 {
+		t.Errorf("ListLevel() = %d, want 0", p.ListLevel())
+	}
+}
+
+func TestNumberingRoundTrip(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.CreateDocument(func(d *Document) {
+		numID, err := d.AddNumberedListStyle()
+		if err != nil {
+			t.Fatalf("AddNumberedListStyle() error = %v", err)
+		}
+		p := d.AddParagraph()
+		p.SetText("Item 1")
+		if err := p.SetList(numID, 0); err != nil {
+			t.Fatalf("SetList() error = %v", err)
+		}
+	})
+	defer doc.Close()
+
+	path := h.SaveDocument(doc, "numbering_roundtrip.docx")
+	doc.Close()
+
+	doc2 := h.OpenDocument(path)
+	defer doc2.Close()
+
+	if len(doc2.Numbering()) == 0 {
+		t.Fatal("Expected numbering definitions after round-trip")
+	}
+	paras := doc2.Paragraphs()
+	if len(paras) == 0 {
+		t.Fatal("Expected paragraph after round-trip")
+	}
+	if paras[0].ListNumberingID() == 0 {
+		t.Error("Expected numbering ID on paragraph after round-trip")
 	}
 }
 
@@ -740,6 +806,8 @@ func TestStyleTypes(t *testing.T) {
 				s = doc.AddCharacterStyle("Test"+tt.name, "Test "+tt.name)
 			case StyleTypeTable:
 				s = doc.AddTableStyle("Test"+tt.name, "Test "+tt.name)
+			case StyleTypeNumbering:
+				s = doc.AddNumberingStyle("Test"+tt.name, "Test "+tt.name)
 			}
 
 			if s != nil && s.Type() != tt.styleType {

@@ -261,6 +261,7 @@ func StyleTestCases() []StyleTestCase {
 		{"large font", "Large", "Large Text", StyleTypeParagraph, false, false, 24, ""},
 		{"character style", "CharBold", "Bold Characters", StyleTypeCharacter, true, false, 0, ""},
 		{"table style", "TableGrid", "Table Grid", StyleTypeTable, false, false, 0, ""},
+		{"numbering style", "Numbered", "Numbered List", StyleTypeNumbering, false, false, 0, ""},
 	}
 }
 

@@ -16,12 +16,15 @@ type Document struct {
 	styles   *wml.Styles
 	settings *wml.Settings
 	comments *wml.Comments
+	numbering *wml.Numbering
 
 	// Tracking
 	trackChanges     bool
 	trackAuthor      string
 	nextRevisionID   int
 	nextCommentID    int
+	nextAbstractNumID int
+	nextNumID         int
 
 	// Headers and footers (keyed by relID)
 	headers map[string]*Header
@@ -47,6 +50,8 @@ func New() (*Document, error) {
 		settings: &wml.Settings{},
 		headers:  make(map[string]*Header),
 		footers:  make(map[string]*Footer),
+		nextAbstractNumID: 1,
+		nextNumID:         1,
 	}
 
 	// Initialize package structure
@@ -95,6 +100,8 @@ func openFromPackage(pkg *packaging.Package) (*Document, error) {
 
 	// Parse comments.xml (optional)
 	_ = doc.parseComments()
+	// Parse numbering.xml (optional)
+	_ = doc.parseNumbering()
 
 	return doc, nil
 }

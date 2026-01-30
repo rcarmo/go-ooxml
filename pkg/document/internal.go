@@ -110,6 +110,25 @@ func (d *Document) updatePackage() error {
 			}
 		}
 	}
+	// Update numbering.xml if we have numbering definitions
+	if d.numbering != nil {
+		numberingData, err := utils.MarshalXMLWithHeader(d.numbering)
+		if err != nil {
+			return err
+		}
+		numberingPart, _ := d.pkg.GetPart(packaging.WordNumberingPath)
+		if numberingPart == nil {
+			_, err = d.pkg.AddPart(packaging.WordNumberingPath, packaging.ContentTypeNumbering, numberingData)
+			if err != nil {
+				return err
+			}
+			d.pkg.AddRelationship(packaging.WordDocumentPath, "numbering.xml", packaging.RelTypeNumbering)
+		} else {
+			if err := numberingPart.SetContent(numberingData); err != nil {
+				return err
+			}
+		}
+	}
 
 	return nil
 }
@@ -217,6 +236,43 @@ func (d *Document) parseComments() error {
 	for _, c := range d.comments.Comment {
 		if c.ID >= d.nextCommentID {
 			d.nextCommentID = c.ID + 1
+		}
+	}
+
+	return nil
+}
+
+// parseNumbering parses the numbering.xml part.
+func (d *Document) parseNumbering() error {
+	rels := d.pkg.GetRelationshipsByType(packaging.WordDocumentPath, packaging.RelTypeNumbering)
+	if len(rels) == 0 {
+		return nil // optional
+	}
+
+	numberingPath := packaging.ResolveRelationshipTarget(packaging.WordDocumentPath, rels[0].Target)
+	part, err := d.pkg.GetPart(numberingPath)
+	if err != nil {
+		return nil
+	}
+
+	content, err := part.Content()
+	if err != nil {
+		return err
+	}
+
+	d.numbering = &wml.Numbering{}
+	if err := xml.Unmarshal(content, d.numbering); err != nil {
+		return err
+	}
+
+	for _, abs := range d.numbering.AbstractNum {
+		if abs.AbstractNumID >= d.nextAbstractNumID {
+			d.nextAbstractNumID = abs.AbstractNumID + 1
+		}
+	}
+	for _, num := range d.numbering.Num {
+		if num.NumID >= d.nextNumID {
+			d.nextNumID = num.NumID + 1
 		}
 	}
 

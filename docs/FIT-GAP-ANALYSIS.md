@@ -68,18 +68,22 @@ Based on ECMA-376 Part 2 specification.
 
 | Feature | Section | Status | Notes |
 |---------|---------|--------|-------|
-| Core Properties part | §8.2 | ⚠️ Partial | Path defined, not parsed |
-| `dcterms:created` | §8.3.4 | ❌ Not exposed | |
-| `dc:creator` | §8.3.4 | ❌ Not exposed | |
-| `dc:description` | §8.3.4 | ❌ Not exposed | |
-| `dc:identifier` | §8.3.4 | ❌ Not exposed | |
-| `cp:keywords` | §8.3.4 | ❌ Not exposed | |
-| `dc:language` | §8.3.4 | ❌ Not exposed | |
-| `cp:lastModifiedBy` | §8.3.4 | ❌ Not exposed | |
-| `dcterms:modified` | §8.3.4 | ❌ Not exposed | |
-| `cp:revision` | §8.3.4 | ❌ Not exposed | |
-| `dc:subject` | §8.3.4 | ❌ Not exposed | |
-| `dc:title` | §8.3.4 | ❌ Not exposed | |
+| Core Properties part | §8.2 | ✅ Implemented | `Package.CoreProperties()` / `SetCoreProperties()` |
+| `cp:category` | §8.3.4 | ✅ Implemented | |
+| `cp:contentStatus` | §8.3.4 | ✅ Implemented | |
+| `dcterms:created` | §8.3.4 | ✅ Implemented | |
+| `dc:creator` | §8.3.4 | ✅ Implemented | |
+| `dc:description` | §8.3.4 | ✅ Implemented | |
+| `dc:identifier` | §8.3.4 | ✅ Implemented | |
+| `cp:keywords` | §8.3.4 | ✅ Implemented | |
+| `dc:language` | §8.3.4 | ✅ Implemented | |
+| `cp:lastModifiedBy` | §8.3.4 | ✅ Implemented | |
+| `cp:lastPrinted` | §8.3.4 | ✅ Implemented | |
+| `dcterms:modified` | §8.3.4 | ✅ Implemented | |
+| `cp:revision` | §8.3.4 | ✅ Implemented | |
+| `dc:subject` | §8.3.4 | ✅ Implemented | |
+| `dc:title` | §8.3.4 | ✅ Implemented | |
+| `cp:version` | §8.3.4 | ✅ Implemented | |
 
 ### §9 Thumbnails
 
@@ -127,7 +131,7 @@ Based on ECMA-376 Part 1, §17.
 | `<w:pageBreakBefore>` | §17.3.1.23 | ❌ Not implemented | |
 | `<w:widowControl>` | §17.3.1.44 | ❌ Not implemented | |
 | `<w:outlineLvl>` | §17.3.1.20 | ✅ Implemented | `Paragraph.HeadingLevel()` |
-| `<w:numPr>` (numbering) | §17.3.1.19 | ❌ Not implemented | Lists via numbering |
+| `<w:numPr>` (numbering) | §17.3.1.19 | ✅ Implemented | `Paragraph.SetList()` |
 | **Runs** | §17.3.2 | | |
 | `<w:r>` (run) | §17.3.2.25 | ✅ Implemented | `Run` type |
 | `<w:rPr>` (run props) | §17.3.2.27 | ✅ Implemented | Full formatting |
