@@ -1,8 +1,10 @@
 # go-ooxml
 
-A Go library for reading, writing, and manipulating Office Open XML (OOXML) documents.
+![Icon](docs/icon-256.png)
 
-Supports Word (.docx), Excel (.xlsx), and PowerPoint (.pptx) formats.
+This is another of my "things that should exist" projects: An in-development Go library for reading, writing, and manipulating Office Open XML (OOXML) documents.
+
+Supports Word (.docx), Excel (.xlsx), and PowerPoint (.pptx) formats, and is slowly being developed against the ECMA 376 specs.
 
 ## Installation
 
