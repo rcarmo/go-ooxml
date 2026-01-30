@@ -165,3 +165,8 @@ func (r RangeRef) RowCount() int {
 func (r RangeRef) ColumnCount() int {
 	return r.End.Col - r.Start.Col + 1
 }
+
+// CellRefFromRC creates a cell reference string from row and column (1-based).
+func CellRefFromRC(row, col int) string {
+	return ColumnToLetter(col) + strconv.Itoa(row)
+}
