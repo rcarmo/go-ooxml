@@ -301,6 +301,126 @@ func TestContentControlBlock(t *testing.T) {
 	}
 }
 
+func TestContentControlSetters(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	p := doc.AddParagraph()
+	cc := p.AddContentControl("Customer", "Customer Name", "Ada")
+	cc.SetTag("Order")
+	cc.SetAlias("Order Name")
+	cc.SetContentControlID(42)
+	if err := cc.SetContentControlLock("content"); err != nil {
+		t.Fatalf("SetContentControlLock() error = %v", err)
+	}
+	if cc.Tag() != "Order" {
+		t.Errorf("Tag() = %q, want %q", cc.Tag(), "Order")
+	}
+	if cc.Alias() != "Order Name" {
+		t.Errorf("Alias() = %q, want %q", cc.Alias(), "Order Name")
+	}
+	if cc.ID() != 42 {
+		t.Errorf("ID() = %d, want %d", cc.ID(), 42)
+	}
+	if cc.Lock() != "content" {
+		t.Errorf("Lock() = %q, want %q", cc.Lock(), "content")
+	}
+}
+
+func TestContentControlSetTextInline(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	p := doc.AddParagraph()
+	cc := p.AddContentControl("", "", "Old")
+	cc.SetText("New")
+	if cc.Text() != "New" {
+		t.Errorf("Text() = %q, want %q", cc.Text(), "New")
+	}
+	if !cc.IsInline() {
+		t.Error("Expected inline content control")
+	}
+	if cc.IsBlock() {
+		t.Error("Expected inline content control to not be block")
+	}
+}
+
+func TestContentControlSetTextBlock(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	cc := doc.AddBlockContentControl("Block", "Block Alias", "Old")
+	cc.SetText("New")
+	if cc.Text() != "New" {
+		t.Errorf("Text() = %q, want %q", cc.Text(), "New")
+	}
+	if !cc.IsBlock() {
+		t.Error("Expected block content control")
+	}
+	if len(cc.Paragraphs()) != 1 {
+		t.Errorf("Expected 1 paragraph, got %d", len(cc.Paragraphs()))
+	}
+}
+
+func TestContentControlCollections(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	p := doc.AddParagraph()
+	p.AddContentControl("InlineTag", "", "Inline")
+	doc.AddBlockContentControl("BlockTag", "", "Block")
+
+	all := doc.ContentControls()
+	if len(all) != 2 {
+		t.Fatalf("Expected 2 content controls, got %d", len(all))
+	}
+	inline := doc.ContentControlsByTag("InlineTag")
+	if len(inline) != 1 {
+		t.Fatalf("Expected 1 inline content control, got %d", len(inline))
+	}
+	block := doc.ContentControlByTag("BlockTag")
+	if block == nil {
+		t.Fatal("Expected content control by tag")
+	}
+}
+
+func TestContentControlRemove(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	p := doc.AddParagraph()
+	cc := p.AddContentControl("Remove", "", "Text")
+	if err := cc.Remove(); err != nil {
+		t.Fatalf("Remove() error = %v", err)
+	}
+	if len(p.ContentControls()) != 0 {
+		t.Error("Expected inline content control to be removed")
+	}
+
+	cc2 := doc.AddBlockContentControl("RemoveBlock", "", "Text")
+	if err := cc2.Remove(); err != nil {
+		t.Fatalf("Remove() error = %v", err)
+	}
+	if len(doc.Body().ContentControls()) != 0 {
+		t.Error("Expected block content control to be removed")
+	}
+}
+
 // =============================================================================
 // Hyperlink/Bookmark Tests
 // =============================================================================
