@@ -18,6 +18,7 @@ type Workbook struct {
 	sharedStrings *SharedStrings
 	path          string
 	nextSheetID   int
+	nextTableID   int
 }
 
 // New creates a new empty workbook with one sheet.
@@ -38,6 +39,7 @@ func New() (*Workbook, error) {
 		sheets:        make([]*Worksheet, 0),
 		sharedStrings: newSharedStrings(),
 		nextSheetID:   1,
+		nextTableID:   1,
 	}
 
 	if err := w.initPackage(); err != nil {
@@ -80,6 +82,7 @@ func openFromPackage(pkg *packaging.Package) (*Workbook, error) {
 		sheets:        make([]*Worksheet, 0),
 		sharedStrings: newSharedStrings(),
 		nextSheetID:   1,
+		nextTableID:   1,
 	}
 
 	// Parse workbook.xml
@@ -151,6 +154,25 @@ func (w *Workbook) Sheet(nameOrIndex interface{}) (*Worksheet, error) {
 // SheetCount returns the number of worksheets.
 func (w *Workbook) SheetCount() int {
 	return len(w.sheets)
+}
+
+// Tables returns all tables across all worksheets.
+func (w *Workbook) Tables() []*Table {
+	var tables []*Table
+	for _, sheet := range w.sheets {
+		tables = append(tables, sheet.Tables()...)
+	}
+	return tables
+}
+
+// Table returns a table by name.
+func (w *Workbook) Table(name string) (*Table, error) {
+	for _, table := range w.Tables() {
+		if table.Name() == name {
+			return table, nil
+		}
+	}
+	return nil, ErrTableNotFound
 }
 
 // AddSheet adds a new worksheet with the given name.
@@ -328,6 +350,10 @@ func (w *Workbook) parseSheets() error {
 			path:      sheetPath,
 		}
 
+		if err := w.parseTables(sheet); err != nil {
+			return err
+		}
+
 		w.sheets = append(w.sheets, sheet)
 
 		if sheetRef.SheetID >= w.nextSheetID {
@@ -335,6 +361,48 @@ func (w *Workbook) parseSheets() error {
 		}
 	}
 
+	return nil
+}
+
+func (w *Workbook) parseTables(sheet *Worksheet) error {
+	if sheet.worksheet.TableParts == nil || len(sheet.worksheet.TableParts.TablePart) == 0 {
+		return nil
+	}
+
+	sheetRels := w.pkg.GetRelationships(sheet.path)
+	if sheetRels == nil {
+		return nil
+	}
+
+	for _, tablePart := range sheet.worksheet.TableParts.TablePart {
+		rel := sheetRels.ByID(tablePart.ID)
+		if rel == nil {
+			continue
+		}
+		tablePath := packaging.ResolveRelationshipTarget(sheet.path, rel.Target)
+		part, err := w.pkg.GetPart(tablePath)
+		if err != nil {
+			continue
+		}
+		data, err := part.Content()
+		if err != nil {
+			continue
+		}
+		tableXML := &sml.Table{}
+		if err := utils.UnmarshalXML(data, tableXML); err != nil {
+			continue
+		}
+		table := &Table{
+			worksheet: sheet,
+			table:     tableXML,
+			relID:     tablePart.ID,
+			path:      tablePath,
+		}
+		sheet.tables = append(sheet.tables, table)
+		if tableXML.ID >= w.nextTableID {
+			w.nextTableID = tableXML.ID + 1
+		}
+	}
 	return nil
 }
 
@@ -362,6 +430,10 @@ func (w *Workbook) updatePackage() error {
 		// Add relationship with the correct ID
 		rels := w.pkg.GetRelationships(packaging.ExcelWorkbookPath)
 		rels.AddWithID(sheet.relID, packaging.RelTypeWorksheet, "worksheets/sheet"+fmt.Sprintf("%d.xml", i+1), packaging.TargetModeInternal)
+
+		if err := w.updateTables(sheet, i+1); err != nil {
+			return err
+		}
 	}
 
 	// Save shared strings
@@ -376,6 +448,38 @@ func (w *Workbook) updatePackage() error {
 		w.pkg.AddRelationship(packaging.ExcelWorkbookPath, "sharedStrings.xml", packaging.RelTypeSharedStrings)
 	}
 
+	return nil
+}
+
+func (w *Workbook) updateTables(sheet *Worksheet, sheetIndex int) error {
+	if len(sheet.tables) == 0 {
+		return nil
+	}
+
+	sheetPath := fmt.Sprintf("xl/worksheets/sheet%d.xml", sheetIndex)
+	rels := w.pkg.GetRelationships(sheetPath)
+
+	for i, table := range sheet.tables {
+		tablePath := fmt.Sprintf("xl/tables/table%d.xml", i+1)
+		table.path = tablePath
+		tableData, err := utils.MarshalXMLWithHeader(table.table)
+		if err != nil {
+			return err
+		}
+		if _, err := w.pkg.AddPart(tablePath, packaging.ContentTypeTable, tableData); err != nil {
+			return err
+		}
+		relID := table.relID
+		if relID == "" {
+			relID = rels.NextID()
+			table.relID = relID
+		}
+		rels.AddWithID(relID, packaging.RelTypeTable, "../tables/table"+fmt.Sprintf("%d.xml", i+1), packaging.TargetModeInternal)
+		if table.table.ID == 0 {
+			table.table.ID = w.nextTableID
+			w.nextTableID++
+		}
+	}
 	return nil
 }
 

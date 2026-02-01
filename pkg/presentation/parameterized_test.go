@@ -119,6 +119,18 @@ var CommonFixtures = []PresentationFixture{
 		},
 	},
 	{
+		Name:        "slide_with_table",
+		Description: "Slide with a table",
+		Setup: func(p *Presentation) {
+			s := p.AddSlide()
+			table := s.AddTable(2, 2, 100000, 100000, 4000000, 2000000)
+			table.Cell(0, 0).SetText("A1")
+			table.Cell(0, 1).SetText("B1")
+			table.Cell(1, 0).SetText("A2")
+			table.Cell(1, 1).SetText("B2")
+		},
+	},
+	{
 		Name:        "widescreen",
 		Description: "Widescreen 16:9 presentation",
 		Setup:       func(p *Presentation) {}, // Created with NewWidescreen

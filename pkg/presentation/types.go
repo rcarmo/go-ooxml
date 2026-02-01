@@ -23,6 +23,7 @@ const (
 	ShapeTypeRoundRect
 	ShapeTypeTriangle
 	ShapeTypeTextBox
+	ShapeTypeTable
 	ShapeTypeLine
 	ShapeTypeArrow
 )
@@ -89,6 +90,8 @@ func shapeTypeToGeom(st ShapeType) string {
 	case ShapeTypeTriangle:
 		return dml.PrstGeomTriangle
 	case ShapeTypeTextBox:
+		return dml.PrstGeomRect
+	case ShapeTypeTable:
 		return dml.PrstGeomRect
 	case ShapeTypeLine:
 		return dml.PrstGeomLine

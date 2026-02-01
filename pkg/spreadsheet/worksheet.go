@@ -17,6 +17,7 @@ type Worksheet struct {
 	relID     string
 	index     int
 	path      string
+	tables    []*Table
 }
 
 // Name returns the worksheet name.
@@ -67,6 +68,42 @@ func (ws *Worksheet) Hidden() bool {
 // SetHidden sets whether the sheet is hidden.
 func (ws *Worksheet) SetHidden(v bool) {
 	ws.SetVisible(!v)
+}
+
+// =============================================================================
+// Table access
+// =============================================================================
+
+// Tables returns all tables in the worksheet.
+func (ws *Worksheet) Tables() []*Table {
+	return ws.tables
+}
+
+// AddTable adds a new table to the worksheet.
+func (ws *Worksheet) AddTable(ref string, name string) *Table {
+	tableID := ws.workbook.nextTableID
+	ws.workbook.nextTableID++
+	if name == "" {
+		name = fmt.Sprintf("Table%d", tableID)
+	}
+	displayName := name
+
+	table := newTable(ws, tableID, name, displayName, ref)
+	table.relID = ws.nextTableRelID()
+	ws.tables = append(ws.tables, table)
+	ws.addTablePart(table.relID)
+	ws.writeTableHeaders(table)
+	return table
+}
+
+// Table returns a table by name.
+func (ws *Worksheet) Table(name string) (*Table, error) {
+	for _, table := range ws.tables {
+		if table.Name() == name {
+			return table, nil
+		}
+	}
+	return nil, ErrTableNotFound
 }
 
 // =============================================================================
@@ -280,6 +317,36 @@ func (ws *Worksheet) getOrCreateRow(rowNum int) *sml.Row {
 	}
 
 	return row
+}
+
+func (ws *Worksheet) addTablePart(relID string) {
+	if ws.worksheet.TableParts == nil {
+		ws.worksheet.TableParts = &sml.TableParts{}
+	}
+	ws.worksheet.TableParts.TablePart = append(ws.worksheet.TableParts.TablePart, &sml.TablePart{ID: relID})
+	ws.worksheet.TableParts.Count = len(ws.worksheet.TableParts.TablePart)
+}
+
+func (ws *Worksheet) nextTableRelID() string {
+	sheetPath := ws.path
+	if sheetPath == "" {
+		sheetPath = fmt.Sprintf("xl/worksheets/sheet%d.xml", ws.index+1)
+	}
+	rels := ws.workbook.pkg.GetRelationships(sheetPath)
+	return rels.NextID()
+}
+
+func (ws *Worksheet) writeTableHeaders(table *Table) {
+	start, _, err := parseRange(table.table.Ref)
+	if err != nil {
+		return
+	}
+	for i, header := range table.Headers() {
+		cell := ws.CellByRC(start.Row, start.Col+i)
+		if cell != nil {
+			_ = cell.SetValue(header)
+		}
+	}
 }
 
 func sortRows(rows []*sml.Row) {
