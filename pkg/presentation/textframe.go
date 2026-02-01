@@ -1,6 +1,8 @@
 package presentation
 
 import (
+	"strings"
+
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/dml"
 )
 
@@ -12,12 +14,40 @@ type TextFrame struct {
 
 // Text returns all text in the text frame.
 func (tf *TextFrame) Text() string {
-	return tf.shape.Text()
+	if tf.shape != nil {
+		return tf.shape.Text()
+	}
+	if tf.txBody == nil {
+		return ""
+	}
+	var paragraphs []string
+	for _, p := range tf.txBody.P {
+		var runs []string
+		for _, r := range p.R {
+			runs = append(runs, r.T)
+		}
+		paragraphs = append(paragraphs, strings.Join(runs, ""))
+	}
+	return strings.Join(paragraphs, "\n")
 }
 
 // SetText sets all text in the text frame.
 func (tf *TextFrame) SetText(text string) {
-	tf.shape.SetText(text)
+	if tf.shape != nil {
+		tf.shape.SetText(text)
+		return
+	}
+	if tf.txBody == nil {
+		tf.txBody = &dml.TxBody{
+			BodyPr:   &dml.BodyPr{},
+			LstStyle: &dml.LstStyle{},
+		}
+	}
+	lines := strings.Split(text, "\n")
+	tf.txBody.P = make([]*dml.P, len(lines))
+	for i, line := range lines {
+		tf.txBody.P[i] = &dml.P{R: []*dml.R{{T: line}}}
+	}
 }
 
 // Paragraphs returns all paragraphs in the text frame.

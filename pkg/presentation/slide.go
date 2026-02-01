@@ -60,6 +60,12 @@ func (s *Slide) Shapes() []*Shape {
 				sp:    sp,
 			})
 		}
+		if gf, ok := item.(*pml.GraphicFrame); ok {
+			shapes = append(shapes, &Shape{
+				slide: s,
+				graphicFrame: gf,
+			})
+		}
 	}
 	return shapes
 }
@@ -83,6 +89,17 @@ func (s *Slide) Shape(identifier interface{}) (*Shape, error) {
 	default:
 		return nil, ErrShapeNotFound
 	}
+}
+
+// Tables returns all tables on the slide.
+func (s *Slide) Tables() []*Table {
+	var tables []*Table
+	for _, shape := range s.Shapes() {
+		if shape.HasTable() {
+			tables = append(tables, shape.Table())
+		}
+	}
+	return tables
 }
 
 // AddTextBox adds a text box shape to the slide.
@@ -155,6 +172,39 @@ func (s *Slide) AddShape(shapeType ShapeType, left, top, width, height int64) *S
 	return &Shape{slide: s, sp: sp}
 }
 
+// AddTable adds a table shape to the slide.
+func (s *Slide) AddTable(rows, cols int, left, top, width, height int64) *Table {
+	s.ensureSpTree()
+
+	nextID := s.getNextShapeID()
+	table := newTable(rows, cols, width, height)
+
+	gf := &pml.GraphicFrame{
+		NvGraphicFramePr: &pml.NvGraphicFramePr{
+			CNvPr: &pml.CNvPr{
+				ID:   nextID,
+				Name: "Table " + string(rune('0'+nextID)),
+			},
+			CNvGraphicFramePr: &pml.CNvGraphicFramePr{},
+			NvPr: &pml.NvPr{Ph: &pml.Ph{Type: pml.PhTypeTbl}},
+		},
+		Xfrm: &pml.Xfrm{
+			Off: &pml.Off{X: left, Y: top},
+			Ext: &pml.Ext{Cx: width, Cy: height},
+		},
+		Graphic: &dml.Graphic{
+			GraphicData: &dml.GraphicData{
+				URI: dml.GraphicDataURITable,
+				Tbl: table.tbl,
+			},
+		},
+	}
+
+	s.slide.CSld.SpTree.Content = append(s.slide.CSld.SpTree.Content, gf)
+
+	return table
+}
+
 // DeleteShape removes a shape from the slide.
 func (s *Slide) DeleteShape(identifier interface{}) error {
 	if s.slide.CSld == nil || s.slide.CSld.SpTree == nil {
@@ -174,11 +224,24 @@ func (s *Slide) DeleteShape(identifier interface{}) error {
 				}
 				shapeIdx++
 			}
+			if _, ok := item.(*pml.GraphicFrame); ok {
+				if shapeIdx == id {
+					indexToDelete = i
+					break
+				}
+				shapeIdx++
+			}
 		}
 	case string:
 		for i, item := range s.slide.CSld.SpTree.Content {
 			if sp, ok := item.(*dml.Sp); ok {
 				if sp.NvSpPr != nil && sp.NvSpPr.CNvPr != nil && sp.NvSpPr.CNvPr.Name == id {
+					indexToDelete = i
+					break
+				}
+			}
+			if gf, ok := item.(*pml.GraphicFrame); ok {
+				if gf.NvGraphicFramePr != nil && gf.NvGraphicFramePr.CNvPr != nil && gf.NvGraphicFramePr.CNvPr.Name == id {
 					indexToDelete = i
 					break
 				}
@@ -387,6 +450,11 @@ func (s *Slide) getNextShapeID() int {
 			if sp, ok := item.(*dml.Sp); ok {
 				if sp.NvSpPr != nil && sp.NvSpPr.CNvPr != nil && sp.NvSpPr.CNvPr.ID > maxID {
 					maxID = sp.NvSpPr.CNvPr.ID
+				}
+			}
+			if gf, ok := item.(*pml.GraphicFrame); ok {
+				if gf.NvGraphicFramePr != nil && gf.NvGraphicFramePr.CNvPr != nil && gf.NvGraphicFramePr.CNvPr.ID > maxID {
+					maxID = gf.NvGraphicFramePr.CNvPr.ID
 				}
 			}
 		}

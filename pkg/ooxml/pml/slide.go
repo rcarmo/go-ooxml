@@ -1,6 +1,10 @@
 package pml
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/dml"
+)
 
 // Sld represents a slide.
 type Sld struct {
@@ -58,6 +62,30 @@ type Ph struct {
 	Sz   string `xml:"sz,attr,omitempty"`   // full, half, quarter
 	Orient string `xml:"orient,attr,omitempty"` // horz, vert
 	HasCustomPrompt *bool `xml:"hasCustomPrompt,attr,omitempty"`
+}
+
+// GraphicFrame represents a graphic frame (e.g., table).
+type GraphicFrame struct {
+	XMLName           xml.Name         `xml:"http://schemas.openxmlformats.org/presentationml/2006/main graphicFrame"`
+	NvGraphicFramePr  *NvGraphicFramePr `xml:"nvGraphicFramePr"`
+	Xfrm              *Xfrm             `xml:"xfrm"`
+	Graphic           *dml.Graphic      `xml:"http://schemas.openxmlformats.org/drawingml/2006/main graphic"`
+}
+
+// NvGraphicFramePr represents non-visual graphic frame properties.
+type NvGraphicFramePr struct {
+	CNvPr   *CNvPr   `xml:"cNvPr"`
+	CNvGraphicFramePr *CNvGraphicFramePr `xml:"cNvGraphicFramePr"`
+	NvPr    *NvPr    `xml:"nvPr"`
+}
+
+// CNvGraphicFramePr represents non-visual graphic frame drawing properties.
+type CNvGraphicFramePr struct{}
+
+// Xfrm represents a transform for graphic frames.
+type Xfrm struct {
+	Off *Off `xml:"http://schemas.openxmlformats.org/drawingml/2006/main off,omitempty"`
+	Ext *Ext `xml:"http://schemas.openxmlformats.org/drawingml/2006/main ext,omitempty"`
 }
 
 // GrpSpPr represents group shape properties.

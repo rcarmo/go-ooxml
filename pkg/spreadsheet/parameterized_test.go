@@ -93,6 +93,24 @@ var CommonFixtures = []WorkbookFixture{
 			sheet.SetHidden(true)
 		},
 	},
+	{
+		Name:        "table_basic",
+		Description: "Workbook with a simple table",
+		Setup: func(w *Workbook) {
+			sheet := w.Sheets()[0]
+			table := sheet.AddTable("A1:C3", "Sales")
+			table.UpdateRow(1, map[string]interface{}{
+				"Column1": "Name",
+				"Column2": "Qty",
+				"Column3": "Price",
+			})
+			table.AddRow(map[string]interface{}{
+				"Column1": "Widget",
+				"Column2": 10,
+				"Column3": 9.99,
+			})
+		},
+	},
 }
 
 // =============================================================================

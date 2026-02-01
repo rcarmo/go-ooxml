@@ -13,6 +13,7 @@ const (
 	RelTypeFooter         = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer"
 	RelTypeWorksheet      = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet"
 	RelTypeSharedStrings  = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings"
+	RelTypeTable          = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table"
 	RelTypeSlide          = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"
 	RelTypeSlideLayout    = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
 	RelTypeSlideMaster    = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
