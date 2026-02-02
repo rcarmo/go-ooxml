@@ -1279,8 +1279,8 @@ func TestDocument_RoundTrip(t *testing.T) {
 ```go
 // Example: e2e/word_workflow_test.go
 
-func TestWordWorkflow_CreateSOW(t *testing.T) {
-    // This test replicates the MCP Server SOW generation workflow
+func TestWordWorkflow_CreateTechnicalReport(t *testing.T) {
+    // This test replicates the MCP Server Technical Report generation workflow
     
     // 1. Create new document
     doc, err := document.New()
@@ -1294,7 +1294,7 @@ func TestWordWorkflow_CreateSOW(t *testing.T) {
     // 3. Add heading
     h1 := doc.AddParagraph()
     h1.SetStyle("Heading1")
-    h1.AddRun().SetText("Statement of Work")
+    h1.AddRun().SetText("Technical Report")
     
     // 4. Add table
     table := doc.AddTable(3, 2)
@@ -1318,7 +1318,7 @@ func TestWordWorkflow_CreateSOW(t *testing.T) {
     )
     
     // 7. Save
-    tmpFile := t.TempDir() + "/sow.docx"
+    tmpFile := t.TempDir() + "/technical_report.docx"
     err = doc.SaveAs(tmpFile)
     require.NoError(t, err)
     
@@ -1393,7 +1393,7 @@ func TestWordWorkflow_CreateSOW(t *testing.T) {
 - [x] Can enable/disable track changes
 - [x] Can create tracked insertions/deletions
 - [x] Can add/read comments
-- [ ] E2E SOW workflow test passing (needs SDT support)
+- [ ] E2E Technical Report workflow test passing (needs SDT support)
 
 ### Phase 4: PowerPoint ✅ COMPLETE
 
