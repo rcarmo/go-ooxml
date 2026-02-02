@@ -13,6 +13,21 @@ type ContentControl struct {
 	sdt *wml.Sdt
 }
 
+// ContentControlListItem represents a dropdown/combo box entry.
+type ContentControlListItem struct {
+	DisplayText string
+	Value       string
+}
+
+// ContentControlDateConfig represents date picker properties.
+type ContentControlDateConfig struct {
+	Format           string
+	Locale           string
+	Calendar         string
+	FullDate         string
+	StoreMappedDataAs string
+}
+
 // Tag returns the content control tag.
 func (c *ContentControl) Tag() string {
 	if c.sdt.SdtPr != nil && c.sdt.SdtPr.Tag != nil {
@@ -67,6 +82,106 @@ func (c *ContentControl) Lock() string {
 		return c.sdt.SdtPr.Lock.Val
 	}
 	return ""
+}
+
+// ListItems returns dropdown/combobox items if configured.
+func (c *ContentControl) ListItems() []ContentControlListItem {
+	if c.sdt.SdtPr == nil {
+		return nil
+	}
+	list := listItemsFromSdtPr(c.sdt.SdtPr)
+	if list == nil {
+		return nil
+	}
+	items := make([]ContentControlListItem, len(list.ListItem))
+	for i, item := range list.ListItem {
+		if item == nil {
+			continue
+		}
+		items[i] = ContentControlListItem{
+			DisplayText: item.DisplayText,
+			Value:       item.Value,
+		}
+	}
+	return items
+}
+
+// SetDropDownList configures the content control as a drop-down list.
+func (c *ContentControl) SetDropDownList(items []ContentControlListItem) {
+	c.ensureSdtPr()
+	c.sdt.SdtPr.ComboBox = nil
+	c.sdt.SdtPr.DropDownList = buildDropDownList(items)
+}
+
+// SetComboBox configures the content control as a combo box.
+func (c *ContentControl) SetComboBox(items []ContentControlListItem) {
+	c.ensureSdtPr()
+	c.sdt.SdtPr.DropDownList = nil
+	c.sdt.SdtPr.ComboBox = buildDropDownList(items)
+}
+
+// ClearListControl removes dropdown/combobox configuration.
+func (c *ContentControl) ClearListControl() {
+	if c.sdt.SdtPr == nil {
+		return
+	}
+	c.sdt.SdtPr.DropDownList = nil
+	c.sdt.SdtPr.ComboBox = nil
+}
+
+// DateConfig returns date picker configuration if set.
+func (c *ContentControl) DateConfig() *ContentControlDateConfig {
+	if c.sdt.SdtPr == nil || c.sdt.SdtPr.Date == nil {
+		return nil
+	}
+	date := c.sdt.SdtPr.Date
+	cfg := &ContentControlDateConfig{}
+	if date.DateFormat != nil {
+		cfg.Format = date.DateFormat.Val
+	}
+	if date.Language != nil {
+		cfg.Locale = date.Language.Val
+	}
+	if date.Calendar != nil {
+		cfg.Calendar = date.Calendar.Val
+	}
+	if date.FullDate != nil {
+		cfg.FullDate = date.FullDate.Val
+	}
+	if date.StoreMappedDataAs != nil {
+		cfg.StoreMappedDataAs = date.StoreMappedDataAs.Val
+	}
+	return cfg
+}
+
+// SetDateConfig configures the content control as a date picker.
+func (c *ContentControl) SetDateConfig(cfg ContentControlDateConfig) {
+	c.ensureSdtPr()
+	date := &wml.SdtDate{}
+	if cfg.Format != "" {
+		date.DateFormat = &wml.SdtString{Val: cfg.Format}
+	}
+	if cfg.Locale != "" {
+		date.Language = &wml.SdtLang{Val: cfg.Locale}
+	}
+	if cfg.Calendar != "" {
+		date.Calendar = &wml.SdtString{Val: cfg.Calendar}
+	}
+	if cfg.FullDate != "" {
+		date.FullDate = &wml.SdtDateValue{Val: cfg.FullDate}
+	}
+	if cfg.StoreMappedDataAs != "" {
+		date.StoreMappedDataAs = &wml.SdtString{Val: cfg.StoreMappedDataAs}
+	}
+	c.sdt.SdtPr.Date = date
+}
+
+// ClearDateConfig removes date picker configuration.
+func (c *ContentControl) ClearDateConfig() {
+	if c.sdt.SdtPr == nil {
+		return
+	}
+	c.sdt.SdtPr.Date = nil
 }
 
 // Text returns the text inside the content control.
@@ -283,6 +398,12 @@ func (c *ContentControl) ensureContent() {
 	}
 }
 
+func (c *ContentControl) ensureSdtPr() {
+	if c.sdt.SdtPr == nil {
+		c.sdt.SdtPr = &wml.SdtPr{}
+	}
+}
+
 func hasInlineContent(sdt *wml.Sdt) bool {
 	if sdt == nil || sdt.SdtContent == nil {
 		return false
@@ -406,4 +527,29 @@ func removeSdtFromTable(tbl *wml.Tbl, target *wml.Sdt) bool {
 		}
 	}
 	return false
+}
+
+func listItemsFromSdtPr(pr *wml.SdtPr) *wml.SdtDropDownList {
+	if pr == nil {
+		return nil
+	}
+	if pr.DropDownList != nil {
+		return pr.DropDownList
+	}
+	return pr.ComboBox
+}
+
+func buildDropDownList(items []ContentControlListItem) *wml.SdtDropDownList {
+	list := &wml.SdtDropDownList{}
+	for _, item := range items {
+		listItem := &wml.SdtListItem{}
+		if item.DisplayText != "" {
+			listItem.DisplayText = item.DisplayText
+		}
+		if item.Value != "" {
+			listItem.Value = item.Value
+		}
+		list.ListItem = append(list.ListItem, listItem)
+	}
+	return list
 }

@@ -219,11 +219,14 @@ type Sdt struct {
 
 // SdtPr represents content control properties.
 type SdtPr struct {
-	Alias         *SdtString `xml:"alias,omitempty"`
-	Tag           *SdtString `xml:"tag,omitempty"`
-	ID            *SdtID     `xml:"id,omitempty"`
-	ShowingPlcHdr *OnOff     `xml:"showingPlcHdr,omitempty"`
-	Lock          *SdtLock   `xml:"lock,omitempty"`
+	Alias         *SdtString        `xml:"alias,omitempty"`
+	Tag           *SdtString        `xml:"tag,omitempty"`
+	ID            *SdtID            `xml:"id,omitempty"`
+	ShowingPlcHdr *OnOff            `xml:"showingPlcHdr,omitempty"`
+	Lock          *SdtLock          `xml:"lock,omitempty"`
+	DropDownList  *SdtDropDownList  `xml:"dropDownList,omitempty"`
+	ComboBox      *SdtDropDownList  `xml:"comboBox,omitempty"`
+	Date          *SdtDate          `xml:"date,omitempty"`
 }
 
 // SdtContent represents content control contents.
@@ -334,6 +337,36 @@ type SdtID struct {
 
 // SdtLock represents a content control lock setting.
 type SdtLock struct {
+	Val string `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main val,attr"`
+}
+
+// SdtDropDownList represents dropdown/combo box entries.
+type SdtDropDownList struct {
+	ListItem []*SdtListItem `xml:"listItem,omitempty"`
+}
+
+// SdtListItem represents a dropdown list item.
+type SdtListItem struct {
+	DisplayText string `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main displayText,attr,omitempty"`
+	Value       string `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main value,attr,omitempty"`
+}
+
+// SdtDate represents date picker properties.
+type SdtDate struct {
+	DateFormat        *SdtString    `xml:"dateFormat,omitempty"`
+	Language          *SdtLang      `xml:"lid,omitempty"`
+	StoreMappedDataAs *SdtString    `xml:"storeMappedDataAs,omitempty"`
+	Calendar          *SdtString    `xml:"calendar,omitempty"`
+	FullDate          *SdtDateValue `xml:"http://schemas.microsoft.com/office/word/2010/wordml fullDate,omitempty"`
+}
+
+// SdtLang represents a language identifier.
+type SdtLang struct {
+	Val string `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main val,attr"`
+}
+
+// SdtDateValue represents a full date value.
+type SdtDateValue struct {
 	Val string `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main val,attr"`
 }
 
