@@ -495,6 +495,68 @@ func TestContentControlDateConfig(t *testing.T) {
 	}
 }
 
+func TestContentControlDropDownListRoundTrip(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.CreateDocument(func(d *Document) {
+		cc := d.AddBlockContentControl("Choices", "Choices", "Select")
+		cc.SetDropDownList([]ContentControlListItem{
+			{DisplayText: "Option A", Value: "A"},
+			{DisplayText: "Option B", Value: "B"},
+		})
+	})
+	defer doc.Close()
+
+	path := h.SaveDocument(doc, "sdt_dropdown_roundtrip.docx")
+	doc.Close()
+
+	doc2 := h.OpenDocument(path)
+	defer doc2.Close()
+
+	cc := doc2.ContentControlByTag("Choices")
+	if cc == nil {
+		t.Fatal("Expected content control after round-trip")
+	}
+	items := cc.ListItems()
+	if len(items) != 2 {
+		t.Fatalf("Expected 2 list items, got %d", len(items))
+	}
+	if items[1].DisplayText != "Option B" || items[1].Value != "B" {
+		t.Errorf("Unexpected list items after round-trip: %+v", items)
+	}
+}
+
+func TestContentControlDateConfigRoundTrip(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.CreateDocument(func(d *Document) {
+		cc := d.AddBlockContentControl("Date", "Date", "2026-02-01")
+		cc.SetDateConfig(ContentControlDateConfig{
+			Format:   "yyyy-MM-dd",
+			Locale:   "en-US",
+			Calendar: "gregorian",
+			FullDate: "2026-02-01T00:00:00Z",
+		})
+	})
+	defer doc.Close()
+
+	path := h.SaveDocument(doc, "sdt_date_roundtrip.docx")
+	doc.Close()
+
+	doc2 := h.OpenDocument(path)
+	defer doc2.Close()
+
+	cc := doc2.ContentControlByTag("Date")
+	if cc == nil {
+		t.Fatal("Expected content control after round-trip")
+	}
+	cfg := cc.DateConfig()
+	if cfg == nil {
+		t.Fatal("Expected date config after round-trip")
+	}
+	if cfg.Format != "yyyy-MM-dd" || cfg.Locale != "en-US" || cfg.Calendar != "gregorian" {
+		t.Errorf("Unexpected date config after round-trip: %+v", cfg)
+	}
+}
+
 // =============================================================================
 // Hyperlink/Bookmark Tests
 // =============================================================================
