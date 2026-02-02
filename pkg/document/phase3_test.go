@@ -421,6 +421,80 @@ func TestContentControlRemove(t *testing.T) {
 	}
 }
 
+func TestContentControlDropDownList(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	cc := doc.AddBlockContentControl("Choices", "Choices", "Select")
+	cc.SetDropDownList([]ContentControlListItem{
+		{DisplayText: "Option A", Value: "A"},
+		{DisplayText: "Option B", Value: "B"},
+	})
+	items := cc.ListItems()
+	if len(items) != 2 {
+		t.Fatalf("Expected 2 list items, got %d", len(items))
+	}
+	if items[0].DisplayText != "Option A" || items[0].Value != "A" {
+		t.Errorf("Unexpected first item: %+v", items[0])
+	}
+	cc.ClearListControl()
+	if len(cc.ListItems()) != 0 {
+		t.Error("Expected list items to be cleared")
+	}
+}
+
+func TestContentControlComboBox(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	cc := doc.AddBlockContentControl("Combo", "Combo", "Select")
+	cc.SetComboBox([]ContentControlListItem{
+		{DisplayText: "One", Value: "1"},
+	})
+	items := cc.ListItems()
+	if len(items) != 1 || items[0].Value != "1" {
+		t.Errorf("Unexpected combo box items: %+v", items)
+	}
+	cc.ClearListControl()
+	if len(cc.ListItems()) != 0 {
+		t.Error("Expected combo box items to be cleared")
+	}
+}
+
+func TestContentControlDateConfig(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	cc := doc.AddBlockContentControl("Date", "Date", "2026-02-01")
+	cc.SetDateConfig(ContentControlDateConfig{
+		Format:   "yyyy-MM-dd",
+		Locale:   "en-US",
+		Calendar: "gregorian",
+		FullDate: "2026-02-01T00:00:00Z",
+		StoreMappedDataAs: "date",
+	})
+	cfg := cc.DateConfig()
+	if cfg == nil {
+		t.Fatal("Expected date config")
+	}
+	if cfg.Format != "yyyy-MM-dd" || cfg.Locale != "en-US" || cfg.Calendar != "gregorian" {
+		t.Errorf("Unexpected date config: %+v", cfg)
+	}
+	cc.ClearDateConfig()
+	if cc.DateConfig() != nil {
+		t.Error("Expected date config to be cleared")
+	}
+}
+
 // =============================================================================
 // Hyperlink/Bookmark Tests
 // =============================================================================
