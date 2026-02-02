@@ -140,9 +140,12 @@ func (d *Document) AllRevisions() []*Revision {
 	var revisions []*Revision
 	
 	for i, elem := range d.document.Body.Content {
-		if p, ok := elem.(*wml.P); ok {
-			para := &Paragraph{doc: d, p: p, index: i}
+		switch v := elem.(type) {
+		case *wml.P:
+			para := &Paragraph{doc: d, p: v, index: i}
 			revisions = append(revisions, para.revisions()...)
+		case *wml.Tbl:
+			revisions = append(revisions, revisionsFromTable(d, v)...)
 		}
 	}
 	
@@ -276,6 +279,21 @@ func (p *Paragraph) revisions() []*Revision {
 		}
 	}
 	
+	return revisions
+}
+
+func revisionsFromTable(doc *Document, tbl *wml.Tbl) []*Revision {
+	var revisions []*Revision
+	for _, row := range tbl.Tr {
+		for _, cell := range row.Tc {
+			for i, elem := range cell.Content {
+				if p, ok := elem.(*wml.P); ok {
+					para := &Paragraph{doc: doc, p: p, index: i}
+					revisions = append(revisions, para.revisions()...)
+				}
+			}
+		}
+	}
 	return revisions
 }
 

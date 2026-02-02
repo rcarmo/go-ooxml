@@ -31,6 +31,18 @@ func textFromInlineContent(content []interface{}) string {
 		switch v := elem.(type) {
 		case *wml.R:
 			sb.WriteString(textFromRun(v))
+		case *wml.Ins:
+			sb.WriteString(textFromInlineContent(v.Content))
+		case *wml.Del:
+			for _, delElem := range v.Content {
+				if run, ok := delElem.(*wml.R); ok {
+					for _, runElem := range run.Content {
+						if dt, ok := runElem.(*wml.DelText); ok {
+							sb.WriteString(dt.Text)
+						}
+					}
+				}
+			}
 		case *wml.Hyperlink:
 			sb.WriteString(textFromInlineContent(v.Content))
 		case *wml.Sdt:
@@ -52,10 +64,52 @@ func textFromSdt(sdt *wml.Sdt) string {
 				sb.WriteString("\n")
 			}
 			sb.WriteString(textFromParagraph(v))
+		case *wml.Tbl:
+			if sb.Len() > 0 {
+				sb.WriteString("\n")
+			}
+			sb.WriteString(textFromTable(v))
 		case *wml.R:
 			sb.WriteString(textFromRun(v))
 		case *wml.Hyperlink:
 			sb.WriteString(textFromInlineContent(v.Content))
+		case *wml.Sdt:
+			sb.WriteString(textFromSdt(v))
+		}
+	}
+	return sb.String()
+}
+
+func textFromTable(tbl *wml.Tbl) string {
+	var sb strings.Builder
+	for _, row := range tbl.Tr {
+		for cellIndex, cell := range row.Tc {
+			if cellIndex > 0 {
+				sb.WriteString("\t")
+			}
+			sb.WriteString(textFromTableCell(cell))
+		}
+		if sb.Len() > 0 {
+			sb.WriteString("\n")
+		}
+	}
+	return strings.TrimSuffix(sb.String(), "\n")
+}
+
+func textFromTableCell(cell *wml.Tc) string {
+	if cell == nil {
+		return ""
+	}
+	var sb strings.Builder
+	for i, elem := range cell.Content {
+		if i > 0 {
+			sb.WriteString("\n")
+		}
+		switch v := elem.(type) {
+		case *wml.P:
+			sb.WriteString(textFromParagraph(v))
+		case *wml.Tbl:
+			sb.WriteString(textFromTable(v))
 		case *wml.Sdt:
 			sb.WriteString(textFromSdt(v))
 		}

@@ -679,6 +679,51 @@ func TestContentControlRoundTrip(t *testing.T) {
 	}
 }
 
+func TestTechnicalReportWorkflow(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.CreateDocument(func(d *Document) {
+		d.EnableTrackChanges("Test Author")
+		h1 := d.AddParagraph()
+		h1.SetStyle("Heading1")
+		h1.AddRun().SetText("Technical Report")
+
+		table := d.AddTable(3, 2)
+		table.Cell(0, 0).SetText("Customer")
+		table.Cell(0, 1).SetText("[CUSTOMER_NAME]")
+		table.Cell(1, 0).SetText("Project")
+		table.Cell(1, 1).SetText("[PROJECT_NAME]")
+
+		target := table.Cell(0, 1).Paragraphs()[0]
+		target.InsertTrackedText("Acme Corp")
+
+		d.AddComment("Reviewer", "Verify customer name with legal")
+	})
+	defer doc.Close()
+
+	path := h.SaveDocument(doc, "technical_report.docx")
+	doc.Close()
+
+	doc2 := h.OpenDocument(path)
+	defer doc2.Close()
+
+	if !doc2.TrackChangesEnabled() {
+		t.Error("Expected track changes enabled after round-trip")
+	}
+	if len(doc2.AllRevisions()) == 0 {
+		t.Error("Expected revisions after round-trip")
+	}
+	if len(doc2.Comments()) != 1 {
+		t.Errorf("Expected 1 comment after round-trip, got %d", len(doc2.Comments()))
+	}
+	tables := doc2.Tables()
+	if len(tables) != 1 {
+		t.Fatalf("Expected 1 table after round-trip, got %d", len(tables))
+	}
+	if !strings.Contains(tables[0].Cell(0, 1).Text(), "Acme Corp") {
+		t.Error("Expected customer cell text after round-trip")
+	}
+}
+
 func TestComments(t *testing.T) {
 	doc, err := New()
 	if err != nil {
