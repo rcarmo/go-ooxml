@@ -357,7 +357,7 @@ type SdtDate struct {
 	Language          *SdtLang      `xml:"lid,omitempty"`
 	StoreMappedDataAs *SdtString    `xml:"storeMappedDataAs,omitempty"`
 	Calendar          *SdtString    `xml:"calendar,omitempty"`
-	FullDate          *SdtDateValue `xml:"http://schemas.microsoft.com/office/word/2010/wordml fullDate,omitempty"`
+	FullDate          *SdtDateValue `xml:"fullDate,omitempty"`
 }
 
 // SdtLang represents a language identifier.
@@ -367,7 +367,7 @@ type SdtLang struct {
 
 // SdtDateValue represents a full date value.
 type SdtDateValue struct {
-	Val string `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main val,attr"`
+	Val string `xml:"http://schemas.microsoft.com/office/word/2010/wordml val,attr"`
 }
 
 

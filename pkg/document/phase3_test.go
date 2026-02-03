@@ -479,7 +479,6 @@ func TestContentControlDateConfig(t *testing.T) {
 		Format:   "yyyy-MM-dd",
 		Locale:   "en-US",
 		Calendar: "gregorian",
-		FullDate: "2026-02-01T00:00:00Z",
 		StoreMappedDataAs: "date",
 	})
 	cfg := cc.DateConfig()
@@ -533,7 +532,6 @@ func TestContentControlDateConfigRoundTrip(t *testing.T) {
 			Format:   "yyyy-MM-dd",
 			Locale:   "en-US",
 			Calendar: "gregorian",
-			FullDate: "2026-02-01T00:00:00Z",
 		})
 	})
 	defer doc.Close()
@@ -721,6 +719,36 @@ func TestTechnicalReportWorkflow(t *testing.T) {
 	}
 	if !strings.Contains(tables[0].Cell(0, 1).Text(), "Acme Corp") {
 		t.Error("Expected customer cell text after round-trip")
+	}
+}
+
+func TestContentControlsFixture(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.OpenFixture("sdt_content_controls.docx")
+	defer doc.Close()
+
+	ccs := doc.ContentControls()
+	if len(ccs) < 3 {
+		t.Fatalf("Expected content controls in fixture, got %d", len(ccs))
+	}
+	inline := doc.ContentControlByTag("InlineTag")
+	if inline == nil {
+		t.Fatal("Expected inline content control in fixture")
+	}
+	block := doc.ContentControlByTag("BlockTag")
+	if block == nil {
+		t.Fatal("Expected block content control in fixture")
+	}
+	if len(block.ListItems()) != 2 {
+		t.Errorf("Expected 2 list items in block control, got %d", len(block.ListItems()))
+	}
+	date := doc.ContentControlByTag("DateTag")
+	if date == nil {
+		t.Fatal("Expected date content control in fixture")
+	}
+	cfg := date.DateConfig()
+	if cfg == nil {
+		t.Error("Expected date config in fixture")
 	}
 }
 

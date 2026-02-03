@@ -24,7 +24,6 @@ type ContentControlDateConfig struct {
 	Format           string
 	Locale           string
 	Calendar         string
-	FullDate         string
 	StoreMappedDataAs string
 }
 
@@ -145,9 +144,6 @@ func (c *ContentControl) DateConfig() *ContentControlDateConfig {
 	if date.Calendar != nil {
 		cfg.Calendar = date.Calendar.Val
 	}
-	if date.FullDate != nil {
-		cfg.FullDate = date.FullDate.Val
-	}
 	if date.StoreMappedDataAs != nil {
 		cfg.StoreMappedDataAs = date.StoreMappedDataAs.Val
 	}
@@ -166,9 +162,6 @@ func (c *ContentControl) SetDateConfig(cfg ContentControlDateConfig) {
 	}
 	if cfg.Calendar != "" {
 		date.Calendar = &wml.SdtString{Val: cfg.Calendar}
-	}
-	if cfg.FullDate != "" {
-		date.FullDate = &wml.SdtDateValue{Val: cfg.FullDate}
 	}
 	if cfg.StoreMappedDataAs != "" {
 		date.StoreMappedDataAs = &wml.SdtString{Val: cfg.StoreMappedDataAs}
