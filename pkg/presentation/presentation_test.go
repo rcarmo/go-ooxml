@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/rcarmo/go-ooxml/internal/testutil"
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
 )
 
 // =============================================================================
@@ -48,6 +49,28 @@ func TestNewWithSize(t *testing.T) {
 	w, h := p.SlideSize()
 	if w != customWidth || h != customHeight {
 		t.Errorf("SlideSize() = (%d, %d), want (%d, %d)", w, h, customWidth, customHeight)
+	}
+}
+
+func TestPresentation_CoreProperties(t *testing.T) {
+	p := testutil.NewResource(t, New)
+
+	props := &common.CoreProperties{
+		Title:   "Presentation Title",
+		Creator: "Presentation Author",
+	}
+	if err := p.SetCoreProperties(props); err != nil {
+		t.Fatalf("SetCoreProperties() error = %v", err)
+	}
+	got, err := p.CoreProperties()
+	if err != nil {
+		t.Fatalf("CoreProperties() error = %v", err)
+	}
+	if got.Title != props.Title {
+		t.Errorf("Title = %q, want %q", got.Title, props.Title)
+	}
+	if got.Creator != props.Creator {
+		t.Errorf("Creator = %q, want %q", got.Creator, props.Creator)
 	}
 }
 
