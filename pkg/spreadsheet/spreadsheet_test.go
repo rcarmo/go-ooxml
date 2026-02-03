@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/rcarmo/go-ooxml/internal/testutil"
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
 )
 
 // =============================================================================
@@ -24,6 +25,28 @@ func TestNew(t *testing.T) {
 	sheet := w.Sheets()[0]
 	if sheet.Name() != "Sheet1" {
 		t.Errorf("First sheet name = %q, want %q", sheet.Name(), "Sheet1")
+	}
+}
+
+func TestWorkbook_CoreProperties(t *testing.T) {
+	w := testutil.NewResource(t, New)
+
+	props := &common.CoreProperties{
+		Title:   "Workbook Title",
+		Creator: "Workbook Author",
+	}
+	if err := w.SetCoreProperties(props); err != nil {
+		t.Fatalf("SetCoreProperties() error = %v", err)
+	}
+	got, err := w.CoreProperties()
+	if err != nil {
+		t.Fatalf("CoreProperties() error = %v", err)
+	}
+	if got.Title != props.Title {
+		t.Errorf("Title = %q, want %q", got.Title, props.Title)
+	}
+	if got.Creator != props.Creator {
+		t.Errorf("Creator = %q, want %q", got.Creator, props.Creator)
 	}
 }
 

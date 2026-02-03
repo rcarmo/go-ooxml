@@ -6,6 +6,7 @@ import (
 	"io"
 	"time"
 
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
 )
@@ -151,6 +152,16 @@ func (d *Document) Tables() []*Table {
 // XML returns the underlying WML document for advanced access.
 func (d *Document) XML() *wml.Document {
 	return d.document
+}
+
+// CoreProperties returns the document core properties.
+func (d *Document) CoreProperties() (*common.CoreProperties, error) {
+	return d.pkg.CoreProperties()
+}
+
+// SetCoreProperties sets the document core properties.
+func (d *Document) SetCoreProperties(props *common.CoreProperties) error {
+	return d.pkg.SetCoreProperties(props)
 }
 
 // AddParagraph adds a new paragraph to the document body.

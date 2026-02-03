@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/pml"
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
 	"github.com/rcarmo/go-ooxml/pkg/utils"
@@ -135,6 +136,16 @@ func (p *Presentation) SaveAs(path string) error {
 // Close closes the presentation and releases resources.
 func (p *Presentation) Close() error {
 	return p.pkg.Close()
+}
+
+// CoreProperties returns the presentation core properties.
+func (p *Presentation) CoreProperties() (*common.CoreProperties, error) {
+	return p.pkg.CoreProperties()
+}
+
+// SetCoreProperties sets the presentation core properties.
+func (p *Presentation) SetCoreProperties(props *common.CoreProperties) error {
+	return p.pkg.SetCoreProperties(props)
 }
 
 // =============================================================================

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
 )
 
 // =============================================================================
@@ -35,6 +37,48 @@ func TestDocument_SaveAs_Fixtures(t *testing.T) {
 			defer doc2.Close()
 			// Basic sanity check - document should open without error
 		})
+	}
+}
+
+func TestDocument_CoreProperties(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.CreateDocument(nil)
+	defer doc.Close()
+
+	props := &common.CoreProperties{
+		Title:          "Doc Title",
+		Creator:        "Doc Author",
+		Subject:        "Doc Subject",
+		Description:    "Doc Description",
+		Keywords:       "one;two",
+		Category:       "Category",
+		Language:       "en-US",
+		ContentStatus:  "Draft",
+		Identifier:     "urn:example:doc",
+		LastModifiedBy: "Reviewer",
+		Revision:       "2",
+		Version:        "1.0",
+		Created:        &common.DCDate{Type: "dcterms:W3CDTF", Value: "2026-02-03T00:00:00Z"},
+		Modified:       &common.DCDate{Type: "dcterms:W3CDTF", Value: "2026-02-03T01:00:00Z"},
+		LastPrinted:    &common.DCDate{Type: "dcterms:W3CDTF", Value: "2026-02-03T02:00:00Z"},
+	}
+
+	if err := doc.SetCoreProperties(props); err != nil {
+		t.Fatalf("SetCoreProperties() error = %v", err)
+	}
+
+	got, err := doc.CoreProperties()
+	if err != nil {
+		t.Fatalf("CoreProperties() error = %v", err)
+	}
+	if got.Title != props.Title {
+		t.Errorf("Title = %q, want %q", got.Title, props.Title)
+	}
+	if got.Creator != props.Creator {
+		t.Errorf("Creator = %q, want %q", got.Creator, props.Creator)
+	}
+	if got.Subject != props.Subject {
+		t.Errorf("Subject = %q, want %q", got.Subject, props.Subject)
 	}
 }
 

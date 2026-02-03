@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/sml"
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
 	"github.com/rcarmo/go-ooxml/pkg/utils"
@@ -120,6 +121,16 @@ func (w *Workbook) SaveAs(path string) error {
 // Close closes the workbook and releases resources.
 func (w *Workbook) Close() error {
 	return w.pkg.Close()
+}
+
+// CoreProperties returns the workbook core properties.
+func (w *Workbook) CoreProperties() (*common.CoreProperties, error) {
+	return w.pkg.CoreProperties()
+}
+
+// SetCoreProperties sets the workbook core properties.
+func (w *Workbook) SetCoreProperties(props *common.CoreProperties) error {
+	return w.pkg.SetCoreProperties(props)
 }
 
 // =============================================================================
