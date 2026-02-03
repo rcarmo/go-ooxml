@@ -2,6 +2,7 @@
 package document
 
 import (
+	"encoding/xml"
 	"io"
 	"time"
 
@@ -37,6 +38,8 @@ func New() (*Document, error) {
 	doc := &Document{
 		pkg: packaging.New(),
 		document: &wml.Document{
+			XMLName: xml.Name{Space: wml.NS, Local: "document"},
+			MCIgnorable: "",
 			Body: &wml.Body{
 				SectPr: &wml.SectPr{
 					PgSz: &wml.PgSz{W: 12240, H: 15840}, // Letter size
@@ -143,6 +146,11 @@ func (d *Document) Paragraphs() []*Paragraph {
 // Tables returns all tables in the document.
 func (d *Document) Tables() []*Table {
 	return d.Body().Tables()
+}
+
+// XML returns the underlying WML document for advanced access.
+func (d *Document) XML() *wml.Document {
+	return d.document
 }
 
 // AddParagraph adds a new paragraph to the document body.

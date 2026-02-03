@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -134,6 +135,30 @@ var CommonFixtures = []TestFixture{
 			}
 		},
 	},
+	{
+		Name:        "sdt_content_controls",
+		Description: "Document with content controls",
+		Setup: func(d *Document) {
+			p := d.AddParagraph()
+			p.SetStyle("Title")
+			p.AddRun().SetText("Content Controls Fixture")
+
+			inlinePara := d.AddParagraph()
+			inlinePara.AddRun().SetText("Inline: ")
+			inline := inlinePara.AddContentControl("InlineTag", "Inline Alias", "Inline Value")
+			inline.SetComboBox([]ContentControlListItem{{DisplayText: "Alpha", Value: "A"}})
+
+			block := d.AddBlockContentControl("BlockTag", "Block Alias", "Block Value")
+			block.SetDropDownList([]ContentControlListItem{{DisplayText: "Option A", Value: "A"}, {DisplayText: "Option B", Value: "B"}})
+
+			date := d.AddBlockContentControl("DateTag", "Date Alias", "2026-02-02")
+			date.SetDateConfig(ContentControlDateConfig{
+				Format:   "yyyy-MM-dd",
+				Locale:   "en-US",
+				Calendar: "gregorian",
+			})
+		},
+	},
 }
 
 // =============================================================================
@@ -182,11 +207,26 @@ func (h *TestHelper) SaveDocument(doc *Document, name string) string {
 // OpenDocument opens a document from a path.
 func (h *TestHelper) OpenDocument(path string) *Document {
 	h.t.Helper()
-	doc, err := Open(path)
+	doc, err := Open(filepath.Clean(path))
 	if err != nil {
 		h.t.Fatalf("Open(%q) error = %v", path, err)
 	}
 	return doc
+}
+
+// OpenFixture opens a document fixture from testdata/word.
+func (h *TestHelper) OpenFixture(name string) *Document {
+	h.t.Helper()
+	return h.OpenDocument(fixturePath(name))
+}
+
+func fixturePath(name string) string {
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		return filepath.Join("..", "..", "testdata", "word", name)
+	}
+	root := filepath.Join(filepath.Dir(filename), "..", "..")
+	return filepath.Join(root, "testdata", "word", name)
 }
 
 // RoundTrip creates, saves, and reopens a document.
