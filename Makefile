@@ -45,6 +45,12 @@ coverage: ## Run tests with coverage
 	$(GO) test -coverprofile=coverage.out ./...
 	$(GO) tool cover -func=coverage.out
 
+bench: ## Run benchmarks
+	$(GO) test -run '^$$' -bench . ./...
+
+memprofile: ## Run memory profiling tests (requires ENABLE_MEMPROFILE=1)
+	ENABLE_MEMPROFILE=1 $(GO) test -run MemProfile -memprofile=mem.out ./...
+
 check: lint test ## Run lint + tests
 
 build: ## Build the library (verify compilation)
