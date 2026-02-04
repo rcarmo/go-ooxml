@@ -2,9 +2,8 @@
 package document
 
 import (
-	"fmt"
-
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
+	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
 // Field represents a Word field.
@@ -16,7 +15,7 @@ type Field struct {
 // AddField inserts a field with instruction and optional display text.
 func (p *paragraphImpl) AddField(instruction, display string) (*Field, error) {
 	if instruction == "" {
-		return nil, fmt.Errorf("field instruction cannot be empty")
+		return nil, utils.NewValidationError("instruction", "cannot be empty", instruction)
 	}
 
 	begin := &wml.R{Content: []interface{}{&wml.FldChar{FldCharType: wml.FldCharBegin}}}

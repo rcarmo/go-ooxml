@@ -69,6 +69,14 @@ func TestStandardErrors(t *testing.T) {
 		{"ErrReadOnly", ErrReadOnly},
 		{"ErrInvalidFormat", ErrInvalidFormat},
 		{"ErrCorruptedFile", ErrCorruptedFile},
+		{"ErrPathNotSet", ErrPathNotSet},
+		{"ErrMissingContentTypes", ErrMissingContentTypes},
+		{"ErrContentControlNotFound", ErrContentControlNotFound},
+		{"ErrCommentNotFound", ErrCommentNotFound},
+		{"ErrCannotDeleteLastSheet", ErrCannotDeleteLastSheet},
+		{"ErrSheetNotFound", ErrSheetNotFound},
+		{"ErrCellNotFound", ErrCellNotFound},
+		{"ErrInvalidValue", ErrInvalidValue},
 	}
 
 	for _, tt := range errors {

@@ -3,7 +3,6 @@ package document
 
 import (
 	"encoding/xml"
-	"fmt"
 	"io"
 	"strconv"
 	"time"
@@ -11,6 +10,7 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
+	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
 // documentImpl represents a Word document.
@@ -293,7 +293,7 @@ func (d *documentImpl) CommentByID(id string) Comment {
 // DeleteComment removes a comment by ID.
 func (d *documentImpl) DeleteComment(id string) error {
 	if d.comments == nil {
-		return fmt.Errorf("comment %s not found", id)
+		return utils.ErrCommentNotFound
 	}
 	for i, c := range d.comments.Comment {
 		if strconv.Itoa(c.ID) == id {
@@ -303,7 +303,7 @@ func (d *documentImpl) DeleteComment(id string) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("comment %s not found", id)
+	return utils.ErrCommentNotFound
 }
 
 // nextRevID returns the next revision ID.

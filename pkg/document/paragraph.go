@@ -1,7 +1,6 @@
 package document
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
@@ -37,7 +36,7 @@ func (p *paragraphImpl) Runs() []Run {
 // AddBookmark inserts a bookmark start/end around the specified run range.
 func (p *paragraphImpl) AddBookmark(name string, startRun, endRun int) error {
 	if name == "" {
-		return fmt.Errorf("bookmark name cannot be empty")
+		return utils.NewValidationError("bookmark", "name cannot be empty", name)
 	}
 	if len(p.p.Content) == 0 {
 		return utils.ErrInvalidIndex
@@ -55,7 +54,7 @@ func (p *paragraphImpl) AddBookmark(name string, startRun, endRun int) error {
 		return utils.ErrInvalidIndex
 	}
 	if p.doc == nil {
-		return fmt.Errorf("document not available")
+		return utils.ErrDocumentClosed
 	}
 
 	id := p.doc.nextBookmarkID

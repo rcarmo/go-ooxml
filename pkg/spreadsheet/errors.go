@@ -1,14 +1,16 @@
 package spreadsheet
 
-import "errors"
+import "github.com/rcarmo/go-ooxml/pkg/utils"
 
 var (
 	// ErrSheetNotFound is returned when a worksheet is not found.
-	ErrSheetNotFound = errors.New("sheet not found")
+	ErrSheetNotFound = utils.ErrSheetNotFound
 	// ErrCellNotFound is returned when a cell cannot be resolved.
-	ErrCellNotFound  = errors.New("cell not found")
+	ErrCellNotFound  = utils.ErrCellNotFound
 	// ErrInvalidValue is returned when a cell value cannot be set.
-	ErrInvalidValue  = errors.New("invalid value")
+	ErrInvalidValue  = utils.ErrInvalidValue
 	// ErrTableNotFound is returned when a table lookup fails.
-	ErrTableNotFound = errors.New("table not found")
+	ErrTableNotFound = utils.ErrTableNotFound
+	// ErrCannotDeleteLastSheet is returned when trying to delete the final sheet.
+	ErrCannotDeleteLastSheet = utils.ErrCannotDeleteLastSheet
 )

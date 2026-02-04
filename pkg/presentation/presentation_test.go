@@ -95,6 +95,21 @@ func TestPresentation_MastersAndLayouts(t *testing.T) {
 	}
 }
 
+func TestPresentation_SlideErrors(t *testing.T) {
+	p := testutil.NewResource(t, New)
+	if _, err := p.Slide(0); err != ErrInvalidIndex {
+		t.Errorf("Slide(0) error = %v, want ErrInvalidIndex", err)
+	}
+	if err := p.DeleteSlide(1); err != ErrInvalidIndex {
+		t.Errorf("DeleteSlide(1) error = %v, want ErrInvalidIndex", err)
+	}
+	p.AddSlide(0)
+	p.AddSlide(0)
+	if err := p.ReorderSlides([]int{1, 1}); err != ErrInvalidIndex {
+		t.Errorf("ReorderSlides([1 1]) error = %v, want ErrInvalidIndex", err)
+	}
+}
+
 // =============================================================================
 // Slide Management Tests
 // =============================================================================

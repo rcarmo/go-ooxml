@@ -2,9 +2,8 @@
 package document
 
 import (
-	"fmt"
-
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
+	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
 // ContentControl represents a content control (SDT).
@@ -273,12 +272,12 @@ func (c *ContentControl) IsBlock() bool {
 // Remove removes the content control from the document.
 func (c *ContentControl) Remove() error {
 	if c.doc == nil || c.doc.document == nil || c.doc.document.Body == nil || c.sdt == nil {
-		return fmt.Errorf("content control not found")
+		return utils.ErrContentControlNotFound
 	}
 	if removeSdtFromContent(&c.doc.document.Body.Content, c.sdt) {
 		return nil
 	}
-	return fmt.Errorf("content control not found")
+	return utils.ErrContentControlNotFound
 }
 
 // AddContentControl adds a run-level content control to the paragraph.
@@ -388,7 +387,7 @@ func (c *ContentControl) SetContentControlLock(lock string) error {
 		c.sdt.SdtPr.Lock = &wml.SdtLock{Val: lock}
 		return nil
 	default:
-		return fmt.Errorf("invalid content control lock: %s", lock)
+		return utils.NewValidationError("contentControlLock", "invalid value", lock)
 	}
 }
 

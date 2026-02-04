@@ -120,7 +120,7 @@ func openFromPackage(pkg *packaging.Package) (*workbookImpl, error) {
 // Save saves the workbook to its original path.
 func (w *workbookImpl) Save() error {
 	if w.path == "" {
-		return fmt.Errorf("no path set, use SaveAs")
+		return utils.ErrPathNotSet
 	}
 	return w.SaveAs(w.path)
 }
@@ -365,7 +365,7 @@ func (w *workbookImpl) DeleteSheet(nameOrIndex interface{}) error {
 
 	// Don't allow deleting the last sheet
 	if len(w.sheets) == 1 {
-		return fmt.Errorf("cannot delete the last sheet")
+		return utils.ErrCannotDeleteLastSheet
 	}
 
 	// Remove from sheets slice

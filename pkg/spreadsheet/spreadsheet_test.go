@@ -247,8 +247,8 @@ func TestDeleteSheet(t *testing.T) {
 	}
 
 	// Cannot delete last sheet
-	if err := w.DeleteSheet(0); err == nil {
-		t.Error("DeleteSheet() should error when deleting last sheet")
+	if err := w.DeleteSheet(0); err != ErrCannotDeleteLastSheet {
+		t.Errorf("DeleteSheet(last) error = %v, want ErrCannotDeleteLastSheet", err)
 	}
 }
 
