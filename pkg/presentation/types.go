@@ -166,13 +166,24 @@ type TableCell interface {
 }
 
 // SlideMaster represents a slide master.
-type SlideMaster interface{}
+type SlideMaster interface {
+	ID() string
+	Path() string
+}
 
 // SlideLayout represents a slide layout.
-type SlideLayout interface{}
+type SlideLayout interface {
+	ID() string
+	Path() string
+}
 
 // Comment represents a slide comment.
-type Comment interface{}
+type Comment interface {
+	ID() string
+	Author() string
+	Text() string
+	SetText(text string)
+}
 
 // ShapeType represents the type of shape.
 type ShapeType int

@@ -74,6 +74,27 @@ func TestPresentation_CoreProperties(t *testing.T) {
 	}
 }
 
+func TestPresentation_MastersAndLayouts(t *testing.T) {
+	p, err := Open("/workspace/testdata/pptx/comments.pptx")
+	if err != nil {
+		t.Fatalf("Open() error = %v", err)
+	}
+	defer p.Close()
+
+	if len(p.Masters()) == 0 {
+		t.Fatal("Masters() should return at least one master")
+	}
+	if len(p.Layouts()) == 0 {
+		t.Fatal("Layouts() should return at least one layout")
+	}
+	if p.Masters()[0].Path() == "" {
+		t.Error("Master Path() should not be empty")
+	}
+	if p.Layouts()[0].Path() == "" {
+		t.Error("Layout Path() should not be empty")
+	}
+}
+
 // =============================================================================
 // Slide Management Tests
 // =============================================================================
@@ -275,6 +296,48 @@ func TestSlideNotes(t *testing.T) {
 	slide.AppendNotes("Additional notes")
 	if !strings.Contains(slide.Notes(), "Speaker notes here") || !strings.Contains(slide.Notes(), "Additional notes") {
 		t.Errorf("AppendNotes failed: %q", slide.Notes())
+	}
+}
+
+// =============================================================================
+// Comments Tests
+// =============================================================================
+
+func TestSlideCommentsRoundTrip(t *testing.T) {
+	p := testutil.NewResource(t, New)
+
+	slide := p.AddSlide(0)
+	_, err := slide.AddComment("Needs review", "Test Author", 100, 200)
+	if err != nil {
+		t.Fatalf("AddComment() error = %v", err)
+	}
+
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "comments-roundtrip.pptx")
+	if err := p.SaveAs(path); err != nil {
+		t.Fatalf("SaveAs() error = %v", err)
+	}
+	_ = p.Close()
+
+	p2, err := Open(path)
+	if err != nil {
+		t.Fatalf("Open() error = %v", err)
+	}
+	defer p2.Close()
+
+	slide2, err := p2.Slide(1)
+	if err != nil {
+		t.Fatalf("Slide(1) error = %v", err)
+	}
+	comments := slide2.Comments()
+	if len(comments) != 1 {
+		t.Fatalf("Comments() count = %d, want 1", len(comments))
+	}
+	if comments[0].Text() != "Needs review" {
+		t.Errorf("Comment text = %q, want %q", comments[0].Text(), "Needs review")
+	}
+	if comments[0].Author() != "Test Author" {
+		t.Errorf("Comment author = %q, want %q", comments[0].Author(), "Test Author")
 	}
 }
 

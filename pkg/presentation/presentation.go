@@ -4,6 +4,8 @@ package presentation
 import (
 	"fmt"
 	"io"
+	"path/filepath"
+	"strings"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/pml"
@@ -33,6 +35,9 @@ type presentationImpl struct {
 	slides       []*slideImpl
 	path         string
 	nextSlideID  int
+	commentAuthors *pml.AuthorList
+	masters       []*slideMasterImpl
+	layouts       []*slideLayoutImpl
 }
 
 // New creates a new empty presentation with standard 4:3 dimensions.
@@ -102,6 +107,8 @@ func openFromPackage(pkg *packaging.Package) (*presentationImpl, error) {
 		pkg:         pkg,
 		slides:      make([]*slideImpl, 0),
 		nextSlideID: 256,
+		masters:     make([]*slideMasterImpl, 0),
+		layouts:     make([]*slideLayoutImpl, 0),
 	}
 
 	// Parse presentation.xml
@@ -113,6 +120,9 @@ func openFromPackage(pkg *packaging.Package) (*presentationImpl, error) {
 	if err := p.parseSlides(); err != nil {
 		return nil, err
 	}
+
+	p.parseMastersAndLayouts()
+	p.parseCommentAuthors()
 
 	return p, nil
 }
@@ -159,12 +169,20 @@ func (p *presentationImpl) Properties() PresentationProperties {
 
 // Masters returns slide masters (not implemented).
 func (p *presentationImpl) Masters() []SlideMaster {
-	return nil
+	result := make([]SlideMaster, len(p.masters))
+	for i, master := range p.masters {
+		result[i] = master
+	}
+	return result
 }
 
 // Layouts returns slide layouts (not implemented).
 func (p *presentationImpl) Layouts() []SlideLayout {
-	return nil
+	result := make([]SlideLayout, len(p.layouts))
+	for i, layout := range p.layouts {
+		result[i] = layout
+	}
+	return result
 }
 
 // =============================================================================
@@ -431,14 +449,17 @@ func (p *presentationImpl) parseSlides() error {
 			continue
 		}
 
-		p.slides = append(p.slides, &slideImpl{
+		slideImpl := &slideImpl{
 			pres:  p,
 			slide: slide,
 			id:    sldId.ID,
 			relID: sldId.RID,
 			index: i,
 			path:  slidePath,
-		})
+		}
+		slideImpl.comments = p.parseSlideComments(slidePath)
+
+		p.slides = append(p.slides, slideImpl)
 
 		if sldId.ID >= p.nextSlideID {
 			p.nextSlideID = sldId.ID + 1
@@ -446,6 +467,172 @@ func (p *presentationImpl) parseSlides() error {
 	}
 
 	return nil
+}
+
+func (p *presentationImpl) parseMastersAndLayouts() {
+	rels := p.pkg.GetRelationships(packaging.PresentationPath)
+	if rels == nil {
+		return
+	}
+	for _, rel := range rels.ByType(packaging.RelTypeSlideMaster) {
+		target := packaging.ResolveRelationshipTarget(packaging.PresentationPath, rel.Target)
+		p.masters = append(p.masters, &slideMasterImpl{
+			id:   rel.ID,
+			path: target,
+		})
+		p.parseLayoutsFromMaster(target)
+	}
+}
+
+func (p *presentationImpl) parseLayoutsFromMaster(masterPath string) {
+	rels := p.pkg.GetRelationships(masterPath)
+	if rels == nil {
+		return
+	}
+	for _, rel := range rels.ByType(packaging.RelTypeSlideLayout) {
+		target := packaging.ResolveRelationshipTarget(masterPath, rel.Target)
+		p.layouts = append(p.layouts, &slideLayoutImpl{
+			id:       rel.ID,
+			path:     target,
+			masterID: masterPath,
+		})
+	}
+}
+
+func (p *presentationImpl) parseSlideComments(slidePath string) *pml.CommentList {
+	rels := p.pkg.GetRelationships(slidePath)
+	if rels == nil {
+		return nil
+	}
+	rel := rels.FirstByType(packaging.RelTypePPTXComments)
+	if rel == nil {
+		return nil
+	}
+	target := packaging.ResolveRelationshipTarget(slidePath, rel.Target)
+	part, err := p.pkg.GetPart(target)
+	if err != nil {
+		return nil
+	}
+	data, err := part.Content()
+	if err != nil {
+		return nil
+	}
+	comments := &pml.CommentList{}
+	if err := utils.UnmarshalXML(data, comments); err != nil {
+		return nil
+	}
+	return comments
+}
+
+func (p *presentationImpl) parseCommentAuthors() {
+	rels := p.pkg.GetRelationships(packaging.PresentationPath)
+	if rels == nil {
+		return
+	}
+	rel := rels.FirstByType(packaging.RelTypePPTXAuthors)
+	if rel == nil {
+		return
+	}
+	target := packaging.ResolveRelationshipTarget(packaging.PresentationPath, rel.Target)
+	part, err := p.pkg.GetPart(target)
+	if err != nil {
+		return
+	}
+	data, err := part.Content()
+	if err != nil {
+		return
+	}
+	authors := &pml.AuthorList{}
+	if err := utils.UnmarshalXML(data, authors); err != nil {
+		return
+	}
+	p.commentAuthors = authors
+}
+
+func (p *presentationImpl) ensureCommentAuthor(name string) string {
+	if p.commentAuthors == nil {
+		p.commentAuthors = &pml.AuthorList{}
+	}
+	for _, author := range p.commentAuthors.Author {
+		if author.Name == name {
+			return author.ID
+		}
+	}
+	author := &pml.Author{
+		ID:       newCommentID(),
+		Name:     name,
+		Initials: initials(name),
+	}
+	p.commentAuthors.Author = append(p.commentAuthors.Author, author)
+	return author.ID
+}
+
+func (p *presentationImpl) commentAuthorName(authorID string) string {
+	if p == nil || p.commentAuthors == nil {
+		return ""
+	}
+	for _, author := range p.commentAuthors.Author {
+		if author.ID == authorID {
+			return author.Name
+		}
+	}
+	return ""
+}
+
+func initials(name string) string {
+	if name == "" {
+		return ""
+	}
+	parts := strings.Fields(name)
+	if len(parts) == 0 {
+		return ""
+	}
+	var init string
+	for _, part := range parts {
+		if part != "" {
+			init += strings.ToUpper(part[:1])
+		}
+	}
+	return init
+}
+
+type slideMasterImpl struct {
+	id   string
+	path string
+}
+
+func (m *slideMasterImpl) ID() string {
+	if m == nil {
+		return ""
+	}
+	return m.id
+}
+
+func (m *slideMasterImpl) Path() string {
+	if m == nil {
+		return ""
+	}
+	return m.path
+}
+
+type slideLayoutImpl struct {
+	id       string
+	path     string
+	masterID string
+}
+
+func (l *slideLayoutImpl) ID() string {
+	if l == nil {
+		return ""
+	}
+	return l.id
+}
+
+func (l *slideLayoutImpl) Path() string {
+	if l == nil {
+		return ""
+	}
+	return l.path
 }
 
 func (p *presentationImpl) updatePackage() error {
@@ -484,9 +671,57 @@ func (p *presentationImpl) updatePackage() error {
 				return err
 			}
 		}
+
+		if slide.comments != nil && len(slide.comments.Comment) > 0 {
+			commentsPath := fmt.Sprintf("ppt/comments/modernComment_100_%d.xml", i)
+			commentsData, err := utils.MarshalXMLWithHeader(slide.comments)
+			if err != nil {
+				return err
+			}
+			if _, err := p.pkg.AddPart(commentsPath, packaging.ContentTypePPTXComments, commentsData); err != nil {
+				return err
+			}
+			slideRels := p.pkg.GetRelationships(slidePath)
+			relID := slideRels.NextID()
+			for _, rel := range slideRels.ByType(packaging.RelTypePPTXComments) {
+				relID = rel.ID
+				break
+			}
+			slideRels.AddWithID(relID, packaging.RelTypePPTXComments, relativeTarget(slidePath, commentsPath), packaging.TargetModeInternal)
+		}
+	}
+
+	if p.commentAuthors != nil && len(p.commentAuthors.Author) > 0 {
+		authorsPath := "ppt/authors.xml"
+		authorsData, err := utils.MarshalXMLWithHeader(p.commentAuthors)
+		if err != nil {
+			return err
+		}
+		if _, err := p.pkg.AddPart(authorsPath, packaging.ContentTypePPTXAuthors, authorsData); err != nil {
+			return err
+		}
+		rels := p.pkg.GetRelationships(packaging.PresentationPath)
+		relID := rels.NextID()
+		for _, rel := range rels.ByType(packaging.RelTypePPTXAuthors) {
+			relID = rel.ID
+			break
+		}
+		rels.AddWithID(relID, packaging.RelTypePPTXAuthors, "authors.xml", packaging.TargetModeInternal)
 	}
 
 	return nil
+}
+
+func relativeTarget(source, target string) string {
+	if source == "" {
+		return target
+	}
+	sourceDir := filepath.Dir(source)
+	rel, err := filepath.Rel(sourceDir, target)
+	if err != nil {
+		return strings.TrimPrefix(packaging.ResolveRelationshipTarget(source, target), "ppt/")
+	}
+	return filepath.ToSlash(rel)
 }
 
 func getSizeType(width, height int64) string {

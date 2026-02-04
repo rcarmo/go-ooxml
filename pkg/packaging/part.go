@@ -53,6 +53,9 @@ func (p *Part) IsModified() bool {
 
 // newPart creates a new part.
 func newPart(uri, contentType string, content []byte, pkg *Package) *Part {
+	if content == nil {
+		content = []byte{}
+	}
 	return &Part{
 		uri:         uri,
 		contentType: contentType,

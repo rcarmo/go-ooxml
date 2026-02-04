@@ -35,6 +35,33 @@ type SldMasterId struct {
 	RID string `xml:"http://schemas.openxmlformats.org/officeDocument/2006/relationships id,attr"`
 }
 
+// UnmarshalXML customizes XML parsing to properly read r:id attribute.
+func (s *SldMasterId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "id" {
+			if attr.Name.Space == "" {
+				var id int
+				if _, err := fmt.Sscanf(attr.Value, "%d", &id); err == nil {
+					s.ID = id
+				}
+			} else {
+				s.RID = attr.Value
+			}
+		}
+	}
+	return d.Skip()
+}
+
+// MarshalXML customizes XML output to use r: prefix for relationship ID.
+func (s SldMasterId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "sldMasterId"
+	start.Attr = []xml.Attr{
+		{Name: xml.Name{Local: "id"}, Value: fmt.Sprintf("%d", s.ID)},
+		{Name: xml.Name{Space: NSR, Local: "id"}, Value: s.RID},
+	}
+	return e.EncodeElement("", start)
+}
+
 // SldIdLst is a list of slide IDs.
 type SldIdLst struct {
 	SldId []*SldId `xml:"sldId,omitempty"`

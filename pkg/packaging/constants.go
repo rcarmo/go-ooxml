@@ -32,6 +32,10 @@ const (
 	RelTypeDrawing        = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"
 	RelTypeVML            = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"
 	RelTypeTableStyles    = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles"
+	RelTypePPTXComments   = "http://schemas.microsoft.com/office/2018/10/relationships/comments"
+	RelTypePPTXAuthors    = "http://schemas.microsoft.com/office/2018/10/relationships/authors"
+	RelTypePresProps      = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps"
+	RelTypeViewProps      = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps"
 )
 
 // Content types
@@ -45,6 +49,10 @@ const (
 	ContentTypeSettings         = "application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"
 	ContentTypeComments         = "application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml"
 	ContentTypeExcelComments    = "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml"
+	ContentTypePPTXComments     = "application/vnd.ms-powerpoint.comments+xml"
+	ContentTypePPTXAuthors      = "application/vnd.ms-powerpoint.authors+xml"
+	ContentTypePresentationProps = "application/vnd.openxmlformats-officedocument.presentationml.presProps+xml"
+	ContentTypePresentationViewProps = "application/vnd.openxmlformats-officedocument.presentationml.viewProps+xml"
 	ContentTypeNumbering        = "application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"
 	ContentTypeHeader           = "application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"
 	ContentTypeWordHeader       = ContentTypeHeader
@@ -114,6 +122,8 @@ const (
 	ExcelSharedStringsPath = "xl/sharedStrings.xml"
 	PresentationPath       = "ppt/presentation.xml"
 	PPTXPresentationPath   = PresentationPath // Alias for backward compatibility
+	PresentationPropsPath  = "ppt/presProps.xml"
+	PresentationViewPropsPath = "ppt/viewProps.xml"
 )
 
 // TargetMode indicates whether the relationship target is internal or external.
