@@ -4,7 +4,6 @@ import (
 	"archive/zip"
 	"bytes"
 	"encoding/xml"
-	"errors"
 	"io"
 	"os"
 	"path"
@@ -104,7 +103,7 @@ func New() *Package {
 // Save saves the package to its original path.
 func (p *Package) Save() error {
 	if p.path == "" {
-		return errors.New("no file path set; use SaveAs")
+		return utils.ErrPathNotSet
 	}
 	return p.SaveAs(p.path)
 }
@@ -302,7 +301,7 @@ func (p *Package) IsModified() bool {
 func (p *Package) parseContentTypes() error {
 	part, ok := p.parts[ContentTypesPath]
 	if !ok {
-		return errors.New("missing [Content_Types].xml")
+		return utils.ErrMissingContentTypes
 	}
 
 	p.contentTypes = &ContentTypes{}

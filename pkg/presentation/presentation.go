@@ -130,7 +130,7 @@ func openFromPackage(pkg *packaging.Package) (*presentationImpl, error) {
 // Save saves the presentation to its original path.
 func (p *presentationImpl) Save() error {
 	if p.path == "" {
-		return fmt.Errorf("no path set, use SaveAs")
+		return utils.ErrPathNotSet
 	}
 	return p.SaveAs(p.path)
 }
@@ -207,7 +207,7 @@ func (p *presentationImpl) SlidesRaw() []*slideImpl {
 func (p *presentationImpl) Slide(index int) (Slide, error) {
 	index--
 	if index < 0 || index >= len(p.slides) {
-		return nil, fmt.Errorf("slide index %d out of range", index+1)
+		return nil, utils.ErrInvalidIndex
 	}
 	return p.slides[index], nil
 }
@@ -279,7 +279,7 @@ func (p *presentationImpl) InsertSlide(index, layoutIndex int) Slide {
 func (p *presentationImpl) DeleteSlide(index int) error {
 	index--
 	if index < 0 || index >= len(p.slides) {
-		return fmt.Errorf("slide index %d out of range", index+1)
+		return utils.ErrInvalidIndex
 	}
 
 	// Remove from slides slice
@@ -325,17 +325,17 @@ func (p *presentationImpl) DuplicateSlide(index int) Slide {
 // newOrder contains the new indices, e.g., [2, 0, 1] moves slide 2 to position 0.
 func (p *presentationImpl) ReorderSlides(newOrder []int) error {
 	if len(newOrder) != len(p.slides) {
-		return fmt.Errorf("newOrder length %d doesn't match slide count %d", len(newOrder), len(p.slides))
+		return utils.ErrInvalidIndex
 	}
 
 	// Validate indices (1-based)
 	used := make(map[int]bool)
 	for _, idx := range newOrder {
 		if idx < 1 || idx > len(p.slides) {
-			return fmt.Errorf("invalid index %d in newOrder", idx)
+			return utils.ErrInvalidIndex
 		}
 		if used[idx] {
-			return fmt.Errorf("duplicate index %d in newOrder", idx)
+			return utils.ErrInvalidIndex
 		}
 		used[idx] = true
 	}

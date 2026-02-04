@@ -1,8 +1,6 @@
 package packaging
 
 import (
-	"fmt"
-
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
 	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
@@ -49,7 +47,7 @@ func (p *Package) SetCoreProperties(props *common.CoreProperties) error {
 		return utils.ErrDocumentClosed
 	}
 	if props == nil {
-		return fmt.Errorf("core properties cannot be nil")
+		return utils.NewValidationError("coreProperties", "cannot be nil", nil)
 	}
 
 	data, err := utils.MarshalXMLWithHeader(props)

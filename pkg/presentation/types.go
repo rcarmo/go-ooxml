@@ -1,20 +1,19 @@
 package presentation
 
 import (
-	"errors"
-
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/dml"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/pml"
-	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
+	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
 var (
 	// ErrSlideNotFound is returned when a slide index is invalid.
-	ErrSlideNotFound = errors.New("slide not found")
+	ErrSlideNotFound = utils.ErrSlideNotFound
 	// ErrShapeNotFound is returned when a slide shape cannot be located.
-	ErrShapeNotFound = errors.New("shape not found")
+	ErrShapeNotFound = utils.ErrShapeNotFound
 	// ErrInvalidIndex is returned when an index is out of range.
-	ErrInvalidIndex  = errors.New("invalid index")
+	ErrInvalidIndex  = utils.ErrInvalidIndex
 )
 
 // PresentationProperties maps to core properties.

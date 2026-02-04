@@ -2,10 +2,9 @@
 package document
 
 import (
-	"fmt"
-
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
+	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
 // Hyperlink represents a hyperlink in a paragraph.
@@ -45,7 +44,7 @@ func (h *Hyperlink) Text() string {
 // AddHyperlink adds a hyperlink with display text to the paragraph.
 func (p *paragraphImpl) AddHyperlink(url, text string) (*Hyperlink, error) {
 	if url == "" {
-		return nil, fmt.Errorf("hyperlink url cannot be empty")
+		return nil, utils.NewValidationError("url", "cannot be empty", url)
 	}
 
 	rel := p.doc.pkg.AddRelationshipWithTargetMode(packaging.WordDocumentPath, url, packaging.RelTypeHyperlink, packaging.TargetModeExternal)
@@ -72,7 +71,7 @@ func (p *paragraphImpl) AddHyperlinkWithTooltip(url, text, tooltip string) (*Hyp
 // AddBookmarkLink adds a hyperlink pointing to a bookmark anchor.
 func (p *paragraphImpl) AddBookmarkLink(anchor, text string) (*Hyperlink, error) {
 	if anchor == "" {
-		return nil, fmt.Errorf("bookmark anchor cannot be empty")
+		return nil, utils.NewValidationError("anchor", "cannot be empty", anchor)
 	}
 	link := &wml.Hyperlink{
 		Anchor:  anchor,

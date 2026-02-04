@@ -2,7 +2,6 @@
 package document
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -83,7 +82,7 @@ func (c *commentImpl) Replies() []Comment {
 
 // AddReply adds a reply to this comment.
 func (c *commentImpl) AddReply(text, author string) (Comment, error) {
-	return nil, fmt.Errorf("comment replies not implemented")
+	return nil, utils.NewValidationError("commentReply", "not implemented", nil)
 }
 
 // SetText sets the comment text.

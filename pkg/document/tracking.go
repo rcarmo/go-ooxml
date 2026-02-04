@@ -2,16 +2,16 @@
 package document
 
 import (
-	"errors"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
+	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
 // ErrInvalidIndex is returned when an index is out of bounds.
-var ErrInvalidIndex = errors.New("invalid index")
+var ErrInvalidIndex = utils.ErrInvalidIndex
 
 // RevisionType represents the type of a tracked change.
 type RevisionType int

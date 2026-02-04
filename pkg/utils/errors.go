@@ -31,6 +31,22 @@ var (
 	ErrInvalidFormat   = errors.New("invalid document format")
 	// ErrCorruptedFile is returned when the file cannot be parsed.
 	ErrCorruptedFile   = errors.New("corrupted file")
+	// ErrPathNotSet is returned when attempting to save without a path.
+	ErrPathNotSet      = errors.New("path not set; use SaveAs")
+	// ErrMissingContentTypes is returned when [Content_Types].xml is missing.
+	ErrMissingContentTypes = errors.New("missing [Content_Types].xml")
+	// ErrContentControlNotFound is returned when a content control cannot be located.
+	ErrContentControlNotFound = errors.New("content control not found")
+	// ErrCommentNotFound is returned when a comment cannot be located.
+	ErrCommentNotFound = errors.New("comment not found")
+	// ErrCannotDeleteLastSheet is returned when trying to delete the final sheet.
+	ErrCannotDeleteLastSheet = errors.New("cannot delete the last sheet")
+	// ErrSheetNotFound is returned when a worksheet is not found.
+	ErrSheetNotFound   = errors.New("sheet not found")
+	// ErrCellNotFound is returned when a cell cannot be resolved.
+	ErrCellNotFound    = errors.New("cell not found")
+	// ErrInvalidValue is returned when a cell value cannot be set.
+	ErrInvalidValue    = errors.New("invalid value")
 )
 
 // ValidationError provides detailed validation failure info.
