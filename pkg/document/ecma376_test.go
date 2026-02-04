@@ -49,7 +49,7 @@ func TestECMA376_ParagraphStyles(t *testing.T) {
 	for _, tc := range CommonHeadingStyleCases {
 		t.Run(tc.Name, func(t *testing.T) {
 			h := NewTestHelper(t)
-			doc := h.CreateDocument(func(d *Document) {
+			doc := h.CreateDocument(func(d Document) {
 				para := d.AddParagraph()
 				para.SetText("Test " + tc.StyleID)
 				para.SetStyle(tc.StyleID)
@@ -69,7 +69,7 @@ func TestECMA376_RunFormatting(t *testing.T) {
 	validator.Skip(t)
 	h := NewTestHelper(t)
 
-	doc := h.CreateDocument(func(d *Document) {
+	doc := h.CreateDocument(func(d Document) {
 		para := d.AddParagraph()
 
 		r1 := para.AddRun()
@@ -107,7 +107,7 @@ func TestECMA376_FontSizes(t *testing.T) {
 	for _, tc := range CommonFontSizeCases {
 		t.Run(formatFloat(tc.Points), func(t *testing.T) {
 			h := NewTestHelper(t)
-			doc := h.CreateDocument(func(d *Document) {
+			doc := h.CreateDocument(func(d Document) {
 				run := d.AddParagraph().AddRun()
 				run.SetText("Test")
 				run.SetFontSize(tc.Points)
@@ -129,7 +129,7 @@ func TestECMA376_TableDimensions(t *testing.T) {
 	for _, tc := range CommonTableDimensionCases {
 		t.Run(tc.Name, func(t *testing.T) {
 			h := NewTestHelper(t)
-			doc := h.CreateDocument(func(d *Document) {
+			doc := h.CreateDocument(func(d Document) {
 				tbl := d.AddTable(tc.Rows, tc.Cols)
 				tbl.Cell(0, 0).SetText("Test")
 			})
@@ -150,7 +150,7 @@ func TestECMA376_ParagraphAlignment(t *testing.T) {
 	for _, tc := range CommonAlignmentCases {
 		t.Run(tc.Name, func(t *testing.T) {
 			h := NewTestHelper(t)
-			doc := h.CreateDocument(func(d *Document) {
+			doc := h.CreateDocument(func(d Document) {
 				para := d.AddParagraph()
 				para.SetText("Aligned text")
 				para.SetAlignment(tc.Value)
@@ -171,7 +171,7 @@ func TestECMA376_TextContent(t *testing.T) {
 	for _, tc := range CommonTextCases {
 		t.Run(tc.Name, func(t *testing.T) {
 			h := NewTestHelper(t)
-			doc := h.CreateDocument(func(d *Document) {
+			doc := h.CreateDocument(func(d Document) {
 				d.AddParagraph().SetText(tc.Text)
 			})
 			path := h.SaveDocument(doc, "text.docx")
@@ -190,7 +190,7 @@ func TestECMA376_Colors(t *testing.T) {
 	for _, tc := range CommonColorCases {
 		t.Run(tc.Name, func(t *testing.T) {
 			h := NewTestHelper(t)
-			doc := h.CreateDocument(func(d *Document) {
+			doc := h.CreateDocument(func(d Document) {
 				run := d.AddParagraph().AddRun()
 				run.SetText("Colored")
 				run.SetColor(tc.Input)

@@ -44,6 +44,7 @@ const (
 	ContentTypeWordStyles       = ContentTypeStyles
 	ContentTypeSettings         = "application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"
 	ContentTypeComments         = "application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml"
+	ContentTypeExcelComments    = "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml"
 	ContentTypeNumbering        = "application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"
 	ContentTypeHeader           = "application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"
 	ContentTypeWordHeader       = ContentTypeHeader

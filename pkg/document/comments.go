@@ -3,6 +3,8 @@ package document
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
@@ -10,39 +12,38 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
-// Comment represents a comment in the document.
-type Comment struct {
-	doc     *Document
-	comment *wml.Comment
+// ID returns the comment ID.
+func (c *commentImpl) ID() string {
+	return strconv.Itoa(c.comment.ID)
 }
 
-// ID returns the comment ID.
-func (c *Comment) ID() int {
+// IDInt returns the numeric comment ID.
+func (c *commentImpl) IDInt() int {
 	return c.comment.ID
 }
 
 // Author returns the comment author.
-func (c *Comment) Author() string {
+func (c *commentImpl) Author() string {
 	return c.comment.Author
 }
 
 // SetAuthor sets the comment author.
-func (c *Comment) SetAuthor(author string) {
+func (c *commentImpl) SetAuthor(author string) {
 	c.comment.Author = author
 }
 
 // Initials returns the author's initials.
-func (c *Comment) Initials() string {
+func (c *commentImpl) Initials() string {
 	return c.comment.Initials
 }
 
 // SetInitials sets the author's initials.
-func (c *Comment) SetInitials(initials string) {
+func (c *commentImpl) SetInitials(initials string) {
 	c.comment.Initials = initials
 }
 
 // Date returns when the comment was created.
-func (c *Comment) Date() time.Time {
+func (c *commentImpl) Date() time.Time {
 	if c.comment.Date == "" {
 		return time.Time{}
 	}
@@ -51,7 +52,7 @@ func (c *Comment) Date() time.Time {
 }
 
 // Text returns the comment text.
-func (c *Comment) Text() string {
+func (c *commentImpl) Text() string {
 	var text string
 	for _, p := range c.comment.Content {
 		for _, elem := range p.Content {
@@ -67,8 +68,26 @@ func (c *Comment) Text() string {
 	return text
 }
 
+// AnchoredText returns the text this comment is attached to.
+func (c *commentImpl) AnchoredText() string {
+	if c == nil || c.doc == nil {
+		return ""
+	}
+	return c.doc.CommentedText(c.comment.ID)
+}
+
+// Replies returns replies to this comment.
+func (c *commentImpl) Replies() []Comment {
+	return nil
+}
+
+// AddReply adds a reply to this comment.
+func (c *commentImpl) AddReply(text, author string) (Comment, error) {
+	return nil, fmt.Errorf("comment replies not implemented")
+}
+
 // SetText sets the comment text.
-func (c *Comment) SetText(text string) {
+func (c *commentImpl) SetText(text string) {
 	c.comment.Content = []*wml.P{
 		{
 			Content: []interface{}{
@@ -86,36 +105,96 @@ func (c *Comment) SetText(text string) {
 // Document comment methods
 // =============================================================================
 
-// Comments returns all comments in the document.
-func (d *Document) Comments() []*Comment {
+// Comments returns the document comments manager.
+func (d *documentImpl) Comments() Comments {
+	return &commentsImpl{doc: d}
+}
+
+// AllComments returns all comments in the document (legacy helper).
+func (d *documentImpl) AllComments() []Comment {
 	if d.comments == nil {
 		return nil
 	}
 	
-	result := make([]*Comment, len(d.comments.Comment))
+	result := make([]Comment, len(d.comments.Comment))
 	for i, c := range d.comments.Comment {
-		result[i] = &Comment{doc: d, comment: c}
+		result[i] = &commentImpl{doc: d, comment: c}
 	}
 	return result
 }
 
-// CommentByID returns a comment by its ID.
-func (d *Document) CommentByID(id int) *Comment {
-	if d.comments == nil {
+// All returns all comments.
+func (c *commentsImpl) All() []Comment {
+	if c == nil || c.doc == nil {
 		return nil
 	}
-	
-	for _, c := range d.comments.Comment {
-		if c.ID == id {
-			return &Comment{doc: d, comment: c}
+	comments := c.doc.AllComments()
+	result := make([]Comment, len(comments))
+	for i, comment := range comments {
+		result[i] = comment
+	}
+	return result
+}
+
+// ByID returns a comment by ID.
+func (c *commentsImpl) ByID(id string) (Comment, error) {
+	if c == nil || c.doc == nil {
+		return nil, ErrInvalidIndex
+	}
+	comment := c.doc.CommentByID(id)
+	if comment == nil {
+		return nil, ErrInvalidIndex
+	}
+	return comment, nil
+}
+
+// Add adds a new comment and anchors it to text if provided.
+func (c *commentsImpl) Add(text, author string, anchorText string) (Comment, error) {
+	if c == nil || c.doc == nil {
+		return nil, ErrInvalidIndex
+	}
+	comment := c.doc.AddComment(text, author)
+	if anchorText != "" {
+		if para, start, end := c.doc.findAnchorRuns(anchorText); para != nil {
+			if err := para.AnchorComment(comment.IDInt(), start, end); err != nil {
+				return nil, err
+			}
 		}
 	}
-	return nil
+	return comment, nil
+}
+
+func (d *documentImpl) findAnchorRuns(anchorText string) (*paragraphImpl, int, int) {
+	if d == nil || d.document == nil || d.document.Body == nil {
+		return nil, 0, 0
+	}
+	for i, elem := range d.document.Body.Content {
+		p, ok := elem.(*wml.P)
+		if !ok {
+			continue
+		}
+		para := &paragraphImpl{doc: d, p: p, index: i}
+		runs := para.Runs()
+		for runIndex, run := range runs {
+			if strings.Contains(run.Text(), anchorText) {
+				return para, runIndex, runIndex
+			}
+		}
+	}
+	return nil, 0, 0
+}
+
+// Delete removes a comment by ID.
+func (c *commentsImpl) Delete(id string) error {
+	if c == nil || c.doc == nil {
+		return ErrInvalidIndex
+	}
+	return c.doc.DeleteComment(id)
 }
 
 // AddComment adds a new comment to the document.
 // The comment is not anchored to any text until you call AnchorComment.
-func (d *Document) AddComment(author, text string) *Comment {
+func (d *documentImpl) AddComment(text, author string) *commentImpl {
 	if d.comments == nil {
 		d.comments = &wml.Comments{}
 	}
@@ -143,29 +222,12 @@ func (d *Document) AddComment(author, text string) *Comment {
 	}
 	
 	d.comments.Comment = append(d.comments.Comment, comment)
-	return &Comment{doc: d, comment: comment}
-}
-
-// DeleteComment removes a comment by ID.
-func (d *Document) DeleteComment(id int) error {
-	if d.comments == nil {
-		return fmt.Errorf("comment %d not found", id)
-	}
-	
-	for i, c := range d.comments.Comment {
-		if c.ID == id {
-			d.comments.Comment = append(d.comments.Comment[:i], d.comments.Comment[i+1:]...)
-			// Also remove comment ranges from document
-			d.removeCommentRanges(id)
-			return nil
-		}
-	}
-	return fmt.Errorf("comment %d not found", id)
+	return &commentImpl{doc: d, comment: comment}
 }
 
 // AnchorComment anchors a comment to text within a paragraph.
 // startRun and endRun are the indices of runs that mark the anchor range.
-func (p *Paragraph) AnchorComment(commentID int, startRun, endRun int) error {
+func (p *paragraphImpl) AnchorComment(commentID int, startRun, endRun int) error {
 	// Add comment range start before startRun
 	rangeStart := &wml.CommentRangeStart{ID: commentID}
 	rangeEnd := &wml.CommentRangeEnd{ID: commentID}
@@ -201,7 +263,7 @@ func (p *Paragraph) AnchorComment(commentID int, startRun, endRun int) error {
 }
 
 // CommentedText returns the text that a comment is attached to.
-func (d *Document) CommentedText(commentID int) string {
+func (d *documentImpl) CommentedText(commentID int) string {
 	var collecting bool
 	var text string
 	
@@ -233,7 +295,7 @@ func (d *Document) CommentedText(commentID int) string {
 	return text
 }
 
-func (d *Document) removeCommentRanges(id int) {
+func (d *documentImpl) removeCommentRanges(id int) {
 	for _, elem := range d.document.Body.Content {
 		if p, ok := elem.(*wml.P); ok {
 			newContent := make([]interface{}, 0, len(p.Content))
@@ -311,7 +373,7 @@ func splitName(name string) []string {
 // Comments marshaling
 // =============================================================================
 
-func (d *Document) saveComments() error {
+func (d *documentImpl) saveComments() error {
 	if d.comments == nil || len(d.comments.Comment) == 0 {
 		return nil
 	}

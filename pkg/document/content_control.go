@@ -9,7 +9,7 @@ import (
 
 // ContentControl represents a content control (SDT).
 type ContentControl struct {
-	doc *Document
+	doc *documentImpl
 	sdt *wml.Sdt
 }
 
@@ -197,61 +197,61 @@ func (c *ContentControl) SetText(text string) {
 }
 
 // Paragraphs returns the paragraphs inside a block content control.
-func (c *ContentControl) Paragraphs() []*Paragraph {
+func (c *ContentControl) Paragraphs() []Paragraph {
 	if c.sdt.SdtContent == nil {
 		return nil
 	}
-	var result []*Paragraph
+	var result []Paragraph
 	for i, elem := range c.sdt.SdtContent.Content {
 		if p, ok := elem.(*wml.P); ok {
-			result = append(result, &Paragraph{doc: c.doc, p: p, index: i})
+			result = append(result, &paragraphImpl{doc: c.doc, p: p, index: i})
 		}
 	}
 	return result
 }
 
 // Tables returns the tables inside a block content control.
-func (c *ContentControl) Tables() []*Table {
+func (c *ContentControl) Tables() []Table {
 	if c.sdt.SdtContent == nil {
 		return nil
 	}
-	var result []*Table
+	var result []Table
 	for i, elem := range c.sdt.SdtContent.Content {
 		if tbl, ok := elem.(*wml.Tbl); ok {
-			result = append(result, &Table{doc: c.doc, tbl: tbl, index: i})
+			result = append(result, &tableImpl{doc: c.doc, tbl: tbl, index: i})
 		}
 	}
 	return result
 }
 
 // Runs returns the runs inside a run-level content control.
-func (c *ContentControl) Runs() []*Run {
+func (c *ContentControl) Runs() []Run {
 	if c.sdt.SdtContent == nil {
 		return nil
 	}
-	var result []*Run
+	var result []Run
 	for _, elem := range c.sdt.SdtContent.Content {
 		if r, ok := elem.(*wml.R); ok {
-			result = append(result, &Run{doc: c.doc, r: r})
+			result = append(result, &runImpl{doc: c.doc, r: r})
 		}
 	}
 	return result
 }
 
 // AddParagraph adds a paragraph to a block content control.
-func (c *ContentControl) AddParagraph() *Paragraph {
+func (c *ContentControl) AddParagraph() Paragraph {
 	c.ensureContent()
 	p := &wml.P{}
 	c.sdt.SdtContent.Content = append(c.sdt.SdtContent.Content, p)
-	return &Paragraph{doc: c.doc, p: p, index: len(c.sdt.SdtContent.Content) - 1}
+	return &paragraphImpl{doc: c.doc, p: p, index: len(c.sdt.SdtContent.Content) - 1}
 }
 
 // AddRun adds a run to a run-level content control.
-func (c *ContentControl) AddRun() *Run {
+func (c *ContentControl) AddRun() Run {
 	c.ensureContent()
 	r := &wml.R{}
 	c.sdt.SdtContent.Content = append(c.sdt.SdtContent.Content, r)
-	return &Run{doc: c.doc, r: r}
+	return &runImpl{doc: c.doc, r: r}
 }
 
 // IsInline returns true for run-level content controls.
@@ -282,7 +282,7 @@ func (c *ContentControl) Remove() error {
 }
 
 // AddContentControl adds a run-level content control to the paragraph.
-func (p *Paragraph) AddContentControl(tag, alias, text string) *ContentControl {
+func (p *paragraphImpl) AddContentControl(tag, alias, text string) *ContentControl {
 	sdt := newContentControl(tag, alias, []interface{}{
 		&wml.R{Content: []interface{}{wml.NewT(text)}},
 	})
@@ -291,7 +291,7 @@ func (p *Paragraph) AddContentControl(tag, alias, text string) *ContentControl {
 }
 
 // AddBlockContentControl adds a block-level content control to the document body.
-func (d *Document) AddBlockContentControl(tag, alias, text string) *ContentControl {
+func (d *documentImpl) AddBlockContentControl(tag, alias, text string) *ContentControl {
 	p := &wml.P{Content: []interface{}{&wml.R{Content: []interface{}{wml.NewT(text)}}}}
 	sdt := newContentControl(tag, alias, []interface{}{p})
 	if d.document.Body == nil {
@@ -319,7 +319,7 @@ func newContentControl(tag, alias string, content []interface{}) *wml.Sdt {
 }
 
 // ContentControls returns all content controls in the document.
-func (d *Document) ContentControls() []*ContentControl {
+func (d *documentImpl) ContentControls() []*ContentControl {
 	if d.document == nil || d.document.Body == nil {
 		return nil
 	}
@@ -328,8 +328,20 @@ func (d *Document) ContentControls() []*ContentControl {
 	return result
 }
 
+// AddContentControl adds an inline content control to the first paragraph.
+func (d *documentImpl) AddContentControl(tag, alias, text string) *ContentControl {
+	if d == nil {
+		return nil
+	}
+	paras := d.Paragraphs()
+	if len(paras) == 0 {
+		return d.AddParagraph().AddContentControl(tag, alias, text)
+	}
+	return paras[0].AddContentControl(tag, alias, text)
+}
+
 // ContentControlsByTag returns all content controls with the specified tag.
-func (d *Document) ContentControlsByTag(tag string) []*ContentControl {
+func (d *documentImpl) ContentControlsByTag(tag string) []*ContentControl {
 	var result []*ContentControl
 	for _, cc := range d.ContentControls() {
 		if cc.Tag() == tag {
@@ -340,7 +352,7 @@ func (d *Document) ContentControlsByTag(tag string) []*ContentControl {
 }
 
 // ContentControlByTag returns the first content control with the specified tag.
-func (d *Document) ContentControlByTag(tag string) *ContentControl {
+func (d *documentImpl) ContentControlByTag(tag string) *ContentControl {
 	for _, cc := range d.ContentControls() {
 		if cc.Tag() == tag {
 			return cc
@@ -457,7 +469,7 @@ func findSdtInTable(tbl *wml.Tbl, target *wml.Sdt) (bool, bool) {
 	return false, false
 }
 
-func collectSdtFromContent(content []interface{}, doc *Document, result *[]*ContentControl) {
+func collectSdtFromContent(content []interface{}, doc *documentImpl, result *[]*ContentControl) {
 	for _, elem := range content {
 		switch v := elem.(type) {
 		case *wml.Sdt:

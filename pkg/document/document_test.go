@@ -500,12 +500,12 @@ func TestTable_CellMerge(t *testing.T) {
 	}
 
 	// Vertical merge
-	tbl.Cell(1, 0).SetVerticalMerge("restart")
-	tbl.Cell(2, 0).SetVerticalMerge("continue")
-	if got := tbl.Cell(1, 0).VerticalMerge(); got != "restart" {
+	tbl.Cell(1, 0).SetVerticalMerge(VerticalMerge("restart"))
+	tbl.Cell(2, 0).SetVerticalMerge(VerticalMerge("continue"))
+	if got := tbl.Cell(1, 0).VerticalMerge(); got != VerticalMerge("restart") {
 		t.Errorf("VerticalMerge() = %q, want restart", got)
 	}
-	if got := tbl.Cell(2, 0).VerticalMerge(); got != "continue" {
+	if got := tbl.Cell(2, 0).VerticalMerge(); got != VerticalMerge("continue") {
 		t.Errorf("VerticalMerge() = %q, want continue", got)
 	}
 }
@@ -583,7 +583,7 @@ func TestRoundTrip_Fixtures(t *testing.T) {
 func TestRoundTrip_FormattingPreserved(t *testing.T) {
 	h := NewTestHelper(t)
 
-	doc := h.RoundTrip("formatting.docx", func(d *Document) {
+	doc := h.RoundTrip("formatting.docx", func(d Document) {
 		p := d.AddParagraph()
 
 		r1 := p.AddRun()
@@ -638,7 +638,7 @@ func TestRoundTrip_TableContent(t *testing.T) {
 		{"A2", "B2", "C2"},
 	}
 
-	doc := h.RoundTrip("table.docx", func(d *Document) {
+	doc := h.RoundTrip("table.docx", func(d Document) {
 		tbl := d.AddTable(3, 3)
 		for row := 0; row < 3; row++ {
 			for col := 0; col < 3; col++ {

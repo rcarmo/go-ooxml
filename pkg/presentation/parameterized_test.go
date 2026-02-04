@@ -14,7 +14,7 @@ import (
 type PresentationFixture struct {
 	Name        string
 	Description string
-	Setup       func(*Presentation)
+	Setup       func(Presentation)
 }
 
 // CommonFixtures provides standard presentation test fixtures.
@@ -22,29 +22,29 @@ var CommonFixtures = []PresentationFixture{
 	{
 		Name:        "empty",
 		Description: "Empty presentation with no slides",
-		Setup:       func(p *Presentation) {},
+		Setup:       func(p Presentation) {},
 	},
 	{
 		Name:        "single_slide",
 		Description: "Single blank slide",
-		Setup: func(p *Presentation) {
-			p.AddSlide()
+		Setup: func(p Presentation) {
+			p.AddSlide(0)
 		},
 	},
 	{
 		Name:        "multiple_slides",
 		Description: "Three slides",
-		Setup: func(p *Presentation) {
-			p.AddSlide()
-			p.AddSlide()
-			p.AddSlide()
+		Setup: func(p Presentation) {
+			p.AddSlide(0)
+			p.AddSlide(0)
+			p.AddSlide(0)
 		},
 	},
 	{
 		Name:        "slide_with_textbox",
 		Description: "Slide with a text box",
-		Setup: func(p *Presentation) {
-			s := p.AddSlide()
+		Setup: func(p Presentation) {
+			s := p.AddSlide(0)
 			tb := s.AddTextBox(100000, 100000, 5000000, 1000000)
 			tb.SetText("Test Text")
 		},
@@ -52,34 +52,34 @@ var CommonFixtures = []PresentationFixture{
 	{
 		Name:        "slide_with_shapes",
 		Description: "Slide with various shapes",
-		Setup: func(p *Presentation) {
-			s := p.AddSlide()
-			s.AddShape(ShapeTypeRectangle, 100000, 100000, 1000000, 1000000)
-			s.AddShape(ShapeTypeEllipse, 200000, 200000, 1000000, 1000000)
+		Setup: func(p Presentation) {
+			s := p.AddSlide(0)
+			s.AddShape(ShapeTypeRectangle)
+			s.AddShape(ShapeTypeEllipse)
 			s.AddTextBox(300000, 300000, 2000000, 500000)
 		},
 	},
 	{
 		Name:        "slide_with_notes",
 		Description: "Slide with speaker notes",
-		Setup: func(p *Presentation) {
-			s := p.AddSlide()
+		Setup: func(p Presentation) {
+			s := p.AddSlide(0)
 			s.SetNotes("These are speaker notes")
 		},
 	},
 	{
 		Name:        "hidden_slide",
 		Description: "Slide marked as hidden",
-		Setup: func(p *Presentation) {
-			s := p.AddSlide()
+		Setup: func(p Presentation) {
+			s := p.AddSlide(0)
 			s.SetHidden(true)
 		},
 	},
 	{
 		Name:        "formatted_text",
 		Description: "Text with formatting",
-		Setup: func(p *Presentation) {
-			s := p.AddSlide()
+		Setup: func(p Presentation) {
+			s := p.AddSlide(0)
 			tb := s.AddTextBox(100000, 100000, 5000000, 2000000)
 			tf := tb.TextFrame()
 			
@@ -102,8 +102,8 @@ var CommonFixtures = []PresentationFixture{
 	{
 		Name:        "bullet_points",
 		Description: "Slide with bullet points",
-		Setup: func(p *Presentation) {
-			s := p.AddSlide()
+		Setup: func(p Presentation) {
+			s := p.AddSlide(0)
 			tb := s.AddTextBox(100000, 100000, 5000000, 3000000)
 			tf := tb.TextFrame()
 			
@@ -121,8 +121,8 @@ var CommonFixtures = []PresentationFixture{
 	{
 		Name:        "slide_with_table",
 		Description: "Slide with a table",
-		Setup: func(p *Presentation) {
-			s := p.AddSlide()
+		Setup: func(p Presentation) {
+			s := p.AddSlide(0)
 			table := s.AddTable(2, 2, 100000, 100000, 4000000, 2000000)
 			table.Cell(0, 0).SetText("A1")
 			table.Cell(0, 1).SetText("B1")
@@ -133,7 +133,7 @@ var CommonFixtures = []PresentationFixture{
 	{
 		Name:        "widescreen",
 		Description: "Widescreen 16:9 presentation",
-		Setup:       func(p *Presentation) {}, // Created with NewWidescreen
+		Setup:       func(p Presentation) {}, // Created with NewWidescreen
 	},
 }
 
@@ -148,7 +148,7 @@ func TestFixtures_RoundTrip(t *testing.T) {
 			h := testutil.NewHelper(t)
 			
 			// Create and setup
-			var p *Presentation
+			var p Presentation
 			var err error
 			if fixture.Name == "widescreen" {
 				p, err = NewWidescreen()
@@ -202,8 +202,8 @@ func TestShapeTypes_Parameterized(t *testing.T) {
 			p, _ := New()
 			defer p.Close()
 			
-			slide := p.AddSlide()
-			shape := slide.AddShape(tc.ShapeType, 0, 0, 1000000, 1000000)
+			slide := p.AddSlide(0)
+			shape := slide.AddShape(tc.ShapeType)
 			
 			h.AssertNotNil(shape, "AddShape result")
 			h.AssertEqual(shape.Type(), tc.ShapeType, "Shape type")
@@ -223,7 +223,7 @@ func TestTextFormatting_Parameterized(t *testing.T) {
 			p, _ := New()
 			defer p.Close()
 			
-			slide := p.AddSlide()
+			slide := p.AddSlide(0)
 			tb := slide.AddTextBox(0, 0, 2000000, 500000)
 			tf := tb.TextFrame()
 			para := tf.AddParagraph()
@@ -272,20 +272,20 @@ func TestTextFormatting_Parameterized(t *testing.T) {
 type slideOpTestCase struct {
 	Name          string
 	InitialSlides int
-	Operation     func(*Presentation)
+	Operation     func(Presentation)
 	WantSlides    int
 }
 
 var slideOpCases = []slideOpTestCase{
-	{"add_to_empty", 0, func(p *Presentation) { p.AddSlide() }, 1},
-	{"add_to_one", 1, func(p *Presentation) { p.AddSlide() }, 2},
-	{"add_multiple", 0, func(p *Presentation) { p.AddSlide(); p.AddSlide(); p.AddSlide() }, 3},
-	{"insert_at_start", 2, func(p *Presentation) { p.InsertSlide(0) }, 3},
-	{"insert_at_end", 2, func(p *Presentation) { p.InsertSlide(2) }, 3},
-	{"delete_first", 3, func(p *Presentation) { p.DeleteSlide(0) }, 2},
-	{"delete_last", 3, func(p *Presentation) { p.DeleteSlide(2) }, 2},
-	{"delete_middle", 3, func(p *Presentation) { p.DeleteSlide(1) }, 2},
-	{"duplicate", 1, func(p *Presentation) { p.DuplicateSlide(0) }, 2},
+	{"add_to_empty", 0, func(p Presentation) { p.AddSlide(0) }, 1},
+	{"add_to_one", 1, func(p Presentation) { p.AddSlide(0) }, 2},
+	{"add_multiple", 0, func(p Presentation) { p.AddSlide(0); p.AddSlide(0); p.AddSlide(0) }, 3},
+	{"insert_at_start", 2, func(p Presentation) { p.InsertSlide(1, 0) }, 3},
+	{"insert_at_end", 2, func(p Presentation) { p.InsertSlide(3, 0) }, 3},
+	{"delete_first", 3, func(p Presentation) { p.DeleteSlide(1) }, 2},
+	{"delete_last", 3, func(p Presentation) { p.DeleteSlide(3) }, 2},
+	{"delete_middle", 3, func(p Presentation) { p.DeleteSlide(2) }, 2},
+	{"duplicate", 1, func(p Presentation) { p.DuplicateSlide(1) }, 2},
 }
 
 func TestSlideOperations_Parameterized(t *testing.T) {
@@ -298,7 +298,7 @@ func TestSlideOperations_Parameterized(t *testing.T) {
 			
 			// Setup initial slides
 			for i := 0; i < tc.InitialSlides; i++ {
-				p.AddSlide()
+				p.AddSlide(0)
 			}
 			
 			// Perform operation
@@ -334,7 +334,7 @@ func TestAlignment_Parameterized(t *testing.T) {
 			p, _ := New()
 			defer p.Close()
 			
-			slide := p.AddSlide()
+			slide := p.AddSlide(0)
 			tb := slide.AddTextBox(0, 0, 2000000, 500000)
 			para := tb.TextFrame().AddParagraph()
 			
@@ -367,7 +367,7 @@ func TestBulletTypes_Parameterized(t *testing.T) {
 			p, _ := New()
 			defer p.Close()
 			
-			slide := p.AddSlide()
+			slide := p.AddSlide(0)
 			tb := slide.AddTextBox(0, 0, 2000000, 500000)
 			para := tb.TextFrame().AddParagraph()
 			
@@ -404,7 +404,7 @@ func TestShapePosition_Parameterized(t *testing.T) {
 			p, _ := New()
 			defer p.Close()
 			
-			slide := p.AddSlide()
+			slide := p.AddSlide(0)
 			shape := slide.AddTextBox(tc.Left, tc.Top, tc.Width, tc.Height)
 			
 			h.AssertEqual(shape.Left(), tc.Left, "Left")
@@ -425,7 +425,7 @@ func TestStringValues_RoundTrip(t *testing.T) {
 			h := testutil.NewHelper(t)
 			
 			p, _ := New()
-			slide := p.AddSlide()
+			slide := p.AddSlide(0)
 			tb := slide.AddTextBox(0, 0, 2000000, 500000)
 			tb.SetText(tc.Input)
 			
@@ -436,7 +436,7 @@ func TestStringValues_RoundTrip(t *testing.T) {
 			p2, _ := Open(path)
 			defer p2.Close()
 			
-			shapes := p2.Slides()[0].Shapes()
+			shapes := p2.SlidesRaw()[0].Shapes()
 			if len(shapes) > 0 {
 				got := shapes[0].Text()
 				h.AssertContains(got, tc.Want, "Text preserved")

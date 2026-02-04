@@ -17,7 +17,7 @@ import (
 // TestFixture represents a reusable test document configuration.
 type TestFixture struct {
 	Name        string
-	Setup       func(*Document)
+	Setup       func(Document)
 	Description string
 }
 
@@ -26,19 +26,19 @@ var CommonFixtures = []TestFixture{
 	{
 		Name:        "empty",
 		Description: "Empty document with no content",
-		Setup:       func(d *Document) {},
+		Setup:       func(d Document) {},
 	},
 	{
 		Name:        "single_paragraph",
 		Description: "Document with one plain paragraph",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			d.AddParagraph().SetText("Hello World")
 		},
 	},
 	{
 		Name:        "multiple_paragraphs",
 		Description: "Document with multiple paragraphs",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			d.AddParagraph().SetText("First paragraph")
 			d.AddParagraph().SetText("Second paragraph")
 			d.AddParagraph().SetText("Third paragraph")
@@ -47,7 +47,7 @@ var CommonFixtures = []TestFixture{
 	{
 		Name:        "formatted_text",
 		Description: "Document with various text formatting",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			p := d.AddParagraph()
 			r1 := p.AddRun()
 			r1.SetText("Bold ")
@@ -69,7 +69,7 @@ var CommonFixtures = []TestFixture{
 	{
 		Name:        "headings",
 		Description: "Document with heading hierarchy",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			h1 := d.AddParagraph()
 			h1.SetText("Heading 1")
 			h1.SetStyle("Heading1")
@@ -89,7 +89,7 @@ var CommonFixtures = []TestFixture{
 	{
 		Name:        "simple_table",
 		Description: "Document with a 2x2 table",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			tbl := d.AddTable(2, 2)
 			tbl.Cell(0, 0).SetText("A1")
 			tbl.Cell(0, 1).SetText("B1")
@@ -100,7 +100,7 @@ var CommonFixtures = []TestFixture{
 	{
 		Name:        "mixed_content",
 		Description: "Document with paragraphs and tables",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			title := d.AddParagraph()
 			title.SetText("Document Title")
 			title.SetStyle("Heading1")
@@ -121,7 +121,7 @@ var CommonFixtures = []TestFixture{
 	{
 		Name:        "unicode_content",
 		Description: "Document with international text",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			texts := []string{
 				"English",
 				"日本語",
@@ -138,7 +138,7 @@ var CommonFixtures = []TestFixture{
 	{
 		Name:        "sdt_content_controls",
 		Description: "Document with content controls",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			p := d.AddParagraph()
 			p.SetStyle("Title")
 			p.AddRun().SetText("Content Controls Fixture")
@@ -182,7 +182,7 @@ func NewTestHelper(t *testing.T) *TestHelper {
 
 // CreateDocument creates a new document, calls setup, and returns it.
 // The document is NOT automatically closed - caller must defer doc.Close().
-func (h *TestHelper) CreateDocument(setup func(*Document)) *Document {
+func (h *TestHelper) CreateDocument(setup func(Document)) Document {
 	h.t.Helper()
 	doc, err := New()
 	if err != nil {
@@ -195,7 +195,7 @@ func (h *TestHelper) CreateDocument(setup func(*Document)) *Document {
 }
 
 // SaveDocument saves a document to a temp file and returns the path.
-func (h *TestHelper) SaveDocument(doc *Document, name string) string {
+func (h *TestHelper) SaveDocument(doc Document, name string) string {
 	h.t.Helper()
 	path := filepath.Join(h.tempDir, name)
 	if err := doc.SaveAs(path); err != nil {
@@ -205,7 +205,7 @@ func (h *TestHelper) SaveDocument(doc *Document, name string) string {
 }
 
 // OpenDocument opens a document from a path.
-func (h *TestHelper) OpenDocument(path string) *Document {
+func (h *TestHelper) OpenDocument(path string) Document {
 	h.t.Helper()
 	doc, err := Open(filepath.Clean(path))
 	if err != nil {
@@ -215,7 +215,7 @@ func (h *TestHelper) OpenDocument(path string) *Document {
 }
 
 // OpenFixture opens a document fixture from testdata/word.
-func (h *TestHelper) OpenFixture(name string) *Document {
+func (h *TestHelper) OpenFixture(name string) Document {
 	h.t.Helper()
 	return h.OpenDocument(fixturePath(name))
 }
@@ -231,7 +231,7 @@ func fixturePath(name string) string {
 
 // RoundTrip creates, saves, and reopens a document.
 // Returns the reopened document (caller must close).
-func (h *TestHelper) RoundTrip(name string, setup func(*Document)) *Document {
+func (h *TestHelper) RoundTrip(name string, setup func(Document)) Document {
 	h.t.Helper()
 	doc := h.CreateDocument(setup)
 	path := h.SaveDocument(doc, name)
@@ -240,7 +240,7 @@ func (h *TestHelper) RoundTrip(name string, setup func(*Document)) *Document {
 }
 
 // AssertParagraphCount checks the paragraph count.
-func (h *TestHelper) AssertParagraphCount(doc *Document, want int) {
+func (h *TestHelper) AssertParagraphCount(doc Document, want int) {
 	h.t.Helper()
 	got := len(doc.Paragraphs())
 	if got != want {
@@ -249,7 +249,7 @@ func (h *TestHelper) AssertParagraphCount(doc *Document, want int) {
 }
 
 // AssertTableCount checks the table count.
-func (h *TestHelper) AssertTableCount(doc *Document, want int) {
+func (h *TestHelper) AssertTableCount(doc Document, want int) {
 	h.t.Helper()
 	got := len(doc.Tables())
 	if got != want {
@@ -258,7 +258,7 @@ func (h *TestHelper) AssertTableCount(doc *Document, want int) {
 }
 
 // AssertParagraphText checks paragraph text at index.
-func (h *TestHelper) AssertParagraphText(doc *Document, index int, want string) {
+func (h *TestHelper) AssertParagraphText(doc Document, index int, want string) {
 	h.t.Helper()
 	paras := doc.Paragraphs()
 	if index >= len(paras) {

@@ -27,27 +27,27 @@ const (
 )
 
 // Presentation represents a PowerPoint presentation.
-type Presentation struct {
+type presentationImpl struct {
 	pkg          *packaging.Package
 	presentation *pml.Presentation
-	slides       []*Slide
+	slides       []*slideImpl
 	path         string
 	nextSlideID  int
 }
 
 // New creates a new empty presentation with standard 4:3 dimensions.
-func New() (*Presentation, error) {
+func New() (Presentation, error) {
 	return NewWithSize(SlideWidth4x3, SlideHeight4x3)
 }
 
 // NewWidescreen creates a new presentation with 16:9 widescreen dimensions.
-func NewWidescreen() (*Presentation, error) {
+func NewWidescreen() (Presentation, error) {
 	return NewWithSize(SlideWidth16x9, SlideHeight16x9)
 }
 
 // NewWithSize creates a new presentation with specified dimensions in EMUs.
-func NewWithSize(width, height int64) (*Presentation, error) {
-	p := &Presentation{
+func NewWithSize(width, height int64) (Presentation, error) {
+	p := &presentationImpl{
 		pkg: packaging.New(),
 		presentation: &pml.Presentation{
 			XMLNS_R: pml.NSR,
@@ -62,7 +62,7 @@ func NewWithSize(width, height int64) (*Presentation, error) {
 			},
 			SldIdLst: &pml.SldIdLst{},
 		},
-		slides:      make([]*Slide, 0),
+		slides:      make([]*slideImpl, 0),
 		nextSlideID: 256, // PowerPoint typically starts slide IDs at 256
 	}
 
@@ -74,7 +74,7 @@ func NewWithSize(width, height int64) (*Presentation, error) {
 }
 
 // Open opens an existing presentation from a file path.
-func Open(path string) (*Presentation, error) {
+func Open(path string) (Presentation, error) {
 	pkg, err := packaging.Open(path)
 	if err != nil {
 		return nil, err
@@ -89,7 +89,7 @@ func Open(path string) (*Presentation, error) {
 }
 
 // OpenReader opens a presentation from an io.ReaderAt.
-func OpenReader(r io.ReaderAt, size int64) (*Presentation, error) {
+func OpenReader(r io.ReaderAt, size int64) (Presentation, error) {
 	pkg, err := packaging.OpenReader(r, size)
 	if err != nil {
 		return nil, err
@@ -97,10 +97,10 @@ func OpenReader(r io.ReaderAt, size int64) (*Presentation, error) {
 	return openFromPackage(pkg)
 }
 
-func openFromPackage(pkg *packaging.Package) (*Presentation, error) {
-	p := &Presentation{
+func openFromPackage(pkg *packaging.Package) (*presentationImpl, error) {
+	p := &presentationImpl{
 		pkg:         pkg,
-		slides:      make([]*Slide, 0),
+		slides:      make([]*slideImpl, 0),
 		nextSlideID: 256,
 	}
 
@@ -118,7 +118,7 @@ func openFromPackage(pkg *packaging.Package) (*Presentation, error) {
 }
 
 // Save saves the presentation to its original path.
-func (p *Presentation) Save() error {
+func (p *presentationImpl) Save() error {
 	if p.path == "" {
 		return fmt.Errorf("no path set, use SaveAs")
 	}
@@ -126,7 +126,7 @@ func (p *Presentation) Save() error {
 }
 
 // SaveAs saves the presentation to a new path.
-func (p *Presentation) SaveAs(path string) error {
+func (p *presentationImpl) SaveAs(path string) error {
 	if err := p.updatePackage(); err != nil {
 		return err
 	}
@@ -134,18 +134,37 @@ func (p *Presentation) SaveAs(path string) error {
 }
 
 // Close closes the presentation and releases resources.
-func (p *Presentation) Close() error {
+func (p *presentationImpl) Close() error {
 	return p.pkg.Close()
 }
 
 // CoreProperties returns the presentation core properties.
-func (p *Presentation) CoreProperties() (*common.CoreProperties, error) {
+func (p *presentationImpl) CoreProperties() (*common.CoreProperties, error) {
 	return p.pkg.CoreProperties()
 }
 
 // SetCoreProperties sets the presentation core properties.
-func (p *Presentation) SetCoreProperties(props *common.CoreProperties) error {
+func (p *presentationImpl) SetCoreProperties(props *common.CoreProperties) error {
 	return p.pkg.SetCoreProperties(props)
+}
+
+// Properties returns the presentation properties.
+func (p *presentationImpl) Properties() PresentationProperties {
+	props, _ := p.pkg.CoreProperties()
+	if props == nil {
+		return PresentationProperties{}
+	}
+	return *props
+}
+
+// Masters returns slide masters (not implemented).
+func (p *presentationImpl) Masters() []SlideMaster {
+	return nil
+}
+
+// Layouts returns slide layouts (not implemented).
+func (p *presentationImpl) Layouts() []SlideLayout {
+	return nil
 }
 
 // =============================================================================
@@ -153,30 +172,41 @@ func (p *Presentation) SetCoreProperties(props *common.CoreProperties) error {
 // =============================================================================
 
 // Slides returns all slides in the presentation.
-func (p *Presentation) Slides() []*Slide {
+func (p *presentationImpl) Slides() []Slide {
+	slides := make([]Slide, len(p.slides))
+	for i, slide := range p.slides {
+		slides[i] = slide
+	}
+	return slides
+}
+
+// SlidesRaw returns all slides in the presentation as concrete types.
+func (p *presentationImpl) SlidesRaw() []*slideImpl {
 	return p.slides
 }
 
-// Slide returns a slide by index (0-based).
-func (p *Presentation) Slide(index int) (*Slide, error) {
+// Slide returns a slide by index (1-based).
+func (p *presentationImpl) Slide(index int) (Slide, error) {
+	index--
 	if index < 0 || index >= len(p.slides) {
-		return nil, fmt.Errorf("slide index %d out of range", index)
+		return nil, fmt.Errorf("slide index %d out of range", index+1)
 	}
 	return p.slides[index], nil
 }
 
 // SlideCount returns the number of slides.
-func (p *Presentation) SlideCount() int {
+func (p *presentationImpl) SlideCount() int {
 	return len(p.slides)
 }
 
 // AddSlide adds a new blank slide at the end.
-func (p *Presentation) AddSlide() *Slide {
-	return p.InsertSlide(len(p.slides))
+func (p *presentationImpl) AddSlide(layoutIndex int) Slide {
+	return p.InsertSlide(len(p.slides)+1, layoutIndex)
 }
 
-// InsertSlide inserts a new blank slide at the specified index.
-func (p *Presentation) InsertSlide(index int) *Slide {
+// InsertSlide inserts a new blank slide at the specified index (0-based).
+func (p *presentationImpl) InsertSlide(index, layoutIndex int) Slide {
+	index--
 	if index < 0 {
 		index = 0
 	}
@@ -187,7 +217,7 @@ func (p *Presentation) InsertSlide(index int) *Slide {
 	slideNum := len(p.slides) + 1
 	relID := fmt.Sprintf("rId%d", slideNum+10) // Start relationship IDs at 11
 
-	slide := &Slide{
+	slide := &slideImpl{
 		pres:  p,
 		slide: createBlankSlide(),
 		id:    p.nextSlideID,
@@ -227,10 +257,11 @@ func (p *Presentation) InsertSlide(index int) *Slide {
 	return slide
 }
 
-// DeleteSlide removes a slide at the specified index.
-func (p *Presentation) DeleteSlide(index int) error {
+// DeleteSlide removes a slide at the specified index (1-based).
+func (p *presentationImpl) DeleteSlide(index int) error {
+	index--
 	if index < 0 || index >= len(p.slides) {
-		return fmt.Errorf("slide index %d out of range", index)
+		return fmt.Errorf("slide index %d out of range", index+1)
 	}
 
 	// Remove from slides slice
@@ -252,34 +283,37 @@ func (p *Presentation) DeleteSlide(index int) error {
 	return nil
 }
 
-// DuplicateSlide creates a copy of the slide at the specified index.
-func (p *Presentation) DuplicateSlide(index int) (*Slide, error) {
+// DuplicateSlide creates a copy of the slide at the specified index (1-based).
+func (p *presentationImpl) DuplicateSlide(index int) Slide {
+	index--
 	if index < 0 || index >= len(p.slides) {
-		return nil, fmt.Errorf("slide index %d out of range", index)
+		return nil
 	}
 
 	source := p.slides[index]
-	newSlide := p.InsertSlide(index + 1)
+	newSlide := p.InsertSlide(index+2, 0)
 
 	// Copy content (deep copy of the slide structure)
 	if source.slide.CSld != nil {
-		newSlide.slide.CSld = copyCSld(source.slide.CSld)
+		if s, ok := newSlide.(*slideImpl); ok {
+			s.slide.CSld = copyCSld(source.slide.CSld)
+		}
 	}
 
-	return newSlide, nil
+	return newSlide
 }
 
 // ReorderSlides reorders slides according to the new order.
 // newOrder contains the new indices, e.g., [2, 0, 1] moves slide 2 to position 0.
-func (p *Presentation) ReorderSlides(newOrder []int) error {
+func (p *presentationImpl) ReorderSlides(newOrder []int) error {
 	if len(newOrder) != len(p.slides) {
 		return fmt.Errorf("newOrder length %d doesn't match slide count %d", len(newOrder), len(p.slides))
 	}
 
-	// Validate indices
+	// Validate indices (1-based)
 	used := make(map[int]bool)
 	for _, idx := range newOrder {
-		if idx < 0 || idx >= len(p.slides) {
+		if idx < 1 || idx > len(p.slides) {
 			return fmt.Errorf("invalid index %d in newOrder", idx)
 		}
 		if used[idx] {
@@ -289,9 +323,10 @@ func (p *Presentation) ReorderSlides(newOrder []int) error {
 	}
 
 	// Create new slides slice
-	newSlides := make([]*Slide, len(p.slides))
+	newSlides := make([]*slideImpl, len(p.slides))
 	newSldIds := make([]*pml.SldId, len(p.slides))
 	for newIdx, oldIdx := range newOrder {
+		oldIdx--
 		newSlides[newIdx] = p.slides[oldIdx]
 		newSlides[newIdx].index = newIdx
 		if p.presentation.SldIdLst != nil && oldIdx < len(p.presentation.SldIdLst.SldId) {
@@ -312,7 +347,7 @@ func (p *Presentation) ReorderSlides(newOrder []int) error {
 // =============================================================================
 
 // SlideSize returns the slide dimensions in EMUs.
-func (p *Presentation) SlideSize() (width, height int64) {
+func (p *presentationImpl) SlideSize() (width, height int64) {
 	if p.presentation.SldSz != nil {
 		return p.presentation.SldSz.Cx, p.presentation.SldSz.Cy
 	}
@@ -320,20 +355,21 @@ func (p *Presentation) SlideSize() (width, height int64) {
 }
 
 // SetSlideSize sets the slide dimensions in EMUs.
-func (p *Presentation) SetSlideSize(width, height int64) {
+func (p *presentationImpl) SetSlideSize(width, height int64) error {
 	if p.presentation.SldSz == nil {
 		p.presentation.SldSz = &pml.SldSz{}
 	}
 	p.presentation.SldSz.Cx = width
 	p.presentation.SldSz.Cy = height
 	p.presentation.SldSz.Type = getSizeType(width, height)
+	return nil
 }
 
 // =============================================================================
 // Internal methods
 // =============================================================================
 
-func (p *Presentation) initPackage() error {
+func (p *presentationImpl) initPackage() error {
 	// Content types are added automatically when parts are added
 	// Add main relationship
 	p.pkg.AddRelationship("/", "ppt/presentation.xml", packaging.RelTypeOfficeDocument)
@@ -341,7 +377,7 @@ func (p *Presentation) initPackage() error {
 	return nil
 }
 
-func (p *Presentation) parsePresentation() error {
+func (p *presentationImpl) parsePresentation() error {
 	part, err := p.pkg.GetPart(packaging.PresentationPath)
 	if err != nil {
 		return err
@@ -355,7 +391,7 @@ func (p *Presentation) parsePresentation() error {
 	return utils.UnmarshalXML(data, p.presentation)
 }
 
-func (p *Presentation) parseSlides() error {
+func (p *presentationImpl) parseSlides() error {
 	if p.presentation.SldIdLst == nil {
 		return nil
 	}
@@ -395,7 +431,7 @@ func (p *Presentation) parseSlides() error {
 			continue
 		}
 
-		p.slides = append(p.slides, &Slide{
+		p.slides = append(p.slides, &slideImpl{
 			pres:  p,
 			slide: slide,
 			id:    sldId.ID,
@@ -412,7 +448,7 @@ func (p *Presentation) parseSlides() error {
 	return nil
 }
 
-func (p *Presentation) updatePackage() error {
+func (p *presentationImpl) updatePackage() error {
 	// Save presentation.xml
 	data, err := utils.MarshalXMLWithHeader(p.presentation)
 	if err != nil {

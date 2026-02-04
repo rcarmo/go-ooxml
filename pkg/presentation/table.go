@@ -7,11 +7,11 @@ import (
 )
 
 // Table represents a table in a slide.
-type Table struct {
+type tableImpl struct {
 	tbl *dml.Tbl
 }
 
-func newTable(rows, cols int, width, height int64) *Table {
+func newTable(rows, cols int, width, height int64) *tableImpl {
 	if rows < 1 {
 		rows = 1
 	}
@@ -47,28 +47,28 @@ func newTable(rows, cols int, width, height int64) *Table {
 		tbl.Tr = append(tbl.Tr, tr)
 	}
 
-	return &Table{tbl: tbl}
+	return &tableImpl{tbl: tbl}
 }
 
 // Rows returns table rows.
-func (t *Table) Rows() []*TableRow {
-	rows := make([]*TableRow, len(t.tbl.Tr))
+func (t *tableImpl) Rows() []TableRow {
+	rows := make([]TableRow, len(t.tbl.Tr))
 	for i, tr := range t.tbl.Tr {
-		rows[i] = &TableRow{row: tr}
+		rows[i] = &tableRowImpl{row: tr}
 	}
 	return rows
 }
 
 // Row returns the row at index (0-based).
-func (t *Table) Row(index int) *TableRow {
+func (t *tableImpl) Row(index int) TableRow {
 	if index < 0 || index >= len(t.tbl.Tr) {
 		return nil
 	}
-	return &TableRow{row: t.tbl.Tr[index]}
+	return &tableRowImpl{row: t.tbl.Tr[index]}
 }
 
 // Cell returns the cell at row/col (0-based).
-func (t *Table) Cell(row, col int) *TableCell {
+func (t *tableImpl) Cell(row, col int) TableCell {
 	r := t.Row(row)
 	if r == nil {
 		return nil
@@ -77,7 +77,7 @@ func (t *Table) Cell(row, col int) *TableCell {
 }
 
 // AddRow adds a row at the end.
-func (t *Table) AddRow() *TableRow {
+func (t *tableImpl) AddRow() TableRow {
 	colCount := t.ColumnCount()
 	tr := &dml.Tr{H: t.rowHeight()}
 	for i := 0; i < colCount; i++ {
@@ -90,11 +90,11 @@ func (t *Table) AddRow() *TableRow {
 		})
 	}
 	t.tbl.Tr = append(t.tbl.Tr, tr)
-	return &TableRow{row: tr}
+	return &tableRowImpl{row: tr}
 }
 
 // InsertRow inserts a row at index.
-func (t *Table) InsertRow(index int) *TableRow {
+func (t *tableImpl) InsertRow(index int) TableRow {
 	colCount := t.ColumnCount()
 	tr := &dml.Tr{H: t.rowHeight()}
 	for i := 0; i < colCount; i++ {
@@ -112,11 +112,11 @@ func (t *Table) InsertRow(index int) *TableRow {
 		t.tbl.Tr = append(t.tbl.Tr[:index+1], t.tbl.Tr[index:]...)
 		t.tbl.Tr[index] = tr
 	}
-	return &TableRow{row: tr}
+	return &tableRowImpl{row: tr}
 }
 
 // DeleteRow deletes a row at index.
-func (t *Table) DeleteRow(index int) error {
+func (t *tableImpl) DeleteRow(index int) error {
 	if index < 0 || index >= len(t.tbl.Tr) {
 		return ErrInvalidIndex
 	}
@@ -125,12 +125,12 @@ func (t *Table) DeleteRow(index int) error {
 }
 
 // RowCount returns number of rows.
-func (t *Table) RowCount() int {
+func (t *tableImpl) RowCount() int {
 	return len(t.tbl.Tr)
 }
 
 // ColumnCount returns number of columns.
-func (t *Table) ColumnCount() int {
+func (t *tableImpl) ColumnCount() int {
 	if t.tbl.TblGrid != nil && len(t.tbl.TblGrid.GridCol) > 0 {
 		return len(t.tbl.TblGrid.GridCol)
 	}
@@ -141,19 +141,22 @@ func (t *Table) ColumnCount() int {
 }
 
 // TableFromShape returns the table from a shape if present.
-func TableFromShape(shape *Shape) *Table {
+func TableFromShape(shape Shape) Table {
 	if shape == nil || !shape.HasTable() {
 		return nil
 	}
-	return shape.Table()
+	if table, ok := shape.Table().(*tableImpl); ok {
+		return table
+	}
+	return nil
 }
 
 // XML returns the underlying DrawingML table.
-func (t *Table) XML() *dml.Tbl {
+func (t *tableImpl) XML() *dml.Tbl {
 	return t.tbl
 }
 
-func (t *Table) rowHeight() int64 {
+func (t *tableImpl) rowHeight() int64 {
 	if len(t.tbl.Tr) > 0 {
 		return t.tbl.Tr[0].H
 	}
@@ -161,44 +164,44 @@ func (t *Table) rowHeight() int64 {
 }
 
 // TableRow represents a table row.
-type TableRow struct {
+type tableRowImpl struct {
 	row *dml.Tr
 }
 
 // Cells returns row cells.
-func (r *TableRow) Cells() []*TableCell {
-	cells := make([]*TableCell, len(r.row.Tc))
+func (r *tableRowImpl) Cells() []TableCell {
+	cells := make([]TableCell, len(r.row.Tc))
 	for i, tc := range r.row.Tc {
-		cells[i] = &TableCell{cell: tc}
+		cells[i] = &tableCellImpl{cell: tc}
 	}
 	return cells
 }
 
 // Cell returns the cell at index (0-based).
-func (r *TableRow) Cell(index int) *TableCell {
+func (r *tableRowImpl) Cell(index int) TableCell {
 	if index < 0 || index >= len(r.row.Tc) {
 		return nil
 	}
-	return &TableCell{cell: r.row.Tc[index]}
+	return &tableCellImpl{cell: r.row.Tc[index]}
 }
 
 // Height returns row height.
-func (r *TableRow) Height() int64 {
+func (r *tableRowImpl) Height() int64 {
 	return r.row.H
 }
 
 // SetHeight sets row height.
-func (r *TableRow) SetHeight(height int64) {
+func (r *tableRowImpl) SetHeight(height int64) {
 	r.row.H = height
 }
 
 // TableCell represents a table cell.
-type TableCell struct {
+type tableCellImpl struct {
 	cell *dml.Tc
 }
 
 // TextFrame returns the cell text frame.
-func (c *TableCell) TextFrame() *TextFrame {
+func (c *tableCellImpl) TextFrame() TextFrame {
 	if c.cell == nil {
 		return nil
 	}
@@ -209,29 +212,34 @@ func (c *TableCell) TextFrame() *TextFrame {
 			P:        []*dml.P{{R: []*dml.R{{T: ""}}}},
 		}
 	}
-	return &TextFrame{txBody: c.cell.TxBody}
+	return &textFrameImpl{txBody: c.cell.TxBody}
 }
 
 // Text returns cell text.
-func (c *TableCell) Text() string {
+func (c *tableCellImpl) Text() string {
 	tf := c.TextFrame()
 	if tf == nil {
 		return ""
 	}
-	return tf.Text()
+	if t, ok := tf.(*textFrameImpl); ok {
+		return t.Text()
+	}
+	return ""
 }
 
 // SetText sets cell text.
-func (c *TableCell) SetText(text string) {
+func (c *tableCellImpl) SetText(text string) {
 	tf := c.TextFrame()
 	if tf == nil {
 		return
 	}
-	tf.SetText(text)
+	if t, ok := tf.(*textFrameImpl); ok {
+		t.SetText(text)
+	}
 }
 
 // RowSpan returns row span.
-func (c *TableCell) RowSpan() int {
+func (c *tableCellImpl) RowSpan() int {
 	if c.cell == nil {
 		return 1
 	}
@@ -242,7 +250,7 @@ func (c *TableCell) RowSpan() int {
 }
 
 // ColSpan returns column span.
-func (c *TableCell) ColSpan() int {
+func (c *tableCellImpl) ColSpan() int {
 	if c.cell == nil {
 		return 1
 	}
@@ -253,7 +261,7 @@ func (c *TableCell) ColSpan() int {
 }
 
 // SetRowSpan sets row span.
-func (c *TableCell) SetRowSpan(span int) {
+func (c *tableCellImpl) SetRowSpan(span int) {
 	if c.cell == nil {
 		return
 	}
@@ -267,7 +275,7 @@ func (c *TableCell) SetRowSpan(span int) {
 }
 
 // SetColSpan sets column span.
-func (c *TableCell) SetColSpan(span int) {
+func (c *tableCellImpl) SetColSpan(span int) {
 	if c.cell == nil {
 		return
 	}
@@ -280,9 +288,9 @@ func (c *TableCell) SetColSpan(span int) {
 	c.cell.TcPr.GridSpan = &span
 }
 
-func tableFromGraphicFrame(gf *pml.GraphicFrame) *Table {
+func tableFromGraphicFrame(gf *pml.GraphicFrame) *tableImpl {
 	if gf == nil || gf.Graphic == nil || gf.Graphic.GraphicData == nil || gf.Graphic.GraphicData.Tbl == nil {
 		return nil
 	}
-	return &Table{tbl: gf.Graphic.GraphicData.Tbl}
+	return &tableImpl{tbl: gf.Graphic.GraphicData.Tbl}
 }

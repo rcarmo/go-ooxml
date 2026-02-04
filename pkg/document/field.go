@@ -14,7 +14,7 @@ type Field struct {
 }
 
 // AddField inserts a field with instruction and optional display text.
-func (p *Paragraph) AddField(instruction, display string) (*Field, error) {
+func (p *paragraphImpl) AddField(instruction, display string) (*Field, error) {
 	if instruction == "" {
 		return nil, fmt.Errorf("field instruction cannot be empty")
 	}

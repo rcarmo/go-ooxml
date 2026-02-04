@@ -21,30 +21,30 @@ const (
 )
 
 // Cell represents a cell in a worksheet.
-type Cell struct {
-	worksheet *Worksheet
+type cellImpl struct {
+	worksheet *worksheetImpl
 	cell      *sml.Cell
 	row       int
 	col       int
 }
 
 // Reference returns the cell reference (e.g., "A1").
-func (c *Cell) Reference() string {
+func (c *cellImpl) Reference() string {
 	return c.cell.R
 }
 
 // Row returns the 1-based row number.
-func (c *Cell) Row() int {
+func (c *cellImpl) Row() int {
 	return c.row
 }
 
 // Column returns the 1-based column number.
-func (c *Cell) Column() int {
+func (c *cellImpl) Column() int {
 	return c.col
 }
 
 // Type returns the cell type.
-func (c *Cell) Type() CellType {
+func (c *cellImpl) Type() CellType {
 	if c.cell.F != nil {
 		return CellTypeFormula
 	}
@@ -71,7 +71,7 @@ func (c *Cell) Type() CellType {
 // =============================================================================
 
 // Value returns the cell value as an interface{}.
-func (c *Cell) Value() interface{} {
+func (c *cellImpl) Value() interface{} {
 	switch c.Type() {
 	case CellTypeString:
 		return c.String()
@@ -89,7 +89,7 @@ func (c *Cell) Value() interface{} {
 }
 
 // String returns the cell value as a string.
-func (c *Cell) String() string {
+func (c *cellImpl) String() string {
 	switch c.cell.T {
 	case sml.CellTypeSharedString:
 		// Look up in shared strings table
@@ -109,12 +109,12 @@ func (c *Cell) String() string {
 }
 
 // Float64 returns the cell value as a float64.
-func (c *Cell) Float64() (float64, error) {
+func (c *cellImpl) Float64() (float64, error) {
 	return strconv.ParseFloat(c.cell.V, 64)
 }
 
 // Int returns the cell value as an int.
-func (c *Cell) Int() (int, error) {
+func (c *cellImpl) Int() (int, error) {
 	f, err := c.Float64()
 	if err != nil {
 		return 0, err
@@ -123,7 +123,7 @@ func (c *Cell) Int() (int, error) {
 }
 
 // Bool returns the cell value as a boolean.
-func (c *Cell) Bool() (bool, error) {
+func (c *cellImpl) Bool() (bool, error) {
 	if c.cell.V == "1" || c.cell.V == "true" || c.cell.V == "TRUE" {
 		return true, nil
 	}
@@ -135,7 +135,7 @@ func (c *Cell) Bool() (bool, error) {
 
 // Time returns the cell value as a time.Time.
 // Excel stores dates as numbers (days since 1900-01-01).
-func (c *Cell) Time() (time.Time, error) {
+func (c *cellImpl) Time() (time.Time, error) {
 	f, err := c.Float64()
 	if err != nil {
 		return time.Time{}, err
@@ -157,7 +157,7 @@ func (c *Cell) Time() (time.Time, error) {
 // =============================================================================
 
 // SetValue sets the cell value.
-func (c *Cell) SetValue(v interface{}) error {
+func (c *cellImpl) SetValue(v interface{}) error {
 	if v == nil {
 		c.cell.V = ""
 		c.cell.T = ""
@@ -197,7 +197,7 @@ func (c *Cell) SetValue(v interface{}) error {
 	return nil
 }
 
-func (c *Cell) setString(s string) error {
+func (c *cellImpl) setString(s string) error {
 	// Use shared strings for efficiency
 	idx := c.worksheet.workbook.addSharedString(s)
 	c.cell.V = strconv.Itoa(idx)
@@ -210,7 +210,7 @@ func (c *Cell) setString(s string) error {
 // =============================================================================
 
 // Formula returns the cell formula (without leading =).
-func (c *Cell) Formula() string {
+func (c *cellImpl) Formula() string {
 	if c.cell.F == nil {
 		return ""
 	}
@@ -218,7 +218,7 @@ func (c *Cell) Formula() string {
 }
 
 // SetFormula sets the cell formula.
-func (c *Cell) SetFormula(formula string) error {
+func (c *cellImpl) SetFormula(formula string) error {
 	c.cell.F = &sml.Formula{Content: formula}
 	c.cell.T = ""
 	c.cell.V = "" // Value will be calculated by Excel
@@ -226,7 +226,7 @@ func (c *Cell) SetFormula(formula string) error {
 }
 
 // HasFormula returns true if the cell has a formula.
-func (c *Cell) HasFormula() bool {
+func (c *cellImpl) HasFormula() bool {
 	return c.cell.F != nil && c.cell.F.Content != ""
 }
 
@@ -234,12 +234,51 @@ func (c *Cell) HasFormula() bool {
 // Style (placeholder for future implementation)
 // =============================================================================
 
-// Style returns the style index.
-func (c *Cell) Style() int {
-	return c.cell.S
+// Style returns the cell style for this cell.
+func (c *cellImpl) Style() CellStyle {
+	if c == nil || c.worksheet == nil || c.worksheet.workbook == nil {
+		return nil
+	}
+	return c.worksheet.workbook.Styles().Style()
 }
 
-// SetStyle sets the style index.
-func (c *Cell) SetStyle(styleIndex int) {
-	c.cell.S = styleIndex
+// SetStyle applies a cell style to this cell.
+func (c *cellImpl) SetStyle(style CellStyle) error {
+	if c == nil || style == nil {
+		return ErrInvalidValue
+	}
+	if cs, ok := style.(*cellStyleImpl); ok {
+		c.cell.S = cs.finalize()
+		return nil
+	}
+	return ErrInvalidValue
+}
+
+// NumberFormat returns the number format for the cell.
+func (c *cellImpl) NumberFormat() string {
+	if c == nil || c.worksheet == nil || c.worksheet.workbook == nil {
+		return ""
+	}
+	styles, ok := c.worksheet.workbook.Styles().(*stylesImpl)
+	if !ok || styles == nil || styles.stylesheet == nil || styles.stylesheet.CellXfs == nil {
+		return ""
+	}
+	if c.cell.S < 0 || c.cell.S >= len(styles.stylesheet.CellXfs.Xf) {
+		return ""
+	}
+	xf := styles.stylesheet.CellXfs.Xf[c.cell.S]
+	return styles.formatCode(xf.NumFmtID)
+}
+
+// SetNumberFormat sets the number format for the cell.
+func (c *cellImpl) SetNumberFormat(format string) error {
+	if c == nil || c.worksheet == nil || c.worksheet.workbook == nil {
+		return ErrInvalidValue
+	}
+	style := c.worksheet.workbook.Styles().Style()
+	style.SetNumberFormat(format)
+	if cs, ok := style.(*cellStyleImpl); ok {
+		c.cell.S = cs.finalize()
+	}
+	return nil
 }

@@ -42,7 +42,7 @@ func TestNewWithSize(t *testing.T) {
 	customWidth := int64(7200000)  // 8 inches
 	customHeight := int64(5400000) // 6 inches
 
-	p := testutil.NewResource(t, func() (*Presentation, error) {
+	p := testutil.NewResource(t, func() (Presentation, error) {
 		return NewWithSize(customWidth, customHeight)
 	})
 
@@ -82,24 +82,24 @@ func TestAddSlide(t *testing.T) {
 	p := testutil.NewResource(t, New)
 
 	// Add first slide
-	slide1 := p.AddSlide()
+	slide1 := p.AddSlide(0)
 	if slide1 == nil {
 		t.Fatal("AddSlide() returned nil")
 	}
 	if p.SlideCount() != 1 {
 		t.Errorf("SlideCount() = %d, want 1", p.SlideCount())
 	}
-	if slide1.Index() != 0 {
-		t.Errorf("slide1.Index() = %d, want 0", slide1.Index())
+	if slide1.Index() != 1 {
+		t.Errorf("slide1.Index() = %d, want 1", slide1.Index())
 	}
 
 	// Add second slide
-	slide2 := p.AddSlide()
+	slide2 := p.AddSlide(0)
 	if p.SlideCount() != 2 {
 		t.Errorf("SlideCount() = %d, want 2", p.SlideCount())
 	}
-	if slide2.Index() != 1 {
-		t.Errorf("slide2.Index() = %d, want 1", slide2.Index())
+	if slide2.Index() != 2 {
+		t.Errorf("slide2.Index() = %d, want 2", slide2.Index())
 	}
 }
 
@@ -107,22 +107,22 @@ func TestInsertSlide(t *testing.T) {
 	p := testutil.NewResource(t, New)
 
 	// Add two slides
-	p.AddSlide()
-	p.AddSlide()
+	p.AddSlide(0)
+	p.AddSlide(0)
 
 	// Insert at beginning
-	newSlide := p.InsertSlide(0)
+	newSlide := p.InsertSlide(1, 0)
 	if p.SlideCount() != 3 {
 		t.Errorf("SlideCount() = %d, want 3", p.SlideCount())
 	}
-	if newSlide.Index() != 0 {
-		t.Errorf("newSlide.Index() = %d, want 0", newSlide.Index())
+	if newSlide.Index() != 1 {
+		t.Errorf("newSlide.Index() = %d, want 1", newSlide.Index())
 	}
 
 	// Verify all indices updated
-	for i, slide := range p.Slides() {
-		if slide.Index() != i {
-			t.Errorf("slide %d Index() = %d, want %d", i, slide.Index(), i)
+	for i, slide := range p.SlidesRaw() {
+		if slide.Index() != i+1 {
+			t.Errorf("slide %d Index() = %d, want %d", i, slide.Index(), i+1)
 		}
 	}
 }
@@ -130,9 +130,9 @@ func TestInsertSlide(t *testing.T) {
 func TestDeleteSlide(t *testing.T) {
 	p := testutil.NewResource(t, New)
 
-	p.AddSlide()
-	p.AddSlide()
-	p.AddSlide()
+	p.AddSlide(0)
+	p.AddSlide(0)
+	p.AddSlide(0)
 
 	// Delete middle slide
 	if err := p.DeleteSlide(1); err != nil {
@@ -152,54 +152,51 @@ func TestDeleteSlide(t *testing.T) {
 func TestDuplicateSlide(t *testing.T) {
 	p := testutil.NewResource(t, New)
 
-	slide1 := p.AddSlide()
+	slide1 := p.AddSlide(0)
 	tb := slide1.AddTextBox(100, 100, 500, 200)
 	tb.SetText("Original Text")
 
-	duplicated, err := p.DuplicateSlide(0)
-	if err != nil {
-		t.Fatalf("DuplicateSlide(0) error = %v", err)
-	}
+	duplicated := p.DuplicateSlide(1)
 
 	if p.SlideCount() != 2 {
 		t.Errorf("SlideCount() = %d, want 2", p.SlideCount())
 	}
 
-	if duplicated.Index() != 1 {
-		t.Errorf("duplicated.Index() = %d, want 1", duplicated.Index())
+	if duplicated.Index() != 2 {
+		t.Errorf("duplicated.Index() = %d, want 2", duplicated.Index())
 	}
 }
 
 func TestReorderSlides(t *testing.T) {
 	p := testutil.NewResource(t, New)
 
-	slide1 := p.AddSlide()
-	slide2 := p.AddSlide()
-	slide3 := p.AddSlide()
+	slide1 := p.AddSlide(0)
+	slide2 := p.AddSlide(0)
+	slide3 := p.AddSlide(0)
 
 	slide1ID := slide1.ID()
 	slide2ID := slide2.ID()
 	slide3ID := slide3.ID()
 
 	// Reverse order
-	if err := p.ReorderSlides([]int{2, 1, 0}); err != nil {
+	if err := p.ReorderSlides([]int{3, 2, 1}); err != nil {
 		t.Fatalf("ReorderSlides() error = %v", err)
 	}
 
 	// Check new order
-	slides := p.Slides()
+	slides := p.SlidesRaw()
 	if slides[0].ID() != slide3ID {
-		t.Errorf("slides[0].ID() = %d, want %d", slides[0].ID(), slide3ID)
+		t.Errorf("slides[0].ID() = %s, want %s", slides[0].ID(), slide3ID)
 	}
 	if slides[1].ID() != slide2ID {
-		t.Errorf("slides[1].ID() = %d, want %d", slides[1].ID(), slide2ID)
+		t.Errorf("slides[1].ID() = %s, want %s", slides[1].ID(), slide2ID)
 	}
 	if slides[2].ID() != slide1ID {
-		t.Errorf("slides[2].ID() = %d, want %d", slides[2].ID(), slide1ID)
+		t.Errorf("slides[2].ID() = %s, want %s", slides[2].ID(), slide1ID)
 	}
 
 	// Invalid reorder
-	if err := p.ReorderSlides([]int{0, 1}); err == nil {
+	if err := p.ReorderSlides([]int{1, 2}); err == nil {
 		t.Error("ReorderSlides() with wrong length should error")
 	}
 }
@@ -211,7 +208,7 @@ func TestReorderSlides(t *testing.T) {
 func TestSlideHidden(t *testing.T) {
 	p := testutil.NewResource(t, New)
 
-	slide := p.AddSlide()
+	slide := p.AddSlide(0)
 
 	// Default is visible
 	if slide.Hidden() {
@@ -236,12 +233,12 @@ func TestSlideHidden(t *testing.T) {
 func TestDeleteShape(t *testing.T) {
 	p := testutil.NewResource(t, New)
 
-	slide := p.AddSlide()
+	slide := p.AddSlide(0)
 	slide.AddTextBox(0, 0, 100, 100)
 	slide.AddTextBox(0, 0, 100, 100)
 
 	initialCount := len(slide.Shapes())
-	if err := slide.DeleteShape(0); err != nil {
+	if err := slide.DeleteShape("0"); err != nil {
 		t.Fatalf("DeleteShape(0) error = %v", err)
 	}
 
@@ -259,7 +256,7 @@ func TestDeleteShape(t *testing.T) {
 func TestSlideNotes(t *testing.T) {
 	p := testutil.NewResource(t, New)
 
-	slide := p.AddSlide()
+	slide := p.AddSlide(0)
 
 	// Initially no notes
 	if slide.HasNotes() {
@@ -288,7 +285,7 @@ func TestSlideNotes(t *testing.T) {
 func TestSaveAs(t *testing.T) {
 	p := testutil.NewResource(t, New)
 
-	slide := p.AddSlide()
+	slide := p.AddSlide(0)
 	tb := slide.AddTextBox(100000, 100000, 5000000, 1000000)
 	tb.SetText("Test Presentation")
 
@@ -310,11 +307,11 @@ func TestRoundTrip(t *testing.T) {
 	// Create presentation
 	p := testutil.NewResource(t, New)
 
-	slide1 := p.AddSlide()
+	slide1 := p.AddSlide(0)
 	tb := slide1.AddTextBox(100000, 100000, 5000000, 1000000)
 	tb.SetText("Slide 1 Text")
 
-	slide2 := p.AddSlide()
+	slide2 := p.AddSlide(0)
 	slide2.SetHidden(true)
 
 	tmpDir := t.TempDir()
@@ -345,7 +342,7 @@ func TestRoundTrip(t *testing.T) {
 func TestAutofit(t *testing.T) {
 	p := testutil.NewResource(t, New)
 
-	slide := p.AddSlide()
+	slide := p.AddSlide(0)
 	tb := slide.AddTextBox(0, 0, 1000000, 500000)
 	tf := tb.TextFrame()
 
@@ -372,8 +369,8 @@ func TestAutofit(t *testing.T) {
 func TestShapeFill(t *testing.T) {
 	p := testutil.NewResource(t, New)
 
-	slide := p.AddSlide()
-	shape := slide.AddShape(ShapeTypeRectangle, 0, 0, 1000000, 1000000)
+	slide := p.AddSlide(0)
+	shape := slide.AddShape(ShapeTypeRectangle)
 
 	shape.SetFillColor("0000FF")
 	shape.SetLineColor("FF0000", 12700) // 1pt line

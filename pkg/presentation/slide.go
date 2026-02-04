@@ -1,6 +1,7 @@
 package presentation
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/dml"
@@ -8,8 +9,8 @@ import (
 )
 
 // Slide represents a slide in the presentation.
-type Slide struct {
-	pres  *Presentation
+type slideImpl struct {
+	pres  *presentationImpl
 	slide *pml.Sld
 	notes *pml.Notes
 	id    int
@@ -18,18 +19,18 @@ type Slide struct {
 	path  string
 }
 
-// Index returns the 0-based index of the slide.
-func (s *Slide) Index() int {
-	return s.index
+// Index returns the 1-based index of the slide.
+func (s *slideImpl) Index() int {
+	return s.index + 1
 }
 
 // ID returns the internal slide ID.
-func (s *Slide) ID() int {
-	return s.id
+func (s *slideImpl) ID() string {
+	return strconv.Itoa(s.id)
 }
 
 // Hidden returns whether the slide is hidden.
-func (s *Slide) Hidden() bool {
+func (s *slideImpl) Hidden() bool {
 	if s.slide.Show == nil {
 		return false
 	}
@@ -37,7 +38,7 @@ func (s *Slide) Hidden() bool {
 }
 
 // SetHidden sets whether the slide is hidden.
-func (s *Slide) SetHidden(hidden bool) {
+func (s *slideImpl) SetHidden(hidden bool) {
 	show := !hidden
 	s.slide.Show = &show
 }
@@ -47,21 +48,21 @@ func (s *Slide) SetHidden(hidden bool) {
 // =============================================================================
 
 // Shapes returns all shapes on the slide.
-func (s *Slide) Shapes() []*Shape {
+func (s *slideImpl) Shapes() []Shape {
 	if s.slide.CSld == nil || s.slide.CSld.SpTree == nil {
 		return nil
 	}
 
-	var shapes []*Shape
+	var shapes []Shape
 	for _, item := range s.slide.CSld.SpTree.Content {
 		if sp, ok := item.(*dml.Sp); ok {
-			shapes = append(shapes, &Shape{
+			shapes = append(shapes, &shapeImpl{
 				slide: s,
 				sp:    sp,
 			})
 		}
 		if gf, ok := item.(*pml.GraphicFrame); ok {
-			shapes = append(shapes, &Shape{
+			shapes = append(shapes, &shapeImpl{
 				slide: s,
 				graphicFrame: gf,
 			})
@@ -71,29 +72,25 @@ func (s *Slide) Shapes() []*Shape {
 }
 
 // Shape returns a shape by name or index.
-func (s *Slide) Shape(identifier interface{}) (*Shape, error) {
+func (s *slideImpl) Shape(identifier string) (Shape, error) {
 	shapes := s.Shapes()
-	switch id := identifier.(type) {
-	case int:
-		if id < 0 || id >= len(shapes) {
+	if idx, err := strconv.Atoi(identifier); err == nil {
+		if idx < 0 || idx >= len(shapes) {
 			return nil, ErrShapeNotFound
 		}
-		return shapes[id], nil
-	case string:
-		for _, shape := range shapes {
-			if shape.Name() == id {
-				return shape, nil
-			}
-		}
-		return nil, ErrShapeNotFound
-	default:
-		return nil, ErrShapeNotFound
+		return shapes[idx], nil
 	}
+	for _, shape := range shapes {
+		if shape.Name() == identifier {
+			return shape, nil
+		}
+	}
+	return nil, ErrShapeNotFound
 }
 
 // Tables returns all tables on the slide.
-func (s *Slide) Tables() []*Table {
-	var tables []*Table
+func (s *slideImpl) Tables() []Table {
+	var tables []Table
 	for _, shape := range s.Shapes() {
 		if shape.HasTable() {
 			tables = append(tables, shape.Table())
@@ -103,7 +100,7 @@ func (s *Slide) Tables() []*Table {
 }
 
 // AddTextBox adds a text box shape to the slide.
-func (s *Slide) AddTextBox(left, top, width, height int64) *Shape {
+func (s *slideImpl) AddTextBox(left, top, width, height int64) Shape {
 	s.ensureSpTree()
 
 	nextID := s.getNextShapeID()
@@ -135,11 +132,11 @@ func (s *Slide) AddTextBox(left, top, width, height int64) *Shape {
 
 	s.slide.CSld.SpTree.Content = append(s.slide.CSld.SpTree.Content, sp)
 
-	return &Shape{slide: s, sp: sp}
+	return &shapeImpl{slide: s, sp: sp}
 }
 
 // AddShape adds a shape of the specified type.
-func (s *Slide) AddShape(shapeType ShapeType, left, top, width, height int64) *Shape {
+func (s *slideImpl) addShape(shapeType ShapeType, left, top, width, height int64) Shape {
 	s.ensureSpTree()
 
 	nextID := s.getNextShapeID()
@@ -169,11 +166,31 @@ func (s *Slide) AddShape(shapeType ShapeType, left, top, width, height int64) *S
 
 	s.slide.CSld.SpTree.Content = append(s.slide.CSld.SpTree.Content, sp)
 
-	return &Shape{slide: s, sp: sp}
+	return &shapeImpl{slide: s, sp: sp}
+}
+
+// AddShape adds a shape with default dimensions.
+func (s *slideImpl) AddShape(shapeType ShapeType) Shape {
+	return s.addShape(shapeType, 0, 0, 1000000, 1000000)
+}
+
+// AddPicture adds a picture placeholder (not implemented).
+func (s *slideImpl) AddPicture(imagePath string, left, top, width, height int64) (Shape, error) {
+	return nil, ErrInvalidIndex
+}
+
+// Comments returns slide comments (not implemented).
+func (s *slideImpl) Comments() []Comment {
+	return nil
+}
+
+// AddComment adds a slide comment (not implemented).
+func (s *slideImpl) AddComment(text, author string, x, y float64) (Comment, error) {
+	return nil, ErrInvalidIndex
 }
 
 // AddTable adds a table shape to the slide.
-func (s *Slide) AddTable(rows, cols int, left, top, width, height int64) *Table {
+func (s *slideImpl) AddTable(rows, cols int, left, top, width, height int64) Table {
 	s.ensureSpTree()
 
 	nextID := s.getNextShapeID()
@@ -205,43 +222,43 @@ func (s *Slide) AddTable(rows, cols int, left, top, width, height int64) *Table 
 	return table
 }
 
+
 // DeleteShape removes a shape from the slide.
-func (s *Slide) DeleteShape(identifier interface{}) error {
+func (s *slideImpl) DeleteShape(identifier string) error {
 	if s.slide.CSld == nil || s.slide.CSld.SpTree == nil {
 		return ErrShapeNotFound
 	}
 
 	var indexToDelete int = -1
 
-	switch id := identifier.(type) {
-	case int:
+	if idx, err := strconv.Atoi(identifier); err == nil {
 		shapeIdx := 0
 		for i, item := range s.slide.CSld.SpTree.Content {
 			if _, ok := item.(*dml.Sp); ok {
-				if shapeIdx == id {
+				if shapeIdx == idx {
 					indexToDelete = i
 					break
 				}
 				shapeIdx++
 			}
 			if _, ok := item.(*pml.GraphicFrame); ok {
-				if shapeIdx == id {
+				if shapeIdx == idx {
 					indexToDelete = i
 					break
 				}
 				shapeIdx++
 			}
 		}
-	case string:
+	} else {
 		for i, item := range s.slide.CSld.SpTree.Content {
 			if sp, ok := item.(*dml.Sp); ok {
-				if sp.NvSpPr != nil && sp.NvSpPr.CNvPr != nil && sp.NvSpPr.CNvPr.Name == id {
+				if sp.NvSpPr != nil && sp.NvSpPr.CNvPr != nil && sp.NvSpPr.CNvPr.Name == identifier {
 					indexToDelete = i
 					break
 				}
 			}
 			if gf, ok := item.(*pml.GraphicFrame); ok {
-				if gf.NvGraphicFramePr != nil && gf.NvGraphicFramePr.CNvPr != nil && gf.NvGraphicFramePr.CNvPr.Name == id {
+				if gf.NvGraphicFramePr != nil && gf.NvGraphicFramePr.CNvPr != nil && gf.NvGraphicFramePr.CNvPr.Name == identifier {
 					indexToDelete = i
 					break
 				}
@@ -266,8 +283,8 @@ func (s *Slide) DeleteShape(identifier interface{}) error {
 // =============================================================================
 
 // Placeholders returns all placeholder shapes.
-func (s *Slide) Placeholders() []*Shape {
-	var placeholders []*Shape
+func (s *slideImpl) Placeholders() []Shape {
+	var placeholders []Shape
 	for _, shape := range s.Shapes() {
 		if shape.IsPlaceholder() {
 			placeholders = append(placeholders, shape)
@@ -277,7 +294,7 @@ func (s *Slide) Placeholders() []*Shape {
 }
 
 // TitlePlaceholder returns the title placeholder if present.
-func (s *Slide) TitlePlaceholder() *Shape {
+func (s *slideImpl) TitlePlaceholder() Shape {
 	for _, shape := range s.Shapes() {
 		if shape.IsPlaceholder() {
 			pt := shape.PlaceholderType()
@@ -290,7 +307,7 @@ func (s *Slide) TitlePlaceholder() *Shape {
 }
 
 // BodyPlaceholder returns the body placeholder if present.
-func (s *Slide) BodyPlaceholder() *Shape {
+func (s *slideImpl) BodyPlaceholder() Shape {
 	for _, shape := range s.Shapes() {
 		if shape.IsPlaceholder() && shape.PlaceholderType() == PlaceholderBody {
 			return shape
@@ -299,12 +316,17 @@ func (s *Slide) BodyPlaceholder() *Shape {
 	return nil
 }
 
+// Layout returns the slide layout (not implemented).
+func (s *slideImpl) Layout() SlideLayout {
+	return nil
+}
+
 // =============================================================================
 // Notes
 // =============================================================================
 
 // Notes returns the notes text for this slide.
-func (s *Slide) Notes() string {
+func (s *slideImpl) Notes() string {
 	if s.notes == nil || s.notes.CSld == nil || s.notes.CSld.SpTree == nil {
 		return ""
 	}
@@ -326,7 +348,7 @@ func (s *Slide) Notes() string {
 }
 
 // SetNotes sets the notes text for this slide.
-func (s *Slide) SetNotes(text string) {
+func (s *slideImpl) SetNotes(text string) error {
 	s.ensureNotes()
 
 	// Find or create a notes text shape
@@ -370,19 +392,20 @@ func (s *Slide) SetNotes(text string) {
 	notesSp.TxBody.P = []*dml.P{{
 		R: []*dml.R{{T: text}},
 	}}
+	return nil
 }
 
 // AppendNotes appends text to the existing notes.
-func (s *Slide) AppendNotes(text string) {
+func (s *slideImpl) AppendNotes(text string) error {
 	existing := s.Notes()
 	if existing != "" {
 		text = existing + "\n" + text
 	}
-	s.SetNotes(text)
+	return s.SetNotes(text)
 }
 
 // HasNotes returns true if the slide has notes.
-func (s *Slide) HasNotes() bool {
+func (s *slideImpl) HasNotes() bool {
 	return s.Notes() != ""
 }
 
@@ -391,17 +414,21 @@ func (s *Slide) HasNotes() bool {
 // =============================================================================
 
 // Title returns the text of the title placeholder.
-func (s *Slide) Title() string {
+func (s *slideImpl) Title() string {
 	if placeholder := s.TitlePlaceholder(); placeholder != nil {
-		return placeholder.Text()
+		if sp, ok := placeholder.(*shapeImpl); ok {
+			return sp.Text()
+		}
 	}
 	return ""
 }
 
 // SetTitle sets the text of the title placeholder.
-func (s *Slide) SetTitle(text string) error {
+func (s *slideImpl) SetTitle(text string) error {
 	if placeholder := s.TitlePlaceholder(); placeholder != nil {
-		return placeholder.SetText(text)
+		if sp, ok := placeholder.(*shapeImpl); ok {
+			return sp.SetText(text)
+		}
 	}
 	return ErrShapeNotFound
 }
@@ -410,7 +437,7 @@ func (s *Slide) SetTitle(text string) error {
 // Internal methods
 // =============================================================================
 
-func (s *Slide) ensureSpTree() {
+func (s *slideImpl) ensureSpTree() {
 	if s.slide.CSld == nil {
 		s.slide.CSld = &pml.CSld{}
 	}
@@ -426,7 +453,7 @@ func (s *Slide) ensureSpTree() {
 	}
 }
 
-func (s *Slide) ensureNotes() {
+func (s *slideImpl) ensureNotes() {
 	if s.notes == nil {
 		s.notes = &pml.Notes{
 			CSld: &pml.CSld{
@@ -443,7 +470,7 @@ func (s *Slide) ensureNotes() {
 	}
 }
 
-func (s *Slide) getNextShapeID() int {
+func (s *slideImpl) getNextShapeID() int {
 	maxID := 1
 	if s.slide.CSld != nil && s.slide.CSld.SpTree != nil {
 		for _, item := range s.slide.CSld.SpTree.Content {

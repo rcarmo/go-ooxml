@@ -8,20 +8,13 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
-// Paragraph represents a paragraph in a Word document.
-type Paragraph struct {
-	doc   *Document
-	p     *wml.P
-	index int
-}
-
 // Text returns the combined text of all runs in the paragraph.
-func (p *Paragraph) Text() string {
+func (p *paragraphImpl) Text() string {
 	return textFromParagraph(p.p)
 }
 
 // SetText sets the paragraph text, replacing all existing runs.
-func (p *Paragraph) SetText(text string) {
+func (p *paragraphImpl) SetText(text string) {
 	// Clear existing content
 	p.p.Content = nil
 
@@ -31,18 +24,18 @@ func (p *Paragraph) SetText(text string) {
 }
 
 // Runs returns all runs in the paragraph.
-func (p *Paragraph) Runs() []*Run {
-	var result []*Run
+func (p *paragraphImpl) Runs() []Run {
+	var result []Run
 	for _, elem := range p.p.Content {
 		if r, ok := elem.(*wml.R); ok {
-			result = append(result, &Run{doc: p.doc, r: r})
+			result = append(result, &runImpl{doc: p.doc, r: r})
 		}
 	}
 	return result
 }
 
 // AddBookmark inserts a bookmark start/end around the specified run range.
-func (p *Paragraph) AddBookmark(name string, startRun, endRun int) error {
+func (p *paragraphImpl) AddBookmark(name string, startRun, endRun int) error {
 	if name == "" {
 		return fmt.Errorf("bookmark name cannot be empty")
 	}
@@ -89,7 +82,7 @@ func (p *Paragraph) AddBookmark(name string, startRun, endRun int) error {
 }
 
 // Hyperlinks returns all hyperlinks in the paragraph.
-func (p *Paragraph) Hyperlinks() []*Hyperlink {
+func (p *paragraphImpl) Hyperlinks() []*Hyperlink {
 	var result []*Hyperlink
 	for _, elem := range p.p.Content {
 		if h, ok := elem.(*wml.Hyperlink); ok {
@@ -100,7 +93,7 @@ func (p *Paragraph) Hyperlinks() []*Hyperlink {
 }
 
 // ContentControls returns all content controls in the paragraph.
-func (p *Paragraph) ContentControls() []*ContentControl {
+func (p *paragraphImpl) ContentControls() []*ContentControl {
 	var result []*ContentControl
 	for _, elem := range p.p.Content {
 		if sdt, ok := elem.(*wml.Sdt); ok {
@@ -111,14 +104,14 @@ func (p *Paragraph) ContentControls() []*ContentControl {
 }
 
 // AddRun adds a new run to the paragraph.
-func (p *Paragraph) AddRun() *Run {
+func (p *paragraphImpl) AddRun() Run {
 	r := &wml.R{}
 	p.p.Content = append(p.p.Content, r)
-	return &Run{doc: p.doc, r: r}
+	return &runImpl{doc: p.doc, r: r}
 }
 
 // Style returns the paragraph style ID.
-func (p *Paragraph) Style() string {
+func (p *paragraphImpl) Style() string {
 	if p.p.PPr != nil && p.p.PPr.PStyle != nil {
 		return p.p.PPr.PStyle.Val
 	}
@@ -126,21 +119,29 @@ func (p *Paragraph) Style() string {
 }
 
 // SetStyle sets the paragraph style.
-func (p *Paragraph) SetStyle(styleID string) {
+func (p *paragraphImpl) SetStyle(styleID string) {
 	if p.p.PPr == nil {
 		p.p.PPr = &wml.PPr{}
 	}
 	p.p.PPr.PStyle = &wml.PStyle{Val: styleID}
 }
 
+// Properties returns the paragraph properties.
+func (p *paragraphImpl) Properties() ParagraphProperties {
+	if p.p.PPr == nil {
+		p.p.PPr = &wml.PPr{}
+	}
+	return *p.p.PPr
+}
+
 // IsHeading returns whether the paragraph is a heading.
-func (p *Paragraph) IsHeading() bool {
+func (p *paragraphImpl) IsHeading() bool {
 	style := p.Style()
 	return strings.HasPrefix(style, "Heading") || strings.HasPrefix(style, "heading")
 }
 
 // HeadingLevel returns the heading level (1-9) or 0 if not a heading.
-func (p *Paragraph) HeadingLevel() int {
+func (p *paragraphImpl) HeadingLevel() int {
 	style := p.Style()
 	if strings.HasPrefix(style, "Heading") {
 		if len(style) > 7 {
@@ -158,7 +159,7 @@ func (p *Paragraph) HeadingLevel() int {
 }
 
 // Alignment returns the paragraph alignment.
-func (p *Paragraph) Alignment() string {
+func (p *paragraphImpl) Alignment() string {
 	if p.p.PPr != nil && p.p.PPr.Jc != nil {
 		return p.p.PPr.Jc.Val
 	}
@@ -166,7 +167,7 @@ func (p *Paragraph) Alignment() string {
 }
 
 // SetAlignment sets the paragraph alignment (left, center, right, both).
-func (p *Paragraph) SetAlignment(align string) {
+func (p *paragraphImpl) SetAlignment(align string) {
 	if p.p.PPr == nil {
 		p.p.PPr = &wml.PPr{}
 	}
@@ -174,7 +175,7 @@ func (p *Paragraph) SetAlignment(align string) {
 }
 
 // SpacingBefore returns the spacing before the paragraph in twips.
-func (p *Paragraph) SpacingBefore() int64 {
+func (p *paragraphImpl) SpacingBefore() int64 {
 	if p.p.PPr != nil && p.p.PPr.Spacing != nil && p.p.PPr.Spacing.Before != nil {
 		return *p.p.PPr.Spacing.Before
 	}
@@ -182,13 +183,13 @@ func (p *Paragraph) SpacingBefore() int64 {
 }
 
 // SetSpacingBefore sets the spacing before the paragraph in twips.
-func (p *Paragraph) SetSpacingBefore(twips int64) {
+func (p *paragraphImpl) SetSpacingBefore(twips int64) {
 	p.ensureSpacing()
 	p.p.PPr.Spacing.Before = &twips
 }
 
 // SpacingAfter returns the spacing after the paragraph in twips.
-func (p *Paragraph) SpacingAfter() int64 {
+func (p *paragraphImpl) SpacingAfter() int64 {
 	if p.p.PPr != nil && p.p.PPr.Spacing != nil && p.p.PPr.Spacing.After != nil {
 		return *p.p.PPr.Spacing.After
 	}
@@ -196,12 +197,12 @@ func (p *Paragraph) SpacingAfter() int64 {
 }
 
 // SetSpacingAfter sets the spacing after the paragraph in twips.
-func (p *Paragraph) SetSpacingAfter(twips int64) {
+func (p *paragraphImpl) SetSpacingAfter(twips int64) {
 	p.ensureSpacing()
 	p.p.PPr.Spacing.After = &twips
 }
 
-func (p *Paragraph) ensureSpacing() {
+func (p *paragraphImpl) ensureSpacing() {
 	if p.p.PPr == nil {
 		p.p.PPr = &wml.PPr{}
 	}
@@ -211,7 +212,7 @@ func (p *Paragraph) ensureSpacing() {
 }
 
 // KeepWithNext returns whether the paragraph is kept with the next.
-func (p *Paragraph) KeepWithNext() bool {
+func (p *paragraphImpl) KeepWithNext() bool {
 	if p.p.PPr != nil && p.p.PPr.KeepNext != nil {
 		return p.p.PPr.KeepNext.Enabled()
 	}
@@ -219,7 +220,7 @@ func (p *Paragraph) KeepWithNext() bool {
 }
 
 // SetKeepWithNext sets whether to keep with the next paragraph.
-func (p *Paragraph) SetKeepWithNext(v bool) {
+func (p *paragraphImpl) SetKeepWithNext(v bool) {
 	if p.p.PPr == nil {
 		p.p.PPr = &wml.PPr{}
 	}
@@ -231,7 +232,7 @@ func (p *Paragraph) SetKeepWithNext(v bool) {
 }
 
 // ListLevel returns the list level for the paragraph or -1 if not a list item.
-func (p *Paragraph) ListLevel() int {
+func (p *paragraphImpl) ListLevel() int {
 	if p.p.PPr == nil || p.p.PPr.NumPr == nil || p.p.PPr.NumPr.Ilvl == nil {
 		return -1
 	}
@@ -239,7 +240,7 @@ func (p *Paragraph) ListLevel() int {
 }
 
 // SetListLevel sets the list level (0-8) for the paragraph.
-func (p *Paragraph) SetListLevel(level int) error {
+func (p *paragraphImpl) SetListLevel(level int) error {
 	if level < 0 || level > 8 {
 		return utils.ErrInvalidIndex
 	}
@@ -249,7 +250,7 @@ func (p *Paragraph) SetListLevel(level int) error {
 }
 
 // ListNumberingID returns the numbering definition ID or 0 if not set.
-func (p *Paragraph) ListNumberingID() int {
+func (p *paragraphImpl) ListNumberingID() int {
 	if p.p.PPr == nil || p.p.PPr.NumPr == nil || p.p.PPr.NumPr.NumID == nil {
 		return 0
 	}
@@ -257,13 +258,13 @@ func (p *Paragraph) ListNumberingID() int {
 }
 
 // SetListNumberingID sets the numbering definition ID for the paragraph.
-func (p *Paragraph) SetListNumberingID(numID int) {
+func (p *paragraphImpl) SetListNumberingID(numID int) {
 	p.ensureNumPr()
 	p.p.PPr.NumPr.NumID = &wml.NumID{Val: numID}
 }
 
 // SetList sets the list numbering ID and level on the paragraph.
-func (p *Paragraph) SetList(numID, level int) error {
+func (p *paragraphImpl) SetList(numID, level int) error {
 	if err := p.SetListLevel(level); err != nil {
 		return err
 	}
@@ -271,7 +272,7 @@ func (p *Paragraph) SetList(numID, level int) error {
 	return nil
 }
 
-func (p *Paragraph) ensureNumPr() {
+func (p *paragraphImpl) ensureNumPr() {
 	if p.p.PPr == nil {
 		p.p.PPr = &wml.PPr{}
 	}
@@ -281,11 +282,11 @@ func (p *Paragraph) ensureNumPr() {
 }
 
 // Index returns the paragraph's index in the body.
-func (p *Paragraph) Index() int {
+func (p *paragraphImpl) Index() int {
 	return p.index
 }
 
 // XML returns the underlying WML paragraph for advanced access.
-func (p *Paragraph) XML() *wml.P {
+func (p *paragraphImpl) XML() *wml.P {
 	return p.p
 }

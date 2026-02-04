@@ -14,6 +14,8 @@ type Worksheet struct {
 	SheetProtection *SheetProtection `xml:"sheetProtection,omitempty"`
 	MergeCells     *MergeCells     `xml:"mergeCells,omitempty"`
 	Hyperlinks     *Hyperlinks     `xml:"hyperlinks,omitempty"`
+	LegacyDrawing  *LegacyDrawing  `xml:"legacyDrawing,omitempty"`
+	ConditionalFormatting []*ConditionalFormatting `xml:"conditionalFormatting,omitempty"`
 	PageMargins    *PageMargins    `xml:"pageMargins,omitempty"`
 	PageSetup      *PageSetup      `xml:"pageSetup,omitempty"`
 	TableParts     *TableParts     `xml:"tableParts,omitempty"`
@@ -161,6 +163,36 @@ type Hyperlink struct {
 	Location string `xml:"location,attr,omitempty"`
 	Display  string `xml:"display,attr,omitempty"`
 	Tooltip  string `xml:"tooltip,attr,omitempty"`
+}
+
+// LegacyDrawing references a VML drawing part (used for comments).
+type LegacyDrawing struct {
+	ID string `xml:"http://schemas.openxmlformats.org/officeDocument/2006/relationships id,attr"`
+}
+
+// ConditionalFormatting represents conditional formatting rules.
+type ConditionalFormatting struct {
+	SqRef string   `xml:"sqref,attr,omitempty"`
+	Rules []*CfRule `xml:"cfRule,omitempty"`
+}
+
+// CfRule represents a conditional formatting rule.
+type CfRule struct {
+	Type      string     `xml:"type,attr,omitempty"`
+	Priority  int        `xml:"priority,attr,omitempty"`
+	ColorScale *ColorScale `xml:"colorScale,omitempty"`
+}
+
+// ColorScale represents a color scale rule.
+type ColorScale struct {
+	Cfvo  []*Cfvo  `xml:"cfvo,omitempty"`
+	Color []*Color `xml:"color,omitempty"`
+}
+
+// Cfvo represents a conditional formatting value object.
+type Cfvo struct {
+	Type string `xml:"type,attr,omitempty"`
+	Val  string `xml:"val,attr,omitempty"`
 }
 
 // PageMargins represents page margins.

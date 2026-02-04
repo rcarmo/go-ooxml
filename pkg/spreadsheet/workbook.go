@@ -4,6 +4,9 @@ package spreadsheet
 import (
 	"fmt"
 	"io"
+	"path"
+	"path/filepath"
+	"strings"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/sml"
@@ -11,20 +14,22 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
-// Workbook represents an Excel workbook.
-type Workbook struct {
+// workbookImpl represents an Excel workbook.
+type workbookImpl struct {
 	pkg           *packaging.Package
 	workbook      *sml.Workbook
-	sheets        []*Worksheet
+	sheets        []*worksheetImpl
 	sharedStrings *SharedStrings
 	path          string
 	nextSheetID   int
 	nextTableID   int
+	comments      map[string]*SheetComments
+	styles        *stylesImpl
 }
 
 // New creates a new empty workbook with one sheet.
-func New() (*Workbook, error) {
-	w := &Workbook{
+func New() (Workbook, error) {
+	w := &workbookImpl{
 		pkg: packaging.New(),
 		workbook: &sml.Workbook{
 			Sheets: &sml.Sheets{},
@@ -37,10 +42,12 @@ func New() (*Workbook, error) {
 				}},
 			},
 		},
-		sheets:        make([]*Worksheet, 0),
+		sheets:        make([]*worksheetImpl, 0),
 		sharedStrings: newSharedStrings(),
 		nextSheetID:   1,
 		nextTableID:   1,
+		comments:      make(map[string]*SheetComments),
+		styles:        newStyles(nil),
 	}
 
 	if err := w.initPackage(); err != nil {
@@ -54,7 +61,7 @@ func New() (*Workbook, error) {
 }
 
 // Open opens an existing workbook from a file path.
-func Open(path string) (*Workbook, error) {
+func Open(path string) (Workbook, error) {
 	pkg, err := packaging.Open(path)
 	if err != nil {
 		return nil, err
@@ -69,7 +76,7 @@ func Open(path string) (*Workbook, error) {
 }
 
 // OpenReader opens a workbook from an io.ReaderAt.
-func OpenReader(r io.ReaderAt, size int64) (*Workbook, error) {
+func OpenReader(r io.ReaderAt, size int64) (Workbook, error) {
 	pkg, err := packaging.OpenReader(r, size)
 	if err != nil {
 		return nil, err
@@ -77,13 +84,15 @@ func OpenReader(r io.ReaderAt, size int64) (*Workbook, error) {
 	return openFromPackage(pkg)
 }
 
-func openFromPackage(pkg *packaging.Package) (*Workbook, error) {
-	w := &Workbook{
+func openFromPackage(pkg *packaging.Package) (*workbookImpl, error) {
+	w := &workbookImpl{
 		pkg:           pkg,
-		sheets:        make([]*Worksheet, 0),
+		sheets:        make([]*worksheetImpl, 0),
 		sharedStrings: newSharedStrings(),
 		nextSheetID:   1,
 		nextTableID:   1,
+		comments:      make(map[string]*SheetComments),
+		styles:        newStyles(nil),
 	}
 
 	// Parse workbook.xml
@@ -94,16 +103,22 @@ func openFromPackage(pkg *packaging.Package) (*Workbook, error) {
 	// Parse shared strings
 	w.parseSharedStrings()
 
+	// Parse styles
+	w.parseStyles()
+
 	// Parse worksheets
 	if err := w.parseSheets(); err != nil {
 		return nil, err
 	}
 
+	// Parse worksheet comments
+	w.parseComments()
+
 	return w, nil
 }
 
 // Save saves the workbook to its original path.
-func (w *Workbook) Save() error {
+func (w *workbookImpl) Save() error {
 	if w.path == "" {
 		return fmt.Errorf("no path set, use SaveAs")
 	}
@@ -111,7 +126,7 @@ func (w *Workbook) Save() error {
 }
 
 // SaveAs saves the workbook to a new path.
-func (w *Workbook) SaveAs(path string) error {
+func (w *workbookImpl) SaveAs(path string) error {
 	if err := w.updatePackage(); err != nil {
 		return err
 	}
@@ -119,18 +134,26 @@ func (w *Workbook) SaveAs(path string) error {
 }
 
 // Close closes the workbook and releases resources.
-func (w *Workbook) Close() error {
+func (w *workbookImpl) Close() error {
 	return w.pkg.Close()
 }
 
 // CoreProperties returns the workbook core properties.
-func (w *Workbook) CoreProperties() (*common.CoreProperties, error) {
+func (w *workbookImpl) CoreProperties() (*common.CoreProperties, error) {
 	return w.pkg.CoreProperties()
 }
 
 // SetCoreProperties sets the workbook core properties.
-func (w *Workbook) SetCoreProperties(props *common.CoreProperties) error {
+func (w *workbookImpl) SetCoreProperties(props *common.CoreProperties) error {
 	return w.pkg.SetCoreProperties(props)
+}
+
+// Styles returns the workbook styles manager.
+func (w *workbookImpl) Styles() Styles {
+	if w.styles == nil {
+		w.styles = newStyles(nil)
+	}
+	return w.styles
 }
 
 // =============================================================================
@@ -138,12 +161,41 @@ func (w *Workbook) SetCoreProperties(props *common.CoreProperties) error {
 // =============================================================================
 
 // Sheets returns all worksheets in the workbook.
-func (w *Workbook) Sheets() []*Worksheet {
+func (w *workbookImpl) Sheets() []Worksheet {
+	sheets := make([]Worksheet, len(w.sheets))
+	for i, sheet := range w.sheets {
+		sheets[i] = sheet
+	}
+	return sheets
+}
+
+// SheetsRaw returns all worksheets in the workbook as concrete types.
+func (w *workbookImpl) SheetsRaw() []*worksheetImpl {
 	return w.sheets
 }
 
+// SheetRaw returns a worksheet by name or index as the concrete type.
+func (w *workbookImpl) SheetRaw(nameOrIndex interface{}) (*worksheetImpl, error) {
+	switch id := nameOrIndex.(type) {
+	case int:
+		if id < 0 || id >= len(w.sheets) {
+			return nil, ErrSheetNotFound
+		}
+		return w.sheets[id], nil
+	case string:
+		for _, sheet := range w.sheets {
+			if sheet.Name() == id {
+				return sheet, nil
+			}
+		}
+		return nil, ErrSheetNotFound
+	default:
+		return nil, ErrSheetNotFound
+	}
+}
+
 // Sheet returns a worksheet by name or index.
-func (w *Workbook) Sheet(nameOrIndex interface{}) (*Worksheet, error) {
+func (w *workbookImpl) Sheet(nameOrIndex interface{}) (Worksheet, error) {
 	switch id := nameOrIndex.(type) {
 	case int:
 		if id < 0 || id >= len(w.sheets) {
@@ -163,21 +215,82 @@ func (w *Workbook) Sheet(nameOrIndex interface{}) (*Worksheet, error) {
 }
 
 // SheetCount returns the number of worksheets.
-func (w *Workbook) SheetCount() int {
+func (w *workbookImpl) SheetCount() int {
 	return len(w.sheets)
 }
 
+// SharedStrings returns the shared strings table.
+func (w *workbookImpl) SharedStrings() *SharedStrings {
+	return w.sharedStrings
+}
+
+// NamedRanges returns all defined names in the workbook.
+func (w *workbookImpl) NamedRanges() []NamedRange {
+	if w.workbook == nil || w.workbook.DefinedNames == nil {
+		return nil
+	}
+	ranges := make([]NamedRange, len(w.workbook.DefinedNames.DefinedName))
+	for i, def := range w.workbook.DefinedNames.DefinedName {
+		ranges[i] = &namedRangeImpl{workbook: w, definedName: def}
+	}
+	return ranges
+}
+
+// AddNamedRange adds a new named range to the workbook.
+func (w *workbookImpl) AddNamedRange(name, refersTo string) NamedRange {
+	if w.workbook.DefinedNames == nil {
+		w.workbook.DefinedNames = &sml.DefinedNames{}
+	}
+	if name == "" {
+		name = w.nextNamedRangeName()
+	}
+	def := &sml.DefinedName{
+		Name:  name,
+		Value: refersTo,
+	}
+	w.workbook.DefinedNames.DefinedName = append(w.workbook.DefinedNames.DefinedName, def)
+	return &namedRangeImpl{workbook: w, definedName: def}
+}
+
+func (w *workbookImpl) nextNamedRangeName() string {
+	index := 1
+	if w.workbook != nil && w.workbook.DefinedNames != nil {
+		index = len(w.workbook.DefinedNames.DefinedName) + 1
+	}
+	for {
+		name := fmt.Sprintf("NamedRange%d", index)
+		if !w.namedRangeExists(name) {
+			return name
+		}
+		index++
+	}
+}
+
+func (w *workbookImpl) namedRangeExists(name string) bool {
+	if w.workbook == nil || w.workbook.DefinedNames == nil {
+		return false
+	}
+	for _, def := range w.workbook.DefinedNames.DefinedName {
+		if def.Name == name {
+			return true
+		}
+	}
+	return false
+}
+
 // Tables returns all tables across all worksheets.
-func (w *Workbook) Tables() []*Table {
-	var tables []*Table
+func (w *workbookImpl) Tables() []Table {
+	var tables []Table
 	for _, sheet := range w.sheets {
-		tables = append(tables, sheet.Tables()...)
+		for _, table := range sheet.Tables() {
+			tables = append(tables, table)
+		}
 	}
 	return tables
 }
 
 // Table returns a table by name.
-func (w *Workbook) Table(name string) (*Table, error) {
+func (w *workbookImpl) Table(name string) (Table, error) {
 	for _, table := range w.Tables() {
 		if table.Name() == name {
 			return table, nil
@@ -187,7 +300,7 @@ func (w *Workbook) Table(name string) (*Table, error) {
 }
 
 // AddSheet adds a new worksheet with the given name.
-func (w *Workbook) AddSheet(name string) *Worksheet {
+func (w *workbookImpl) AddSheet(name string) Worksheet {
 	relID := fmt.Sprintf("rId%d", len(w.sheets)+1)
 
 	worksheet := &sml.Worksheet{
@@ -202,14 +315,14 @@ func (w *Workbook) AddSheet(name string) *Worksheet {
 		SheetData: &sml.SheetData{},
 	}
 
-	sheet := &Worksheet{
-		workbook:  w,
-		worksheet: worksheet,
-		name:      name,
-		sheetID:   w.nextSheetID,
-		relID:     relID,
-		index:     len(w.sheets),
-	}
+		sheet := &worksheetImpl{
+			workbook:  w,
+			worksheet: worksheet,
+			name:      name,
+			sheetID:   w.nextSheetID,
+			relID:     relID,
+			index:     len(w.sheets),
+		}
 	w.nextSheetID++
 
 	w.sheets = append(w.sheets, sheet)
@@ -225,7 +338,7 @@ func (w *Workbook) AddSheet(name string) *Worksheet {
 }
 
 // DeleteSheet removes a worksheet by name or index.
-func (w *Workbook) DeleteSheet(nameOrIndex interface{}) error {
+func (w *workbookImpl) DeleteSheet(nameOrIndex interface{}) error {
 	var index int
 
 	switch id := nameOrIndex.(type) {
@@ -278,13 +391,13 @@ func (w *Workbook) DeleteSheet(nameOrIndex interface{}) error {
 // Internal methods
 // =============================================================================
 
-func (w *Workbook) initPackage() error {
+func (w *workbookImpl) initPackage() error {
 	// Add main relationship
 	w.pkg.AddRelationship("/", "xl/workbook.xml", packaging.RelTypeOfficeDocument)
 	return nil
 }
 
-func (w *Workbook) parseWorkbook() error {
+func (w *workbookImpl) parseWorkbook() error {
 	part, err := w.pkg.GetPart(packaging.ExcelWorkbookPath)
 	if err != nil {
 		return err
@@ -298,7 +411,7 @@ func (w *Workbook) parseWorkbook() error {
 	return utils.UnmarshalXML(data, w.workbook)
 }
 
-func (w *Workbook) parseSharedStrings() {
+func (w *workbookImpl) parseSharedStrings() {
 	part, err := w.pkg.GetPart(packaging.ExcelSharedStringsPath)
 	if err != nil {
 		return // Shared strings are optional
@@ -311,7 +424,23 @@ func (w *Workbook) parseSharedStrings() {
 	w.sharedStrings.parse(data)
 }
 
-func (w *Workbook) parseSheets() error {
+func (w *workbookImpl) parseStyles() {
+	part, err := w.pkg.GetPart(packaging.ExcelStylesPath)
+	if err != nil {
+		return
+	}
+	data, err := part.Content()
+	if err != nil {
+		return
+	}
+	stylesXML := &sml.StyleSheet{}
+	if err := utils.UnmarshalXML(data, stylesXML); err != nil {
+		return
+	}
+	w.styles = newStyles(stylesXML)
+}
+
+func (w *workbookImpl) parseSheets() error {
 	if w.workbook.Sheets == nil {
 		return nil
 	}
@@ -327,7 +456,10 @@ func (w *Workbook) parseSheets() error {
 		var sheetPath string
 		for _, rel := range rels.Relationships {
 			if rel.ID == sheetRef.ID {
-				sheetPath = "xl/" + rel.Target
+			sheetPath = packaging.ResolveRelationshipTarget(packaging.ExcelWorkbookPath, rel.Target)
+			if !strings.HasPrefix(sheetPath, "xl/") {
+				sheetPath = "xl/" + strings.TrimPrefix(sheetPath, "/")
+			}
 				break
 			}
 		}
@@ -351,7 +483,7 @@ func (w *Workbook) parseSheets() error {
 			continue
 		}
 
-		sheet := &Worksheet{
+		sheet := &worksheetImpl{
 			workbook:  w,
 			worksheet: worksheet,
 			name:      sheetRef.Name,
@@ -359,6 +491,7 @@ func (w *Workbook) parseSheets() error {
 			relID:     sheetRef.ID,
 			index:     i,
 			path:      sheetPath,
+			comments:  w.commentsForSheet(sheetPath),
 		}
 
 		if err := w.parseTables(sheet); err != nil {
@@ -375,7 +508,46 @@ func (w *Workbook) parseSheets() error {
 	return nil
 }
 
-func (w *Workbook) parseTables(sheet *Worksheet) error {
+func (w *workbookImpl) parseComments() {
+	for _, sheet := range w.sheets {
+		sheet.comments = w.commentsForSheet(sheet.path)
+	}
+}
+
+func (w *workbookImpl) commentsForSheet(sheetPath string) *SheetComments {
+	if sheetPath == "" {
+		return nil
+	}
+	if comments, ok := w.comments[sheetPath]; ok {
+		return comments
+	}
+	rels := w.pkg.GetRelationships(sheetPath)
+	if rels == nil {
+		return nil
+	}
+	commentRel := rels.FirstByType(packaging.RelTypeComments)
+	if commentRel == nil {
+		return nil
+	}
+	commentPath := packaging.ResolveRelationshipTarget(sheetPath, commentRel.Target)
+	part, err := w.pkg.GetPart(commentPath)
+	if err != nil {
+		return nil
+	}
+	data, err := part.Content()
+	if err != nil {
+		return nil
+	}
+	commentsXML := &sml.Comments{}
+	if err := utils.UnmarshalXML(data, commentsXML); err != nil {
+		return nil
+	}
+	comments := newSheetComments(commentPath, commentRel.ID, commentsXML)
+	w.comments[sheetPath] = comments
+	return comments
+}
+
+func (w *workbookImpl) parseTables(sheet *worksheetImpl) error {
 	if sheet.worksheet.TableParts == nil || len(sheet.worksheet.TableParts.TablePart) == 0 {
 		return nil
 	}
@@ -403,7 +575,7 @@ func (w *Workbook) parseTables(sheet *Worksheet) error {
 		if err := utils.UnmarshalXML(data, tableXML); err != nil {
 			continue
 		}
-		table := &Table{
+		table := &tableImpl{
 			worksheet: sheet,
 			table:     tableXML,
 			relID:     tablePart.ID,
@@ -417,7 +589,7 @@ func (w *Workbook) parseTables(sheet *Worksheet) error {
 	return nil
 }
 
-func (w *Workbook) updatePackage() error {
+func (w *workbookImpl) updatePackage() error {
 	// Save workbook.xml
 	data, err := utils.MarshalXMLWithHeader(w.workbook)
 	if err != nil {
@@ -445,6 +617,10 @@ func (w *Workbook) updatePackage() error {
 		if err := w.updateTables(sheet, i+1); err != nil {
 			return err
 		}
+
+		if err := w.updateComments(sheet, sheetPath); err != nil {
+			return err
+		}
 	}
 
 	// Save shared strings
@@ -459,10 +635,65 @@ func (w *Workbook) updatePackage() error {
 		w.pkg.AddRelationship(packaging.ExcelWorkbookPath, "sharedStrings.xml", packaging.RelTypeSharedStrings)
 	}
 
+	// Save styles
+	if w.styles != nil && w.styles.stylesheet != nil {
+		stylesData, err := utils.MarshalXMLWithHeader(w.styles.stylesheet)
+		if err != nil {
+			return err
+		}
+		if _, err := w.pkg.AddPart(packaging.ExcelStylesPath, packaging.ContentTypeExcelStyles, stylesData); err != nil {
+			return err
+		}
+		w.pkg.AddRelationship(packaging.ExcelWorkbookPath, "styles.xml", packaging.RelTypeStyles)
+	}
+
 	return nil
 }
 
-func (w *Workbook) updateTables(sheet *Worksheet, sheetIndex int) error {
+func (w *workbookImpl) updateComments(sheet *worksheetImpl, sheetPath string) error {
+	if sheet.comments == nil {
+		return nil
+	}
+	commentsPath := sheet.comments.path
+	if commentsPath == "" {
+		commentsPath = fmt.Sprintf("xl/comments/comment%d.xml", sheet.index+1)
+		sheet.comments.path = commentsPath
+	}
+	data, err := utils.MarshalXMLWithHeader(sheet.comments.comments)
+	if err != nil {
+		return err
+	}
+	if _, err := w.pkg.AddPart(commentsPath, packaging.ContentTypeExcelComments, data); err != nil {
+		return err
+	}
+	rels := w.pkg.GetRelationships(sheetPath)
+	relID := sheet.comments.relID
+	if relID == "" {
+		relID = rels.NextID()
+		sheet.comments.relID = relID
+	}
+	rels.AddWithID(relID, packaging.RelTypeComments, relativeTarget(sheetPath, commentsPath), packaging.TargetModeInternal)
+	if sheet.worksheet.LegacyDrawing != nil && sheet.worksheet.LegacyDrawing.ID == "" {
+		if vmlRel := rels.FirstByType(packaging.RelTypeVML); vmlRel != nil {
+			sheet.worksheet.LegacyDrawing.ID = vmlRel.ID
+		}
+	}
+	return nil
+}
+
+func relativeTarget(source, target string) string {
+	if source == "" {
+		return target
+	}
+	sourceDir := path.Dir(source)
+	rel, err := filepath.Rel(sourceDir, target)
+	if err != nil {
+		return strings.TrimPrefix(packaging.ResolveRelationshipTarget(source, target), "xl/")
+	}
+	return filepath.ToSlash(rel)
+}
+
+func (w *workbookImpl) updateTables(sheet *worksheetImpl, sheetIndex int) error {
 	if len(sheet.tables) == 0 {
 		return nil
 	}
@@ -495,11 +726,11 @@ func (w *Workbook) updateTables(sheet *Worksheet, sheetIndex int) error {
 }
 
 // getSharedString returns the shared string at the given index.
-func (w *Workbook) getSharedString(index int) string {
+func (w *workbookImpl) getSharedString(index int) string {
 	return w.sharedStrings.Get(index)
 }
 
 // addSharedString adds a string to the shared strings table and returns its index.
-func (w *Workbook) addSharedString(s string) int {
+func (w *workbookImpl) addSharedString(s string) int {
 	return w.sharedStrings.Add(s)
 }

@@ -37,7 +37,7 @@ func TestPhase3Fixtures_RoundTrip(t *testing.T) {
 // TestTrackChanges_Parameterized tests track changes with various inputs.
 func TestTrackChanges_Parameterized(t *testing.T) {
 	RunTrackChangesTests(t, TrackChangesTestCases(), func(t *testing.T, h *TestHelper, tc TrackChangesTestCase) {
-		doc := h.CreateDocument(func(d *Document) {
+		doc := h.CreateDocument(func(d Document) {
 			d.EnableTrackChanges(tc.Author)
 			p := d.AddParagraph()
 			p.InsertTrackedText(tc.Text)
@@ -60,7 +60,7 @@ func TestTrackChanges_Parameterized(t *testing.T) {
 // TestTrackChanges_RoundTrip tests track changes survive save/reopen.
 func TestTrackChanges_RoundTrip(t *testing.T) {
 	RunTrackChangesTests(t, TrackChangesTestCases(), func(t *testing.T, h *TestHelper, tc TrackChangesTestCase) {
-		doc := h.RoundTrip(tc.Name+".docx", func(d *Document) {
+		doc := h.RoundTrip(tc.Name+".docx", func(d Document) {
 			d.EnableTrackChanges(tc.Author)
 			d.AddParagraph().InsertTrackedText(tc.Text)
 		})
@@ -93,7 +93,7 @@ func TestTrackChanges_AcceptReject(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			h := NewTestHelper(t)
-			doc := h.CreateDocument(func(d *Document) {
+			doc := h.CreateDocument(func(d Document) {
 				d.EnableTrackChanges("Editor")
 				d.AddParagraph().InsertTrackedText("Insert 1")
 				d.AddParagraph().InsertTrackedText("Insert 2")
@@ -127,9 +127,9 @@ func TestTrackChanges_AcceptReject(t *testing.T) {
 // TestComments_Parameterized tests comments with various inputs.
 func TestComments_Parameterized(t *testing.T) {
 	RunCommentTests(t, CommentTestCases(), func(t *testing.T, h *TestHelper, tc CommentTestCase) {
-		doc := h.CreateDocument(func(d *Document) {
+		doc := h.CreateDocument(func(d Document) {
 			d.AddParagraph().SetText("Document text")
-			c := d.AddComment(tc.Author, tc.Text)
+			c, _ := d.Comments().Add(tc.Text, tc.Author, "")
 			if tc.Initials != "" {
 				c.SetInitials(tc.Initials)
 			}
@@ -140,7 +140,7 @@ func TestComments_Parameterized(t *testing.T) {
 		h.AssertCommentCount(doc, 1)
 		
 		// Check comment properties
-		c := doc.Comments()[0]
+		c := doc.Comments().All()[0]
 		if c.Author() != tc.Author {
 			t.Errorf("Author() = %q, want %q", c.Author(), tc.Author)
 		}
@@ -156,9 +156,9 @@ func TestComments_Parameterized(t *testing.T) {
 // TestComments_RoundTrip tests comments survive save/reopen.
 func TestComments_RoundTrip(t *testing.T) {
 	RunCommentTests(t, CommentTestCases(), func(t *testing.T, h *TestHelper, tc CommentTestCase) {
-		doc := h.RoundTrip(tc.Name+".docx", func(d *Document) {
+		doc := h.RoundTrip(tc.Name+".docx", func(d Document) {
 			d.AddParagraph().SetText("Text")
-			c := d.AddComment(tc.Author, tc.Text)
+			c, _ := d.Comments().Add(tc.Text, tc.Author, "")
 			if tc.Initials != "" {
 				c.SetInitials(tc.Initials)
 			}
@@ -166,7 +166,7 @@ func TestComments_RoundTrip(t *testing.T) {
 		defer doc.Close()
 		
 		// Comments should survive
-		comments := doc.Comments()
+		comments := doc.Comments().All()
 		if len(comments) == 0 {
 			t.Error("Expected comments to survive round-trip")
 			return
@@ -187,8 +187,8 @@ func TestComments_CRUD(t *testing.T) {
 	defer doc.Close()
 	
 	// Create
-	c1 := doc.AddComment("Author1", "Comment 1")
-	c2 := doc.AddComment("Author2", "Comment 2")
+	c1, _ := doc.Comments().Add("Comment 1", "Author1", "")
+	c2, _ := doc.Comments().Add("Comment 2", "Author2", "")
 	h.AssertCommentCount(doc, 2)
 	
 	// Read
@@ -226,8 +226,8 @@ func TestComments_CRUD(t *testing.T) {
 // TestStyles_Parameterized tests styles with various configurations.
 func TestStyles_Parameterized(t *testing.T) {
 	RunStyleTests(t, StyleTestCases(), func(t *testing.T, h *TestHelper, tc StyleTestCase) {
-		doc := h.CreateDocument(func(d *Document) {
-			var s *Style
+		doc := h.CreateDocument(func(d Document) {
+			var s Style
 			switch tc.StyleType {
 			case StyleTypeParagraph:
 				s = d.AddParagraphStyle(tc.StyleID, tc.StyleName)
@@ -289,7 +289,7 @@ func TestStyles_Inheritance(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			h := NewTestHelper(t)
-			doc := h.CreateDocument(func(d *Document) {
+			doc := h.CreateDocument(func(d Document) {
 				d.AddParagraphStyle(tt.baseID, "Base Style")
 				child := d.AddParagraphStyle(tt.childID, "Child Style")
 				child.SetBasedOn(tt.baseID)
@@ -314,7 +314,7 @@ func TestStyles_Inheritance(t *testing.T) {
 // TestHeadersFooters_Parameterized tests headers/footers with various types.
 func TestHeadersFooters_Parameterized(t *testing.T) {
 	RunHeaderFooterTests(t, HeaderFooterTestCases(), func(t *testing.T, h *TestHelper, tc HeaderFooterTestCase) {
-		doc := h.CreateDocument(func(d *Document) {
+		doc := h.CreateDocument(func(d Document) {
 			if tc.IsHeader {
 				hdr := d.AddHeader(tc.Type)
 				hdr.SetText(tc.Text)
@@ -379,7 +379,7 @@ func TestFormatCombinations_Subset(t *testing.T) {
 			filename := strings.ReplaceAll(fc.String(), "/", "_") + ".docx"
 			
 			// Create document with formatted text
-			doc := h.RoundTrip(filename, func(d *Document) {
+			doc := h.RoundTrip(filename, func(d Document) {
 				p := d.AddParagraph()
 				r := p.AddRun()
 				r.SetText("Formatted text")
@@ -412,7 +412,7 @@ func TestIntegration_FullDocument(t *testing.T) {
 	h := NewTestHelper(t)
 	
 	// Create document with all features
-	doc := h.CreateDocument(func(d *Document) {
+	doc := h.CreateDocument(func(d Document) {
 		// 1. Add styles
 		titleStyle := d.AddParagraphStyle("DocTitle", "Document Title")
 		titleStyle.SetBold(true)
@@ -440,7 +440,7 @@ func TestIntegration_FullDocument(t *testing.T) {
 		tracked.InsertTrackedText("Tracked insertion")
 		
 		// 5. Add comments
-		d.AddComment("Reviewer", "Please review")
+		_, _ = d.Comments().Add("Please review", "Reviewer", "")
 	})
 	
 	// Verify all features
@@ -470,12 +470,12 @@ func TestIntegration_MultipleEditors(t *testing.T) {
 	
 	editors := []string{"Alice", "Bob", "Charlie"}
 	
-	doc := h.CreateDocument(func(d *Document) {
+	doc := h.CreateDocument(func(d Document) {
 		for i, editor := range editors {
 			d.EnableTrackChanges(editor)
 			p := d.AddParagraph()
 			p.InsertTrackedText("Edit from " + editor)
-			d.AddComment(editor, "Comment from " + editor)
+			_, _ = d.Comments().Add("Comment from " + editor, editor, "")
 			
 			// Verify current author
 			if d.TrackAuthor() != editor {

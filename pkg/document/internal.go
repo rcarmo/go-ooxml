@@ -9,7 +9,7 @@ import (
 )
 
 // initPackage initializes the OPC package structure for a new document.
-func (d *Document) initPackage() error {
+func (d *documentImpl) initPackage() error {
 	// Create document.xml
 	docData, err := utils.MarshalXMLWithHeader(d.document)
 	if err != nil {
@@ -49,7 +49,7 @@ func (d *Document) initPackage() error {
 }
 
 // updatePackage updates the OPC package with current document state.
-func (d *Document) updatePackage() error {
+func (d *documentImpl) updatePackage() error {
 	// Update document.xml
 	docData, err := utils.MarshalXMLWithHeader(d.document)
 	if err != nil {
@@ -135,7 +135,7 @@ func (d *Document) updatePackage() error {
 }
 
 // parseDocument parses the document.xml part.
-func (d *Document) parseDocument() error {
+func (d *documentImpl) parseDocument() error {
 	// Find document part via relationship
 	rels := d.pkg.GetRelationshipsByType("", packaging.RelTypeOfficeDocument)
 	if len(rels) == 0 {
@@ -158,7 +158,7 @@ func (d *Document) parseDocument() error {
 }
 
 // parseStyles parses the styles.xml part.
-func (d *Document) parseStyles() error {
+func (d *documentImpl) parseStyles() error {
 	rels := d.pkg.GetRelationshipsByType(packaging.WordDocumentPath, packaging.RelTypeStyles)
 	if len(rels) == 0 {
 		return nil // optional
@@ -180,7 +180,7 @@ func (d *Document) parseStyles() error {
 }
 
 // parseSettings parses the settings.xml part.
-func (d *Document) parseSettings() error {
+func (d *documentImpl) parseSettings() error {
 	rels := d.pkg.GetRelationshipsByType(packaging.WordDocumentPath, packaging.RelTypeSettings)
 	if len(rels) == 0 {
 		return nil // optional
@@ -211,7 +211,7 @@ func (d *Document) parseSettings() error {
 }
 
 // parseComments parses the comments.xml part.
-func (d *Document) parseComments() error {
+func (d *documentImpl) parseComments() error {
 	rels := d.pkg.GetRelationshipsByType(packaging.WordDocumentPath, packaging.RelTypeComments)
 	if len(rels) == 0 {
 		return nil // optional
@@ -244,7 +244,7 @@ func (d *Document) parseComments() error {
 }
 
 // parseNumbering parses the numbering.xml part.
-func (d *Document) parseNumbering() error {
+func (d *documentImpl) parseNumbering() error {
 	rels := d.pkg.GetRelationshipsByType(packaging.WordDocumentPath, packaging.RelTypeNumbering)
 	if len(rels) == 0 {
 		return nil // optional
@@ -281,7 +281,7 @@ func (d *Document) parseNumbering() error {
 }
 
 // parseBookmarks scans the document and initializes nextBookmarkID.
-func (d *Document) parseBookmarks() {
+func (d *documentImpl) parseBookmarks() {
 	maxID := 0
 	for _, elem := range d.document.Body.Content {
 		if p, ok := elem.(*wml.P); ok {

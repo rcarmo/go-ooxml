@@ -10,7 +10,7 @@ import (
 
 // Numbering represents a numbering definition instance.
 type Numbering struct {
-	doc *Document
+	doc *documentImpl
 	num *wml.Num
 }
 
@@ -21,7 +21,7 @@ func (n *Numbering) ID() int {
 
 // AbstractNumbering represents an abstract numbering definition.
 type AbstractNumbering struct {
-	doc *Document
+	doc *documentImpl
 	abs *wml.AbstractNum
 }
 
@@ -39,7 +39,7 @@ func (a *AbstractNumbering) Level(level int) *wml.Lvl {
 }
 
 // Numbering returns the numbering definitions in the document.
-func (d *Document) Numbering() []*Numbering {
+func (d *documentImpl) Numbering() []*Numbering {
 	if d.numbering == nil {
 		return nil
 	}
@@ -51,7 +51,7 @@ func (d *Document) Numbering() []*Numbering {
 }
 
 // AbstractNumberings returns all abstract numbering definitions.
-func (d *Document) AbstractNumberings() []*AbstractNumbering {
+func (d *documentImpl) AbstractNumberings() []*AbstractNumbering {
 	if d.numbering == nil {
 		return nil
 	}
@@ -63,7 +63,7 @@ func (d *Document) AbstractNumberings() []*AbstractNumbering {
 }
 
 // NumberingByID returns a numbering definition by ID.
-func (d *Document) NumberingByID(id int) *Numbering {
+func (d *documentImpl) NumberingByID(id int) *Numbering {
 	if d.numbering == nil {
 		return nil
 	}
@@ -76,7 +76,7 @@ func (d *Document) NumberingByID(id int) *Numbering {
 }
 
 // AbstractNumberingByID returns an abstract numbering definition by ID.
-func (d *Document) AbstractNumberingByID(id int) *AbstractNumbering {
+func (d *documentImpl) AbstractNumberingByID(id int) *AbstractNumbering {
 	if d.numbering == nil {
 		return nil
 	}
@@ -89,7 +89,7 @@ func (d *Document) AbstractNumberingByID(id int) *AbstractNumbering {
 }
 
 // AddNumberingDefinition creates a numbering definition with levels 0..levels-1.
-func (d *Document) AddNumberingDefinition(levels int) (*Numbering, *AbstractNumbering, error) {
+func (d *documentImpl) AddNumberingDefinition(levels int) (*Numbering, *AbstractNumbering, error) {
 	if levels < 1 || levels > 9 {
 		return nil, nil, utils.ErrInvalidIndex
 	}
@@ -128,7 +128,7 @@ func (d *Document) AddNumberingDefinition(levels int) (*Numbering, *AbstractNumb
 }
 
 // AddNumberedListStyle creates a default numbered list and returns its numbering ID.
-func (d *Document) AddNumberedListStyle() (int, error) {
+func (d *documentImpl) AddNumberedListStyle() (int, error) {
 	num, _, err := d.AddNumberingDefinition(1)
 	if err != nil {
 		return 0, err
@@ -137,7 +137,7 @@ func (d *Document) AddNumberedListStyle() (int, error) {
 }
 
 // AddBulletedListStyle creates a default bullet list and returns its numbering ID.
-func (d *Document) AddBulletedListStyle() (int, error) {
+func (d *documentImpl) AddBulletedListStyle() (int, error) {
 	num, abs, err := d.AddNumberingDefinition(1)
 	if err != nil {
 		return 0, err
