@@ -9,24 +9,25 @@ import (
 )
 
 // Worksheet represents a worksheet in a workbook.
-type Worksheet struct {
-	workbook  *Workbook
+type worksheetImpl struct {
+	workbook  *workbookImpl
 	worksheet *sml.Worksheet
 	name      string
 	sheetID   int
 	relID     string
 	index     int
 	path      string
-	tables    []*Table
+	tables    []*tableImpl
+	comments  *SheetComments
 }
 
 // Name returns the worksheet name.
-func (ws *Worksheet) Name() string {
+func (ws *worksheetImpl) Name() string {
 	return ws.name
 }
 
 // SetName sets the worksheet name.
-func (ws *Worksheet) SetName(name string) error {
+func (ws *worksheetImpl) SetName(name string) error {
 	ws.name = name
 	// Update in workbook reference
 	if ws.index < len(ws.workbook.workbook.Sheets.Sheet) {
@@ -36,12 +37,12 @@ func (ws *Worksheet) SetName(name string) error {
 }
 
 // Index returns the 0-based sheet index.
-func (ws *Worksheet) Index() int {
+func (ws *worksheetImpl) Index() int {
 	return ws.index
 }
 
 // Visible returns whether the sheet is visible.
-func (ws *Worksheet) Visible() bool {
+func (ws *worksheetImpl) Visible() bool {
 	if ws.index < len(ws.workbook.workbook.Sheets.Sheet) {
 		state := ws.workbook.workbook.Sheets.Sheet[ws.index].State
 		return state == "" || state == "visible"
@@ -50,7 +51,7 @@ func (ws *Worksheet) Visible() bool {
 }
 
 // SetVisible sets whether the sheet is visible.
-func (ws *Worksheet) SetVisible(v bool) {
+func (ws *worksheetImpl) SetVisible(v bool) {
 	if ws.index < len(ws.workbook.workbook.Sheets.Sheet) {
 		if v {
 			ws.workbook.workbook.Sheets.Sheet[ws.index].State = ""
@@ -61,12 +62,12 @@ func (ws *Worksheet) SetVisible(v bool) {
 }
 
 // Hidden returns whether the sheet is hidden.
-func (ws *Worksheet) Hidden() bool {
+func (ws *worksheetImpl) Hidden() bool {
 	return !ws.Visible()
 }
 
 // SetHidden sets whether the sheet is hidden.
-func (ws *Worksheet) SetHidden(v bool) {
+func (ws *worksheetImpl) SetHidden(v bool) {
 	ws.SetVisible(!v)
 }
 
@@ -75,12 +76,16 @@ func (ws *Worksheet) SetHidden(v bool) {
 // =============================================================================
 
 // Tables returns all tables in the worksheet.
-func (ws *Worksheet) Tables() []*Table {
-	return ws.tables
+func (ws *worksheetImpl) Tables() []Table {
+	result := make([]Table, len(ws.tables))
+	for i, table := range ws.tables {
+		result[i] = table
+	}
+	return result
 }
 
 // AddTable adds a new table to the worksheet.
-func (ws *Worksheet) AddTable(ref string, name string) *Table {
+func (ws *worksheetImpl) AddTable(ref string, name string) Table {
 	tableID := ws.workbook.nextTableID
 	ws.workbook.nextTableID++
 	if name == "" {
@@ -97,7 +102,7 @@ func (ws *Worksheet) AddTable(ref string, name string) *Table {
 }
 
 // Table returns a table by name.
-func (ws *Worksheet) Table(name string) (*Table, error) {
+func (ws *worksheetImpl) Table(name string) (Table, error) {
 	for _, table := range ws.tables {
 		if table.Name() == name {
 			return table, nil
@@ -111,7 +116,7 @@ func (ws *Worksheet) Table(name string) (*Table, error) {
 // =============================================================================
 
 // Cell returns a cell by reference (e.g., "A1").
-func (ws *Worksheet) Cell(ref string) *Cell {
+func (ws *worksheetImpl) Cell(ref string) Cell {
 	cellRef, err := utils.ParseCellRef(ref)
 	if err != nil {
 		return nil
@@ -120,7 +125,7 @@ func (ws *Worksheet) Cell(ref string) *Cell {
 }
 
 // CellByRC returns a cell by row and column (1-based).
-func (ws *Worksheet) CellByRC(row, col int) *Cell {
+func (ws *worksheetImpl) CellByRC(row, col int) Cell {
 	if row < 1 || col < 1 {
 		return nil
 	}
@@ -132,7 +137,7 @@ func (ws *Worksheet) CellByRC(row, col int) *Cell {
 	ref := utils.CellRefFromRC(row, col)
 	for i, c := range smlRow.C {
 		if c.R == ref {
-			return &Cell{
+			return &cellImpl{
 				worksheet: ws,
 				cell:      smlRow.C[i],
 				row:       row,
@@ -144,7 +149,7 @@ func (ws *Worksheet) CellByRC(row, col int) *Cell {
 	// Create new cell
 	cell := &sml.Cell{R: ref}
 	smlRow.C = append(smlRow.C, cell)
-	return &Cell{
+	return &cellImpl{
 		worksheet: ws,
 		cell:      cell,
 		row:       row,
@@ -157,27 +162,27 @@ func (ws *Worksheet) CellByRC(row, col int) *Cell {
 // =============================================================================
 
 // Range returns a range by reference (e.g., "A1:B5").
-func (ws *Worksheet) Range(ref string) *Range {
+func (ws *worksheetImpl) Range(ref string) Range {
 	rangeRef, err := utils.ParseRangeRef(ref)
 	if err != nil {
 		return nil
 	}
-	return &Range{
-		worksheet: ws,
-		startRow:  rangeRef.Start.Row,
-		startCol:  rangeRef.Start.Col,
-		endRow:    rangeRef.End.Row,
-		endCol:    rangeRef.End.Col,
-	}
+	return &rangeImpl{
+			worksheet: ws,
+			startRow:  rangeRef.Start.Row,
+			startCol:  rangeRef.Start.Col,
+			endRow:    rangeRef.End.Row,
+			endCol:    rangeRef.End.Col,
+		}
 }
 
 // UsedRange returns the range containing all used cells.
-func (ws *Worksheet) UsedRange() *Range {
+func (ws *worksheetImpl) UsedRange() Range {
 	maxRow, maxCol := ws.MaxRow(), ws.MaxColumn()
 	if maxRow == 0 || maxCol == 0 {
 		return nil
 	}
-	return &Range{
+	return &rangeImpl{
 		worksheet: ws,
 		startRow:  1,
 		startCol:  1,
@@ -191,7 +196,7 @@ func (ws *Worksheet) UsedRange() *Range {
 // =============================================================================
 
 // MaxRow returns the highest row number with data.
-func (ws *Worksheet) MaxRow() int {
+func (ws *worksheetImpl) MaxRow() int {
 	if ws.worksheet.SheetData == nil {
 		return 0
 	}
@@ -205,7 +210,7 @@ func (ws *Worksheet) MaxRow() int {
 }
 
 // MaxColumn returns the highest column number with data.
-func (ws *Worksheet) MaxColumn() int {
+func (ws *worksheetImpl) MaxColumn() int {
 	if ws.worksheet.SheetData == nil {
 		return 0
 	}
@@ -226,12 +231,20 @@ func (ws *Worksheet) MaxColumn() int {
 // =============================================================================
 
 // Row returns a row by index (1-based).
-func (ws *Worksheet) Row(index int) *Row {
+func (ws *worksheetImpl) Row(index int) Row {
 	smlRow := ws.getOrCreateRow(index)
-	return &Row{
+	return &rowImpl{
 		worksheet: ws,
 		row:       smlRow,
 		index:     index,
+	}
+}
+
+// Rows returns an iterator over worksheet rows.
+func (ws *worksheetImpl) Rows() RowIterator {
+	return &rowIterator{
+		worksheet: ws,
+		index:     0,
 	}
 }
 
@@ -240,7 +253,7 @@ func (ws *Worksheet) Row(index int) *Row {
 // =============================================================================
 
 // MergeCells merges a range of cells.
-func (ws *Worksheet) MergeCells(ref string) error {
+func (ws *worksheetImpl) MergeCells(ref string) error {
 	if ws.worksheet.MergeCells == nil {
 		ws.worksheet.MergeCells = &sml.MergeCells{}
 	}
@@ -254,7 +267,7 @@ func (ws *Worksheet) MergeCells(ref string) error {
 }
 
 // UnmergeCells unmerges a range of cells.
-func (ws *Worksheet) UnmergeCells(ref string) error {
+func (ws *worksheetImpl) UnmergeCells(ref string) error {
 	if ws.worksheet.MergeCells == nil {
 		return nil
 	}
@@ -274,14 +287,17 @@ func (ws *Worksheet) UnmergeCells(ref string) error {
 }
 
 // MergedCells returns all merged cell ranges.
-func (ws *Worksheet) MergedCells() []string {
+func (ws *worksheetImpl) MergedCells() []Range {
 	if ws.worksheet.MergeCells == nil {
 		return nil
 	}
 
-	var refs []string
+	var refs []Range
 	for _, mc := range ws.worksheet.MergeCells.MergeCell {
-		refs = append(refs, mc.Ref)
+		rng := ws.Range(mc.Ref)
+		if rng != nil {
+			refs = append(refs, rng)
+		}
 	}
 	return refs
 }
@@ -290,7 +306,7 @@ func (ws *Worksheet) MergedCells() []string {
 // Internal methods
 // =============================================================================
 
-func (ws *Worksheet) getOrCreateRow(rowNum int) *sml.Row {
+func (ws *worksheetImpl) getOrCreateRow(rowNum int) *sml.Row {
 	if ws.worksheet.SheetData == nil {
 		ws.worksheet.SheetData = &sml.SheetData{}
 	}
@@ -319,7 +335,7 @@ func (ws *Worksheet) getOrCreateRow(rowNum int) *sml.Row {
 	return row
 }
 
-func (ws *Worksheet) addTablePart(relID string) {
+func (ws *worksheetImpl) addTablePart(relID string) {
 	if ws.worksheet.TableParts == nil {
 		ws.worksheet.TableParts = &sml.TableParts{}
 	}
@@ -327,7 +343,7 @@ func (ws *Worksheet) addTablePart(relID string) {
 	ws.worksheet.TableParts.Count = len(ws.worksheet.TableParts.TablePart)
 }
 
-func (ws *Worksheet) nextTableRelID() string {
+func (ws *worksheetImpl) nextTableRelID() string {
 	sheetPath := ws.path
 	if sheetPath == "" {
 		sheetPath = fmt.Sprintf("xl/worksheets/sheet%d.xml", ws.index+1)
@@ -336,7 +352,7 @@ func (ws *Worksheet) nextTableRelID() string {
 	return rels.NextID()
 }
 
-func (ws *Worksheet) writeTableHeaders(table *Table) {
+func (ws *worksheetImpl) writeTableHeaders(table *tableImpl) {
 	start, _, err := parseRange(table.table.Ref)
 	if err != nil {
 		return
@@ -367,31 +383,31 @@ func sortRows(rows []*sml.Row) {
 // =============================================================================
 
 // Row represents a row in a worksheet.
-type Row struct {
-	worksheet *Worksheet
+type rowImpl struct {
+	worksheet *worksheetImpl
 	row       *sml.Row
 	index     int
 }
 
 // Index returns the 1-based row index.
-func (r *Row) Index() int {
+func (r *rowImpl) Index() int {
 	return r.index
 }
 
 // Height returns the row height in points.
-func (r *Row) Height() float64 {
+func (r *rowImpl) Height() float64 {
 	return r.row.Ht
 }
 
 // SetHeight sets the row height in points.
-func (r *Row) SetHeight(height float64) {
+func (r *rowImpl) SetHeight(height float64) {
 	r.row.Ht = height
 	customHeight := true
 	r.row.CustomHeight = &customHeight
 }
 
 // Hidden returns whether the row is hidden.
-func (r *Row) Hidden() bool {
+func (r *rowImpl) Hidden() bool {
 	if r.row.Hidden == nil {
 		return false
 	}
@@ -399,22 +415,22 @@ func (r *Row) Hidden() bool {
 }
 
 // SetHidden sets whether the row is hidden.
-func (r *Row) SetHidden(hidden bool) {
+func (r *rowImpl) SetHidden(hidden bool) {
 	r.row.Hidden = &hidden
 }
 
 // Cell returns a cell in this row by column number (1-based).
-func (r *Row) Cell(col int) *Cell {
+func (r *rowImpl) Cell(col int) Cell {
 	return r.worksheet.CellByRC(r.index, col)
 }
 
 // Cells returns all cells in this row.
-func (r *Row) Cells() []*Cell {
-	var cells []*Cell
+func (r *rowImpl) Cells() []Cell {
+	var cells []Cell
 	for _, c := range r.row.C {
 		cellRef, err := utils.ParseCellRef(c.R)
 		if err == nil {
-			cells = append(cells, &Cell{
+			cells = append(cells, &cellImpl{
 				worksheet: r.worksheet,
 				cell:      c,
 				row:       cellRef.Row,
@@ -425,13 +441,39 @@ func (r *Row) Cells() []*Cell {
 	return cells
 }
 
+type rowIterator struct {
+	worksheet *worksheetImpl
+	index     int
+}
+
+// Next advances the iterator and returns the next row.
+func (it *rowIterator) Next() (Row, bool) {
+	if it == nil || it.worksheet == nil || it.worksheet.worksheet == nil || it.worksheet.worksheet.SheetData == nil {
+		return nil, false
+	}
+	if it.index >= len(it.worksheet.worksheet.SheetData.Row) {
+		return nil, false
+	}
+	smlRow := it.worksheet.worksheet.SheetData.Row[it.index]
+	rowIndex := smlRow.R
+	if rowIndex == 0 {
+		rowIndex = it.index + 1
+	}
+	it.index++
+	return &rowImpl{
+		worksheet: it.worksheet,
+		row:       smlRow,
+		index:     rowIndex,
+	}, true
+}
+
 // =============================================================================
 // Range type
 // =============================================================================
 
-// Range represents a range of cells.
-type Range struct {
-	worksheet *Worksheet
+// rangeImpl represents a range of cells.
+type rangeImpl struct {
+	worksheet *worksheetImpl
 	startRow  int
 	startCol  int
 	endRow    int
@@ -439,27 +481,27 @@ type Range struct {
 }
 
 // Reference returns the A1-style reference (e.g., "A1:B5").
-func (r *Range) Reference() string {
+func (r *rangeImpl) Reference() string {
 	start := utils.CellRefFromRC(r.startRow, r.startCol)
 	end := utils.CellRefFromRC(r.endRow, r.endCol)
 	return start + ":" + end
 }
 
 // RowCount returns the number of rows in the range.
-func (r *Range) RowCount() int {
+func (r *rangeImpl) RowCount() int {
 	return r.endRow - r.startRow + 1
 }
 
 // ColumnCount returns the number of columns in the range.
-func (r *Range) ColumnCount() int {
+func (r *rangeImpl) ColumnCount() int {
 	return r.endCol - r.startCol + 1
 }
 
 // Cells returns all cells in the range as a 2D slice.
-func (r *Range) Cells() [][]*Cell {
-	rows := make([][]*Cell, r.RowCount())
+func (r *rangeImpl) Cells() [][]Cell {
+	rows := make([][]Cell, r.RowCount())
 	for i := 0; i < r.RowCount(); i++ {
-		rows[i] = make([]*Cell, r.ColumnCount())
+		rows[i] = make([]Cell, r.ColumnCount())
 		for j := 0; j < r.ColumnCount(); j++ {
 			rows[i][j] = r.worksheet.CellByRC(r.startRow+i, r.startCol+j)
 		}
@@ -468,7 +510,7 @@ func (r *Range) Cells() [][]*Cell {
 }
 
 // ForEach calls fn for each cell in the range.
-func (r *Range) ForEach(fn func(cell *Cell) error) error {
+func (r *rangeImpl) ForEach(fn func(cell Cell) error) error {
 	for row := r.startRow; row <= r.endRow; row++ {
 		for col := r.startCol; col <= r.endCol; col++ {
 			cell := r.worksheet.CellByRC(row, col)
@@ -481,31 +523,31 @@ func (r *Range) ForEach(fn func(cell *Cell) error) error {
 }
 
 // SetValue sets all cells in the range to the given value.
-func (r *Range) SetValue(v interface{}) error {
-	return r.ForEach(func(cell *Cell) error {
+func (r *rangeImpl) SetValue(v interface{}) error {
+	return r.ForEach(func(cell Cell) error {
 		return cell.SetValue(v)
 	})
 }
 
 // Clear clears all cells in the range.
-func (r *Range) Clear() error {
-	return r.ForEach(func(cell *Cell) error {
+func (r *rangeImpl) Clear() error {
+	return r.ForEach(func(cell Cell) error {
 		return cell.SetValue(nil)
 	})
 }
 
 // StartCell returns the top-left cell of the range.
-func (r *Range) StartCell() *Cell {
+func (r *rangeImpl) StartCell() Cell {
 	return r.worksheet.CellByRC(r.startRow, r.startCol)
 }
 
 // EndCell returns the bottom-right cell of the range.
-func (r *Range) EndCell() *Cell {
+func (r *rangeImpl) EndCell() Cell {
 	return r.worksheet.CellByRC(r.endRow, r.endCol)
 }
 
 // String returns the string representation of the range.
-func (r *Range) String() string {
+func (r *rangeImpl) String() string {
 	return fmt.Sprintf("Range[%s]", r.Reference())
 }
 

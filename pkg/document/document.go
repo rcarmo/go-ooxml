@@ -3,7 +3,9 @@ package document
 
 import (
 	"encoding/xml"
+	"fmt"
 	"io"
+	"strconv"
 	"time"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
@@ -11,8 +13,8 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
 )
 
-// Document represents a Word document.
-type Document struct {
+// documentImpl represents a Word document.
+type documentImpl struct {
 	pkg      *packaging.Package
 	document *wml.Document
 	styles   *wml.Styles
@@ -30,13 +32,13 @@ type Document struct {
 	nextBookmarkID    int
 
 	// Headers and footers (keyed by relID)
-	headers map[string]*Header
-	footers map[string]*Footer
+	headers map[string]*headerImpl
+	footers map[string]*footerImpl
 }
 
 // New creates a new empty Word document.
-func New() (*Document, error) {
-	doc := &Document{
+func New() (Document, error) {
+	doc := &documentImpl{
 		pkg: packaging.New(),
 		document: &wml.Document{
 			XMLName: xml.Name{Space: wml.NS, Local: "document"},
@@ -53,8 +55,8 @@ func New() (*Document, error) {
 		},
 		styles:   &wml.Styles{},
 		settings: &wml.Settings{},
-		headers:  make(map[string]*Header),
-		footers:  make(map[string]*Footer),
+		headers:  make(map[string]*headerImpl),
+		footers:  make(map[string]*footerImpl),
 		nextAbstractNumID: 1,
 		nextNumID:         1,
 		nextBookmarkID:    1,
@@ -69,7 +71,7 @@ func New() (*Document, error) {
 }
 
 // Open opens an existing Word document.
-func Open(path string) (*Document, error) {
+func Open(path string) (Document, error) {
 	pkg, err := packaging.Open(path)
 	if err != nil {
 		return nil, err
@@ -78,7 +80,7 @@ func Open(path string) (*Document, error) {
 }
 
 // OpenReader opens a Word document from an io.ReaderAt.
-func OpenReader(r io.ReaderAt, size int64) (*Document, error) {
+func OpenReader(r io.ReaderAt, size int64) (Document, error) {
 	pkg, err := packaging.OpenReader(r, size)
 	if err != nil {
 		return nil, err
@@ -86,11 +88,11 @@ func OpenReader(r io.ReaderAt, size int64) (*Document, error) {
 	return openFromPackage(pkg)
 }
 
-func openFromPackage(pkg *packaging.Package) (*Document, error) {
-	doc := &Document{
+func openFromPackage(pkg *packaging.Package) (*documentImpl, error) {
+	doc := &documentImpl{
 		pkg:     pkg,
-		headers: make(map[string]*Header),
-		footers: make(map[string]*Footer),
+		headers: make(map[string]*headerImpl),
+		footers: make(map[string]*footerImpl),
 	}
 
 	// Parse document.xml
@@ -114,7 +116,7 @@ func openFromPackage(pkg *packaging.Package) (*Document, error) {
 }
 
 // Save saves the document to its original path.
-func (d *Document) Save() error {
+func (d *documentImpl) Save() error {
 	if err := d.updatePackage(); err != nil {
 		return err
 	}
@@ -122,7 +124,7 @@ func (d *Document) Save() error {
 }
 
 // SaveAs saves the document to a new path.
-func (d *Document) SaveAs(path string) error {
+func (d *documentImpl) SaveAs(path string) error {
 	if err := d.updatePackage(); err != nil {
 		return err
 	}
@@ -130,57 +132,80 @@ func (d *Document) SaveAs(path string) error {
 }
 
 // Close closes the document.
-func (d *Document) Close() error {
+func (d *documentImpl) Close() error {
 	return d.pkg.Close()
 }
 
 // Body returns the document body.
-func (d *Document) Body() *Body {
-	return &Body{doc: d}
+func (d *documentImpl) Body() Body {
+	return &bodyImpl{doc: d}
 }
 
 // Paragraphs returns all paragraphs in the document.
-func (d *Document) Paragraphs() []*Paragraph {
+func (d *documentImpl) Paragraphs() []Paragraph {
 	return d.Body().Paragraphs()
 }
 
 // Tables returns all tables in the document.
-func (d *Document) Tables() []*Table {
+func (d *documentImpl) Tables() []Table {
 	return d.Body().Tables()
 }
 
+// Sections returns the document sections.
+func (d *documentImpl) Sections() []Section {
+	if d == nil || d.document == nil {
+		return nil
+	}
+	if d.document.Body == nil {
+		d.document.Body = &wml.Body{}
+	}
+	if d.document.Body.SectPr == nil {
+		d.document.Body.SectPr = &wml.SectPr{}
+	}
+	return []Section{&sectionImpl{doc: d, sectPr: d.document.Body.SectPr}}
+}
+
 // XML returns the underlying WML document for advanced access.
-func (d *Document) XML() *wml.Document {
+func (d *documentImpl) XML() *wml.Document {
 	return d.document
 }
 
 // CoreProperties returns the document core properties.
-func (d *Document) CoreProperties() (*common.CoreProperties, error) {
+func (d *documentImpl) CoreProperties() (*common.CoreProperties, error) {
 	return d.pkg.CoreProperties()
 }
 
 // SetCoreProperties sets the document core properties.
-func (d *Document) SetCoreProperties(props *common.CoreProperties) error {
+func (d *documentImpl) SetCoreProperties(props *common.CoreProperties) error {
 	return d.pkg.SetCoreProperties(props)
 }
 
+// Properties returns the document properties (core properties).
+func (d *documentImpl) Properties() DocumentProperties {
+	props, _ := d.pkg.CoreProperties()
+	if props == nil {
+		return DocumentProperties{}
+	}
+	return *props
+}
+
 // AddParagraph adds a new paragraph to the document body.
-func (d *Document) AddParagraph() *Paragraph {
+func (d *documentImpl) AddParagraph() Paragraph {
 	return d.Body().AddParagraph()
 }
 
 // AddTable adds a new table to the document body.
-func (d *Document) AddTable(rows, cols int) *Table {
+func (d *documentImpl) AddTable(rows, cols int) Table {
 	return d.Body().AddTable(rows, cols)
 }
 
-// TrackChangesEnabled returns whether track changes is enabled.
-func (d *Document) TrackChangesEnabled() bool {
+// TrackChangesEnabled reports whether track changes is enabled.
+func (d *documentImpl) TrackChangesEnabled() bool {
 	return d.trackChanges
 }
 
-// EnableTrackChanges enables track changes.
-func (d *Document) EnableTrackChanges(author string) {
+// EnableTrackChanges enables track changes with an author.
+func (d *documentImpl) EnableTrackChanges(author string) {
 	d.trackChanges = true
 	d.trackAuthor = author
 	if d.settings.TrackRevisions == nil {
@@ -189,29 +214,104 @@ func (d *Document) EnableTrackChanges(author string) {
 }
 
 // DisableTrackChanges disables track changes.
-func (d *Document) DisableTrackChanges() {
+func (d *documentImpl) DisableTrackChanges() {
 	d.trackChanges = false
 	d.settings.TrackRevisions = nil
 }
 
 // TrackAuthor returns the author name for tracked changes.
-func (d *Document) TrackAuthor() string {
+func (d *documentImpl) TrackAuthor() string {
 	return d.trackAuthor
 }
 
 // SetTrackAuthor sets the author name for tracked changes.
-func (d *Document) SetTrackAuthor(author string) {
+func (d *documentImpl) SetTrackAuthor(author string) {
 	d.trackAuthor = author
 }
 
+// TrackChanges returns the track changes manager.
+func (d *documentImpl) TrackChanges() TrackChanges {
+	return &TrackChangesManager{doc: d}
+}
+
+// Insertions returns tracked insertions.
+func (d *documentImpl) Insertions() []Revision {
+	return d.revisionsByType(RevisionInsert)
+}
+
+// Deletions returns tracked deletions.
+func (d *documentImpl) Deletions() []Revision {
+	return d.revisionsByType(RevisionDelete)
+}
+
+// StyleByID returns a style by ID.
+func (d *documentImpl) StyleByID(id string) Style {
+	if d == nil {
+		return nil
+	}
+	return d.Styles().ByID(id)
+}
+
+// StyleByName returns a style by name.
+func (d *documentImpl) StyleByName(name string) Style {
+	if d == nil {
+		return nil
+	}
+	return d.Styles().ByName(name)
+}
+
+
+// AcceptAllRevisions accepts all tracked revisions.
+func (d *documentImpl) AcceptAllRevisions() {
+	for _, rev := range d.AllRevisions() {
+		_ = rev.Accept()
+	}
+}
+
+// RejectAllRevisions rejects all tracked revisions.
+func (d *documentImpl) RejectAllRevisions() {
+	for _, rev := range d.AllRevisions() {
+		_ = rev.Reject()
+	}
+}
+
+// CommentByID returns a comment by its ID.
+func (d *documentImpl) CommentByID(id string) Comment {
+	if d.comments == nil {
+		return nil
+	}
+	for _, c := range d.comments.Comment {
+		if strconv.Itoa(c.ID) == id {
+			return &commentImpl{doc: d, comment: c}
+		}
+	}
+	return nil
+}
+
+// DeleteComment removes a comment by ID.
+func (d *documentImpl) DeleteComment(id string) error {
+	if d.comments == nil {
+		return fmt.Errorf("comment %s not found", id)
+	}
+	for i, c := range d.comments.Comment {
+		if strconv.Itoa(c.ID) == id {
+			d.comments.Comment = append(d.comments.Comment[:i], d.comments.Comment[i+1:]...)
+			commentID, _ := strconv.Atoi(id)
+			d.removeCommentRanges(commentID)
+			return nil
+		}
+	}
+	return fmt.Errorf("comment %s not found", id)
+}
+
 // nextRevID returns the next revision ID.
-func (d *Document) nextRevID() int {
+func (d *documentImpl) nextRevID() int {
 	d.nextRevisionID++
 	return d.nextRevisionID
 }
 
 // nextCommID returns the next comment ID.
-func (d *Document) nextCommID() int {
+func (d *documentImpl) nextCommID() int {
 	d.nextCommentID++
 	return d.nextCommentID
 }

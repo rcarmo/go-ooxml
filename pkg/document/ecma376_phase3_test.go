@@ -161,14 +161,14 @@ func TestECMA376_RevisionIDUniqueness(t *testing.T) {
 	}
 
 	// Check all IDs are unique
-	seenIDs := make(map[int]bool)
+	seenIDs := make(map[string]bool)
 	for i, rev := range insertions {
-		id := rev.ins.ID
+		id := rev.ID()
 		if seenIDs[id] {
-			t.Errorf("Duplicate revision ID %d found (ECMA-376 requires unique IDs)", id)
-		}
-		seenIDs[id] = true
-		t.Logf("Revision %d has ID: %d", i, id)
+			t.Errorf("Duplicate revision ID %s found (ECMA-376 requires unique IDs)", id)
+			}
+			seenIDs[id] = true
+		t.Logf("Revision %d has ID: %s", i, id)
 	}
 }
 
@@ -255,7 +255,7 @@ func TestECMA376_CommentElement(t *testing.T) {
 			}
 			defer doc.Close()
 
-			c := doc.AddComment(tt.author, tt.text)
+			c, _ := doc.Comments().Add(tt.text, tt.author, "")
 			if tt.initials != "" {
 				c.SetInitials(tt.initials)
 			}
@@ -283,16 +283,16 @@ func TestECMA376_CommentIDMatching(t *testing.T) {
 	defer doc.Close()
 
 	// Add multiple comments
-	c1 := doc.AddComment("Author1", "Comment 1")
-	c2 := doc.AddComment("Author2", "Comment 2")
-	c3 := doc.AddComment("Author3", "Comment 3")
+	c1, _ := doc.Comments().Add("Comment 1", "Author1", "")
+	c2, _ := doc.Comments().Add("Comment 2", "Author2", "")
+	c3, _ := doc.Comments().Add("Comment 3", "Author3", "")
 
 	// Verify IDs are unique and sequential-ish
-	ids := []int{c1.ID(), c2.ID(), c3.ID()}
-	seen := make(map[int]bool)
+	ids := []string{c1.ID(), c2.ID(), c3.ID()}
+	seen := make(map[string]bool)
 	for _, id := range ids {
 		if seen[id] {
-			t.Errorf("Duplicate comment ID: %d (ECMA-376 requires unique IDs)", id)
+			t.Errorf("Duplicate comment ID: %s (ECMA-376 requires unique IDs)", id)
 		}
 		seen[id] = true
 	}
@@ -301,7 +301,7 @@ func TestECMA376_CommentIDMatching(t *testing.T) {
 	for _, id := range ids {
 		found := doc.CommentByID(id)
 		if found == nil {
-			t.Errorf("Failed to find comment by ID %d", id)
+			t.Errorf("Failed to find comment by ID %s", id)
 		}
 	}
 }
@@ -314,7 +314,7 @@ func TestECMA376_CommentDate(t *testing.T) {
 	}
 	defer doc.Close()
 
-	c := doc.AddComment("Author", "Comment with date")
+	c, _ := doc.Comments().Add("Comment with date", "Author", "")
 
 	// Comment should have a date
 	date := c.Date()
@@ -337,7 +337,7 @@ func TestECMA376_CommentContent(t *testing.T) {
 	defer doc.Close()
 
 	// Per ECMA-376 §17.13.4.2, comment can contain paragraphs
-	c := doc.AddComment("Author", "First paragraph")
+	c, _ := doc.Comments().Add("First paragraph", "Author", "")
 	c.SetText("Updated with new paragraph content")
 
 	text := c.Text()
@@ -357,7 +357,7 @@ func TestECMA376_OrphanedComment(t *testing.T) {
 	defer doc.Close()
 
 	// Add comment without anchoring to text
-	c := doc.AddComment("Author", "Orphaned comment")
+	c, _ := doc.Comments().Add("Orphaned comment", "Author", "")
 
 	// Should still be accessible
 	found := doc.CommentByID(c.ID())
@@ -391,7 +391,7 @@ func TestECMA376_StyleTypes(t *testing.T) {
 			}
 			defer doc.Close()
 
-			var s *Style
+			var s Style
 			switch tt.styleType {
 			case StyleTypeParagraph:
 				s = doc.AddParagraphStyle("Test", "Test Style")
@@ -454,7 +454,7 @@ func TestECMA376_StyleIDUniqueness(t *testing.T) {
 	doc.AddParagraphStyle("Style2", "Second Style")
 	doc.AddCharacterStyle("Style3", "Third Style")
 
-	styles := doc.Styles()
+	styles := doc.Styles().List()
 	if len(styles) != 3 {
 		t.Errorf("Expected 3 styles, got %d", len(styles))
 	}
@@ -785,7 +785,7 @@ func TestECMA376_RoundTrip_Phase3Features(t *testing.T) {
 	style.SetBold(true)
 
 	// Add comment
-	doc.AddComment("Test Author", "Test comment")
+	_, _ = doc.Comments().Add("Test comment", "Test Author", "")
 
 	// Enable track changes and add tracked content
 	doc.EnableTrackChanges("Editor")
@@ -819,7 +819,7 @@ func TestECMA376_RoundTrip_Phase3Features(t *testing.T) {
 	defer doc2.Close()
 
 	// Verify styles preserved
-	styles := doc2.Styles()
+	styles := doc2.Styles().List()
 	foundStyle := false
 	for _, s := range styles {
 		if s.ID() == "TestStyle" {
@@ -883,12 +883,12 @@ func xmlContainsElement(xmlContent, localName string) bool {
 func TestECMA376_AttributeFormats(t *testing.T) {
 	tests := []struct {
 		name     string
-		setup    func(*Document)
+		setup    func(Document)
 		validate func(*testing.T, []byte)
 	}{
 		{
 			name: "revision date format",
-			setup: func(d *Document) {
+			setup: func(d Document) {
 				d.EnableTrackChanges("Author")
 				d.AddParagraph().InsertTrackedText("test")
 			},
@@ -902,8 +902,8 @@ func TestECMA376_AttributeFormats(t *testing.T) {
 		},
 		{
 			name: "comment initials attribute",
-			setup: func(d *Document) {
-				c := d.AddComment("John Doe", "Comment")
+			setup: func(d Document) {
+				c, _ := d.Comments().Add("Comment", "John Doe", "")
 				c.SetInitials("JD")
 			},
 			validate: func(t *testing.T, data []byte) {

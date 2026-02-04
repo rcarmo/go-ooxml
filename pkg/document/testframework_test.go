@@ -22,7 +22,7 @@ var Phase3Fixtures = []TestFixture{
 	{
 		Name:        "track_changes_insert",
 		Description: "Document with tracked insertions",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			d.EnableTrackChanges("Editor")
 			p := d.AddParagraph()
 			p.InsertTrackedText("This text was inserted")
@@ -31,7 +31,7 @@ var Phase3Fixtures = []TestFixture{
 	{
 		Name:        "track_changes_delete",
 		Description: "Document with tracked deletions",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			p := d.AddParagraph()
 			p.SetText("Text to be deleted")
 			d.EnableTrackChanges("Editor")
@@ -41,7 +41,7 @@ var Phase3Fixtures = []TestFixture{
 	{
 		Name:        "track_changes_mixed",
 		Description: "Document with mixed tracked changes",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			d.EnableTrackChanges("Editor1")
 			p := d.AddParagraph()
 			p.InsertTrackedText("First insertion")
@@ -52,7 +52,7 @@ var Phase3Fixtures = []TestFixture{
 	{
 		Name:        "track_changes_multiple_authors",
 		Description: "Document with changes from multiple authors",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			d.EnableTrackChanges("Author A")
 			d.AddParagraph().InsertTrackedText("From Author A")
 			d.SetTrackAuthor("Author B")
@@ -66,28 +66,28 @@ var Phase3Fixtures = []TestFixture{
 	{
 		Name:        "single_comment",
 		Description: "Document with one comment",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			d.AddParagraph().SetText("Commented text")
-			d.AddComment("Reviewer", "Please check this section")
+			_, _ = d.Comments().Add("Please check this section", "Reviewer", "")
 		},
 	},
 	{
 		Name:        "multiple_comments",
 		Description: "Document with multiple comments",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			d.AddParagraph().SetText("First paragraph")
-			d.AddComment("Reviewer 1", "First comment")
+			_, _ = d.Comments().Add("First comment", "Reviewer 1", "")
 			d.AddParagraph().SetText("Second paragraph")
-			d.AddComment("Reviewer 2", "Second comment")
-			d.AddComment("Reviewer 1", "Third comment")
+			_, _ = d.Comments().Add("Second comment", "Reviewer 2", "")
+			_, _ = d.Comments().Add("Third comment", "Reviewer 1", "")
 		},
 	},
 	{
 		Name:        "comment_with_initials",
 		Description: "Document with comment including initials",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			d.AddParagraph().SetText("Text")
-			c := d.AddComment("John Doe", "A comment")
+			c, _ := d.Comments().Add("A comment", "John Doe", "")
 			c.SetInitials("JD")
 		},
 	},
@@ -96,7 +96,7 @@ var Phase3Fixtures = []TestFixture{
 	{
 		Name:        "custom_paragraph_style",
 		Description: "Document with custom paragraph style",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			s := d.AddParagraphStyle("CustomStyle", "Custom Style")
 			s.SetBold(true)
 			s.SetFontSize(14)
@@ -110,7 +110,7 @@ var Phase3Fixtures = []TestFixture{
 	{
 		Name:        "style_inheritance",
 		Description: "Document with inherited styles",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			base := d.AddParagraphStyle("BaseStyle", "Base Style")
 			base.SetFontSize(12)
 			base.SetFontName("Arial")
@@ -125,7 +125,7 @@ var Phase3Fixtures = []TestFixture{
 	{
 		Name:        "multiple_style_types",
 		Description: "Document with paragraph, character, and table styles",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			d.AddParagraphStyle("ParaStyle", "Paragraph Style")
 			d.AddCharacterStyle("CharStyle", "Character Style")
 			d.AddTableStyle("TableStyle", "Table Style")
@@ -136,7 +136,7 @@ var Phase3Fixtures = []TestFixture{
 	{
 		Name:        "default_header_footer",
 		Description: "Document with default header and footer",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			h := d.AddHeader(HeaderFooterDefault)
 			h.SetText("Default Header")
 			f := d.AddFooter(HeaderFooterDefault)
@@ -146,7 +146,7 @@ var Phase3Fixtures = []TestFixture{
 	{
 		Name:        "first_page_header_footer",
 		Description: "Document with first page header/footer",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			d.AddHeader(HeaderFooterDefault).SetText("Default Header")
 			d.AddHeader(HeaderFooterFirst).SetText("First Page Header")
 			d.AddFooter(HeaderFooterDefault).SetText("Default Footer")
@@ -156,7 +156,7 @@ var Phase3Fixtures = []TestFixture{
 	{
 		Name:        "all_header_footer_types",
 		Description: "Document with all header/footer types",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			d.AddHeader(HeaderFooterDefault).SetText("Default")
 			d.AddHeader(HeaderFooterFirst).SetText("First")
 			d.AddHeader(HeaderFooterEven).SetText("Even")
@@ -170,7 +170,7 @@ var Phase3Fixtures = []TestFixture{
 	{
 		Name:        "full_featured_document",
 		Description: "Document using all Phase 3 features",
-		Setup: func(d *Document) {
+		Setup: func(d Document) {
 			// Add styles
 			d.AddParagraphStyle("Title", "Title").SetFontSize(24)
 			d.AddParagraphStyle("Body", "Body Text").SetFontSize(11)
@@ -191,7 +191,7 @@ var Phase3Fixtures = []TestFixture{
 			body.InsertTrackedText("This is tracked content")
 			
 			// Add comment
-			d.AddComment("Reviewer", "Please review this document")
+			_, _ = d.Comments().Add("Please review this document", "Reviewer", "")
 		},
 	},
 }
@@ -290,9 +290,9 @@ func HeaderFooterTestCases() []HeaderFooterTestCase {
 // =============================================================================
 
 // WithTrackChanges runs a test function with track changes enabled.
-func (h *TestHelper) WithTrackChanges(author string, fn func(*Document)) *Document {
+func (h *TestHelper) WithTrackChanges(author string, fn func(Document)) Document {
 	h.t.Helper()
-	doc := h.CreateDocument(func(d *Document) {
+	doc := h.CreateDocument(func(d Document) {
 		d.EnableTrackChanges(author)
 		fn(d)
 	})
@@ -300,12 +300,12 @@ func (h *TestHelper) WithTrackChanges(author string, fn func(*Document)) *Docume
 }
 
 // WithComments runs a test function and adds specified comments.
-func (h *TestHelper) WithComments(comments []CommentTestCase, fn func(*Document)) *Document {
+func (h *TestHelper) WithComments(comments []CommentTestCase, fn func(Document)) Document {
 	h.t.Helper()
-	doc := h.CreateDocument(func(d *Document) {
+	doc := h.CreateDocument(func(d Document) {
 		fn(d)
 		for _, c := range comments {
-			comment := d.AddComment(c.Author, c.Text)
+			comment, _ := d.Comments().Add(c.Text, c.Author, "")
 			if c.Initials != "" {
 				comment.SetInitials(c.Initials)
 			}
@@ -315,13 +315,13 @@ func (h *TestHelper) WithComments(comments []CommentTestCase, fn func(*Document)
 }
 
 // RoundTripWithFixture creates a document using a fixture, saves, and reopens it.
-func (h *TestHelper) RoundTripWithFixture(fixture TestFixture) *Document {
+func (h *TestHelper) RoundTripWithFixture(fixture TestFixture) Document {
 	h.t.Helper()
 	return h.RoundTrip(fixture.Name+".docx", fixture.Setup)
 }
 
 // AssertTrackChangesEnabled checks track changes state.
-func (h *TestHelper) AssertTrackChangesEnabled(doc *Document, want bool) {
+func (h *TestHelper) AssertTrackChangesEnabled(doc Document, want bool) {
 	h.t.Helper()
 	if got := doc.TrackChangesEnabled(); got != want {
 		h.t.Errorf("TrackChangesEnabled() = %v, want %v", got, want)
@@ -329,7 +329,7 @@ func (h *TestHelper) AssertTrackChangesEnabled(doc *Document, want bool) {
 }
 
 // AssertTrackAuthor checks the track changes author.
-func (h *TestHelper) AssertTrackAuthor(doc *Document, want string) {
+func (h *TestHelper) AssertTrackAuthor(doc Document, want string) {
 	h.t.Helper()
 	if got := doc.TrackAuthor(); got != want {
 		h.t.Errorf("TrackAuthor() = %q, want %q", got, want)
@@ -337,7 +337,7 @@ func (h *TestHelper) AssertTrackAuthor(doc *Document, want string) {
 }
 
 // AssertRevisionCount checks the number of revisions.
-func (h *TestHelper) AssertRevisionCount(doc *Document, want int) {
+func (h *TestHelper) AssertRevisionCount(doc Document, want int) {
 	h.t.Helper()
 	got := len(doc.AllRevisions())
 	if got != want {
@@ -346,7 +346,7 @@ func (h *TestHelper) AssertRevisionCount(doc *Document, want int) {
 }
 
 // AssertInsertionCount checks the number of insertions.
-func (h *TestHelper) AssertInsertionCount(doc *Document, want int) {
+func (h *TestHelper) AssertInsertionCount(doc Document, want int) {
 	h.t.Helper()
 	got := len(doc.Insertions())
 	if got != want {
@@ -355,7 +355,7 @@ func (h *TestHelper) AssertInsertionCount(doc *Document, want int) {
 }
 
 // AssertDeletionCount checks the number of deletions.
-func (h *TestHelper) AssertDeletionCount(doc *Document, want int) {
+func (h *TestHelper) AssertDeletionCount(doc Document, want int) {
 	h.t.Helper()
 	got := len(doc.Deletions())
 	if got != want {
@@ -364,25 +364,25 @@ func (h *TestHelper) AssertDeletionCount(doc *Document, want int) {
 }
 
 // AssertCommentCount checks the number of comments.
-func (h *TestHelper) AssertCommentCount(doc *Document, want int) {
+func (h *TestHelper) AssertCommentCount(doc Document, want int) {
 	h.t.Helper()
-	got := len(doc.Comments())
+	got := len(doc.Comments().All())
 	if got != want {
 		h.t.Errorf("len(Comments()) = %d, want %d", got, want)
 	}
 }
 
 // AssertStyleCount checks the number of styles.
-func (h *TestHelper) AssertStyleCount(doc *Document, want int) {
+func (h *TestHelper) AssertStyleCount(doc Document, want int) {
 	h.t.Helper()
-	got := len(doc.Styles())
+	got := len(doc.Styles().List())
 	if got != want {
 		h.t.Errorf("len(Styles()) = %d, want %d", got, want)
 	}
 }
 
 // AssertHeaderCount checks the number of headers.
-func (h *TestHelper) AssertHeaderCount(doc *Document, want int) {
+func (h *TestHelper) AssertHeaderCount(doc Document, want int) {
 	h.t.Helper()
 	got := len(doc.Headers())
 	if got != want {
@@ -391,7 +391,7 @@ func (h *TestHelper) AssertHeaderCount(doc *Document, want int) {
 }
 
 // AssertFooterCount checks the number of footers.
-func (h *TestHelper) AssertFooterCount(doc *Document, want int) {
+func (h *TestHelper) AssertFooterCount(doc Document, want int) {
 	h.t.Helper()
 	got := len(doc.Footers())
 	if got != want {
@@ -516,7 +516,7 @@ func (fc FormatCombination) String() string {
 }
 
 // ApplyToRun applies the formatting to a run.
-func (fc FormatCombination) ApplyToRun(r *Run) {
+func (fc FormatCombination) ApplyToRun(r Run) {
 	r.SetBold(fc.Bold)
 	r.SetItalic(fc.Italic)
 	r.SetUnderline(fc.Underline)

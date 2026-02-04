@@ -10,7 +10,7 @@ import (
 
 // Hyperlink represents a hyperlink in a paragraph.
 type Hyperlink struct {
-	doc *Document
+	doc *documentImpl
 	h   *wml.Hyperlink
 }
 
@@ -43,7 +43,7 @@ func (h *Hyperlink) Text() string {
 }
 
 // AddHyperlink adds a hyperlink with display text to the paragraph.
-func (p *Paragraph) AddHyperlink(url, text string) (*Hyperlink, error) {
+func (p *paragraphImpl) AddHyperlink(url, text string) (*Hyperlink, error) {
 	if url == "" {
 		return nil, fmt.Errorf("hyperlink url cannot be empty")
 	}
@@ -60,7 +60,7 @@ func (p *Paragraph) AddHyperlink(url, text string) (*Hyperlink, error) {
 }
 
 // AddHyperlinkWithTooltip adds a hyperlink with tooltip text.
-func (p *Paragraph) AddHyperlinkWithTooltip(url, text, tooltip string) (*Hyperlink, error) {
+func (p *paragraphImpl) AddHyperlinkWithTooltip(url, text, tooltip string) (*Hyperlink, error) {
 	link, err := p.AddHyperlink(url, text)
 	if err != nil {
 		return nil, err
@@ -70,7 +70,7 @@ func (p *Paragraph) AddHyperlinkWithTooltip(url, text, tooltip string) (*Hyperli
 }
 
 // AddBookmarkLink adds a hyperlink pointing to a bookmark anchor.
-func (p *Paragraph) AddBookmarkLink(anchor, text string) (*Hyperlink, error) {
+func (p *paragraphImpl) AddBookmarkLink(anchor, text string) (*Hyperlink, error) {
 	if anchor == "" {
 		return nil, fmt.Errorf("bookmark anchor cannot be empty")
 	}

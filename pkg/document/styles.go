@@ -17,19 +17,15 @@ const (
 	StyleTypeNumbering StyleType = "numbering"
 )
 
-// Style represents a document style.
-type Style struct {
-	doc   *Document
-	style *wml.Style
-}
+type styles = stylesImpl
 
 // ID returns the style ID.
-func (s *Style) ID() string {
+func (s *styleImpl) ID() string {
 	return s.style.StyleID
 }
 
 // Name returns the style name.
-func (s *Style) Name() string {
+func (s *styleImpl) Name() string {
 	if s.style.Name != nil {
 		return s.style.Name.Val
 	}
@@ -37,7 +33,7 @@ func (s *Style) Name() string {
 }
 
 // SetName sets the style name.
-func (s *Style) SetName(name string) {
+func (s *styleImpl) SetName(name string) {
 	if s.style.Name == nil {
 		s.style.Name = &wml.StyleName{}
 	}
@@ -45,12 +41,12 @@ func (s *Style) SetName(name string) {
 }
 
 // Type returns the style type.
-func (s *Style) Type() StyleType {
+func (s *styleImpl) Type() StyleType {
 	return StyleType(s.style.Type)
 }
 
 // BasedOn returns the ID of the style this is based on.
-func (s *Style) BasedOn() string {
+func (s *styleImpl) BasedOn() string {
 	if s.style.BasedOn != nil {
 		return s.style.BasedOn.Val
 	}
@@ -58,7 +54,7 @@ func (s *Style) BasedOn() string {
 }
 
 // SetBasedOn sets the parent style ID.
-func (s *Style) SetBasedOn(styleID string) {
+func (s *styleImpl) SetBasedOn(styleID string) {
 	if styleID == "" {
 		s.style.BasedOn = nil
 		return
@@ -67,32 +63,32 @@ func (s *Style) SetBasedOn(styleID string) {
 }
 
 // IsDefault returns whether this is a default style.
-func (s *Style) IsDefault() bool {
+func (s *styleImpl) IsDefault() bool {
 	return s.style.Default != nil && *s.style.Default
 }
 
 // SetDefault sets whether this is a default style.
-func (s *Style) SetDefault(v bool) {
+func (s *styleImpl) SetDefault(v bool) {
 	s.style.Default = &v
 }
 
 // ParagraphProperties returns the paragraph properties for this style.
-func (s *Style) ParagraphProperties() *wml.PPr {
+func (s *styleImpl) ParagraphProperties() *wml.PPr {
 	return s.style.PPr
 }
 
 // SetParagraphProperties sets the paragraph properties.
-func (s *Style) SetParagraphProperties(ppr *wml.PPr) {
+func (s *styleImpl) SetParagraphProperties(ppr *wml.PPr) {
 	s.style.PPr = ppr
 }
 
 // RunProperties returns the run properties for this style.
-func (s *Style) RunProperties() *wml.RPr {
+func (s *styleImpl) RunProperties() *wml.RPr {
 	return s.style.RPr
 }
 
 // SetRunProperties sets the run properties.
-func (s *Style) SetRunProperties(rpr *wml.RPr) {
+func (s *styleImpl) SetRunProperties(rpr *wml.RPr) {
 	s.style.RPr = rpr
 }
 
@@ -100,91 +96,185 @@ func (s *Style) SetRunProperties(rpr *wml.RPr) {
 // Document style methods
 // =============================================================================
 
-// Styles returns all styles in the document.
-func (d *Document) Styles() []*Style {
-	if d.styles == nil || d.styles.Styles == nil {
+// Styles returns the document styles manager.
+func (d *documentImpl) Styles() Styles {
+	return &stylesImpl{doc: d}
+}
+
+// AddParagraphStyle adds a new paragraph style (legacy helper).
+func (d *documentImpl) AddParagraphStyle(id, name string) Style {
+	if d == nil {
 		return nil
 	}
-	
-	result := make([]*Style, len(d.styles.Styles))
-	for i, s := range d.styles.Styles {
-		result[i] = &Style{doc: d, style: s}
+	if style := d.Styles().AddParagraphStyle(id, name); style != nil {
+		if s, ok := style.(*styleImpl); ok {
+			return s
+		}
+		return style
+	}
+	return nil
+}
+
+// AddCharacterStyle adds a new character style (legacy helper).
+func (d *documentImpl) AddCharacterStyle(id, name string) Style {
+	if d == nil {
+		return nil
+	}
+	if style := d.Styles().AddCharacterStyle(id, name); style != nil {
+		if s, ok := style.(*styleImpl); ok {
+			return s
+		}
+		return style
+	}
+	return nil
+}
+
+// AddTableStyle adds a new table style (legacy helper).
+func (d *documentImpl) AddTableStyle(id, name string) Style {
+	if d == nil {
+		return nil
+	}
+	if style := d.Styles().AddTableStyle(id, name); style != nil {
+		if s, ok := style.(*styleImpl); ok {
+			return s
+		}
+		return style
+	}
+	return nil
+}
+
+// AddNumberingStyle adds a new numbering style (legacy helper).
+func (d *documentImpl) AddNumberingStyle(id, name string) Style {
+	if d == nil {
+		return nil
+	}
+	if style := d.Styles().AddNumberingStyle(id, name); style != nil {
+		if s, ok := style.(*styleImpl); ok {
+			return s
+		}
+		return style
+	}
+	return nil
+}
+
+// DeleteStyle removes a style by ID (legacy helper).
+func (d *documentImpl) DeleteStyle(id string) bool {
+	if d == nil {
+		return false
+	}
+	return d.Styles().Delete(id)
+}
+
+// DefaultParagraphStyle returns the default paragraph style (legacy helper).
+func (d *documentImpl) DefaultParagraphStyle() Style {
+	if d == nil {
+		return nil
+	}
+	if style := d.Styles().DefaultParagraphStyle(); style != nil {
+		if s, ok := style.(*styleImpl); ok {
+			return s
+		}
+		return style
+	}
+	return nil
+}
+
+// DefaultCharacterStyle returns the default character style (legacy helper).
+func (d *documentImpl) DefaultCharacterStyle() Style {
+	if d == nil {
+		return nil
+	}
+	if style := d.Styles().DefaultCharacterStyle(); style != nil {
+		if s, ok := style.(*styleImpl); ok {
+			return s
+		}
+		return style
+	}
+	return nil
+}
+
+// All returns all styles in the document.
+func (s *stylesImpl) All() []Style {
+	if s == nil || s.doc == nil || s.doc.styles == nil || s.doc.styles.Styles == nil {
+		return nil
+	}
+	result := make([]Style, len(s.doc.styles.Styles))
+	for i, style := range s.doc.styles.Styles {
+		result[i] = &styleImpl{doc: s.doc, style: style}
 	}
 	return result
 }
 
-// StyleByID returns a style by its ID.
-func (d *Document) StyleByID(id string) *Style {
-	if d.styles == nil {
+// ByID returns a style by its ID.
+func (s *stylesImpl) ByID(id string) Style {
+	if s == nil || s.doc == nil || s.doc.styles == nil {
 		return nil
 	}
-	
-	for _, s := range d.styles.Styles {
-		if s.StyleID == id {
-			return &Style{doc: d, style: s}
+	for _, style := range s.doc.styles.Styles {
+		if style.StyleID == id {
+			return &styleImpl{doc: s.doc, style: style}
 		}
 	}
 	return nil
 }
 
-// StyleByName returns a style by its name.
-func (d *Document) StyleByName(name string) *Style {
-	if d.styles == nil {
+// ByName returns a style by its name.
+func (s *stylesImpl) ByName(name string) Style {
+	if s == nil || s.doc == nil || s.doc.styles == nil {
 		return nil
 	}
-	
-	for _, s := range d.styles.Styles {
-		if s.Name != nil && s.Name.Val == name {
-			return &Style{doc: d, style: s}
+	for _, style := range s.doc.styles.Styles {
+		if style.Name != nil && style.Name.Val == name {
+			return &styleImpl{doc: s.doc, style: style}
 		}
 	}
 	return nil
 }
 
 // AddParagraphStyle adds a new paragraph style.
-func (d *Document) AddParagraphStyle(id, name string) *Style {
-	return d.addStyle(id, name, StyleTypeParagraph)
+func (s *stylesImpl) AddParagraphStyle(id, name string) Style {
+	return s.addStyle(id, name, StyleTypeParagraph)
 }
 
 // AddCharacterStyle adds a new character style.
-func (d *Document) AddCharacterStyle(id, name string) *Style {
-	return d.addStyle(id, name, StyleTypeCharacter)
+func (s *stylesImpl) AddCharacterStyle(id, name string) Style {
+	return s.addStyle(id, name, StyleTypeCharacter)
 }
 
 // AddTableStyle adds a new table style.
-func (d *Document) AddTableStyle(id, name string) *Style {
-	return d.addStyle(id, name, StyleTypeTable)
+func (s *stylesImpl) AddTableStyle(id, name string) Style {
+	return s.addStyle(id, name, StyleTypeTable)
 }
 
 // AddNumberingStyle adds a new numbering style.
-func (d *Document) AddNumberingStyle(id, name string) *Style {
-	return d.addStyle(id, name, StyleTypeNumbering)
+func (s *stylesImpl) AddNumberingStyle(id, name string) Style {
+	return s.addStyle(id, name, StyleTypeNumbering)
 }
 
-func (d *Document) addStyle(id, name string, styleType StyleType) *Style {
-	if d.styles == nil {
-		d.styles = &wml.Styles{}
+func (s *stylesImpl) addStyle(id, name string, styleType StyleType) Style {
+	if s == nil || s.doc == nil {
+		return nil
 	}
-	
+	if s.doc.styles == nil {
+		s.doc.styles = &wml.Styles{}
+	}
 	style := &wml.Style{
 		Type:    string(styleType),
 		StyleID: id,
 		Name:    &wml.StyleName{Val: name},
 	}
-	
-	d.styles.Styles = append(d.styles.Styles, style)
-	return &Style{doc: d, style: style}
+	s.doc.styles.Styles = append(s.doc.styles.Styles, style)
+	return &styleImpl{doc: s.doc, style: style}
 }
 
-// DeleteStyle removes a style by ID.
-func (d *Document) DeleteStyle(id string) bool {
-	if d.styles == nil {
+// Delete removes a style by ID.
+func (s *stylesImpl) Delete(id string) bool {
+	if s == nil || s.doc == nil || s.doc.styles == nil {
 		return false
 	}
-	
-	for i, s := range d.styles.Styles {
-		if s.StyleID == id {
-			d.styles.Styles = append(d.styles.Styles[:i], d.styles.Styles[i+1:]...)
+	for i, style := range s.doc.styles.Styles {
+		if style.StyleID == id {
+			s.doc.styles.Styles = append(s.doc.styles.Styles[:i], s.doc.styles.Styles[i+1:]...)
 			return true
 		}
 	}
@@ -192,31 +282,34 @@ func (d *Document) DeleteStyle(id string) bool {
 }
 
 // DefaultParagraphStyle returns the default paragraph style.
-func (d *Document) DefaultParagraphStyle() *Style {
-	if d.styles == nil {
+func (s *stylesImpl) DefaultParagraphStyle() Style {
+	if s == nil || s.doc == nil || s.doc.styles == nil {
 		return nil
 	}
-	
-	for _, s := range d.styles.Styles {
-		if s.Type == "paragraph" && s.Default != nil && *s.Default {
-			return &Style{doc: d, style: s}
+	for _, style := range s.doc.styles.Styles {
+		if style.Type == "paragraph" && style.Default != nil && *style.Default {
+			return &styleImpl{doc: s.doc, style: style}
 		}
 	}
 	return nil
 }
 
 // DefaultCharacterStyle returns the default character style.
-func (d *Document) DefaultCharacterStyle() *Style {
-	if d.styles == nil {
+func (s *stylesImpl) DefaultCharacterStyle() Style {
+	if s == nil || s.doc == nil || s.doc.styles == nil {
 		return nil
 	}
-	
-	for _, s := range d.styles.Styles {
-		if s.Type == "character" && s.Default != nil && *s.Default {
-			return &Style{doc: d, style: s}
+	for _, style := range s.doc.styles.Styles {
+		if style.Type == "character" && style.Default != nil && *style.Default {
+			return &styleImpl{doc: s.doc, style: style}
 		}
 	}
 	return nil
+}
+
+// List returns all styles (alias for All).
+func (s *stylesImpl) List() []Style {
+	return s.All()
 }
 
 // =============================================================================
@@ -224,7 +317,7 @@ func (d *Document) DefaultCharacterStyle() *Style {
 // =============================================================================
 
 // SetBold sets bold formatting on this style.
-func (s *Style) SetBold(v bool) {
+func (s *styleImpl) SetBold(v bool) {
 	if s.style.RPr == nil {
 		s.style.RPr = &wml.RPr{}
 	}
@@ -236,7 +329,7 @@ func (s *Style) SetBold(v bool) {
 }
 
 // SetItalic sets italic formatting on this style.
-func (s *Style) SetItalic(v bool) {
+func (s *styleImpl) SetItalic(v bool) {
 	if s.style.RPr == nil {
 		s.style.RPr = &wml.RPr{}
 	}
@@ -248,7 +341,7 @@ func (s *Style) SetItalic(v bool) {
 }
 
 // SetFontSize sets the font size in points.
-func (s *Style) SetFontSize(points float64) {
+func (s *styleImpl) SetFontSize(points float64) {
 	if s.style.RPr == nil {
 		s.style.RPr = &wml.RPr{}
 	}
@@ -258,7 +351,7 @@ func (s *Style) SetFontSize(points float64) {
 }
 
 // SetFontName sets the font name.
-func (s *Style) SetFontName(name string) {
+func (s *styleImpl) SetFontName(name string) {
 	if s.style.RPr == nil {
 		s.style.RPr = &wml.RPr{}
 	}
@@ -271,7 +364,7 @@ func (s *Style) SetFontName(name string) {
 }
 
 // SetColor sets the text color.
-func (s *Style) SetColor(hex string) {
+func (s *styleImpl) SetColor(hex string) {
 	if s.style.RPr == nil {
 		s.style.RPr = &wml.RPr{}
 	}
@@ -279,7 +372,7 @@ func (s *Style) SetColor(hex string) {
 }
 
 // SetAlignment sets the paragraph alignment.
-func (s *Style) SetAlignment(align string) {
+func (s *styleImpl) SetAlignment(align string) {
 	if s.style.PPr == nil {
 		s.style.PPr = &wml.PPr{}
 	}
@@ -287,7 +380,7 @@ func (s *Style) SetAlignment(align string) {
 }
 
 // SetSpacingBefore sets the spacing before the paragraph in twips.
-func (s *Style) SetSpacingBefore(twips int64) {
+func (s *styleImpl) SetSpacingBefore(twips int64) {
 	if s.style.PPr == nil {
 		s.style.PPr = &wml.PPr{}
 	}
@@ -298,7 +391,7 @@ func (s *Style) SetSpacingBefore(twips int64) {
 }
 
 // SetSpacingAfter sets the spacing after the paragraph in twips.
-func (s *Style) SetSpacingAfter(twips int64) {
+func (s *styleImpl) SetSpacingAfter(twips int64) {
 	if s.style.PPr == nil {
 		s.style.PPr = &wml.PPr{}
 	}
@@ -312,7 +405,7 @@ func (s *Style) SetSpacingAfter(twips int64) {
 // Styles marshaling
 // =============================================================================
 
-func (d *Document) saveStyles() error {
+func (d *documentImpl) saveStyles() error {
 	if d.styles == nil {
 		return nil
 	}

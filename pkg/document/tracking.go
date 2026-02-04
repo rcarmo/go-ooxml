@@ -3,6 +3,7 @@ package document
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 	"time"
 
@@ -34,40 +35,44 @@ func (rt RevisionType) String() string {
 	}
 }
 
-// Revision represents a tracked change in the document.
-type Revision struct {
-	doc       *Document
+type revisionImpl struct {
+	doc       *documentImpl
 	id        int
 	revType   RevisionType
 	author    string
 	date      time.Time
-	paragraph *Paragraph
+	paragraph *paragraphImpl
 	ins       *wml.Ins
 	del       *wml.Del
 }
 
 // ID returns the revision ID.
-func (r *Revision) ID() int {
+func (r *revisionImpl) ID() string {
+	return strconv.Itoa(r.id)
+}
+
+// IDInt returns the numeric revision ID.
+func (r *revisionImpl) IDInt() int {
 	return r.id
 }
 
 // Type returns the revision type.
-func (r *Revision) Type() RevisionType {
+func (r *revisionImpl) Type() RevisionType {
 	return r.revType
 }
 
 // Author returns the author of the change.
-func (r *Revision) Author() string {
+func (r *revisionImpl) Author() string {
 	return r.author
 }
 
 // Date returns when the change was made.
-func (r *Revision) Date() time.Time {
+func (r *revisionImpl) Date() time.Time {
 	return r.date
 }
 
 // Text returns the text content of the revision.
-func (r *Revision) Text() string {
+func (r *revisionImpl) Text() string {
 	if r.ins != nil {
 		return textFromInlineContent(r.ins.Content)
 	}
@@ -87,8 +92,13 @@ func (r *Revision) Text() string {
 	return ""
 }
 
+// Location returns the revision location placeholder.
+func (r *revisionImpl) Location() RevisionLocation {
+	return RevisionLocation{}
+}
+
 // Accept accepts this revision, making the change permanent.
-func (r *Revision) Accept() error {
+func (r *revisionImpl) Accept() error {
 	if r.paragraph == nil {
 		return nil
 	}
@@ -105,7 +115,7 @@ func (r *Revision) Accept() error {
 }
 
 // Reject rejects this revision, undoing the change.
-func (r *Revision) Reject() error {
+func (r *revisionImpl) Reject() error {
 	if r.paragraph == nil {
 		return nil
 	}
@@ -122,27 +132,17 @@ func (r *Revision) Reject() error {
 }
 
 // =============================================================================
-// TrackChanges methods on Document
+// TrackChanges methods.
 // =============================================================================
 
-// Insertions returns all tracked insertions in the document.
-func (d *Document) Insertions() []*Revision {
-	return d.revisionsByType(RevisionInsert)
-}
-
-// Deletions returns all tracked deletions in the document.
-func (d *Document) Deletions() []*Revision {
-	return d.revisionsByType(RevisionDelete)
-}
-
 // AllRevisions returns all tracked changes in the document.
-func (d *Document) AllRevisions() []*Revision {
-	var revisions []*Revision
+func (d *documentImpl) AllRevisions() []Revision {
+	var revisions []Revision
 	
 	for i, elem := range d.document.Body.Content {
 		switch v := elem.(type) {
 		case *wml.P:
-			para := &Paragraph{doc: d, p: v, index: i}
+			para := &paragraphImpl{doc: d, p: v, index: i}
 			revisions = append(revisions, para.revisions()...)
 		case *wml.Tbl:
 			revisions = append(revisions, revisionsFromTable(d, v)...)
@@ -152,8 +152,8 @@ func (d *Document) AllRevisions() []*Revision {
 	return revisions
 }
 
-func (d *Document) revisionsByType(revType RevisionType) []*Revision {
-	var revisions []*Revision
+func (d *documentImpl) revisionsByType(revType RevisionType) []Revision {
+	var revisions []Revision
 	for _, rev := range d.AllRevisions() {
 		if rev.Type() == revType {
 			revisions = append(revisions, rev)
@@ -162,22 +162,8 @@ func (d *Document) revisionsByType(revType RevisionType) []*Revision {
 	return revisions
 }
 
-// AcceptAllRevisions accepts all tracked changes.
-func (d *Document) AcceptAllRevisions() {
-	for _, rev := range d.AllRevisions() {
-		rev.Accept()
-	}
-}
-
-// RejectAllRevisions rejects all tracked changes.
-func (d *Document) RejectAllRevisions() {
-	for _, rev := range d.AllRevisions() {
-		rev.Reject()
-	}
-}
-
 // InsertTrackedText inserts text at the end of a paragraph with tracking.
-func (p *Paragraph) InsertTrackedText(text string) *Run {
+func (p *paragraphImpl) InsertTrackedText(text string) Run {
 	if !p.doc.trackChanges {
 		return p.AddRun()
 	}
@@ -196,13 +182,13 @@ func (p *Paragraph) InsertTrackedText(text string) *Run {
 	
 	// Return a wrapper for the run inside the insertion
 	if run, ok := ins.Content[0].(*wml.R); ok {
-		return &Run{doc: p.doc, r: run}
+		return &runImpl{doc: p.doc, r: run}
 	}
 	return nil
 }
 
 // DeleteTrackedText marks text for deletion with tracking.
-func (p *Paragraph) DeleteTrackedText(runIndex int) error {
+func (p *paragraphImpl) DeleteTrackedText(runIndex int) error {
 	if runIndex < 0 || runIndex >= len(p.p.Content) {
 		return ErrInvalidIndex
 	}
@@ -244,13 +230,13 @@ func (p *Paragraph) DeleteTrackedText(runIndex int) error {
 // Paragraph helper methods for revisions
 // =============================================================================
 
-func (p *Paragraph) revisions() []*Revision {
-	var revisions []*Revision
+func (p *paragraphImpl) revisions() []Revision {
+	var revisions []Revision
 	
 	for _, elem := range p.p.Content {
 		switch v := elem.(type) {
 		case *wml.Ins:
-			rev := &Revision{
+			rev := &revisionImpl{
 				doc:       p.doc,
 				id:        v.ID,
 				revType:   RevisionInsert,
@@ -264,7 +250,7 @@ func (p *Paragraph) revisions() []*Revision {
 			revisions = append(revisions, rev)
 			
 		case *wml.Del:
-			rev := &Revision{
+			rev := &revisionImpl{
 				doc:       p.doc,
 				id:        v.ID,
 				revType:   RevisionDelete,
@@ -282,13 +268,13 @@ func (p *Paragraph) revisions() []*Revision {
 	return revisions
 }
 
-func revisionsFromTable(doc *Document, tbl *wml.Tbl) []*Revision {
-	var revisions []*Revision
+func revisionsFromTable(doc *documentImpl, tbl *wml.Tbl) []Revision {
+	var revisions []Revision
 	for _, row := range tbl.Tr {
 		for _, cell := range row.Tc {
 			for i, elem := range cell.Content {
 				if p, ok := elem.(*wml.P); ok {
-					para := &Paragraph{doc: doc, p: p, index: i}
+					para := &paragraphImpl{doc: doc, p: p, index: i}
 					revisions = append(revisions, para.revisions()...)
 				}
 			}
@@ -297,7 +283,7 @@ func revisionsFromTable(doc *Document, tbl *wml.Tbl) []*Revision {
 	return revisions
 }
 
-func (p *Paragraph) acceptInsertion(ins *wml.Ins) error {
+func (p *paragraphImpl) acceptInsertion(ins *wml.Ins) error {
 	// Find and replace the ins with its content
 	for i, elem := range p.p.Content {
 		if elem == ins {
@@ -315,7 +301,7 @@ func (p *Paragraph) acceptInsertion(ins *wml.Ins) error {
 	return nil
 }
 
-func (p *Paragraph) acceptDeletion(del *wml.Del) error {
+func (p *paragraphImpl) acceptDeletion(del *wml.Del) error {
 	// Remove the del element entirely
 	for i, elem := range p.p.Content {
 		if elem == del {
@@ -326,7 +312,7 @@ func (p *Paragraph) acceptDeletion(del *wml.Del) error {
 	return nil
 }
 
-func (p *Paragraph) rejectInsertion(ins *wml.Ins) error {
+func (p *paragraphImpl) rejectInsertion(ins *wml.Ins) error {
 	// Remove the ins element entirely
 	for i, elem := range p.p.Content {
 		if elem == ins {
@@ -337,7 +323,7 @@ func (p *Paragraph) rejectInsertion(ins *wml.Ins) error {
 	return nil
 }
 
-func (p *Paragraph) rejectDeletion(del *wml.Del) error {
+func (p *paragraphImpl) rejectDeletion(del *wml.Del) error {
 	// Convert del back to normal runs with T instead of DelText
 	for i, elem := range p.p.Content {
 		if elem == del {

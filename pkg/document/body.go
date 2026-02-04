@@ -4,13 +4,22 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
 )
 
-// Body represents the document body.
-type Body struct {
-	doc *Document
+// Elements returns all body elements.
+func (b *bodyImpl) Elements() []BodyElement {
+	var elements []BodyElement
+	for i, elem := range b.body().Content {
+		switch v := elem.(type) {
+		case *wml.P:
+			elements = append(elements, &paragraphImpl{doc: b.doc, p: v, index: i})
+		case *wml.Tbl:
+			elements = append(elements, &tableImpl{doc: b.doc, tbl: v, index: i})
+		}
+	}
+	return elements
 }
 
 // body returns the underlying wml.Body.
-func (b *Body) body() *wml.Body {
+func (b *bodyImpl) body() *wml.Body {
 	if b.doc.document.Body == nil {
 		b.doc.document.Body = &wml.Body{}
 	}
@@ -18,18 +27,18 @@ func (b *Body) body() *wml.Body {
 }
 
 // Paragraphs returns all paragraphs in the body.
-func (b *Body) Paragraphs() []*Paragraph {
-	var result []*Paragraph
+func (b *bodyImpl) Paragraphs() []Paragraph {
+	var result []Paragraph
 	for i, elem := range b.body().Content {
 		if p, ok := elem.(*wml.P); ok {
-			result = append(result, &Paragraph{doc: b.doc, p: p, index: i})
+			result = append(result, &paragraphImpl{doc: b.doc, p: p, index: i})
 		}
 	}
 	return result
 }
 
 // ContentControls returns all block-level content controls in the body.
-func (b *Body) ContentControls() []*ContentControl {
+func (b *bodyImpl) ContentControls() []*ContentControl {
 	var result []*ContentControl
 	for _, elem := range b.body().Content {
 		if sdt, ok := elem.(*wml.Sdt); ok {
@@ -40,25 +49,25 @@ func (b *Body) ContentControls() []*ContentControl {
 }
 
 // Tables returns all tables in the body.
-func (b *Body) Tables() []*Table {
-	var result []*Table
+func (b *bodyImpl) Tables() []Table {
+	var result []Table
 	for i, elem := range b.body().Content {
 		if tbl, ok := elem.(*wml.Tbl); ok {
-			result = append(result, &Table{doc: b.doc, tbl: tbl, index: i})
+			result = append(result, &tableImpl{doc: b.doc, tbl: tbl, index: i})
 		}
 	}
 	return result
 }
 
 // AddParagraph adds a new paragraph at the end of the body.
-func (b *Body) AddParagraph() *Paragraph {
+func (b *bodyImpl) AddParagraph() Paragraph {
 	p := &wml.P{}
 	b.body().Content = append(b.body().Content, p)
-	return &Paragraph{doc: b.doc, p: p, index: len(b.body().Content) - 1}
+	return &paragraphImpl{doc: b.doc, p: p, index: len(b.body().Content) - 1}
 }
 
 // AddTable adds a new table at the end of the body.
-func (b *Body) AddTable(rows, cols int) *Table {
+func (b *bodyImpl) AddTable(rows, cols int) Table {
 	tbl := &wml.Tbl{
 		TblPr: &wml.TblPr{
 			TblW: &wml.TblWidth{W: 5000, Type: "pct"}, // 100% width
@@ -88,11 +97,32 @@ func (b *Body) AddTable(rows, cols int) *Table {
 	}
 
 	b.body().Content = append(b.body().Content, tbl)
-	return &Table{doc: b.doc, tbl: tbl, index: len(b.body().Content) - 1}
+	return &tableImpl{doc: b.doc, tbl: tbl, index: len(b.body().Content) - 1}
+}
+
+// InsertParagraphBefore inserts a paragraph before a target element.
+func (b *bodyImpl) InsertParagraphBefore(target BodyElement) Paragraph {
+	return b.insertParagraphRelative(target, 0)
+}
+
+// InsertParagraphAfter inserts a paragraph after a target element.
+func (b *bodyImpl) InsertParagraphAfter(target BodyElement) Paragraph {
+	return b.insertParagraphRelative(target, 1)
+}
+
+func (b *bodyImpl) insertParagraphRelative(target BodyElement, offset int) Paragraph {
+	if target == nil {
+		return b.AddParagraph()
+	}
+	index := target.Index()
+	if index < 0 {
+		index = 0
+	}
+	return b.InsertParagraphAt(index + offset)
 }
 
 // InsertParagraphAt inserts a paragraph at the given index.
-func (b *Body) InsertParagraphAt(index int) *Paragraph {
+func (b *bodyImpl) InsertParagraphAt(index int) Paragraph {
 	p := &wml.P{}
 	content := b.body().Content
 
@@ -104,10 +134,10 @@ func (b *Body) InsertParagraphAt(index int) *Paragraph {
 	}
 	b.body().Content = content
 
-	return &Paragraph{doc: b.doc, p: p, index: index}
+	return &paragraphImpl{doc: b.doc, p: p, index: index}
 }
 
 // ElementCount returns the number of elements in the body.
-func (b *Body) ElementCount() int {
+func (b *bodyImpl) ElementCount() int {
 	return len(b.body().Content)
 }

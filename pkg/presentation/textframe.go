@@ -7,16 +7,13 @@ import (
 )
 
 // TextFrame represents the text content of a shape.
-type TextFrame struct {
-	shape  *Shape
+type textFrameImpl struct {
+	shape  *shapeImpl
 	txBody *dml.TxBody
 }
 
 // Text returns all text in the text frame.
-func (tf *TextFrame) Text() string {
-	if tf.shape != nil {
-		return tf.shape.Text()
-	}
+func (tf *textFrameImpl) Text() string {
 	if tf.txBody == nil {
 		return ""
 	}
@@ -32,11 +29,7 @@ func (tf *TextFrame) Text() string {
 }
 
 // SetText sets all text in the text frame.
-func (tf *TextFrame) SetText(text string) {
-	if tf.shape != nil {
-		tf.shape.SetText(text)
-		return
-	}
+func (tf *textFrameImpl) SetText(text string) {
 	if tf.txBody == nil {
 		tf.txBody = &dml.TxBody{
 			BodyPr:   &dml.BodyPr{},
@@ -51,14 +44,14 @@ func (tf *TextFrame) SetText(text string) {
 }
 
 // Paragraphs returns all paragraphs in the text frame.
-func (tf *TextFrame) Paragraphs() []*TextParagraph {
+func (tf *textFrameImpl) Paragraphs() []TextParagraph {
 	if tf.txBody == nil || len(tf.txBody.P) == 0 {
 		return nil
 	}
 
-	var result []*TextParagraph
+	var result []TextParagraph
 	for i, p := range tf.txBody.P {
-		result = append(result, &TextParagraph{
+		result = append(result, &textParagraphImpl{
 			textFrame: tf,
 			p:         p,
 			index:     i,
@@ -68,10 +61,10 @@ func (tf *TextFrame) Paragraphs() []*TextParagraph {
 }
 
 // AddParagraph adds a new paragraph to the text frame.
-func (tf *TextFrame) AddParagraph() *TextParagraph {
+func (tf *textFrameImpl) AddParagraph() TextParagraph {
 	p := &dml.P{}
 	tf.txBody.P = append(tf.txBody.P, p)
-	return &TextParagraph{
+	return &textParagraphImpl{
 		textFrame: tf,
 		p:         p,
 		index:     len(tf.txBody.P) - 1,
@@ -79,12 +72,12 @@ func (tf *TextFrame) AddParagraph() *TextParagraph {
 }
 
 // ClearParagraphs removes all paragraphs from the text frame.
-func (tf *TextFrame) ClearParagraphs() {
+func (tf *textFrameImpl) ClearParagraphs() {
 	tf.txBody.P = nil
 }
 
 // AutofitType returns the autofit type.
-func (tf *TextFrame) AutofitType() AutofitType {
+func (tf *textFrameImpl) AutofitType() AutofitType {
 	if tf.txBody == nil || tf.txBody.BodyPr == nil {
 		return AutofitNone
 	}
@@ -98,7 +91,7 @@ func (tf *TextFrame) AutofitType() AutofitType {
 }
 
 // SetAutofitType sets the autofit type.
-func (tf *TextFrame) SetAutofitType(t AutofitType) {
+func (tf *textFrameImpl) SetAutofitType(t AutofitType) {
 	if tf.txBody.BodyPr == nil {
 		tf.txBody.BodyPr = &dml.BodyPr{}
 	}
@@ -122,14 +115,14 @@ func (tf *TextFrame) SetAutofitType(t AutofitType) {
 // =============================================================================
 
 // TextParagraph represents a paragraph within a text frame.
-type TextParagraph struct {
-	textFrame *TextFrame
+type textParagraphImpl struct {
+	textFrame *textFrameImpl
 	p         *dml.P
 	index     int
 }
 
 // Text returns the combined text of all runs.
-func (tp *TextParagraph) Text() string {
+func (tp *textParagraphImpl) Text() string {
 	var text string
 	for _, r := range tp.p.R {
 		text += r.T
@@ -138,15 +131,15 @@ func (tp *TextParagraph) Text() string {
 }
 
 // SetText sets the paragraph text, replacing all runs with a single run.
-func (tp *TextParagraph) SetText(text string) {
+func (tp *textParagraphImpl) SetText(text string) {
 	tp.p.R = []*dml.R{{T: text}}
 }
 
 // Runs returns all text runs in the paragraph.
-func (tp *TextParagraph) Runs() []*TextRun {
-	var result []*TextRun
+func (tp *textParagraphImpl) Runs() []TextRun {
+	var result []TextRun
 	for i, r := range tp.p.R {
-		result = append(result, &TextRun{
+		result = append(result, &textRunImpl{
 			paragraph: tp,
 			r:         r,
 			index:     i,
@@ -156,10 +149,10 @@ func (tp *TextParagraph) Runs() []*TextRun {
 }
 
 // AddRun adds a new text run to the paragraph.
-func (tp *TextParagraph) AddRun() *TextRun {
+func (tp *textParagraphImpl) AddRun() TextRun {
 	r := &dml.R{}
 	tp.p.R = append(tp.p.R, r)
-	return &TextRun{
+	return &textRunImpl{
 		paragraph: tp,
 		r:         r,
 		index:     len(tp.p.R) - 1,
@@ -167,7 +160,7 @@ func (tp *TextParagraph) AddRun() *TextRun {
 }
 
 // Level returns the outline level (0-8).
-func (tp *TextParagraph) Level() int {
+func (tp *textParagraphImpl) Level() int {
 	if tp.p.PPr != nil && tp.p.PPr.Lvl != nil {
 		return *tp.p.PPr.Lvl
 	}
@@ -175,7 +168,7 @@ func (tp *TextParagraph) Level() int {
 }
 
 // SetLevel sets the outline level (0-8).
-func (tp *TextParagraph) SetLevel(level int) {
+func (tp *textParagraphImpl) SetLevel(level int) {
 	if level < 0 {
 		level = 0
 	}
@@ -187,7 +180,7 @@ func (tp *TextParagraph) SetLevel(level int) {
 }
 
 // BulletType returns the bullet type.
-func (tp *TextParagraph) BulletType() BulletType {
+func (tp *textParagraphImpl) BulletType() BulletType {
 	if tp.p.PPr == nil {
 		return BulletNone
 	}
@@ -204,7 +197,7 @@ func (tp *TextParagraph) BulletType() BulletType {
 }
 
 // SetBulletType sets the bullet type.
-func (tp *TextParagraph) SetBulletType(t BulletType) {
+func (tp *textParagraphImpl) SetBulletType(t BulletType) {
 	tp.ensurePPr()
 
 	tp.p.PPr.BuNone = nil
@@ -223,7 +216,7 @@ func (tp *TextParagraph) SetBulletType(t BulletType) {
 }
 
 // SetBulletCharacter sets a custom bullet character.
-func (tp *TextParagraph) SetBulletCharacter(char string) {
+func (tp *textParagraphImpl) SetBulletCharacter(char string) {
 	tp.ensurePPr()
 	tp.p.PPr.BuNone = nil
 	tp.p.PPr.BuAutoNum = nil
@@ -232,7 +225,7 @@ func (tp *TextParagraph) SetBulletCharacter(char string) {
 }
 
 // Alignment returns the text alignment.
-func (tp *TextParagraph) Alignment() Alignment {
+func (tp *textParagraphImpl) Alignment() Alignment {
 	if tp.p.PPr == nil {
 		return AlignmentLeft
 	}
@@ -251,7 +244,7 @@ func (tp *TextParagraph) Alignment() Alignment {
 }
 
 // SetAlignment sets the text alignment.
-func (tp *TextParagraph) SetAlignment(a Alignment) {
+func (tp *textParagraphImpl) SetAlignment(a Alignment) {
 	tp.ensurePPr()
 	switch a {
 	case AlignmentLeft:
@@ -265,7 +258,7 @@ func (tp *TextParagraph) SetAlignment(a Alignment) {
 	}
 }
 
-func (tp *TextParagraph) ensurePPr() {
+func (tp *textParagraphImpl) ensurePPr() {
 	if tp.p.PPr == nil {
 		tp.p.PPr = &dml.PPr{}
 	}
@@ -276,24 +269,24 @@ func (tp *TextParagraph) ensurePPr() {
 // =============================================================================
 
 // TextRun represents a run of text with consistent formatting.
-type TextRun struct {
-	paragraph *TextParagraph
+type textRunImpl struct {
+	paragraph *textParagraphImpl
 	r         *dml.R
 	index     int
 }
 
 // Text returns the text of the run.
-func (tr *TextRun) Text() string {
+func (tr *textRunImpl) Text() string {
 	return tr.r.T
 }
 
 // SetText sets the text of the run.
-func (tr *TextRun) SetText(text string) {
+func (tr *textRunImpl) SetText(text string) {
 	tr.r.T = text
 }
 
 // Bold returns whether the text is bold.
-func (tr *TextRun) Bold() bool {
+func (tr *textRunImpl) Bold() bool {
 	if tr.r.RPr != nil && tr.r.RPr.B != nil {
 		return *tr.r.RPr.B
 	}
@@ -301,13 +294,13 @@ func (tr *TextRun) Bold() bool {
 }
 
 // SetBold sets whether the text is bold.
-func (tr *TextRun) SetBold(b bool) {
+func (tr *textRunImpl) SetBold(b bool) {
 	tr.ensureRPr()
 	tr.r.RPr.B = &b
 }
 
 // Italic returns whether the text is italic.
-func (tr *TextRun) Italic() bool {
+func (tr *textRunImpl) Italic() bool {
 	if tr.r.RPr != nil && tr.r.RPr.I != nil {
 		return *tr.r.RPr.I
 	}
@@ -315,13 +308,13 @@ func (tr *TextRun) Italic() bool {
 }
 
 // SetItalic sets whether the text is italic.
-func (tr *TextRun) SetItalic(i bool) {
+func (tr *textRunImpl) SetItalic(i bool) {
 	tr.ensureRPr()
 	tr.r.RPr.I = &i
 }
 
 // Underline returns whether the text is underlined.
-func (tr *TextRun) Underline() bool {
+func (tr *textRunImpl) Underline() bool {
 	if tr.r.RPr != nil && tr.r.RPr.U != "" && tr.r.RPr.U != "none" {
 		return true
 	}
@@ -329,7 +322,7 @@ func (tr *TextRun) Underline() bool {
 }
 
 // SetUnderline sets whether the text is underlined.
-func (tr *TextRun) SetUnderline(u bool) {
+func (tr *textRunImpl) SetUnderline(u bool) {
 	tr.ensureRPr()
 	if u {
 		tr.r.RPr.U = "sng" // Single underline
@@ -339,7 +332,7 @@ func (tr *TextRun) SetUnderline(u bool) {
 }
 
 // FontSize returns the font size in points.
-func (tr *TextRun) FontSize() float64 {
+func (tr *textRunImpl) FontSize() float64 {
 	if tr.r.RPr != nil && tr.r.RPr.Sz != nil {
 		return float64(*tr.r.RPr.Sz) / 100.0
 	}
@@ -347,14 +340,14 @@ func (tr *TextRun) FontSize() float64 {
 }
 
 // SetFontSize sets the font size in points.
-func (tr *TextRun) SetFontSize(points float64) {
+func (tr *textRunImpl) SetFontSize(points float64) {
 	tr.ensureRPr()
 	sz := int(points * 100)
 	tr.r.RPr.Sz = &sz
 }
 
 // FontName returns the font name.
-func (tr *TextRun) FontName() string {
+func (tr *textRunImpl) FontName() string {
 	if tr.r.RPr != nil && tr.r.RPr.Latin != nil {
 		return tr.r.RPr.Latin.Typeface
 	}
@@ -362,7 +355,7 @@ func (tr *TextRun) FontName() string {
 }
 
 // SetFontName sets the font name.
-func (tr *TextRun) SetFontName(name string) {
+func (tr *textRunImpl) SetFontName(name string) {
 	tr.ensureRPr()
 	tr.r.RPr.Latin = &dml.TextFont{Typeface: name}
 	tr.r.RPr.Cs = &dml.TextFont{Typeface: name}
@@ -370,7 +363,7 @@ func (tr *TextRun) SetFontName(name string) {
 }
 
 // Color returns the text color as hex (e.g., "FF0000").
-func (tr *TextRun) Color() string {
+func (tr *textRunImpl) Color() string {
 	if tr.r.RPr != nil && tr.r.RPr.SolidFill != nil && tr.r.RPr.SolidFill.SrgbClr != nil {
 		return tr.r.RPr.SolidFill.SrgbClr.Val
 	}
@@ -378,14 +371,14 @@ func (tr *TextRun) Color() string {
 }
 
 // SetColor sets the text color (hex format like "FF0000").
-func (tr *TextRun) SetColor(hex string) {
+func (tr *textRunImpl) SetColor(hex string) {
 	tr.ensureRPr()
 	tr.r.RPr.SolidFill = &dml.SolidFill{
 		SrgbClr: &dml.SrgbClr{Val: hex},
 	}
 }
 
-func (tr *TextRun) ensureRPr() {
+func (tr *textRunImpl) ensureRPr() {
 	if tr.r.RPr == nil {
 		tr.r.RPr = &dml.RPr{}
 	}

@@ -19,7 +19,7 @@ func FuzzWorksheetCellAccess(f *testing.F) {
 		}
 		defer w.Close()
 
-		cell := w.Sheets()[0].Cell(ref)
+		cell := w.SheetsRaw()[0].Cell(ref)
 		if cell == nil {
 			return
 		}
@@ -48,7 +48,7 @@ func FuzzWorksheetRangeAccess(f *testing.F) {
 		}
 		defer w.Close()
 
-		rng := w.Sheets()[0].Range(ref)
+		rng := w.SheetsRaw()[0].Range(ref)
 		if rng == nil {
 			return
 		}

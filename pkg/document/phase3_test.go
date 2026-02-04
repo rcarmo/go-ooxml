@@ -218,7 +218,7 @@ func TestAddComment(t *testing.T) {
 	}
 	defer doc.Close()
 
-	c := doc.AddComment("Test Author", "This is a comment")
+	c, _ := doc.Comments().Add("This is a comment", "Test Author", "")
 	if c == nil {
 		t.Fatal("Expected comment to be created")
 	}
@@ -238,7 +238,7 @@ func TestCommentInitials(t *testing.T) {
 	}
 	defer doc.Close()
 
-	c := doc.AddComment("John Doe", "Comment text")
+	c, _ := doc.Comments().Add("Comment text", "John Doe", "")
 	c.SetInitials("JD")
 
 	if c.Initials() != "JD" {
@@ -253,7 +253,7 @@ func TestCommentSetText(t *testing.T) {
 	}
 	defer doc.Close()
 
-	c := doc.AddComment("Author", "Original")
+	c, _ := doc.Comments().Add("Original", "Author", "")
 	c.SetText("Updated comment")
 
 	if c.Text() != "Updated comment" {
@@ -496,7 +496,7 @@ func TestContentControlDateConfig(t *testing.T) {
 
 func TestContentControlDropDownListRoundTrip(t *testing.T) {
 	h := NewTestHelper(t)
-	doc := h.CreateDocument(func(d *Document) {
+doc := h.CreateDocument(func(d Document) {
 		cc := d.AddBlockContentControl("Choices", "Choices", "Select")
 		cc.SetDropDownList([]ContentControlListItem{
 			{DisplayText: "Option A", Value: "A"},
@@ -526,7 +526,7 @@ func TestContentControlDropDownListRoundTrip(t *testing.T) {
 
 func TestContentControlDateConfigRoundTrip(t *testing.T) {
 	h := NewTestHelper(t)
-	doc := h.CreateDocument(func(d *Document) {
+doc := h.CreateDocument(func(d Document) {
 		cc := d.AddBlockContentControl("Date", "Date", "2026-02-01")
 		cc.SetDateConfig(ContentControlDateConfig{
 			Format:   "yyyy-MM-dd",
@@ -627,7 +627,7 @@ func TestAddField(t *testing.T) {
 
 func TestHyperlinkRoundTrip(t *testing.T) {
 	h := NewTestHelper(t)
-	doc := h.CreateDocument(func(d *Document) {
+doc := h.CreateDocument(func(d Document) {
 		p := d.AddParagraph()
 		_, err := p.AddHyperlink("https://example.com", "Example")
 		if err != nil {
@@ -657,7 +657,7 @@ func TestHyperlinkRoundTrip(t *testing.T) {
 
 func TestContentControlRoundTrip(t *testing.T) {
 	h := NewTestHelper(t)
-	doc := h.CreateDocument(func(d *Document) {
+doc := h.CreateDocument(func(d Document) {
 		d.AddBlockContentControl("Customer", "Customer Name", "Ada")
 	})
 	defer doc.Close()
@@ -679,7 +679,7 @@ func TestContentControlRoundTrip(t *testing.T) {
 
 func TestTechnicalReportWorkflow(t *testing.T) {
 	h := NewTestHelper(t)
-	doc := h.CreateDocument(func(d *Document) {
+doc := h.CreateDocument(func(d Document) {
 		d.EnableTrackChanges("Test Author")
 		h1 := d.AddParagraph()
 		h1.SetStyle("Heading1")
@@ -694,7 +694,7 @@ func TestTechnicalReportWorkflow(t *testing.T) {
 		target := table.Cell(0, 1).Paragraphs()[0]
 		target.InsertTrackedText("Acme Corp")
 
-		d.AddComment("Reviewer", "Verify customer name with legal")
+	_, _ = d.Comments().Add("Verify customer name with legal", "Reviewer", "Acme Corp")
 	})
 	defer doc.Close()
 
@@ -710,8 +710,8 @@ func TestTechnicalReportWorkflow(t *testing.T) {
 	if len(doc2.AllRevisions()) == 0 {
 		t.Error("Expected revisions after round-trip")
 	}
-	if len(doc2.Comments()) != 1 {
-		t.Errorf("Expected 1 comment after round-trip, got %d", len(doc2.Comments()))
+	if len(doc2.Comments().All()) != 1 {
+		t.Errorf("Expected 1 comment after round-trip, got %d", len(doc2.Comments().All()))
 	}
 	tables := doc2.Tables()
 	if len(tables) != 1 {
@@ -760,16 +760,16 @@ func TestComments(t *testing.T) {
 	defer doc.Close()
 
 	// Initially no comments
-	if len(doc.Comments()) != 0 {
+	if len(doc.Comments().All()) != 0 {
 		t.Error("Expected 0 comments initially")
 	}
 
 	// Add multiple comments
-	doc.AddComment("Author 1", "Comment 1")
-	doc.AddComment("Author 2", "Comment 2")
-	doc.AddComment("Author 3", "Comment 3")
+	_, _ = doc.Comments().Add("Comment 1", "Author 1", "")
+	_, _ = doc.Comments().Add("Comment 2", "Author 2", "")
+	_, _ = doc.Comments().Add("Comment 3", "Author 3", "")
 
-	comments := doc.Comments()
+	comments := doc.Comments().All()
 	if len(comments) != 3 {
 		t.Errorf("Expected 3 comments, got %d", len(comments))
 	}
@@ -782,8 +782,8 @@ func TestCommentByID(t *testing.T) {
 	}
 	defer doc.Close()
 
-	c1 := doc.AddComment("Author", "Comment 1")
-	c2 := doc.AddComment("Author", "Comment 2")
+	c1, _ := doc.Comments().Add("Comment 1", "Author", "")
+	c2, _ := doc.Comments().Add("Comment 2", "Author", "")
 
 	// Find by ID
 	found := doc.CommentByID(c1.ID())
@@ -803,7 +803,7 @@ func TestCommentByID(t *testing.T) {
 	}
 
 	// Non-existent ID
-	notFound := doc.CommentByID(9999)
+	notFound := doc.CommentByID("9999")
 	if notFound != nil {
 		t.Error("Expected nil for non-existent ID")
 	}
@@ -816,7 +816,7 @@ func TestDeleteComment(t *testing.T) {
 	}
 	defer doc.Close()
 
-	c := doc.AddComment("Author", "To delete")
+	c, _ := doc.Comments().Add("To delete", "Author", "")
 	id := c.ID()
 
 	// Delete it
@@ -831,7 +831,7 @@ func TestDeleteComment(t *testing.T) {
 	}
 
 	// Delete non-existent - should error
-	err = doc.DeleteComment(9999)
+	err = doc.DeleteComment("9999")
 	if err == nil {
 		t.Error("Expected DeleteComment to error for non-existent")
 	}
@@ -1040,7 +1040,7 @@ func TestStyles(t *testing.T) {
 	defer doc.Close()
 
 	// Initially no styles
-	if len(doc.Styles()) != 0 {
+	if len(doc.Styles().List()) != 0 {
 		t.Error("Expected 0 styles initially")
 	}
 
@@ -1050,7 +1050,7 @@ func TestStyles(t *testing.T) {
 	doc.AddTableStyle("Table1", "Table 1")
 	doc.AddNumberingStyle("Num1", "Numbering 1")
 
-	styles := doc.Styles()
+	styles := doc.Styles().List()
 	if len(styles) != 4 {
 		t.Errorf("Expected 4 styles, got %d", len(styles))
 	}
@@ -1090,7 +1090,7 @@ func TestAddNumberedListStyle(t *testing.T) {
 
 func TestNumberingRoundTrip(t *testing.T) {
 	h := NewTestHelper(t)
-	doc := h.CreateDocument(func(d *Document) {
+doc := h.CreateDocument(func(d Document) {
 		numID, err := d.AddNumberedListStyle()
 		if err != nil {
 			t.Fatalf("AddNumberedListStyle() error = %v", err)
@@ -1289,7 +1289,7 @@ func TestStyleTypes(t *testing.T) {
 			}
 			defer doc.Close()
 
-			var s *Style
+			var s Style
 			switch tt.styleType {
 			case StyleTypeParagraph:
 				s = doc.AddParagraphStyle("Test"+tt.name, "Test "+tt.name)

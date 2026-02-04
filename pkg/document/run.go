@@ -7,14 +7,8 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
-// Run represents a text run in a paragraph.
-type Run struct {
-	doc *Document
-	r   *wml.R
-}
-
 // Text returns the text content of the run.
-func (r *Run) Text() string {
+func (r *runImpl) Text() string {
 	var sb strings.Builder
 	for _, elem := range r.r.Content {
 		switch v := elem.(type) {
@@ -30,12 +24,21 @@ func (r *Run) Text() string {
 }
 
 // SetText sets the text content of the run.
-func (r *Run) SetText(text string) {
+func (r *runImpl) SetText(text string) {
 	r.r.Content = []interface{}{wml.NewT(text)}
 }
 
+// Properties returns the run properties.
+func (r *runImpl) Properties() RunProperties {
+	r.ensureRPr()
+	if r.r.RPr == nil {
+		return RunProperties{}
+	}
+	return *r.r.RPr
+}
+
 // Bold returns whether the run is bold.
-func (r *Run) Bold() bool {
+func (r *runImpl) Bold() bool {
 	if r.r.RPr != nil && r.r.RPr.B != nil {
 		return r.r.RPr.B.Enabled()
 	}
@@ -43,7 +46,7 @@ func (r *Run) Bold() bool {
 }
 
 // SetBold sets the bold formatting.
-func (r *Run) SetBold(v bool) {
+func (r *runImpl) SetBold(v bool) {
 	r.ensureRPr()
 	if v {
 		r.r.RPr.B = wml.NewOnOffEnabled()
@@ -53,7 +56,7 @@ func (r *Run) SetBold(v bool) {
 }
 
 // Italic returns whether the run is italic.
-func (r *Run) Italic() bool {
+func (r *runImpl) Italic() bool {
 	if r.r.RPr != nil && r.r.RPr.I != nil {
 		return r.r.RPr.I.Enabled()
 	}
@@ -61,7 +64,7 @@ func (r *Run) Italic() bool {
 }
 
 // SetItalic sets the italic formatting.
-func (r *Run) SetItalic(v bool) {
+func (r *runImpl) SetItalic(v bool) {
 	r.ensureRPr()
 	if v {
 		r.r.RPr.I = wml.NewOnOffEnabled()
@@ -71,7 +74,7 @@ func (r *Run) SetItalic(v bool) {
 }
 
 // Underline returns whether the run is underlined.
-func (r *Run) Underline() bool {
+func (r *runImpl) Underline() bool {
 	if r.r.RPr != nil && r.r.RPr.U != nil {
 		return r.r.RPr.U.Val != "" && r.r.RPr.U.Val != "none"
 	}
@@ -79,7 +82,7 @@ func (r *Run) Underline() bool {
 }
 
 // SetUnderline sets the underline formatting.
-func (r *Run) SetUnderline(v bool) {
+func (r *runImpl) SetUnderline(v bool) {
 	r.ensureRPr()
 	if v {
 		r.r.RPr.U = &wml.U{Val: "single"}
@@ -89,7 +92,7 @@ func (r *Run) SetUnderline(v bool) {
 }
 
 // UnderlineStyle returns the underline style.
-func (r *Run) UnderlineStyle() string {
+func (r *runImpl) UnderlineStyle() string {
 	if r.r.RPr != nil && r.r.RPr.U != nil {
 		return r.r.RPr.U.Val
 	}
@@ -97,7 +100,7 @@ func (r *Run) UnderlineStyle() string {
 }
 
 // SetUnderlineStyle sets the underline style (single, double, wave, etc.).
-func (r *Run) SetUnderlineStyle(style string) {
+func (r *runImpl) SetUnderlineStyle(style string) {
 	r.ensureRPr()
 	if style == "" || style == "none" {
 		r.r.RPr.U = nil
@@ -107,7 +110,7 @@ func (r *Run) SetUnderlineStyle(style string) {
 }
 
 // Strike returns whether the run has strikethrough.
-func (r *Run) Strike() bool {
+func (r *runImpl) Strike() bool {
 	if r.r.RPr != nil && r.r.RPr.Strike != nil {
 		return r.r.RPr.Strike.Enabled()
 	}
@@ -115,7 +118,7 @@ func (r *Run) Strike() bool {
 }
 
 // SetStrike sets the strikethrough formatting.
-func (r *Run) SetStrike(v bool) {
+func (r *runImpl) SetStrike(v bool) {
 	r.ensureRPr()
 	if v {
 		r.r.RPr.Strike = wml.NewOnOffEnabled()
@@ -125,7 +128,7 @@ func (r *Run) SetStrike(v bool) {
 }
 
 // FontSize returns the font size in points.
-func (r *Run) FontSize() float64 {
+func (r *runImpl) FontSize() float64 {
 	if r.r.RPr != nil && r.r.RPr.Sz != nil {
 		return utils.HalfPointsToPoints(r.r.RPr.Sz.Val)
 	}
@@ -133,7 +136,7 @@ func (r *Run) FontSize() float64 {
 }
 
 // SetFontSize sets the font size in points.
-func (r *Run) SetFontSize(points float64) {
+func (r *runImpl) SetFontSize(points float64) {
 	r.ensureRPr()
 	halfPoints := utils.PointsToHalfPoints(points)
 	r.r.RPr.Sz = &wml.Sz{Val: halfPoints}
@@ -141,7 +144,7 @@ func (r *Run) SetFontSize(points float64) {
 }
 
 // FontName returns the font name.
-func (r *Run) FontName() string {
+func (r *runImpl) FontName() string {
 	if r.r.RPr != nil && r.r.RPr.RFonts != nil {
 		if r.r.RPr.RFonts.Ascii != "" {
 			return r.r.RPr.RFonts.Ascii
@@ -151,7 +154,7 @@ func (r *Run) FontName() string {
 }
 
 // SetFontName sets the font name.
-func (r *Run) SetFontName(name string) {
+func (r *runImpl) SetFontName(name string) {
 	r.ensureRPr()
 	r.r.RPr.RFonts = &wml.RFonts{
 		Ascii:    name,
@@ -162,7 +165,7 @@ func (r *Run) SetFontName(name string) {
 }
 
 // Color returns the text color as a hex string (without #).
-func (r *Run) Color() string {
+func (r *runImpl) Color() string {
 	if r.r.RPr != nil && r.r.RPr.Color != nil {
 		return r.r.RPr.Color.Val
 	}
@@ -170,13 +173,13 @@ func (r *Run) Color() string {
 }
 
 // SetColor sets the text color (hex string without #).
-func (r *Run) SetColor(hex string) {
+func (r *runImpl) SetColor(hex string) {
 	r.ensureRPr()
 	r.r.RPr.Color = &wml.Color{Val: strings.TrimPrefix(hex, "#")}
 }
 
 // Highlight returns the highlight color name.
-func (r *Run) Highlight() string {
+func (r *runImpl) Highlight() string {
 	if r.r.RPr != nil && r.r.RPr.Highlight != nil {
 		return r.r.RPr.Highlight.Val
 	}
@@ -184,7 +187,7 @@ func (r *Run) Highlight() string {
 }
 
 // SetHighlight sets the highlight color (yellow, green, cyan, etc.).
-func (r *Run) SetHighlight(color string) {
+func (r *runImpl) SetHighlight(color string) {
 	r.ensureRPr()
 	if color == "" {
 		r.r.RPr.Highlight = nil
@@ -194,7 +197,7 @@ func (r *Run) SetHighlight(color string) {
 }
 
 // Style returns the character style ID.
-func (r *Run) Style() string {
+func (r *runImpl) Style() string {
 	if r.r.RPr != nil && r.r.RPr.RStyle != nil {
 		return r.r.RPr.RStyle.Val
 	}
@@ -202,7 +205,7 @@ func (r *Run) Style() string {
 }
 
 // SetStyle sets the character style.
-func (r *Run) SetStyle(styleID string) {
+func (r *runImpl) SetStyle(styleID string) {
 	r.ensureRPr()
 	if styleID == "" {
 		r.r.RPr.RStyle = nil
@@ -212,7 +215,7 @@ func (r *Run) SetStyle(styleID string) {
 }
 
 // Superscript returns whether the run is superscript.
-func (r *Run) Superscript() bool {
+func (r *runImpl) Superscript() bool {
 	if r.r.RPr != nil && r.r.RPr.VertAlign != nil {
 		return r.r.RPr.VertAlign.Val == "superscript"
 	}
@@ -220,7 +223,7 @@ func (r *Run) Superscript() bool {
 }
 
 // SetSuperscript sets superscript formatting.
-func (r *Run) SetSuperscript(v bool) {
+func (r *runImpl) SetSuperscript(v bool) {
 	r.ensureRPr()
 	if v {
 		r.r.RPr.VertAlign = &wml.VertAlign{Val: "superscript"}
@@ -230,7 +233,7 @@ func (r *Run) SetSuperscript(v bool) {
 }
 
 // Subscript returns whether the run is subscript.
-func (r *Run) Subscript() bool {
+func (r *runImpl) Subscript() bool {
 	if r.r.RPr != nil && r.r.RPr.VertAlign != nil {
 		return r.r.RPr.VertAlign.Val == "subscript"
 	}
@@ -238,7 +241,7 @@ func (r *Run) Subscript() bool {
 }
 
 // SetSubscript sets subscript formatting.
-func (r *Run) SetSubscript(v bool) {
+func (r *runImpl) SetSubscript(v bool) {
 	r.ensureRPr()
 	if v {
 		r.r.RPr.VertAlign = &wml.VertAlign{Val: "subscript"}
@@ -248,27 +251,27 @@ func (r *Run) SetSubscript(v bool) {
 }
 
 // AddBreak adds a line break to the run.
-func (r *Run) AddBreak() {
+func (r *runImpl) AddBreak() {
 	r.r.Content = append(r.r.Content, &wml.Br{})
 }
 
 // AddPageBreak adds a page break to the run.
-func (r *Run) AddPageBreak() {
+func (r *runImpl) AddPageBreak() {
 	r.r.Content = append(r.r.Content, &wml.Br{Type: "page"})
 }
 
 // AddTab adds a tab character to the run.
-func (r *Run) AddTab() {
+func (r *runImpl) AddTab() {
 	r.r.Content = append(r.r.Content, &wml.Tab{})
 }
 
-func (r *Run) ensureRPr() {
+func (r *runImpl) ensureRPr() {
 	if r.r.RPr == nil {
 		r.r.RPr = &wml.RPr{}
 	}
 }
 
 // XML returns the underlying WML run for advanced access.
-func (r *Run) XML() *wml.R {
+func (r *runImpl) XML() *wml.R {
 	return r.r
 }

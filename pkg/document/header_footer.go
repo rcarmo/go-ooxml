@@ -18,71 +18,55 @@ const (
 	HeaderFooterEven    HeaderFooterType = "even"
 )
 
-// Header represents a document header.
-type Header struct {
-	doc    *Document
-	header *wml.Header
-	relID  string
-	hfType HeaderFooterType
-}
-
-// Footer represents a document footer.
-type Footer struct {
-	doc    *Document
-	footer *wml.Footer
-	relID  string
-	hfType HeaderFooterType
-}
-
 // =============================================================================
 // Header methods
 // =============================================================================
 
 // Type returns the header type.
-func (h *Header) Type() HeaderFooterType {
+func (h *headerImpl) Type() HeaderFooterType {
 	return h.hfType
 }
 
 // Paragraphs returns all paragraphs in the header.
-func (h *Header) Paragraphs() []*Paragraph {
+func (h *headerImpl) Paragraphs() []Paragraph {
 	if h.header == nil {
 		return nil
 	}
-	
-	var result []*Paragraph
+
+	var result []Paragraph
 	for i, p := range h.header.Content {
 		if para, ok := p.(*wml.P); ok {
-			result = append(result, &Paragraph{doc: h.doc, p: para, index: i})
+			result = append(result, &paragraphImpl{doc: h.doc, p: para, index: i})
 		}
 	}
 	return result
 }
 
 // AddParagraph adds a new paragraph to the header.
-func (h *Header) AddParagraph() *Paragraph {
+func (h *headerImpl) AddParagraph() Paragraph {
 	if h.header == nil {
 		h.header = &wml.Header{}
 	}
-	
+
 	p := &wml.P{}
 	h.header.Content = append(h.header.Content, p)
-	return &Paragraph{doc: h.doc, p: p, index: len(h.header.Content) - 1}
+	return &paragraphImpl{doc: h.doc, p: p, index: len(h.header.Content) - 1}
 }
 
 // Text returns the combined text of all paragraphs.
-func (h *Header) Text() string {
+func (h *headerImpl) Text() string {
 	var text string
-	for _, p := range h.Paragraphs() {
+	for _, para := range h.Paragraphs() {
 		if text != "" {
 			text += "\n"
 		}
-		text += p.Text()
+		text += para.Text()
 	}
 	return text
 }
 
 // SetText sets the header text, replacing all content.
-func (h *Header) SetText(text string) {
+func (h *headerImpl) SetText(text string) {
 	h.header.Content = []interface{}{&wml.P{}}
 	if len(h.Paragraphs()) > 0 {
 		h.Paragraphs()[0].SetText(text)
@@ -94,50 +78,50 @@ func (h *Header) SetText(text string) {
 // =============================================================================
 
 // Type returns the footer type.
-func (f *Footer) Type() HeaderFooterType {
+func (f *footerImpl) Type() HeaderFooterType {
 	return f.hfType
 }
 
 // Paragraphs returns all paragraphs in the footer.
-func (f *Footer) Paragraphs() []*Paragraph {
+func (f *footerImpl) Paragraphs() []Paragraph {
 	if f.footer == nil {
 		return nil
 	}
-	
-	var result []*Paragraph
+
+	var result []Paragraph
 	for i, p := range f.footer.Content {
 		if para, ok := p.(*wml.P); ok {
-			result = append(result, &Paragraph{doc: f.doc, p: para, index: i})
+			result = append(result, &paragraphImpl{doc: f.doc, p: para, index: i})
 		}
 	}
 	return result
 }
 
 // AddParagraph adds a new paragraph to the footer.
-func (f *Footer) AddParagraph() *Paragraph {
+func (f *footerImpl) AddParagraph() Paragraph {
 	if f.footer == nil {
 		f.footer = &wml.Footer{}
 	}
-	
+
 	p := &wml.P{}
 	f.footer.Content = append(f.footer.Content, p)
-	return &Paragraph{doc: f.doc, p: p, index: len(f.footer.Content) - 1}
+	return &paragraphImpl{doc: f.doc, p: p, index: len(f.footer.Content) - 1}
 }
 
 // Text returns the combined text of all paragraphs.
-func (f *Footer) Text() string {
+func (f *footerImpl) Text() string {
 	var text string
-	for _, p := range f.Paragraphs() {
+	for _, para := range f.Paragraphs() {
 		if text != "" {
 			text += "\n"
 		}
-		text += p.Text()
+		text += para.Text()
 	}
 	return text
 }
 
 // SetText sets the footer text, replacing all content.
-func (f *Footer) SetText(text string) {
+func (f *footerImpl) SetText(text string) {
 	f.footer.Content = []interface{}{&wml.P{}}
 	if len(f.Paragraphs()) > 0 {
 		f.Paragraphs()[0].SetText(text)
@@ -149,14 +133,14 @@ func (f *Footer) SetText(text string) {
 // =============================================================================
 
 // Headers returns all headers in the document.
-func (d *Document) Headers() []*Header {
-	var result []*Header
-	
+func (d *documentImpl) Headers() []Header {
+	var result []Header
+
 	sectPr := d.document.Body.SectPr
 	if sectPr == nil {
 		return nil
 	}
-	
+
 	for _, ref := range sectPr.HeaderRefs {
 		h := d.headerByRelID(ref.ID)
 		if h != nil {
@@ -164,19 +148,19 @@ func (d *Document) Headers() []*Header {
 			result = append(result, h)
 		}
 	}
-	
+
 	return result
 }
 
 // Footers returns all footers in the document.
-func (d *Document) Footers() []*Footer {
-	var result []*Footer
-	
+func (d *documentImpl) Footers() []Footer {
+	var result []Footer
+
 	sectPr := d.document.Body.SectPr
 	if sectPr == nil {
 		return nil
 	}
-	
+
 	for _, ref := range sectPr.FooterRefs {
 		f := d.footerByRelID(ref.ID)
 		if f != nil {
@@ -184,14 +168,14 @@ func (d *Document) Footers() []*Footer {
 			result = append(result, f)
 		}
 	}
-	
+
 	return result
 }
 
 // Header returns the header of the specified type.
-func (d *Document) Header(hfType HeaderFooterType) *Header {
-	for _, h := range d.Headers() {
-		if h.hfType == hfType {
+func (d *documentImpl) Header(hfType HeaderFooterType) Header {
+	for _, header := range d.Headers() {
+		if h, ok := header.(*headerImpl); ok && h.hfType == hfType {
 			return h
 		}
 	}
@@ -199,9 +183,9 @@ func (d *Document) Header(hfType HeaderFooterType) *Header {
 }
 
 // Footer returns the footer of the specified type.
-func (d *Document) Footer(hfType HeaderFooterType) *Footer {
-	for _, f := range d.Footers() {
-		if f.hfType == hfType {
+func (d *documentImpl) Footer(hfType HeaderFooterType) Footer {
+	for _, footer := range d.Footers() {
+		if f, ok := footer.(*footerImpl); ok && f.hfType == hfType {
 			return f
 		}
 	}
@@ -209,7 +193,7 @@ func (d *Document) Footer(hfType HeaderFooterType) *Footer {
 }
 
 // AddHeader adds a header of the specified type.
-func (d *Document) AddHeader(hfType HeaderFooterType) *Header {
+func (d *documentImpl) AddHeader(hfType HeaderFooterType) Header {
 	// Generate unique filename
 	num := len(d.headers) + 1
 	filename := fmt.Sprintf("header%d.xml", num)
@@ -230,7 +214,7 @@ func (d *Document) AddHeader(hfType HeaderFooterType) *Header {
 	})
 	
 	// Store and add relationship
-	h := &Header{
+	h := &headerImpl{
 		doc:    d,
 		header: header,
 		relID:  relID,
@@ -244,7 +228,7 @@ func (d *Document) AddHeader(hfType HeaderFooterType) *Header {
 }
 
 // AddFooter adds a footer of the specified type.
-func (d *Document) AddFooter(hfType HeaderFooterType) *Footer {
+func (d *documentImpl) AddFooter(hfType HeaderFooterType) Footer {
 	// Generate unique filename
 	num := len(d.footers) + 1
 	filename := fmt.Sprintf("footer%d.xml", num)
@@ -265,7 +249,7 @@ func (d *Document) AddFooter(hfType HeaderFooterType) *Footer {
 	})
 	
 	// Store and add relationship
-	f := &Footer{
+	f := &footerImpl{
 		doc:    d,
 		footer: footer,
 		relID:  relID,
@@ -278,27 +262,27 @@ func (d *Document) AddFooter(hfType HeaderFooterType) *Footer {
 	return f
 }
 
-func (d *Document) headerByRelID(relID string) *Header {
+func (d *documentImpl) headerByRelID(relID string) *headerImpl {
 	if h, ok := d.headers[relID]; ok {
 		return h
 	}
 	// Return empty header for unknown relIDs (e.g., from loaded documents)
-	return &Header{doc: d, relID: relID}
+	return &headerImpl{doc: d, relID: relID}
 }
 
-func (d *Document) footerByRelID(relID string) *Footer {
+func (d *documentImpl) footerByRelID(relID string) *footerImpl {
 	if f, ok := d.footers[relID]; ok {
 		return f
 	}
 	// Return empty footer for unknown relIDs (e.g., from loaded documents)
-	return &Footer{doc: d, relID: relID}
+	return &footerImpl{doc: d, relID: relID}
 }
 
 // =============================================================================
 // Header/Footer marshaling
 // =============================================================================
 
-func (d *Document) saveHeaders() error {
+func (d *documentImpl) saveHeaders() error {
 	i := 0
 	for _, h := range d.headers {
 		if h.header == nil {
@@ -320,7 +304,7 @@ func (d *Document) saveHeaders() error {
 	return nil
 }
 
-func (d *Document) saveFooters() error {
+func (d *documentImpl) saveFooters() error {
 	i := 0
 	for _, f := range d.footers {
 		if f.footer == nil {

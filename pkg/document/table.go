@@ -7,32 +7,30 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
-// Table represents a table in a Word document.
-type Table struct {
-	doc   *Document
-	tbl   *wml.Tbl
-	index int
+// Index returns the table index within the body.
+func (t *tableImpl) Index() int {
+	return t.index
 }
 
 // Rows returns all rows in the table.
-func (t *Table) Rows() []*Row {
-	result := make([]*Row, len(t.tbl.Tr))
+func (t *tableImpl) Rows() []Row {
+	result := make([]Row, len(t.tbl.Tr))
 	for i, tr := range t.tbl.Tr {
-		result[i] = &Row{doc: t.doc, tr: tr, index: i}
+		result[i] = &rowImpl{doc: t.doc, tr: tr, index: i}
 	}
 	return result
 }
 
 // Row returns the row at the given index (0-based).
-func (t *Table) Row(index int) *Row {
+func (t *tableImpl) Row(index int) Row {
 	if index < 0 || index >= len(t.tbl.Tr) {
 		return nil
 	}
-	return &Row{doc: t.doc, tr: t.tbl.Tr[index], index: index}
+	return &rowImpl{doc: t.doc, tr: t.tbl.Tr[index], index: index}
 }
 
 // AddRow adds a new row at the end of the table.
-func (t *Table) AddRow() *Row {
+func (t *tableImpl) AddRow() Row {
 	colCount := t.ColumnCount()
 	tr := &wml.Tr{}
 	for i := 0; i < colCount; i++ {
@@ -42,11 +40,20 @@ func (t *Table) AddRow() *Row {
 		tr.Tc = append(tr.Tc, tc)
 	}
 	t.tbl.Tr = append(t.tbl.Tr, tr)
-	return &Row{doc: t.doc, tr: tr, index: len(t.tbl.Tr) - 1}
+	return &rowImpl{doc: t.doc, tr: tr, index: len(t.tbl.Tr) - 1}
+}
+
+// Purpose returns the inferred table purpose based on headers.
+func (t *tableImpl) Purpose() string {
+	headers := t.FirstRowText()
+	if len(headers) == 0 {
+		return ""
+	}
+	return strings.Join(headers, ", ")
 }
 
 // InsertRow inserts a new row at the given index.
-func (t *Table) InsertRow(index int) *Row {
+func (t *tableImpl) InsertRow(index int) Row {
 	colCount := t.ColumnCount()
 	tr := &wml.Tr{}
 	for i := 0; i < colCount; i++ {
@@ -63,11 +70,11 @@ func (t *Table) InsertRow(index int) *Row {
 		t.tbl.Tr[index] = tr
 	}
 
-	return &Row{doc: t.doc, tr: tr, index: index}
+	return &rowImpl{doc: t.doc, tr: tr, index: index}
 }
 
 // DeleteRow deletes the row at the given index.
-func (t *Table) DeleteRow(index int) error {
+func (t *tableImpl) DeleteRow(index int) error {
 	if index < 0 || index >= len(t.tbl.Tr) {
 		return utils.ErrInvalidIndex
 	}
@@ -76,7 +83,7 @@ func (t *Table) DeleteRow(index int) error {
 }
 
 // Cell returns the cell at the given row and column (0-based).
-func (t *Table) Cell(row, col int) *Cell {
+func (t *tableImpl) Cell(row, col int) Cell {
 	r := t.Row(row)
 	if r == nil {
 		return nil
@@ -85,12 +92,12 @@ func (t *Table) Cell(row, col int) *Cell {
 }
 
 // RowCount returns the number of rows.
-func (t *Table) RowCount() int {
+func (t *tableImpl) RowCount() int {
 	return len(t.tbl.Tr)
 }
 
 // ColumnCount returns the number of columns (based on grid or first row).
-func (t *Table) ColumnCount() int {
+func (t *tableImpl) ColumnCount() int {
 	if t.tbl.TblGrid != nil && len(t.tbl.TblGrid.GridCol) > 0 {
 		return len(t.tbl.TblGrid.GridCol)
 	}
@@ -101,7 +108,7 @@ func (t *Table) ColumnCount() int {
 }
 
 // FirstRowText returns the text of all cells in the first row.
-func (t *Table) FirstRowText() []string {
+func (t *tableImpl) FirstRowText() []string {
 	if len(t.tbl.Tr) == 0 {
 		return nil
 	}
@@ -115,7 +122,7 @@ func (t *Table) FirstRowText() []string {
 }
 
 // Style returns the table style ID.
-func (t *Table) Style() string {
+func (t *tableImpl) Style() string {
 	if t.tbl.TblPr != nil && t.tbl.TblPr.TblStyle != nil {
 		return t.tbl.TblPr.TblStyle.Val
 	}
@@ -123,7 +130,7 @@ func (t *Table) Style() string {
 }
 
 // SetStyle sets the table style.
-func (t *Table) SetStyle(styleID string) {
+func (t *tableImpl) SetStyle(styleID string) {
 	if t.tbl.TblPr == nil {
 		t.tbl.TblPr = &wml.TblPr{}
 	}
@@ -131,50 +138,43 @@ func (t *Table) SetStyle(styleID string) {
 }
 
 // XML returns the underlying WML table for advanced access.
-func (t *Table) XML() *wml.Tbl {
+func (t *tableImpl) XML() *wml.Tbl {
 	return t.tbl
 }
 
-// Row represents a table row.
-type Row struct {
-	doc   *Document
-	tr    *wml.Tr
-	index int
-}
-
 // Cells returns all cells in the row.
-func (r *Row) Cells() []*Cell {
-	result := make([]*Cell, len(r.tr.Tc))
+func (r *rowImpl) Cells() []Cell {
+	result := make([]Cell, len(r.tr.Tc))
 	for i, tc := range r.tr.Tc {
-		result[i] = &Cell{doc: r.doc, tc: tc, index: i}
+		result[i] = &cellImpl{doc: r.doc, tc: tc, index: i}
 	}
 	return result
 }
 
 // Cell returns the cell at the given index (0-based).
-func (r *Row) Cell(index int) *Cell {
+func (r *rowImpl) Cell(index int) Cell {
 	if index < 0 || index >= len(r.tr.Tc) {
 		return nil
 	}
-	return &Cell{doc: r.doc, tc: r.tr.Tc[index], index: index}
+	return &cellImpl{doc: r.doc, tc: r.tr.Tc[index], index: index}
 }
 
 // AddCell adds a new cell at the end of the row.
-func (r *Row) AddCell() *Cell {
+func (r *rowImpl) AddCell() Cell {
 	tc := &wml.Tc{
 		Content: []interface{}{&wml.P{}},
 	}
 	r.tr.Tc = append(r.tr.Tc, tc)
-	return &Cell{doc: r.doc, tc: tc, index: len(r.tr.Tc) - 1}
+	return &cellImpl{doc: r.doc, tc: tc, index: len(r.tr.Tc) - 1}
 }
 
 // Index returns the row's index in the table.
-func (r *Row) Index() int {
+func (r *rowImpl) Index() int {
 	return r.index
 }
 
 // IsHeader returns whether this row is a header row.
-func (r *Row) IsHeader() bool {
+func (r *rowImpl) IsHeader() bool {
 	if r.tr.TrPr != nil && r.tr.TrPr.TblHeader != nil {
 		return r.tr.TrPr.TblHeader.Enabled()
 	}
@@ -182,7 +182,7 @@ func (r *Row) IsHeader() bool {
 }
 
 // SetHeader sets whether this row is a header row.
-func (r *Row) SetHeader(v bool) {
+func (r *rowImpl) SetHeader(v bool) {
 	if r.tr.TrPr == nil {
 		r.tr.TrPr = &wml.TrPr{}
 	}
@@ -194,19 +194,12 @@ func (r *Row) SetHeader(v bool) {
 }
 
 // XML returns the underlying WML row for advanced access.
-func (r *Row) XML() *wml.Tr {
+func (r *rowImpl) XML() *wml.Tr {
 	return r.tr
 }
 
-// Cell represents a table cell.
-type Cell struct {
-	doc   *Document
-	tc    *wml.Tc
-	index int
-}
-
 // Text returns the combined text of all paragraphs in the cell.
-func (c *Cell) Text() string {
+func (c *cellImpl) Text() string {
 	var sb strings.Builder
 	for i, para := range c.Paragraphs() {
 		if i > 0 {
@@ -218,7 +211,7 @@ func (c *Cell) Text() string {
 }
 
 // SetText sets the cell text, replacing all existing content.
-func (c *Cell) SetText(text string) {
+func (c *cellImpl) SetText(text string) {
 	c.tc.Content = []interface{}{&wml.P{}}
 	if para := c.firstParagraph(); para != nil {
 		para.SetText(text)
@@ -226,33 +219,38 @@ func (c *Cell) SetText(text string) {
 }
 
 // Paragraphs returns all paragraphs in the cell.
-func (c *Cell) Paragraphs() []*Paragraph {
-	var result []*Paragraph
+func (c *cellImpl) Paragraphs() []Paragraph {
+	var result []Paragraph
 	for i, elem := range c.tc.Content {
 		if p, ok := elem.(*wml.P); ok {
-			result = append(result, &Paragraph{doc: c.doc, p: p, index: i})
+			result = append(result, &paragraphImpl{doc: c.doc, p: p, index: i})
 		}
 	}
 	return result
 }
 
 // AddParagraph adds a new paragraph to the cell.
-func (c *Cell) AddParagraph() *Paragraph {
+func (c *cellImpl) AddParagraph() Paragraph {
 	p := &wml.P{}
 	c.tc.Content = append(c.tc.Content, p)
-	return &Paragraph{doc: c.doc, p: p, index: len(c.tc.Content) - 1}
+	return &paragraphImpl{doc: c.doc, p: p, index: len(c.tc.Content) - 1}
 }
 
-func (c *Cell) firstParagraph() *Paragraph {
+func (c *cellImpl) firstParagraph() *paragraphImpl {
 	paras := c.Paragraphs()
 	if len(paras) > 0 {
-		return paras[0]
+		if p, ok := paras[0].(*paragraphImpl); ok {
+			return p
+		}
 	}
-	return c.AddParagraph()
+	if p, ok := c.AddParagraph().(*paragraphImpl); ok {
+		return p
+	}
+	return nil
 }
 
 // GridSpan returns the column span.
-func (c *Cell) GridSpan() int {
+func (c *cellImpl) GridSpan() int {
 	if c.tc.TcPr != nil && c.tc.TcPr.GridSpan != nil {
 		return c.tc.TcPr.GridSpan.Val
 	}
@@ -260,7 +258,7 @@ func (c *Cell) GridSpan() int {
 }
 
 // SetGridSpan sets the column span.
-func (c *Cell) SetGridSpan(span int) {
+func (c *cellImpl) SetGridSpan(span int) {
 	if c.tc.TcPr == nil {
 		c.tc.TcPr = &wml.TcPr{}
 	}
@@ -272,27 +270,27 @@ func (c *Cell) SetGridSpan(span int) {
 }
 
 // VerticalMerge returns the vertical merge type.
-func (c *Cell) VerticalMerge() string {
+func (c *cellImpl) VerticalMerge() VerticalMerge {
 	if c.tc.TcPr != nil && c.tc.TcPr.VMerge != nil {
-		return c.tc.TcPr.VMerge.Val
+		return VerticalMerge(c.tc.TcPr.VMerge.Val)
 	}
 	return ""
 }
 
 // SetVerticalMerge sets the vertical merge type ("restart" or "continue").
-func (c *Cell) SetVerticalMerge(val string) {
+func (c *cellImpl) SetVerticalMerge(val VerticalMerge) {
 	if c.tc.TcPr == nil {
 		c.tc.TcPr = &wml.TcPr{}
 	}
 	if val == "" {
 		c.tc.TcPr.VMerge = nil
 	} else {
-		c.tc.TcPr.VMerge = &wml.VMerge{Val: val}
+		c.tc.TcPr.VMerge = &wml.VMerge{Val: string(val)}
 	}
 }
 
 // Shading returns the cell background color.
-func (c *Cell) Shading() string {
+func (c *cellImpl) Shading() string {
 	if c.tc.TcPr != nil && c.tc.TcPr.Shd != nil {
 		return c.tc.TcPr.Shd.Fill
 	}
@@ -300,7 +298,7 @@ func (c *Cell) Shading() string {
 }
 
 // SetShading sets the cell background color (hex without #).
-func (c *Cell) SetShading(fill string) {
+func (c *cellImpl) SetShading(fill string) {
 	if c.tc.TcPr == nil {
 		c.tc.TcPr = &wml.TcPr{}
 	}
@@ -311,11 +309,11 @@ func (c *Cell) SetShading(fill string) {
 }
 
 // Index returns the cell's index in the row.
-func (c *Cell) Index() int {
+func (c *cellImpl) Index() int {
 	return c.index
 }
 
 // XML returns the underlying WML cell for advanced access.
-func (c *Cell) XML() *wml.Tc {
+func (c *cellImpl) XML() *wml.Tc {
 	return c.tc
 }

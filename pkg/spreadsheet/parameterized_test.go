@@ -15,7 +15,7 @@ import (
 type WorkbookFixture struct {
 	Name        string
 	Description string
-	Setup       func(*Workbook)
+	Setup       func(Workbook)
 }
 
 // CommonFixtures provides standard workbook test fixtures.
@@ -23,12 +23,12 @@ var CommonFixtures = []WorkbookFixture{
 	{
 		Name:        "empty",
 		Description: "Empty workbook with default sheet",
-		Setup:       func(w *Workbook) {},
+		Setup:       func(w Workbook) {},
 	},
 	{
 		Name:        "multiple_sheets",
 		Description: "Workbook with three sheets",
-		Setup: func(w *Workbook) {
+		Setup: func(w Workbook) {
 			w.AddSheet("Sheet2")
 			w.AddSheet("Sheet3")
 		},
@@ -36,15 +36,15 @@ var CommonFixtures = []WorkbookFixture{
 	{
 		Name:        "single_cell",
 		Description: "Single cell with text",
-		Setup: func(w *Workbook) {
-			w.Sheets()[0].Cell("A1").SetValue("Hello")
+		Setup: func(w Workbook) {
+			w.SheetsRaw()[0].Cell("A1").SetValue("Hello")
 		},
 	},
 	{
 		Name:        "data_types",
 		Description: "Various data types",
-		Setup: func(w *Workbook) {
-			sheet := w.Sheets()[0]
+		Setup: func(w Workbook) {
+			sheet := w.SheetsRaw()[0]
 			sheet.Cell("A1").SetValue("Text")
 			sheet.Cell("A2").SetValue(42)
 			sheet.Cell("A3").SetValue(3.14159)
@@ -55,8 +55,8 @@ var CommonFixtures = []WorkbookFixture{
 	{
 		Name:        "formulas",
 		Description: "Cells with formulas",
-		Setup: func(w *Workbook) {
-			sheet := w.Sheets()[0]
+		Setup: func(w Workbook) {
+			sheet := w.SheetsRaw()[0]
 			sheet.Cell("A1").SetValue(10)
 			sheet.Cell("A2").SetValue(20)
 			sheet.Cell("A3").SetFormula("A1+A2")
@@ -66,8 +66,8 @@ var CommonFixtures = []WorkbookFixture{
 	{
 		Name:        "merged_cells",
 		Description: "Sheet with merged cells",
-		Setup: func(w *Workbook) {
-			sheet := w.Sheets()[0]
+		Setup: func(w Workbook) {
+			sheet := w.SheetsRaw()[0]
 			sheet.Cell("A1").SetValue("Merged Header")
 			sheet.MergeCells("A1:C1")
 		},
@@ -75,8 +75,8 @@ var CommonFixtures = []WorkbookFixture{
 	{
 		Name:        "large_data",
 		Description: "Sheet with 100 rows of data",
-		Setup: func(w *Workbook) {
-			sheet := w.Sheets()[0]
+		Setup: func(w Workbook) {
+			sheet := w.SheetsRaw()[0]
 			for i := 1; i <= 100; i++ {
 				sheet.CellByRC(i, 1).SetValue(i)
 				sheet.CellByRC(i, 2).SetValue(i * 2)
@@ -87,17 +87,17 @@ var CommonFixtures = []WorkbookFixture{
 	{
 		Name:        "hidden_sheet",
 		Description: "Workbook with hidden sheet",
-		Setup: func(w *Workbook) {
+		Setup: func(w Workbook) {
 			w.AddSheet("Hidden")
-			sheet, _ := w.Sheet("Hidden")
+			sheet, _ := w.SheetRaw("Hidden")
 			sheet.SetHidden(true)
 		},
 	},
 	{
 		Name:        "table_basic",
 		Description: "Workbook with a simple table",
-		Setup: func(w *Workbook) {
-			sheet := w.Sheets()[0]
+		Setup: func(w Workbook) {
+			sheet := w.SheetsRaw()[0]
 			table := sheet.AddTable("A1:C3", "Sales")
 			table.UpdateRow(1, map[string]interface{}{
 				"Column1": "Name",
@@ -169,7 +169,7 @@ func TestCellValueTypes_Parameterized(t *testing.T) {
 			w, _ := New()
 			defer w.Close()
 			
-			cell := w.Sheets()[0].Cell("A1")
+			cell := w.SheetsRaw()[0].Cell("A1")
 			cell.SetValue(tc.Value)
 			
 			h.AssertEqual(cell.Type(), tc.WantType, "Cell type")
@@ -192,7 +192,7 @@ func TestCellReferences_Parameterized(t *testing.T) {
 			w, _ := New()
 			defer w.Close()
 			
-			cell := w.Sheets()[0].Cell(tc.Ref)
+			cell := w.SheetsRaw()[0].Cell(tc.Ref)
 			if cell == nil {
 				t.Fatalf("Cell(%s) returned nil", tc.Ref)
 			}
@@ -218,7 +218,7 @@ func TestRanges_Parameterized(t *testing.T) {
 			w, _ := New()
 			defer w.Close()
 			
-			rng := w.Sheets()[0].Range(tc.Ref)
+			rng := w.SheetsRaw()[0].Range(tc.Ref)
 			if rng == nil {
 				t.Fatalf("Range(%s) returned nil", tc.Ref)
 			}
@@ -244,7 +244,7 @@ func TestNumericValues_Parameterized(t *testing.T) {
 			w, _ := New()
 			defer w.Close()
 			
-			cell := w.Sheets()[0].Cell("A1")
+			cell := w.SheetsRaw()[0].Cell("A1")
 			cell.SetValue(tc.Input)
 			
 			got, err := cell.Float64()
@@ -266,7 +266,7 @@ func TestStringValues_Parameterized(t *testing.T) {
 			w, _ := New()
 			defer w.Close()
 			
-			cell := w.Sheets()[0].Cell("A1")
+			cell := w.SheetsRaw()[0].Cell("A1")
 			cell.SetValue(tc.Input)
 			
 			got := cell.String()
@@ -285,7 +285,7 @@ func TestStringValues_RoundTrip(t *testing.T) {
 			h := testutil.NewHelper(t)
 			
 			w, _ := New()
-			w.Sheets()[0].Cell("A1").SetValue(tc.Input)
+			w.SheetsRaw()[0].Cell("A1").SetValue(tc.Input)
 			
 			path := h.TempFile(tc.Name + ".xlsx")
 			h.RequireNoError(w.SaveAs(path), "SaveAs")
@@ -294,7 +294,7 @@ func TestStringValues_RoundTrip(t *testing.T) {
 			w2, _ := Open(path)
 			defer w2.Close()
 			
-			got := w2.Sheets()[0].Cell("A1").String()
+			got := w2.SheetsRaw()[0].Cell("A1").String()
 			h.AssertEqual(got, tc.Want, "String after round-trip")
 		})
 	}
@@ -307,15 +307,15 @@ func TestStringValues_RoundTrip(t *testing.T) {
 type sheetOpTestCase struct {
 	Name         string
 	InitialCount int // Not counting default Sheet1
-	Operation    func(*Workbook)
+	Operation    func(Workbook)
 	WantCount    int
 }
 
 var sheetOpCases = []sheetOpTestCase{
-	{"add_one", 0, func(w *Workbook) { w.AddSheet("New") }, 2},
-	{"add_multiple", 0, func(w *Workbook) { w.AddSheet("A"); w.AddSheet("B") }, 3},
-	{"delete_by_name", 2, func(w *Workbook) { w.DeleteSheet("Sheet2") }, 2},
-	{"delete_by_index", 2, func(w *Workbook) { w.DeleteSheet(1) }, 2},
+	{"add_one", 0, func(w Workbook) { w.AddSheet("New") }, 2},
+	{"add_multiple", 0, func(w Workbook) { w.AddSheet("A"); w.AddSheet("B") }, 3},
+	{"delete_by_name", 2, func(w Workbook) { w.DeleteSheet("Sheet2") }, 2},
+	{"delete_by_index", 2, func(w Workbook) { w.DeleteSheet(1) }, 2},
 }
 
 func TestSheetOperations_Parameterized(t *testing.T) {
@@ -370,7 +370,7 @@ func TestFormulas_Parameterized(t *testing.T) {
 			w, _ := New()
 			defer w.Close()
 			
-			cell := w.Sheets()[0].Cell("C1")
+			cell := w.SheetsRaw()[0].Cell("C1")
 			cell.SetFormula(tc.Formula)
 			
 			h.AssertEqual(cell.Formula(), tc.Formula, "Formula")
@@ -405,7 +405,7 @@ func TestRowHeight_Parameterized(t *testing.T) {
 			w, _ := New()
 			defer w.Close()
 			
-			row := w.Sheets()[0].Row(1)
+			row := w.SheetsRaw()[0].Row(1)
 			row.SetHeight(tc.Height)
 			
 			h.AssertEqual(row.Height(), tc.Height, "Row height")
@@ -438,12 +438,12 @@ func TestMergeCells_Parameterized(t *testing.T) {
 			w, _ := New()
 			defer w.Close()
 			
-			sheet := w.Sheets()[0]
+			sheet := w.SheetsRaw()[0]
 			sheet.MergeCells(tc.Ref)
 			
 			merged := sheet.MergedCells()
 			h.AssertEqual(len(merged), 1, "Merged cell count")
-			h.AssertEqual(merged[0], tc.Ref, "Merged cell reference")
+			h.AssertEqual(merged[0].Reference(), tc.Ref, "Merged cell reference")
 		})
 	}
 }
@@ -472,7 +472,7 @@ func TestDateValues_Parameterized(t *testing.T) {
 			w, _ := New()
 			defer w.Close()
 			
-			cell := w.Sheets()[0].Cell("A1")
+			cell := w.SheetsRaw()[0].Cell("A1")
 			cell.SetValue(tc.Date)
 			
 			got, err := cell.Time()

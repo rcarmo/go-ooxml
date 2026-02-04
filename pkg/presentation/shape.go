@@ -1,21 +1,19 @@
 package presentation
 
 import (
-	"strings"
-
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/dml"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/pml"
 )
 
 // Shape represents a shape on a slide.
-type Shape struct {
-	slide *Slide
+type shapeImpl struct {
+	slide *slideImpl
 	sp    *dml.Sp
 	graphicFrame *pml.GraphicFrame
 }
 
 // ID returns the shape ID.
-func (s *Shape) ID() int {
+func (s *shapeImpl) ID() int {
 	if s.sp.NvSpPr != nil && s.sp.NvSpPr.CNvPr != nil {
 		return s.sp.NvSpPr.CNvPr.ID
 	}
@@ -26,7 +24,7 @@ func (s *Shape) ID() int {
 }
 
 // Name returns the shape name.
-func (s *Shape) Name() string {
+func (s *shapeImpl) Name() string {
 	if s.sp.NvSpPr != nil && s.sp.NvSpPr.CNvPr != nil {
 		return s.sp.NvSpPr.CNvPr.Name
 	}
@@ -37,7 +35,7 @@ func (s *Shape) Name() string {
 }
 
 // SetName sets the shape name.
-func (s *Shape) SetName(name string) {
+func (s *shapeImpl) SetName(name string) {
 	if s.graphicFrame != nil {
 		s.ensureNvGraphicFramePr()
 		s.graphicFrame.NvGraphicFramePr.CNvPr.Name = name
@@ -48,7 +46,7 @@ func (s *Shape) SetName(name string) {
 }
 
 // Type returns the shape type.
-func (s *Shape) Type() ShapeType {
+func (s *shapeImpl) Type() ShapeType {
 	if s.graphicFrame != nil {
 		if s.graphicFrame.Graphic != nil && s.graphicFrame.Graphic.GraphicData != nil && s.graphicFrame.Graphic.GraphicData.Tbl != nil {
 			return ShapeTypeTable
@@ -65,12 +63,12 @@ func (s *Shape) Type() ShapeType {
 }
 
 // HasTable returns true if the shape contains a table.
-func (s *Shape) HasTable() bool {
+func (s *shapeImpl) HasTable() bool {
 	return s.graphicFrame != nil && s.graphicFrame.Graphic != nil && s.graphicFrame.Graphic.GraphicData != nil && s.graphicFrame.Graphic.GraphicData.Tbl != nil
 }
 
 // Table returns the table if present.
-func (s *Shape) Table() *Table {
+func (s *shapeImpl) Table() Table {
 	if !s.HasTable() {
 		return nil
 	}
@@ -78,7 +76,7 @@ func (s *Shape) Table() *Table {
 }
 
 // IsPlaceholder returns true if this is a placeholder shape.
-func (s *Shape) IsPlaceholder() bool {
+func (s *shapeImpl) IsPlaceholder() bool {
 	if s.sp.NvSpPr != nil && s.sp.NvSpPr.NvPr != nil && s.sp.NvSpPr.NvPr.Ph != nil {
 		return true
 	}
@@ -89,7 +87,7 @@ func (s *Shape) IsPlaceholder() bool {
 }
 
 // PlaceholderType returns the placeholder type.
-func (s *Shape) PlaceholderType() PlaceholderType {
+func (s *shapeImpl) PlaceholderType() PlaceholderType {
 	if s.sp.NvSpPr != nil && s.sp.NvSpPr.NvPr != nil && s.sp.NvSpPr.NvPr.Ph != nil {
 		return phTypeToPlaceholderType(s.sp.NvSpPr.NvPr.Ph.Type)
 	}
@@ -104,7 +102,7 @@ func (s *Shape) PlaceholderType() PlaceholderType {
 // =============================================================================
 
 // Left returns the left position in EMUs.
-func (s *Shape) Left() int64 {
+func (s *shapeImpl) Left() int64 {
 	if s.sp.SpPr != nil && s.sp.SpPr.Xfrm != nil && s.sp.SpPr.Xfrm.Off != nil {
 		return s.sp.SpPr.Xfrm.Off.X
 	}
@@ -115,7 +113,7 @@ func (s *Shape) Left() int64 {
 }
 
 // Top returns the top position in EMUs.
-func (s *Shape) Top() int64 {
+func (s *shapeImpl) Top() int64 {
 	if s.sp.SpPr != nil && s.sp.SpPr.Xfrm != nil && s.sp.SpPr.Xfrm.Off != nil {
 		return s.sp.SpPr.Xfrm.Off.Y
 	}
@@ -126,7 +124,7 @@ func (s *Shape) Top() int64 {
 }
 
 // Width returns the width in EMUs.
-func (s *Shape) Width() int64 {
+func (s *shapeImpl) Width() int64 {
 	if s.sp.SpPr != nil && s.sp.SpPr.Xfrm != nil && s.sp.SpPr.Xfrm.Ext != nil {
 		return s.sp.SpPr.Xfrm.Ext.Cx
 	}
@@ -137,7 +135,7 @@ func (s *Shape) Width() int64 {
 }
 
 // Height returns the height in EMUs.
-func (s *Shape) Height() int64 {
+func (s *shapeImpl) Height() int64 {
 	if s.sp.SpPr != nil && s.sp.SpPr.Xfrm != nil && s.sp.SpPr.Xfrm.Ext != nil {
 		return s.sp.SpPr.Xfrm.Ext.Cy
 	}
@@ -148,7 +146,7 @@ func (s *Shape) Height() int64 {
 }
 
 // SetPosition sets the position in EMUs.
-func (s *Shape) SetPosition(left, top int64) {
+func (s *shapeImpl) SetPosition(left, top int64) {
 	if s.graphicFrame != nil {
 		s.ensureGraphicFrameXfrm()
 		if s.graphicFrame.Xfrm.Off == nil {
@@ -167,7 +165,7 @@ func (s *Shape) SetPosition(left, top int64) {
 }
 
 // SetSize sets the size in EMUs.
-func (s *Shape) SetSize(width, height int64) {
+func (s *shapeImpl) SetSize(width, height int64) {
 	if s.graphicFrame != nil {
 		s.ensureGraphicFrameXfrm()
 		if s.graphicFrame.Xfrm.Ext == nil {
@@ -190,7 +188,7 @@ func (s *Shape) SetSize(width, height int64) {
 // =============================================================================
 
 // HasTextFrame returns true if the shape has a text frame.
-func (s *Shape) HasTextFrame() bool {
+func (s *shapeImpl) HasTextFrame() bool {
 	if s.graphicFrame != nil {
 		return false
 	}
@@ -201,7 +199,7 @@ func (s *Shape) HasTextFrame() bool {
 }
 
 // TextFrame returns the text frame for the shape.
-func (s *Shape) TextFrame() *TextFrame {
+func (s *shapeImpl) TextFrame() TextFrame {
 	if s.graphicFrame != nil {
 		return nil
 	}
@@ -215,60 +213,30 @@ func (s *Shape) TextFrame() *TextFrame {
 			P:        []*dml.P{{}},
 		}
 	}
-	return &TextFrame{
+	return &textFrameImpl{
 		shape:  s,
 		txBody: s.sp.TxBody,
 	}
 }
 
 // Text returns all text in the shape as a single string.
-func (s *Shape) Text() string {
-	if s.graphicFrame != nil {
-		return ""
+func (s *shapeImpl) Text() string {
+	if tf, ok := s.TextFrame().(*textFrameImpl); ok {
+		return tf.Text()
 	}
-	if s.sp == nil {
-		return ""
-	}
-	if s.sp.TxBody == nil {
-		return ""
-	}
-
-	var paragraphs []string
-	for _, p := range s.sp.TxBody.P {
-		var runs []string
-		for _, r := range p.R {
-			runs = append(runs, r.T)
-		}
-		paragraphs = append(paragraphs, strings.Join(runs, ""))
-	}
-	return strings.Join(paragraphs, "\n")
+	return ""
 }
 
 // SetText sets the text of the shape, replacing all existing content.
-func (s *Shape) SetText(text string) error {
+func (s *shapeImpl) SetText(text string) error {
 	if s.graphicFrame != nil {
 		return ErrShapeNotFound
 	}
-	if s.sp == nil {
-		return ErrShapeNotFound
+	if tf, ok := s.TextFrame().(*textFrameImpl); ok {
+		tf.SetText(text)
+		return nil
 	}
-	if s.sp.TxBody == nil {
-		s.sp.TxBody = &dml.TxBody{
-			BodyPr:   &dml.BodyPr{},
-			LstStyle: &dml.LstStyle{},
-		}
-	}
-
-	// Split text into paragraphs
-	lines := strings.Split(text, "\n")
-	s.sp.TxBody.P = make([]*dml.P, len(lines))
-	for i, line := range lines {
-		s.sp.TxBody.P[i] = &dml.P{
-			R: []*dml.R{{T: line}},
-		}
-	}
-
-	return nil
+	return ErrShapeNotFound
 }
 
 // =============================================================================
@@ -276,7 +244,7 @@ func (s *Shape) SetText(text string) error {
 // =============================================================================
 
 // SetFillColor sets a solid fill color (hex format like "FF0000").
-func (s *Shape) SetFillColor(hex string) {
+func (s *shapeImpl) SetFillColor(hex string) {
 	if s.sp == nil {
 		return
 	}
@@ -290,7 +258,7 @@ func (s *Shape) SetFillColor(hex string) {
 }
 
 // SetNoFill removes the fill from the shape.
-func (s *Shape) SetNoFill() {
+func (s *shapeImpl) SetNoFill() {
 	if s.sp == nil {
 		return
 	}
@@ -302,7 +270,7 @@ func (s *Shape) SetNoFill() {
 }
 
 // SetLineColor sets the outline color (hex format).
-func (s *Shape) SetLineColor(hex string, widthEMU int64) {
+func (s *shapeImpl) SetLineColor(hex string, widthEMU int64) {
 	if s.sp == nil {
 		return
 	}
@@ -320,7 +288,7 @@ func (s *Shape) SetLineColor(hex string, widthEMU int64) {
 // Internal methods
 // =============================================================================
 
-func (s *Shape) ensureNvSpPr() {
+func (s *shapeImpl) ensureNvSpPr() {
 	if s.sp == nil {
 		return
 	}
@@ -335,7 +303,7 @@ func (s *Shape) ensureNvSpPr() {
 	}
 }
 
-func (s *Shape) ensureSpPr() {
+func (s *shapeImpl) ensureSpPr() {
 	if s.sp == nil {
 		return
 	}
@@ -344,7 +312,7 @@ func (s *Shape) ensureSpPr() {
 	}
 }
 
-func (s *Shape) ensureXfrm() {
+func (s *shapeImpl) ensureXfrm() {
 	if s.sp == nil {
 		return
 	}
@@ -354,7 +322,7 @@ func (s *Shape) ensureXfrm() {
 	}
 }
 
-func (s *Shape) ensureNvGraphicFramePr() {
+func (s *shapeImpl) ensureNvGraphicFramePr() {
 	if s.graphicFrame.NvGraphicFramePr == nil {
 		s.graphicFrame.NvGraphicFramePr = &pml.NvGraphicFramePr{}
 	}
@@ -369,7 +337,7 @@ func (s *Shape) ensureNvGraphicFramePr() {
 	}
 }
 
-func (s *Shape) ensureGraphicFrameXfrm() {
+func (s *shapeImpl) ensureGraphicFrameXfrm() {
 	if s.graphicFrame.Xfrm == nil {
 		s.graphicFrame.Xfrm = &pml.Xfrm{}
 	}
