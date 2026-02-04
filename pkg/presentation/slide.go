@@ -1,11 +1,14 @@
 package presentation
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/dml"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/pml"
+	"github.com/rcarmo/go-ooxml/pkg/packaging"
 )
 
 // Slide represents a slide in the presentation.
@@ -13,10 +16,61 @@ type slideImpl struct {
 	pres  *presentationImpl
 	slide *pml.Sld
 	notes *pml.Notes
+	comments *pml.CommentList
 	id    int
 	relID string
 	index int
 	path  string
+}
+
+type commentImpl struct {
+	slide   *slideImpl
+	comment *pml.Comment
+}
+
+func (c *commentImpl) ID() string {
+	if c == nil || c.comment == nil {
+		return ""
+	}
+	return c.comment.ID
+}
+
+func (c *commentImpl) Author() string {
+	if c == nil || c.slide == nil || c.slide.pres == nil || c.comment == nil {
+		return ""
+	}
+	return c.slide.pres.commentAuthorName(c.comment.AuthorID)
+}
+
+func (c *commentImpl) Text() string {
+	if c == nil || c.comment == nil || c.comment.TxBody == nil {
+		return ""
+	}
+	var parts []string
+	for _, p := range c.comment.TxBody.P {
+		for _, r := range p.R {
+			parts = append(parts, r.T)
+		}
+	}
+	return strings.Join(parts, "")
+}
+
+func (c *commentImpl) SetText(text string) {
+	if c == nil || c.comment == nil {
+		return
+	}
+	if c.comment.TxBody == nil {
+		c.comment.TxBody = &pml.CommentText{
+			BodyPr:   &pml.CommentBodyPr{},
+			LstStyle: &pml.CommentLstStyle{},
+		}
+	}
+	c.comment.TxBody.P = []*pml.CommentParagraph{{
+		R: []*pml.CommentRun{{
+			RPr: &pml.CommentRunProps{Lang: "en-US"},
+			T:   text,
+		}},
+	}}
 }
 
 // Index returns the 1-based index of the slide.
@@ -179,14 +233,48 @@ func (s *slideImpl) AddPicture(imagePath string, left, top, width, height int64)
 	return nil, ErrInvalidIndex
 }
 
-// Comments returns slide comments (not implemented).
+// Comments returns slide comments.
 func (s *slideImpl) Comments() []Comment {
-	return nil
+	if s.comments == nil {
+		return nil
+	}
+	result := make([]Comment, len(s.comments.Comment))
+	for i, c := range s.comments.Comment {
+		result[i] = &commentImpl{slide: s, comment: c}
+	}
+	return result
 }
 
-// AddComment adds a slide comment (not implemented).
+// AddComment adds a slide comment.
 func (s *slideImpl) AddComment(text, author string, x, y float64) (Comment, error) {
-	return nil, ErrInvalidIndex
+	if s == nil || s.pres == nil {
+		return nil, ErrInvalidIndex
+	}
+	authorID := s.pres.ensureCommentAuthor(author)
+	if s.comments == nil {
+		s.comments = &pml.CommentList{}
+	}
+	comment := &pml.Comment{
+		ID:       newCommentID(),
+		AuthorID: authorID,
+		Created:  time.Now().Format(time.RFC3339),
+		Pos: &pml.CommentPos{
+			X: int64(x),
+			Y: int64(y),
+		},
+		TxBody: &pml.CommentText{
+			BodyPr:   &pml.CommentBodyPr{},
+			LstStyle: &pml.CommentLstStyle{},
+			P: []*pml.CommentParagraph{{
+				R: []*pml.CommentRun{{
+					RPr: &pml.CommentRunProps{Lang: "en-US"},
+					T:   text,
+				}},
+			}},
+		},
+	}
+	s.comments.Comment = append(s.comments.Comment, comment)
+	return &commentImpl{slide: s, comment: comment}, nil
 }
 
 // AddTable adds a table shape to the slide.
@@ -316,9 +404,29 @@ func (s *slideImpl) BodyPlaceholder() Shape {
 	return nil
 }
 
-// Layout returns the slide layout (not implemented).
+// Layout returns the slide layout if present.
 func (s *slideImpl) Layout() SlideLayout {
-	return nil
+	if s == nil || s.pres == nil {
+		return nil
+	}
+	if s.path == "" {
+		return nil
+	}
+	rels := s.pres.pkg.GetRelationships(s.path)
+	if rels == nil {
+		return nil
+	}
+	rel := rels.FirstByType(packaging.RelTypeSlideLayout)
+	if rel == nil {
+		return nil
+	}
+	layoutPath := packaging.ResolveRelationshipTarget(s.path, rel.Target)
+	for _, layout := range s.pres.layouts {
+		if layout.path == layoutPath {
+			return layout
+		}
+	}
+	return &slideLayoutImpl{id: rel.ID, path: layoutPath}
 }
 
 // =============================================================================
@@ -468,6 +576,10 @@ func (s *slideImpl) ensureNotes() {
 			},
 		}
 	}
+}
+
+func newCommentID() string {
+	return fmt.Sprintf("{%d}", time.Now().UnixNano())
 }
 
 func (s *slideImpl) getNextShapeID() int {
