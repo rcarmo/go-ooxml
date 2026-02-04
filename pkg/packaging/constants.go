@@ -129,11 +129,13 @@ const (
 // TargetMode indicates whether the relationship target is internal or external.
 type TargetMode int
 
+// TargetModeInternal and TargetModeExternal specify relationship target modes.
 const (
 	TargetModeInternal TargetMode = iota
 	TargetModeExternal
 )
 
+// String returns the relationship target mode label.
 func (tm TargetMode) String() string {
 	if tm == TargetModeExternal {
 		return "External"

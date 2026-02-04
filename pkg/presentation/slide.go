@@ -28,6 +28,7 @@ type commentImpl struct {
 	comment *pml.Comment
 }
 
+// ID returns the comment ID.
 func (c *commentImpl) ID() string {
 	if c == nil || c.comment == nil {
 		return ""
@@ -35,6 +36,7 @@ func (c *commentImpl) ID() string {
 	return c.comment.ID
 }
 
+// Author returns the comment author.
 func (c *commentImpl) Author() string {
 	if c == nil || c.slide == nil || c.slide.pres == nil || c.comment == nil {
 		return ""
@@ -42,6 +44,7 @@ func (c *commentImpl) Author() string {
 	return c.slide.pres.commentAuthorName(c.comment.AuthorID)
 }
 
+// Text returns the comment text.
 func (c *commentImpl) Text() string {
 	if c == nil || c.comment == nil || c.comment.TxBody == nil {
 		return ""
@@ -55,6 +58,7 @@ func (c *commentImpl) Text() string {
 	return strings.Join(parts, "")
 }
 
+// SetText sets the comment text.
 func (c *commentImpl) SetText(text string) {
 	if c == nil || c.comment == nil {
 		return

@@ -3,6 +3,7 @@ package pml
 import "encoding/xml"
 
 const (
+	// PPTXCommentsNS is the namespace for modern PowerPoint comments.
 	PPTXCommentsNS = "http://schemas.microsoft.com/office/powerpoint/2018/8/main"
 )
 

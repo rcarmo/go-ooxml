@@ -124,27 +124,36 @@ type BuClr struct {
 	SchemeClr *SchemeClr `xml:"http://schemas.openxmlformats.org/drawingml/2006/main schemeClr,omitempty"`
 }
 
+// BuSzTx indicates bullet size follows text size.
 type BuSzTx struct{}
+// BuSzPct represents bullet size as a percentage.
 type BuSzPct struct {
 	Val int `xml:"val,attr"` // Percentage * 1000
 }
+// BuSzPts represents bullet size in points.
 type BuSzPts struct {
 	Val int `xml:"val,attr"` // Points * 100
 }
+// BuFontTx indicates the bullet font follows the text font.
 type BuFontTx struct{}
+// BuFont defines the bullet font.
 type BuFont struct {
 	Typeface string `xml:"typeface,attr"`
 	Pitchfamily string `xml:"pitchFamily,attr,omitempty"`
 	Charset int `xml:"charset,attr,omitempty"`
 }
+// BuNone disables bullet rendering.
 type BuNone struct{}
+// BuAutoNum defines automatic numbering for bullets.
 type BuAutoNum struct {
 	Type    string `xml:"type,attr"` // arabicPeriod, alphaLcParenBoth, etc.
 	StartAt *int   `xml:"startAt,attr,omitempty"`
 }
+// BuChar defines a character bullet.
 type BuChar struct {
 	Char string `xml:"char,attr"`
 }
+// BuBlip defines an image bullet.
 type BuBlip struct {
 	// Blip reference
 }

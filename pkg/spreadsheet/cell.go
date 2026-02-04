@@ -11,12 +11,19 @@ import (
 type CellType int
 
 const (
+	// CellTypeEmpty indicates an empty cell.
 	CellTypeEmpty CellType = iota
+	// CellTypeString indicates a string cell.
 	CellTypeString
+	// CellTypeNumber indicates a numeric cell.
 	CellTypeNumber
+	// CellTypeBoolean indicates a boolean cell.
 	CellTypeBoolean
+	// CellTypeDate indicates a date cell.
 	CellTypeDate
+	// CellTypeFormula indicates a formula cell.
 	CellTypeFormula
+	// CellTypeError indicates an error cell.
 	CellTypeError
 )
 

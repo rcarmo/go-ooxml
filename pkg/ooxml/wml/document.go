@@ -168,6 +168,47 @@ type Header struct {
 	Content []interface{} `xml:"-"` // Paragraphs, tables, etc.
 }
 
+// UnmarshalXML implements custom XML unmarshaling for Header.
+func (h *Header) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			return err
+		}
+		switch t := tok.(type) {
+		case xml.StartElement:
+			switch t.Name.Local {
+			case "p":
+				p := &P{}
+				if err := d.DecodeElement(p, &t); err != nil {
+					return err
+				}
+				h.Content = append(h.Content, p)
+			case "tbl":
+				tbl := &Tbl{}
+				if err := d.DecodeElement(tbl, &t); err != nil {
+					return err
+				}
+				h.Content = append(h.Content, tbl)
+			case "sdt":
+				sdt := &Sdt{}
+				if err := d.DecodeElement(sdt, &t); err != nil {
+					return err
+				}
+				h.Content = append(h.Content, sdt)
+			default:
+				if err := d.Skip(); err != nil {
+					return err
+				}
+			}
+		case xml.EndElement:
+			if t.Name == start.Name {
+				return nil
+			}
+		}
+	}
+}
+
 // MarshalXML implements custom XML marshaling for Header.
 func (h *Header) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	start.Name = xml.Name{Space: NS, Local: "hdr"}
@@ -186,6 +227,47 @@ func (h *Header) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 type Footer struct {
 	XMLName xml.Name      `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main ftr"`
 	Content []interface{} `xml:"-"` // Paragraphs, tables, etc.
+}
+
+// UnmarshalXML implements custom XML unmarshaling for Footer.
+func (f *Footer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			return err
+		}
+		switch t := tok.(type) {
+		case xml.StartElement:
+			switch t.Name.Local {
+			case "p":
+				p := &P{}
+				if err := d.DecodeElement(p, &t); err != nil {
+					return err
+				}
+				f.Content = append(f.Content, p)
+			case "tbl":
+				tbl := &Tbl{}
+				if err := d.DecodeElement(tbl, &t); err != nil {
+					return err
+				}
+				f.Content = append(f.Content, tbl)
+			case "sdt":
+				sdt := &Sdt{}
+				if err := d.DecodeElement(sdt, &t); err != nil {
+					return err
+				}
+				f.Content = append(f.Content, sdt)
+			default:
+				if err := d.Skip(); err != nil {
+					return err
+				}
+			}
+		case xml.EndElement:
+			if t.Name == start.Name {
+				return nil
+			}
+		}
+	}
 }
 
 // MarshalXML implements custom XML marshaling for Footer.

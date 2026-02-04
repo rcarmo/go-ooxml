@@ -13,9 +13,12 @@ import (
 type HeaderFooterType string
 
 const (
+	// HeaderFooterDefault identifies the default header/footer.
 	HeaderFooterDefault HeaderFooterType = "default"
-	HeaderFooterFirst   HeaderFooterType = "first"
-	HeaderFooterEven    HeaderFooterType = "even"
+	// HeaderFooterFirst identifies the first-page header/footer.
+	HeaderFooterFirst HeaderFooterType = "first"
+	// HeaderFooterEven identifies the even-page header/footer.
+	HeaderFooterEven HeaderFooterType = "even"
 )
 
 // =============================================================================
@@ -283,21 +286,33 @@ func (d *documentImpl) footerByRelID(relID string) *footerImpl {
 // =============================================================================
 
 func (d *documentImpl) saveHeaders() error {
+	if d.document == nil || d.document.Body == nil || d.document.Body.SectPr == nil {
+		return nil
+	}
+
+	rels := d.pkg.GetRelationships(packaging.WordDocumentPath)
 	i := 0
-	for _, h := range d.headers {
-		if h.header == nil {
+	for _, ref := range d.document.Body.SectPr.HeaderRefs {
+		h := d.headers[ref.ID]
+		if h == nil || h.header == nil {
 			continue
 		}
 		i++
-		
+
+		target := ""
+		if rel := rels.ByID(ref.ID); rel != nil {
+			target = rel.Target
+		} else {
+			target = fmt.Sprintf("header%d.xml", i)
+			rels.AddWithID(ref.ID, packaging.RelTypeHeader, target, packaging.TargetModeInternal)
+		}
+		filename := packaging.ResolveRelationshipTarget(packaging.WordDocumentPath, target)
+
 		data, err := utils.MarshalXMLWithHeader(h.header)
 		if err != nil {
 			return err
 		}
-		
-		filename := fmt.Sprintf("word/header%d.xml", i)
-		_, err = d.pkg.AddPart(filename, packaging.ContentTypeHeader, data)
-		if err != nil {
+		if _, err := d.pkg.AddPart(filename, packaging.ContentTypeHeader, data); err != nil {
 			return err
 		}
 	}
@@ -305,22 +320,100 @@ func (d *documentImpl) saveHeaders() error {
 }
 
 func (d *documentImpl) saveFooters() error {
+	if d.document == nil || d.document.Body == nil || d.document.Body.SectPr == nil {
+		return nil
+	}
+
+	rels := d.pkg.GetRelationships(packaging.WordDocumentPath)
 	i := 0
-	for _, f := range d.footers {
-		if f.footer == nil {
+	for _, ref := range d.document.Body.SectPr.FooterRefs {
+		f := d.footers[ref.ID]
+		if f == nil || f.footer == nil {
 			continue
 		}
 		i++
-		
+
+		target := ""
+		if rel := rels.ByID(ref.ID); rel != nil {
+			target = rel.Target
+		} else {
+			target = fmt.Sprintf("footer%d.xml", i)
+			rels.AddWithID(ref.ID, packaging.RelTypeFooter, target, packaging.TargetModeInternal)
+		}
+		filename := packaging.ResolveRelationshipTarget(packaging.WordDocumentPath, target)
+
 		data, err := utils.MarshalXMLWithHeader(f.footer)
 		if err != nil {
 			return err
 		}
-		
-		filename := fmt.Sprintf("word/footer%d.xml", i)
-		_, err = d.pkg.AddPart(filename, packaging.ContentTypeFooter, data)
+		if _, err := d.pkg.AddPart(filename, packaging.ContentTypeFooter, data); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (d *documentImpl) parseHeaders() error {
+	if d.document == nil || d.document.Body == nil || d.document.Body.SectPr == nil {
+		return nil
+	}
+	rels := d.pkg.GetRelationships(packaging.WordDocumentPath)
+	for _, ref := range d.document.Body.SectPr.HeaderRefs {
+		rel := rels.ByID(ref.ID)
+		if rel == nil {
+			continue
+		}
+		path := packaging.ResolveRelationshipTarget(packaging.WordDocumentPath, rel.Target)
+		part, err := d.pkg.GetPart(path)
+		if err != nil {
+			continue
+		}
+		content, err := part.Content()
 		if err != nil {
 			return err
+		}
+		header := &wml.Header{}
+		if err := utils.UnmarshalXML(content, header); err != nil {
+			return err
+		}
+		d.headers[ref.ID] = &headerImpl{
+			doc:    d,
+			header: header,
+			relID:  ref.ID,
+			hfType: HeaderFooterType(ref.Type),
+		}
+	}
+	return nil
+}
+
+func (d *documentImpl) parseFooters() error {
+	if d.document == nil || d.document.Body == nil || d.document.Body.SectPr == nil {
+		return nil
+	}
+	rels := d.pkg.GetRelationships(packaging.WordDocumentPath)
+	for _, ref := range d.document.Body.SectPr.FooterRefs {
+		rel := rels.ByID(ref.ID)
+		if rel == nil {
+			continue
+		}
+		path := packaging.ResolveRelationshipTarget(packaging.WordDocumentPath, rel.Target)
+		part, err := d.pkg.GetPart(path)
+		if err != nil {
+			continue
+		}
+		content, err := part.Content()
+		if err != nil {
+			return err
+		}
+		footer := &wml.Footer{}
+		if err := utils.UnmarshalXML(content, footer); err != nil {
+			return err
+		}
+		d.footers[ref.ID] = &footerImpl{
+			doc:    d,
+			footer: footer,
+			relID:  ref.ID,
+			hfType: HeaderFooterType(ref.Type),
 		}
 	}
 	return nil

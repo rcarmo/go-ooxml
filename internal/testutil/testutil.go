@@ -111,6 +111,9 @@ func (h *Helper) AssertFalse(v bool, msg string) {
 // AssertContains checks if s contains substr.
 func (h *Helper) AssertContains(s, substr, msg string) {
 	h.T.Helper()
+	if substr == "" {
+		return
+	}
 	if len(substr) > 0 && len(s) >= len(substr) {
 		for i := 0; i <= len(s)-len(substr); i++ {
 			if s[i:i+len(substr)] == substr {
@@ -312,8 +315,11 @@ var CommonRangeCases = []RangeTestCase{
 type DocumentType int
 
 const (
+	// DocTypeWord represents Word documents.
 	DocTypeWord DocumentType = iota
+	// DocTypePowerPoint represents PowerPoint documents.
 	DocTypePowerPoint
+	// DocTypeExcel represents Excel documents.
 	DocTypeExcel
 )
 

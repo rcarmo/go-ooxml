@@ -93,7 +93,7 @@ const (
 	ThemeColorFollowedHyp = 11
 )
 
-// Highlight colors supported in Word.
+// HighlightColors maps Word highlight names to RGB colors.
 var HighlightColors = map[string]Color{
 	"yellow":      {255, 255, 255, 0},
 	"green":       {255, 0, 255, 0},
