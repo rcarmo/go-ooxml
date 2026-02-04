@@ -425,7 +425,7 @@ func (p *presentationImpl) parseSlides() error {
 		var slidePath string
 		for _, rel := range rels.Relationships {
 			if rel.ID == sldId.RID {
-				slidePath = "ppt/" + rel.Target
+				slidePath = packaging.ResolveRelationshipTarget(packaging.PresentationPath, rel.Target)
 				break
 			}
 		}
@@ -458,6 +458,7 @@ func (p *presentationImpl) parseSlides() error {
 			path:  slidePath,
 		}
 		slideImpl.comments = p.parseSlideComments(slidePath)
+		slideImpl.notes = p.parseSlideNotes(slidePath)
 
 		p.slides = append(p.slides, slideImpl)
 
@@ -522,6 +523,31 @@ func (p *presentationImpl) parseSlideComments(slidePath string) *pml.CommentList
 		return nil
 	}
 	return comments
+}
+
+func (p *presentationImpl) parseSlideNotes(slidePath string) *pml.Notes {
+	rels := p.pkg.GetRelationships(slidePath)
+	if rels == nil {
+		return nil
+	}
+	rel := rels.FirstByType(packaging.RelTypeNotesSlide)
+	if rel == nil {
+		return nil
+	}
+	target := packaging.ResolveRelationshipTarget(slidePath, rel.Target)
+	part, err := p.pkg.GetPart(target)
+	if err != nil {
+		return nil
+	}
+	data, err := part.Content()
+	if err != nil {
+		return nil
+	}
+	notes := &pml.Notes{}
+	if err := utils.UnmarshalXML(data, notes); err != nil {
+		return nil
+	}
+	return notes
 }
 
 func (p *presentationImpl) parseCommentAuthors() {
@@ -601,6 +627,7 @@ type slideMasterImpl struct {
 	path string
 }
 
+// ID returns the slide master ID.
 func (m *slideMasterImpl) ID() string {
 	if m == nil {
 		return ""
@@ -608,6 +635,7 @@ func (m *slideMasterImpl) ID() string {
 	return m.id
 }
 
+// Path returns the slide master part path.
 func (m *slideMasterImpl) Path() string {
 	if m == nil {
 		return ""
@@ -621,6 +649,7 @@ type slideLayoutImpl struct {
 	masterID string
 }
 
+// ID returns the slide layout ID.
 func (l *slideLayoutImpl) ID() string {
 	if l == nil {
 		return ""
@@ -628,6 +657,7 @@ func (l *slideLayoutImpl) ID() string {
 	return l.id
 }
 
+// Path returns the slide layout part path.
 func (l *slideLayoutImpl) Path() string {
 	if l == nil {
 		return ""
@@ -670,6 +700,13 @@ func (p *presentationImpl) updatePackage() error {
 			if _, err := p.pkg.AddPart(notesPath, packaging.ContentTypeNotesSlide, notesData); err != nil {
 				return err
 			}
+			slideRels := p.pkg.GetRelationships(slidePath)
+			relID := slideRels.NextID()
+			for _, rel := range slideRels.ByType(packaging.RelTypeNotesSlide) {
+				relID = rel.ID
+				break
+			}
+			slideRels.AddWithID(relID, packaging.RelTypeNotesSlide, relativeTarget(slidePath, notesPath), packaging.TargetModeInternal)
 		}
 
 		if slide.comments != nil && len(slide.comments.Comment) > 0 {

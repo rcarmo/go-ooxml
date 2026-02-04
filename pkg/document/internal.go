@@ -131,6 +131,13 @@ func (d *documentImpl) updatePackage() error {
 		}
 	}
 
+	if err := d.saveHeaders(); err != nil {
+		return err
+	}
+	if err := d.saveFooters(); err != nil {
+		return err
+	}
+
 	return nil
 }
 

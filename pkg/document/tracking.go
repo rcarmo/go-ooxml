@@ -17,11 +17,15 @@ var ErrInvalidIndex = errors.New("invalid index")
 type RevisionType int
 
 const (
+	// RevisionInsert indicates inserted content.
 	RevisionInsert RevisionType = iota
+	// RevisionDelete indicates deleted content.
 	RevisionDelete
+	// RevisionFormat indicates a formatting change.
 	RevisionFormat
 )
 
+// String returns a string label for the revision type.
 func (rt RevisionType) String() string {
 	switch rt {
 	case RevisionInsert:

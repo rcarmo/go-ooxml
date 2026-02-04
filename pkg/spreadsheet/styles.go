@@ -229,11 +229,12 @@ func (cs *cellStyleImpl) SetFillColor(hex string) CellStyle {
 	return cs
 }
 
-// Border returns the border index.
+// Border describes a simple border style.
 type Border struct {
 	Style string
 }
 
+// Border returns the current border style.
 func (cs *cellStyleImpl) Border() Border {
 	if cs.border == nil || cs.border.Left == nil {
 		return Border{}
@@ -251,9 +252,10 @@ func (cs *cellStyleImpl) SetBorder(border Border) CellStyle {
 	return cs
 }
 
-// HorizontalAlignment returns the horizontal alignment.
+// Alignment represents alignment options for cell styles.
 type Alignment string
 
+// HorizontalAlignment returns the horizontal alignment.
 func (cs *cellStyleImpl) HorizontalAlignment() Alignment {
 	if cs.xf == nil || cs.xf.Alignment == nil {
 		return ""

@@ -8,10 +8,12 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
 )
 
-// Errors
 var (
+	// ErrSlideNotFound is returned when a slide index is invalid.
 	ErrSlideNotFound = errors.New("slide not found")
+	// ErrShapeNotFound is returned when a slide shape cannot be located.
 	ErrShapeNotFound = errors.New("shape not found")
+	// ErrInvalidIndex is returned when an index is out of range.
 	ErrInvalidIndex  = errors.New("invalid index")
 )
 
@@ -58,6 +60,7 @@ type Slide interface {
 	Placeholders() []Shape
 	TitlePlaceholder() Shape
 	BodyPlaceholder() Shape
+	Tables() []Table
 	Notes() string
 	SetNotes(text string) error
 	AppendNotes(text string) error
@@ -189,13 +192,21 @@ type Comment interface {
 type ShapeType int
 
 const (
+	// ShapeTypeRectangle identifies a rectangle shape.
 	ShapeTypeRectangle ShapeType = iota
+	// ShapeTypeEllipse identifies an ellipse shape.
 	ShapeTypeEllipse
+	// ShapeTypeRoundRect identifies a rounded rectangle shape.
 	ShapeTypeRoundRect
+	// ShapeTypeTriangle identifies a triangle shape.
 	ShapeTypeTriangle
+	// ShapeTypeTextBox identifies a text box shape.
 	ShapeTypeTextBox
+	// ShapeTypeTable identifies a table shape.
 	ShapeTypeTable
+	// ShapeTypeLine identifies a line shape.
 	ShapeTypeLine
+	// ShapeTypeArrow identifies an arrow shape.
 	ShapeTypeArrow
 )
 
@@ -203,17 +214,29 @@ const (
 type PlaceholderType int
 
 const (
+	// PlaceholderNone indicates a non-placeholder shape.
 	PlaceholderNone PlaceholderType = iota
+	// PlaceholderTitle indicates a title placeholder.
 	PlaceholderTitle
+	// PlaceholderCenteredTitle indicates a centered title placeholder.
 	PlaceholderCenteredTitle
+	// PlaceholderSubtitle indicates a subtitle placeholder.
 	PlaceholderSubtitle
+	// PlaceholderBody indicates a body placeholder.
 	PlaceholderBody
+	// PlaceholderDate indicates a date placeholder.
 	PlaceholderDate
+	// PlaceholderFooter indicates a footer placeholder.
 	PlaceholderFooter
+	// PlaceholderSlideNumber indicates a slide number placeholder.
 	PlaceholderSlideNumber
+	// PlaceholderContent indicates a content placeholder.
 	PlaceholderContent
+	// PlaceholderPicture indicates a picture placeholder.
 	PlaceholderPicture
+	// PlaceholderTable indicates a table placeholder.
 	PlaceholderTable
+	// PlaceholderChart indicates a chart placeholder.
 	PlaceholderChart
 )
 
@@ -221,28 +244,39 @@ const (
 type AutofitType int
 
 const (
-	AutofitNone   AutofitType = iota // Do not autofit
-	AutofitNormal                    // Shrink text to fit
-	AutofitShape                     // Resize shape to fit text
+	// AutofitNone disables text autofit.
+	AutofitNone AutofitType = iota
+	// AutofitNormal shrinks text to fit the shape.
+	AutofitNormal
+	// AutofitShape resizes the shape to fit text.
+	AutofitShape
 )
 
 // BulletType represents bullet point style.
 type BulletType int
 
 const (
-	BulletNone       BulletType = iota
-	BulletAutoNumber            // Numbered list
-	BulletCharacter             // Character bullet (•, -, etc.)
-	BulletPicture               // Picture bullet
+	// BulletNone disables bullets.
+	BulletNone BulletType = iota
+	// BulletAutoNumber uses numbered bullets.
+	BulletAutoNumber
+	// BulletCharacter uses a character bullet (•, -, etc.).
+	BulletCharacter
+	// BulletPicture uses a picture bullet.
+	BulletPicture
 )
 
 // Alignment represents text alignment.
 type Alignment int
 
 const (
+	// AlignmentLeft aligns text to the left.
 	AlignmentLeft Alignment = iota
+	// AlignmentCenter centers the text.
 	AlignmentCenter
+	// AlignmentRight aligns text to the right.
 	AlignmentRight
+	// AlignmentJustify justifies the text.
 	AlignmentJustify
 )
 

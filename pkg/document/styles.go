@@ -11,9 +11,13 @@ import (
 type StyleType string
 
 const (
+	// StyleTypeParagraph identifies paragraph styles.
 	StyleTypeParagraph StyleType = "paragraph"
+	// StyleTypeCharacter identifies character styles.
 	StyleTypeCharacter StyleType = "character"
-	StyleTypeTable     StyleType = "table"
+	// StyleTypeTable identifies table styles.
+	StyleTypeTable StyleType = "table"
+	// StyleTypeNumbering identifies numbering styles.
 	StyleTypeNumbering StyleType = "numbering"
 )
 

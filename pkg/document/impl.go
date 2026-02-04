@@ -74,6 +74,7 @@ type sectionImpl struct {
 	sectPr *wml.SectPr
 }
 
+// Header returns the header for the section.
 func (s *sectionImpl) Header(hfType HeaderFooterType) Header {
 	if s == nil || s.doc == nil {
 		return nil
@@ -81,6 +82,7 @@ func (s *sectionImpl) Header(hfType HeaderFooterType) Header {
 	return s.doc.Header(hfType)
 }
 
+// Footer returns the footer for the section.
 func (s *sectionImpl) Footer(hfType HeaderFooterType) Footer {
 	if s == nil || s.doc == nil {
 		return nil
@@ -88,6 +90,7 @@ func (s *sectionImpl) Footer(hfType HeaderFooterType) Footer {
 	return s.doc.Footer(hfType)
 }
 
+// AddHeader adds a header for the section.
 func (s *sectionImpl) AddHeader(hfType HeaderFooterType) Header {
 	if s == nil || s.doc == nil {
 		return nil
@@ -95,6 +98,7 @@ func (s *sectionImpl) AddHeader(hfType HeaderFooterType) Header {
 	return s.doc.AddHeader(hfType)
 }
 
+// AddFooter adds a footer for the section.
 func (s *sectionImpl) AddFooter(hfType HeaderFooterType) Footer {
 	if s == nil || s.doc == nil {
 		return nil

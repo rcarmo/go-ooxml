@@ -29,6 +29,88 @@ type SpTree struct {
 	Content   []interface{} `xml:",any"` // Sp, Pic, GraphicFrame, etc.
 }
 
+// UnmarshalXML implements custom XML unmarshaling for SpTree to capture shapes.
+func (s *SpTree) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			return err
+		}
+
+		switch t := tok.(type) {
+		case xml.StartElement:
+			switch t.Name.Local {
+			case "nvGrpSpPr":
+				s.NvGrpSpPr = &NvGrpSpPr{}
+				if err := d.DecodeElement(s.NvGrpSpPr, &t); err != nil {
+					return err
+				}
+			case "grpSpPr":
+				s.GrpSpPr = &GrpSpPr{}
+				if err := d.DecodeElement(s.GrpSpPr, &t); err != nil {
+					return err
+				}
+			case "sp":
+				sp := &dml.Sp{}
+				if err := d.DecodeElement(sp, &t); err != nil {
+					return err
+				}
+				s.Content = append(s.Content, sp)
+			case "graphicFrame":
+				gf := &GraphicFrame{}
+				if err := d.DecodeElement(gf, &t); err != nil {
+					return err
+				}
+				s.Content = append(s.Content, gf)
+			default:
+				if err := d.Skip(); err != nil {
+					return err
+				}
+			}
+		case xml.EndElement:
+			if t.Name == start.Name {
+				return nil
+			}
+		}
+	}
+}
+
+// MarshalXML implements custom XML marshaling for SpTree.
+func (s *SpTree) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name = xml.Name{Space: NS, Local: "spTree"}
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+
+	if s.NvGrpSpPr != nil {
+		if err := e.EncodeElement(s.NvGrpSpPr, xml.StartElement{Name: xml.Name{Space: NS, Local: "nvGrpSpPr"}}); err != nil {
+			return err
+		}
+	}
+	if s.GrpSpPr != nil {
+		if err := e.EncodeElement(s.GrpSpPr, xml.StartElement{Name: xml.Name{Space: NS, Local: "grpSpPr"}}); err != nil {
+			return err
+		}
+	}
+	for _, elem := range s.Content {
+		switch v := elem.(type) {
+		case *dml.Sp:
+			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "sp"}}); err != nil {
+				return err
+			}
+		case *GraphicFrame:
+			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "graphicFrame"}}); err != nil {
+				return err
+			}
+		default:
+			if err := e.Encode(v); err != nil {
+				return err
+			}
+		}
+	}
+	return e.EncodeToken(start.End())
+}
+
 // NvGrpSpPr represents non-visual group shape properties.
 type NvGrpSpPr struct {
 	CNvPr      *CNvPr      `xml:"cNvPr"`

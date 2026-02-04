@@ -111,6 +111,8 @@ func openFromPackage(pkg *packaging.Package) (*documentImpl, error) {
 	// Parse numbering.xml (optional)
 	_ = doc.parseNumbering()
 	doc.parseBookmarks()
+	_ = doc.parseHeaders()
+	_ = doc.parseFooters()
 
 	return doc, nil
 }
