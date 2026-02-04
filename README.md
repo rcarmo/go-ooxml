@@ -104,6 +104,12 @@ make test
 # Run tests with coverage
 make coverage
 
+# Run benchmarks
+make bench
+
+# Run memory profiling tests
+make memprofile
+
 # Format code
 make format
 
