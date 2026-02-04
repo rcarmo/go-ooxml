@@ -1387,13 +1387,13 @@ func TestWordWorkflow_CreateTechnicalReport(t *testing.T) {
 | `document.Comments` implementation | P0 | ✅ Done |
 | `document.Styles` implementation | P1 | ✅ Done |
 | Headers/Footers support | P1 | ✅ Done |
-| SDT (Content Controls) support | P1 | ❌ Not implemented |
+| SDT (Content Controls) support | P1 | ✅ Implemented |
 
 **Deliverables:**
 - [x] Can enable/disable track changes
 - [x] Can create tracked insertions/deletions
 - [x] Can add/read comments
-- [ ] E2E Technical Report workflow test passing (needs SDT support)
+- [x] E2E Technical Report workflow test passing (needs SDT support)
 
 ### Phase 4: PowerPoint ✅ COMPLETE
 
@@ -1403,7 +1403,7 @@ func TestWordWorkflow_CreateTechnicalReport(t *testing.T) {
 | `presentation.Slide` implementation | P0 | ✅ Done |
 | `presentation.Shape` implementation | P0 | ✅ Done |
 | `presentation.TextFrame` implementation | P0 | ✅ Done |
-| `presentation.Table` implementation | P1 | ❌ Not implemented |
+| `presentation.Table` implementation | P1 | ✅ Implemented |
 | Notes support | P1 | ✅ Done |
 
 **Deliverables:**
@@ -1420,7 +1420,7 @@ func TestWordWorkflow_CreateTechnicalReport(t *testing.T) {
 | `spreadsheet.Workbook` implementation | P0 | ✅ Done |
 | `spreadsheet.Worksheet` implementation | P0 | ✅ Done |
 | `spreadsheet.Cell` implementation | P0 | ✅ Done |
-| `spreadsheet.Table` implementation | P1 | ❌ Not implemented |
+| `spreadsheet.Table` implementation | P1 | ✅ Implemented |
 | `spreadsheet.Range` implementation | P1 | ✅ Done |
 
 **Deliverables:**
