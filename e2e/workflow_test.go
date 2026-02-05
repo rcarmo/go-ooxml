@@ -224,3 +224,145 @@ func TestPowerPointWorkflow_SalesDeck(t *testing.T) {
 		t.Error("Expected slide 2 to be hidden after round-trip")
 	}
 }
+
+func TestWordWorkflow_TemplateUpdate(t *testing.T) {
+	path := filepath.Join("..", "testdata", "word", "headers_footers.docx")
+	doc, err := document.Open(path)
+	if err != nil {
+		t.Fatalf("Open() error = %v", err)
+	}
+
+	doc.AddParagraph().SetText("Appendix A")
+	table := doc.AddTable(1, 1)
+	table.Cell(0, 0).SetText("Key")
+
+	outPath := filepath.Join(t.TempDir(), "template_update.docx")
+	if err := doc.SaveAs(outPath); err != nil {
+		t.Fatalf("SaveAs() error = %v", err)
+	}
+	if err := doc.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
+
+	doc2, err := document.Open(outPath)
+	if err != nil {
+		t.Fatalf("Open() error = %v", err)
+	}
+	defer doc2.Close()
+
+	foundParagraph := false
+	for _, para := range doc2.Paragraphs() {
+		if para.Text() == "Appendix A" {
+			foundParagraph = true
+			break
+		}
+	}
+	if !foundParagraph {
+		t.Error("Expected appended paragraph after round-trip")
+	}
+
+	foundTable := false
+	for _, tbl := range doc2.Tables() {
+		if tbl.RowCount() > 0 && tbl.ColumnCount() > 0 && tbl.Cell(0, 0).Text() == "Key" {
+			foundTable = true
+			break
+		}
+	}
+	if !foundTable {
+		t.Error("Expected appended table after round-trip")
+	}
+}
+
+func TestExcelWorkflow_TemplateUpdate(t *testing.T) {
+	path := filepath.Join("..", "testdata", "excel", "multiple_sheets.xlsx")
+	wb, err := spreadsheet.Open(path)
+	if err != nil {
+		t.Fatalf("Open() error = %v", err)
+	}
+
+	sheet := wb.AddSheet("Added")
+	if err := sheet.Cell("A1").SetValue("Hello"); err != nil {
+		t.Fatalf("SetValue() error = %v", err)
+	}
+	if err := sheet.Cell("B1").SetValue(5); err != nil {
+		t.Fatalf("SetValue() error = %v", err)
+	}
+	if err := sheet.Cell("C1").SetFormula("B1*2"); err != nil {
+		t.Fatalf("SetFormula() error = %v", err)
+	}
+
+	outPath := filepath.Join(t.TempDir(), "template_update.xlsx")
+	if err := wb.SaveAs(outPath); err != nil {
+		t.Fatalf("SaveAs() error = %v", err)
+	}
+	if err := wb.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
+
+	wb2, err := spreadsheet.Open(outPath)
+	if err != nil {
+		t.Fatalf("Open() error = %v", err)
+	}
+	defer wb2.Close()
+
+	added, err := wb2.Sheet("Added")
+	if err != nil {
+		t.Fatalf("Sheet(Added) error = %v", err)
+	}
+	if added.Cell("A1").String() != "Hello" {
+		t.Errorf("Added!A1 = %q, want %q", added.Cell("A1").String(), "Hello")
+	}
+	if added.Cell("C1").Formula() != "B1*2" {
+		t.Errorf("Added!C1 formula = %q, want %q", added.Cell("C1").Formula(), "B1*2")
+	}
+}
+
+func TestPowerPointWorkflow_TemplateUpdate(t *testing.T) {
+	path := filepath.Join("..", "testdata", "pptx", "tables.pptx")
+	pres, err := presentation.Open(path)
+	if err != nil {
+		t.Fatalf("Open() error = %v", err)
+	}
+
+	originalCount := pres.SlideCount()
+	slide := pres.AddSlide(0)
+	slide.AddTextBox(100000, 100000, 3000000, 800000).SetText("Appendix")
+	if err := slide.SetNotes("Added notes"); err != nil {
+		t.Fatalf("SetNotes() error = %v", err)
+	}
+
+	outPath := filepath.Join(t.TempDir(), "template_update.pptx")
+	if err := pres.SaveAs(outPath); err != nil {
+		t.Fatalf("SaveAs() error = %v", err)
+	}
+	if err := pres.Close(); err != nil {
+		t.Fatalf("Close() error = %v", err)
+	}
+
+	pres2, err := presentation.Open(outPath)
+	if err != nil {
+		t.Fatalf("Open() error = %v", err)
+	}
+	defer pres2.Close()
+
+	if pres2.SlideCount() != originalCount+1 {
+		t.Errorf("SlideCount() = %d, want %d", pres2.SlideCount(), originalCount+1)
+	}
+	last, err := pres2.Slide(pres2.SlideCount())
+	if err != nil {
+		t.Fatalf("Slide(last) error = %v", err)
+	}
+	if last.Notes() != "Added notes" {
+		t.Errorf("Notes() = %q, want %q", last.Notes(), "Added notes")
+	}
+	foundText := false
+	for _, shape := range last.Shapes() {
+		if shape.Text() == "Appendix" {
+			foundText = true
+			break
+		}
+	}
+	if !foundText {
+		t.Error("Expected appended slide text after round-trip")
+	}
+}
