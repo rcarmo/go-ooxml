@@ -230,6 +230,66 @@ func (p *paragraphImpl) SetKeepWithNext(v bool) {
 	}
 }
 
+// KeepLines returns whether the paragraph keeps lines together.
+func (p *paragraphImpl) KeepLines() bool {
+	if p.p.PPr != nil && p.p.PPr.KeepLines != nil {
+		return p.p.PPr.KeepLines.Enabled()
+	}
+	return false
+}
+
+// SetKeepLines sets whether to keep paragraph lines together.
+func (p *paragraphImpl) SetKeepLines(v bool) {
+	if p.p.PPr == nil {
+		p.p.PPr = &wml.PPr{}
+	}
+	if v {
+		p.p.PPr.KeepLines = wml.NewOnOffEnabled()
+	} else {
+		p.p.PPr.KeepLines = nil
+	}
+}
+
+// PageBreakBefore returns whether the paragraph has a page break before.
+func (p *paragraphImpl) PageBreakBefore() bool {
+	if p.p.PPr != nil && p.p.PPr.PageBreakBefore != nil {
+		return p.p.PPr.PageBreakBefore.Enabled()
+	}
+	return false
+}
+
+// SetPageBreakBefore sets whether to insert a page break before the paragraph.
+func (p *paragraphImpl) SetPageBreakBefore(v bool) {
+	if p.p.PPr == nil {
+		p.p.PPr = &wml.PPr{}
+	}
+	if v {
+		p.p.PPr.PageBreakBefore = wml.NewOnOffEnabled()
+	} else {
+		p.p.PPr.PageBreakBefore = nil
+	}
+}
+
+// WidowControl returns whether widow/orphan control is enabled.
+func (p *paragraphImpl) WidowControl() bool {
+	if p.p.PPr != nil && p.p.PPr.WidowControl != nil {
+		return p.p.PPr.WidowControl.Enabled()
+	}
+	return false
+}
+
+// SetWidowControl sets widow/orphan control.
+func (p *paragraphImpl) SetWidowControl(v bool) {
+	if p.p.PPr == nil {
+		p.p.PPr = &wml.PPr{}
+	}
+	if v {
+		p.p.PPr.WidowControl = wml.NewOnOffEnabled()
+	} else {
+		p.p.PPr.WidowControl = nil
+	}
+}
+
 // ListLevel returns the list level for the paragraph or -1 if not a list item.
 func (p *paragraphImpl) ListLevel() int {
 	if p.p.PPr == nil || p.p.PPr.NumPr == nil || p.p.PPr.NumPr.Ilvl == nil {

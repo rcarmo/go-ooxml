@@ -136,9 +136,9 @@ Based on ECMA-376 Part 1, §17.
 | `<w:jc>` (justification) | §17.3.1.13 | ✅ Implemented | `Paragraph.SetAlignment()` |
 | `<w:spacing>` | §17.3.1.33 | ✅ Implemented | Before/after spacing |
 | `<w:keepNext>` | §17.3.1.14 | ✅ Implemented | `Paragraph.SetKeepWithNext()` |
-| `<w:keepLines>` | §17.3.1.15 | ❌ Not implemented | |
-| `<w:pageBreakBefore>` | §17.3.1.23 | ❌ Not implemented | |
-| `<w:widowControl>` | §17.3.1.44 | ❌ Not implemented | |
+| `<w:keepLines>` | §17.3.1.15 | ✅ Implemented | `Paragraph.SetKeepLines()` |
+| `<w:pageBreakBefore>` | §17.3.1.23 | ✅ Implemented | `Paragraph.SetPageBreakBefore()` |
+| `<w:widowControl>` | §17.3.1.44 | ✅ Implemented | `Paragraph.SetWidowControl()` |
 | `<w:outlineLvl>` | §17.3.1.20 | ✅ Implemented | `Paragraph.HeadingLevel()` |
 | `<w:numPr>` (numbering) | §17.3.1.19 | ✅ Implemented | `Paragraph.SetList()` |
 | **Runs** | §17.3.2 | | |
@@ -157,12 +157,12 @@ Based on ECMA-376 Part 1, §17.
 | `<w:rFonts>` (fonts) | §17.3.2.24 | ✅ Implemented | `Run.SetFontName()` |
 | `<w:color>` | §17.3.2.5 | ✅ Implemented | `Run.SetColor()` |
 | `<w:highlight>` | §17.3.2.13 | ✅ Implemented | `Run.SetHighlight()` |
-| `<w:caps>` | §17.3.2.3 | ❌ Not implemented | |
-| `<w:smallCaps>` | §17.3.2.32 | ❌ Not implemented | |
-| `<w:emboss>` | §17.3.2.11 | ❌ Not implemented | |
-| `<w:imprint>` | §17.3.2.14 | ❌ Not implemented | |
-| `<w:outline>` | §17.3.2.21 | ❌ Not implemented | |
-| `<w:shadow>` | §17.3.2.30 | ❌ Not implemented | |
+| `<w:caps>` | §17.3.2.3 | ✅ Implemented | `Run.SetCaps()` |
+| `<w:smallCaps>` | §17.3.2.32 | ✅ Implemented | `Run.SetSmallCaps()` |
+| `<w:emboss>` | §17.3.2.11 | ✅ Implemented | `Run.SetEmboss()` |
+| `<w:imprint>` | §17.3.2.14 | ✅ Implemented | `Run.SetImprint()` |
+| `<w:outline>` | §17.3.2.21 | ✅ Implemented | `Run.SetOutline()` |
+| `<w:shadow>` | §17.3.2.30 | ✅ Implemented | `Run.SetShadow()` |
 | `<w:vanish>` | §17.3.2.41 | ❌ Not implemented | |
 | `<w:rStyle>` | §17.3.2.29 | ✅ Implemented | `Run.SetStyle()` |
 | **Special Characters** | §17.3.3 | | |

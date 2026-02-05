@@ -240,6 +240,12 @@ type Paragraph interface {
 	SetSpacingAfter(twips int64)
 	KeepWithNext() bool
 	SetKeepWithNext(v bool)
+	KeepLines() bool
+	SetKeepLines(v bool)
+	PageBreakBefore() bool
+	SetPageBreakBefore(v bool)
+	WidowControl() bool
+	SetWidowControl(v bool)
 	ListLevel() int
 	SetListLevel(level int) error
 	ListNumberingID() int
@@ -269,6 +275,18 @@ type Run interface {
 	SetUnderlineStyle(style string)
 	Strike() bool
 	SetStrike(v bool)
+	Caps() bool
+	SetCaps(v bool)
+	SmallCaps() bool
+	SetSmallCaps(v bool)
+	Outline() bool
+	SetOutline(v bool)
+	Shadow() bool
+	SetShadow(v bool)
+	Emboss() bool
+	SetEmboss(v bool)
+	Imprint() bool
+	SetImprint(v bool)
 	FontSize() float64
 	SetFontSize(points float64)
 	FontName() string

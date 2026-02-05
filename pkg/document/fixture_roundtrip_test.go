@@ -104,11 +104,20 @@ func TestFixtureRoundTrip_Complex(t *testing.T) {
 				p.SetAlignment("center")
 				p.SetSpacingBefore(240)
 				p.SetSpacingAfter(120)
+				p.SetKeepLines(true)
+				p.SetPageBreakBefore(true)
+				p.SetWidowControl(true)
 				r := p.AddRun()
 				r.SetText("Fixture Format")
 				r.SetBold(true)
 				r.SetItalic(true)
 				r.SetUnderline(true)
+				r.SetCaps(true)
+				r.SetSmallCaps(true)
+				r.SetOutline(true)
+				r.SetShadow(true)
+				r.SetEmboss(true)
+				r.SetImprint(true)
 				r.SetFontSize(14)
 				r.SetFontName("Arial")
 				r.SetHighlight("yellow")
@@ -125,9 +134,15 @@ func TestFixtureRoundTrip_Complex(t *testing.T) {
 				if p.SpacingBefore() != 240 || p.SpacingAfter() != 120 {
 					t.Errorf("Spacing = (%d, %d), want (240, 120)", p.SpacingBefore(), p.SpacingAfter())
 				}
+				if !p.KeepLines() || !p.PageBreakBefore() || !p.WidowControl() {
+					t.Error("Expected paragraph advanced toggles after round-trip")
+				}
 				r := p.Runs()[0]
 				if !r.Bold() || !r.Italic() || !r.Underline() {
 					t.Error("Expected run formatting after round-trip")
+				}
+				if !r.Caps() || !r.SmallCaps() || !r.Outline() || !r.Shadow() || !r.Emboss() || !r.Imprint() {
+					t.Error("Expected run effects after round-trip")
 				}
 				if r.FontSize() != 14 {
 					t.Errorf("FontSize() = %v, want 14", r.FontSize())

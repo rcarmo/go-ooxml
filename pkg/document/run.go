@@ -127,6 +127,114 @@ func (r *runImpl) SetStrike(v bool) {
 	}
 }
 
+// Caps returns whether the run uses all caps.
+func (r *runImpl) Caps() bool {
+	if r.r.RPr != nil && r.r.RPr.Caps != nil {
+		return r.r.RPr.Caps.Enabled()
+	}
+	return false
+}
+
+// SetCaps sets all caps formatting.
+func (r *runImpl) SetCaps(v bool) {
+	r.ensureRPr()
+	if v {
+		r.r.RPr.Caps = wml.NewOnOffEnabled()
+	} else {
+		r.r.RPr.Caps = nil
+	}
+}
+
+// SmallCaps returns whether the run uses small caps.
+func (r *runImpl) SmallCaps() bool {
+	if r.r.RPr != nil && r.r.RPr.SmallCaps != nil {
+		return r.r.RPr.SmallCaps.Enabled()
+	}
+	return false
+}
+
+// SetSmallCaps sets small caps formatting.
+func (r *runImpl) SetSmallCaps(v bool) {
+	r.ensureRPr()
+	if v {
+		r.r.RPr.SmallCaps = wml.NewOnOffEnabled()
+	} else {
+		r.r.RPr.SmallCaps = nil
+	}
+}
+
+// Outline returns whether the run uses outline text.
+func (r *runImpl) Outline() bool {
+	if r.r.RPr != nil && r.r.RPr.Outline != nil {
+		return r.r.RPr.Outline.Enabled()
+	}
+	return false
+}
+
+// SetOutline sets outline text formatting.
+func (r *runImpl) SetOutline(v bool) {
+	r.ensureRPr()
+	if v {
+		r.r.RPr.Outline = wml.NewOnOffEnabled()
+	} else {
+		r.r.RPr.Outline = nil
+	}
+}
+
+// Shadow returns whether the run uses shadow formatting.
+func (r *runImpl) Shadow() bool {
+	if r.r.RPr != nil && r.r.RPr.Shadow != nil {
+		return r.r.RPr.Shadow.Enabled()
+	}
+	return false
+}
+
+// SetShadow sets shadow formatting.
+func (r *runImpl) SetShadow(v bool) {
+	r.ensureRPr()
+	if v {
+		r.r.RPr.Shadow = wml.NewOnOffEnabled()
+	} else {
+		r.r.RPr.Shadow = nil
+	}
+}
+
+// Emboss returns whether the run uses emboss formatting.
+func (r *runImpl) Emboss() bool {
+	if r.r.RPr != nil && r.r.RPr.Emboss != nil {
+		return r.r.RPr.Emboss.Enabled()
+	}
+	return false
+}
+
+// SetEmboss sets emboss formatting.
+func (r *runImpl) SetEmboss(v bool) {
+	r.ensureRPr()
+	if v {
+		r.r.RPr.Emboss = wml.NewOnOffEnabled()
+	} else {
+		r.r.RPr.Emboss = nil
+	}
+}
+
+// Imprint returns whether the run uses imprint formatting.
+func (r *runImpl) Imprint() bool {
+	if r.r.RPr != nil && r.r.RPr.Imprint != nil {
+		return r.r.RPr.Imprint.Enabled()
+	}
+	return false
+}
+
+// SetImprint sets imprint formatting.
+func (r *runImpl) SetImprint(v bool) {
+	r.ensureRPr()
+	if v {
+		r.r.RPr.Imprint = wml.NewOnOffEnabled()
+	} else {
+		r.r.RPr.Imprint = nil
+	}
+}
+
 // FontSize returns the font size in points.
 func (r *runImpl) FontSize() float64 {
 	if r.r.RPr != nil && r.r.RPr.Sz != nil {

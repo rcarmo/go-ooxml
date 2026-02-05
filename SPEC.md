@@ -1487,8 +1487,8 @@ Goal: reach feature parity with advanced surfaces in openpyxl, python-docx, and 
 #### Phase 7C: Word Advanced (python-docx parity)
 | Task | Priority | Status |
 |------|----------|--------|
-| Paragraph keep-lines/page-break-before/widow control | P1 | ⏳ Planned |
-| Run effects (caps/smallCaps/emboss/outline/shadow) | P1 | ⏳ Planned |
+| Paragraph keep-lines/page-break-before/widow control | P1 | ✅ Done |
+| Run effects (caps/smallCaps/emboss/outline/shadow) | P1 | ✅ Done |
 | Fields (read/write) + instruction parsing | P1 | ⏳ Planned |
 | Numbering styles (create/edit) | P1 | ⏳ Planned |
 | Table cell borders/widths/vertical align/text direction | P1 | ⏳ Planned |
