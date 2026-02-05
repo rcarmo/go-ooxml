@@ -15,6 +15,7 @@ This directory contains the official ECMA-376 specification documents for Office
 - `ECMA-376-WML-Phase3.md` - WordprocessingML Phase 3 quick reference.
 - `ECMA-376-Part2-OPC.md` - Extracted OPC sections (relationships, content types, core properties).
 - `FIT-GAP-ANALYSIS.md` - Feature coverage table vs ECMA-376.
+- `ROUNDTRIP-TESTS.md` - Summary of complex round-trip fixture tests.
 
 ## Parts Overview
 

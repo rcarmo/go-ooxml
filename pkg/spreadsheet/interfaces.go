@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/sml"
 )
 
 // Workbook represents an Excel workbook.
@@ -54,6 +55,8 @@ type Worksheet interface {
 	MergeCells(ref string) error
 	UnmergeCells(ref string) error
 	Comments() []Comment
+	PageMargins() (PageMargins, bool)
+	SetPageMargins(margins PageMargins)
 }
 
 // WorksheetInterface is a compatibility alias for the worksheet interface.
@@ -209,6 +212,9 @@ type CellStyle interface {
 	NumberFormat() string
 	SetNumberFormat(format string) CellStyle
 }
+
+// PageMargins represents worksheet page margins.
+type PageMargins = sml.PageMargins
 
 // CellStyleInterface is a compatibility alias for the cell style interface.
 type CellStyleInterface = CellStyle

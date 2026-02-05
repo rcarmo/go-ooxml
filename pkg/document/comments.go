@@ -2,6 +2,7 @@
 package document
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -77,12 +78,48 @@ func (c *commentImpl) AnchoredText() string {
 
 // Replies returns replies to this comment.
 func (c *commentImpl) Replies() []Comment {
-	return nil
+	if c == nil || c.doc == nil || c.doc.commentsExtended == nil {
+		return nil
+	}
+	if c.paraID == "" {
+		c.paraID = c.doc.commentParaID(c.comment.ID)
+	}
+	if c.paraID == "" {
+		return nil
+	}
+	var replies []Comment
+	for _, ex := range c.doc.commentsExtended.CommentEx {
+		if ex.ParaIDParent == c.paraID {
+			if reply := c.doc.commentByParaID(ex.ParaID); reply != nil {
+				replies = append(replies, reply)
+			}
+		}
+	}
+	return replies
 }
 
 // AddReply adds a reply to this comment.
 func (c *commentImpl) AddReply(text, author string) (Comment, error) {
-	return nil, utils.NewValidationError("commentReply", "not implemented", nil)
+	if c == nil || c.doc == nil || c.comment == nil {
+		return nil, ErrInvalidIndex
+	}
+	parentID := c.paraID
+	if parentID == "" {
+		parentID = c.doc.commentParaID(c.comment.ID)
+		c.paraID = parentID
+	}
+	if parentID == "" {
+		return nil, utils.NewValidationError("commentReply", "missing parent paraId", nil)
+	}
+	reply := c.doc.AddComment(text, author)
+	c.doc.ensureCommentsExtended()
+	for _, ex := range c.doc.commentsExtended.CommentEx {
+		if ex.ParaID == reply.paraID {
+			ex.ParaIDParent = parentID
+			break
+		}
+	}
+	return reply, nil
 }
 
 // SetText sets the comment text.
@@ -114,10 +151,14 @@ func (d *documentImpl) AllComments() []Comment {
 	if d.comments == nil {
 		return nil
 	}
-	
+
 	result := make([]Comment, len(d.comments.Comment))
 	for i, c := range d.comments.Comment {
-		result[i] = &commentImpl{doc: d, comment: c}
+		paraID := ""
+		if d.commentsExtended != nil && i < len(d.commentsExtended.CommentEx) {
+			paraID = d.commentsExtended.CommentEx[i].ParaID
+		}
+		result[i] = &commentImpl{doc: d, comment: c, paraID: paraID}
 	}
 	return result
 }
@@ -219,9 +260,10 @@ func (d *documentImpl) AddComment(text, author string) *commentImpl {
 			},
 		},
 	}
-	
+
 	d.comments.Comment = append(d.comments.Comment, comment)
-	return &commentImpl{doc: d, comment: comment}
+	paraID := d.ensureCommentParaID(id, "")
+	return &commentImpl{doc: d, comment: comment, paraID: paraID}
 }
 
 // AnchorComment anchors a comment to text within a paragraph.
@@ -331,6 +373,73 @@ func (d *documentImpl) removeCommentRanges(id int) {
 			p.Content = newContent
 		}
 	}
+}
+
+func (d *documentImpl) ensureCommentsExtended() {
+	if d.commentsExtended == nil {
+		d.commentsExtended = &wml.CommentsEx{}
+	}
+}
+
+func (d *documentImpl) ensureCommentParaID(commentID int, parentParaID string) string {
+	if d == nil {
+		return ""
+	}
+	d.ensureCommentsExtended()
+	if existing := d.commentParaID(commentID); existing != "" {
+		return existing
+	}
+	if len(d.commentsExtended.CommentEx) > len(d.comments.Comment) {
+		d.commentsExtended.CommentEx = d.commentsExtended.CommentEx[:len(d.comments.Comment)]
+	}
+	paraID := formatParaID(d.nextCommentParaID)
+	d.nextCommentParaID++
+	ex := &wml.CommentEx{
+		ParaID:       paraID,
+		ParaIDParent: parentParaID,
+	}
+	d.commentsExtended.CommentEx = append(d.commentsExtended.CommentEx, ex)
+	return paraID
+}
+
+func (d *documentImpl) commentParaID(commentID int) string {
+	if d == nil || d.commentsExtended == nil || d.comments == nil {
+		return ""
+	}
+	if len(d.commentsExtended.CommentEx) == 1 && len(d.comments.Comment) == 1 {
+		return d.commentsExtended.CommentEx[0].ParaID
+	}
+	for i, c := range d.comments.Comment {
+		if c.ID == commentID {
+			if i < len(d.commentsExtended.CommentEx) {
+				return d.commentsExtended.CommentEx[i].ParaID
+			}
+			break
+		}
+	}
+	return ""
+}
+
+func (d *documentImpl) commentByParaID(paraID string) Comment {
+	if d == nil || d.commentsExtended == nil || paraID == "" {
+		return nil
+	}
+	for i, ex := range d.commentsExtended.CommentEx {
+		if ex.ParaID == paraID {
+			if d.comments == nil || i >= len(d.comments.Comment) {
+				return nil
+			}
+			return &commentImpl{doc: d, comment: d.comments.Comment[i], paraID: paraID}
+		}
+	}
+	return nil
+}
+
+func formatParaID(id int) string {
+	if id < 0 {
+		id = 0
+	}
+	return fmt.Sprintf("%08X", id)
 }
 
 // initials extracts initials from a name.

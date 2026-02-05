@@ -16,6 +16,9 @@ type ParagraphProperties = wml.PPr
 // RunProperties represents run properties.
 type RunProperties = wml.RPr
 
+// PageMargins represents page margin settings.
+type PageMargins = wml.PgMar
+
 // VerticalMerge represents the vertical merge state of a cell.
 type VerticalMerge string
 
@@ -212,6 +215,8 @@ type Section interface {
 	Footer(hfType HeaderFooterType) Footer
 	AddHeader(hfType HeaderFooterType) Header
 	AddFooter(hfType HeaderFooterType) Footer
+	PageMargins() (PageMargins, bool)
+	SetPageMargins(margins PageMargins)
 }
 // Paragraph represents a paragraph.
 type Paragraph interface {
