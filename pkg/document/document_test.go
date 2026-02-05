@@ -175,6 +175,27 @@ func TestParagraph_Spacing(t *testing.T) {
 	}
 }
 
+func TestParagraph_AdvancedToggles(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.CreateDocument(nil)
+	defer doc.Close()
+
+	para := doc.AddParagraph()
+	para.SetKeepLines(true)
+	para.SetPageBreakBefore(true)
+	para.SetWidowControl(true)
+
+	if !para.KeepLines() {
+		t.Error("KeepLines() should be true")
+	}
+	if !para.PageBreakBefore() {
+		t.Error("PageBreakBefore() should be true")
+	}
+	if !para.WidowControl() {
+		t.Error("WidowControl() should be true")
+	}
+}
+
 func TestParagraph_MultipleRuns(t *testing.T) {
 	h := NewTestHelper(t)
 	doc := h.CreateDocument(nil)
@@ -274,6 +295,39 @@ func TestRun_FormattingCombinations(t *testing.T) {
 				t.Errorf("Strike() = %v, want %v", run.Strike(), tc.strike)
 			}
 		})
+	}
+}
+
+func TestRun_AdvancedEffects(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.CreateDocument(nil)
+	defer doc.Close()
+
+	run := doc.AddParagraph().AddRun()
+	run.SetCaps(true)
+	run.SetSmallCaps(true)
+	run.SetOutline(true)
+	run.SetShadow(true)
+	run.SetEmboss(true)
+	run.SetImprint(true)
+
+	if !run.Caps() {
+		t.Error("Caps() should be true")
+	}
+	if !run.SmallCaps() {
+		t.Error("SmallCaps() should be true")
+	}
+	if !run.Outline() {
+		t.Error("Outline() should be true")
+	}
+	if !run.Shadow() {
+		t.Error("Shadow() should be true")
+	}
+	if !run.Emboss() {
+		t.Error("Emboss() should be true")
+	}
+	if !run.Imprint() {
+		t.Error("Imprint() should be true")
 	}
 }
 

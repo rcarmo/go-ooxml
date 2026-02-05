@@ -13,6 +13,7 @@ func FuzzUnmarshalParagraph(f *testing.F) {
 		`<w:p xmlns:w="` + NS + `"><w:r><w:t xml:space="preserve"> spaced </w:t></w:r></w:p>`,
 		`<w:p xmlns:w="` + NS + `"><w:ins><w:r><w:t>ins</w:t></w:r></w:ins></w:p>`,
 		`<w:p xmlns:w="` + NS + `"><w:del><w:r><w:delText>del</w:delText></w:r></w:del></w:p>`,
+		`<w:p xmlns:w="` + NS + `"><w:pPr><w:keepLines/><w:pageBreakBefore/><w:widowControl/></w:pPr><w:r><w:t>props</w:t></w:r></w:p>`,
 	}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -46,6 +47,7 @@ func FuzzUnmarshalRun(f *testing.F) {
 		`<w:r xmlns:w="` + NS + `"><w:t>text</w:t></w:r>`,
 		`<w:r xmlns:w="` + NS + `"><w:t xml:space="preserve">x</w:t><w:tab/></w:r>`,
 		`<w:r xmlns:w="` + NS + `"><w:br/><w:t>line</w:t></w:r>`,
+		`<w:r xmlns:w="` + NS + `"><w:rPr><w:caps/><w:smallCaps/><w:outline/><w:shadow/><w:emboss/><w:imprint/></w:rPr><w:t>fx</w:t></w:r>`,
 	}
 	for _, seed := range seeds {
 		f.Add(seed)

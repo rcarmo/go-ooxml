@@ -8,7 +8,7 @@ This document summarizes the complex round-trip fixture tests for Word, Excel, a
 | --- | --- | --- | --- |
 | Document | minimal.docx | track changes + paragraph + run bold + tracked text + block content control + header/footer + table + comment + field | header/footer text, content control, comment, revisions, paragraph presence, table cell |
 | Document | single_paragraph.docx | paragraph + hyperlink + bookmark + comment | paragraph text, hyperlink URL, comment |
-| Document | formatted_text.docx | formatted run (bold/italic/underline/highlight/color) | run formatting + highlight |
+| Document | formatted_text.docx | formatted run + paragraph toggles (keep lines/page break/widow) | run effects + paragraph toggles |
 | Document | headings.docx | heading paragraph style | paragraph style |
 | Document | simple_table.docx | add row to fixture table | table cell text |
 | Document | complex_table.docx | new table + shaded cell | table cell text |

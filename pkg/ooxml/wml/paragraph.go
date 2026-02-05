@@ -378,6 +378,7 @@ type PPr struct {
 	KeepNext   *OnOff      `xml:"keepNext,omitempty"`
 	KeepLines  *OnOff      `xml:"keepLines,omitempty"`
 	PageBreakBefore *OnOff `xml:"pageBreakBefore,omitempty"`
+	WidowControl *OnOff    `xml:"widowControl,omitempty"`
 	Spacing    *Spacing    `xml:"spacing,omitempty"`
 	Ind        *Ind        `xml:"ind,omitempty"`
 	Jc         *Jc         `xml:"jc,omitempty"`
