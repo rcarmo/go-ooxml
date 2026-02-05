@@ -20,11 +20,11 @@ This document summarizes the complex round-trip fixture tests for Word, Excel, a
 | Document | numbered_list.docx | add numbered list style + list item | list level preserved |
 | Document | bullet_list.docx | add list item with level | list level preserved |
 | Spreadsheet | minimal.xlsx | values + formula + merge + comment + style + named range | value, formula, merged range, comment, named range, style present |
-| Spreadsheet | single_cell.xlsx | values + formula + number format | value, formula, number format |
+| Spreadsheet | single_cell.xlsx | values + formula + number formats (currency/percent/negative) | value, formula, number formats |
 | Spreadsheet | data_types.xlsx | string/int/bool/date values | value accessors |
 | Spreadsheet | formatting.xlsx | styled cell (bold/fill/border) | style present |
 | Spreadsheet | multiple_sheets.xlsx | add hidden sheet + named range | sheet hidden + named range |
-| Spreadsheet | tables.xlsx | add table + row | table rows present |
+| Spreadsheet | tables.xlsx | add table + header + rows + delete/update + number format | table headers, rows, values, number format |
 | Spreadsheet | merged_cells.xlsx | merge + value | merged range |
 | Spreadsheet | named_ranges.xlsx | add named range | named range present |
 | Spreadsheet | comments.xlsx | add comment | comment present |
