@@ -91,6 +91,15 @@ func main() {
 
 ## Development
 
+### Repository Layout
+
+- `pkg/` - Public Go packages (document/spreadsheet/presentation)
+- `internal/` - Internal helpers (testutil/xmlutil)
+- `e2e/` - End-to-end workflows and fuzz tests
+- `testdata/` - Fixture files
+- `docs/` - Specification and reference docs
+- `tools/` - Validator and tooling
+
 ```bash
 # Show available targets
 make help

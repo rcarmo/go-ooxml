@@ -36,5 +36,3 @@ tools/validator/*/bin/
 tools/validator/*/obj/
 
 .syncthing*
-# Large binary files - consider using Git LFS
-# docs/*.pdf
