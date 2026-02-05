@@ -1447,6 +1447,61 @@ func TestWordWorkflow_CreateTechnicalReport(t *testing.T) {
 - [x] No memory leaks in stress tests
 - [x] Advanced fuzzing stage completed
 
+### Phase 7: Advanced Feature Parity (Python Superset) 🔄 PLANNED
+
+Goal: reach feature parity with advanced surfaces in openpyxl, python-docx, and python-pptx while maintaining a consistent Go API.
+
+#### Phase 7A: OOXML Foundations (shared)
+| Task | Priority | Status |
+|------|----------|--------|
+| Add OOXML types for charts/diagrams/themes/media | P0 | ⏳ Planned |
+| Extend packaging constants (content types/relationships) | P0 | ⏳ Planned |
+| Add parsers + round-trip support for new parts | P0 | ⏳ Planned |
+
+#### Phase 7B: Spreadsheet Advanced (openpyxl parity)
+| Task | Priority | Status |
+|------|----------|--------|
+| Charts (line/bar/pie/scatter) + series/axes | P0 | ⏳ Planned |
+| Pivot tables + pivot cache | P0 | ⏳ Planned |
+| Data validation rules | P1 | ⏳ Planned |
+| Conditional formatting authoring | P1 | ⏳ Planned |
+| Auto-filters + table sort state | P1 | ⏳ Planned |
+| Sparklines | P2 | ⏳ Planned |
+| Rich text in cells | P2 | ⏳ Planned |
+| Sheet protection + workbook protection | P2 | ⏳ Planned |
+| External links + formulas metadata | P2 | ⏳ Planned |
+| Page setup/print options | P2 | ⏳ Planned |
+| Macro stubs (preserve only) | P3 | ⏳ Planned |
+
+#### Phase 7C: Word Advanced (python-docx parity)
+| Task | Priority | Status |
+|------|----------|--------|
+| Paragraph keep-lines/page-break-before/widow control | P1 | ⏳ Planned |
+| Run effects (caps/smallCaps/emboss/outline/shadow) | P1 | ⏳ Planned |
+| Fields (read/write) + instruction parsing | P1 | ⏳ Planned |
+| Numbering styles (create/edit) | P1 | ⏳ Planned |
+| Table cell borders/widths/vertical align/text direction | P1 | ⏳ Planned |
+| Section/page layout controls (columns, breaks) | P2 | ⏳ Planned |
+| Revision/move tracking extras | P2 | ⏳ Planned |
+
+#### Phase 7D: PowerPoint Advanced (python-pptx parity)
+| Task | Priority | Status |
+|------|----------|--------|
+| Themes + master/layout editing | P0 | ⏳ Planned |
+| Charts + embedded data | P1 | ⏳ Planned |
+| Transitions + animations | P2 | ⏳ Planned |
+| SmartArt/diagrams | P2 | ⏳ Planned |
+| Audio/video media parts | P2 | ⏳ Planned |
+| Advanced shape effects (glow/shadow/3D) | P2 | ⏳ Planned |
+
+#### Phase 7E: Testing & Fixtures
+| Task | Priority | Status |
+|------|----------|--------|
+| Office-authored fixtures for advanced features | P0 | ⏳ Planned |
+| Round-trip tests for each new part | P0 | ⏳ Planned |
+| Performance benchmarks for charts/pivots/media | P1 | ⏳ Planned |
+| Fuzz coverage for new OOXML types | P1 | ⏳ Planned |
+
 ### Implementation Summary
 
 | Phase | Status | Tests |
@@ -1457,7 +1512,8 @@ func TestWordWorkflow_CreateTechnicalReport(t *testing.T) {
 | Phase 4: PowerPoint | ✅ Complete | 94 |
 | Phase 5: Excel | ✅ Complete | 117 |
 | Phase 6: Polish | 🔄 In Progress | 14 (testutil) |
-| **Total** | **5/6 Phases** | **694 tests** |
+| Phase 7: Advanced Parity | ⏳ Planned | 0 |
+| **Total** | **6/7 Phases** | **694 tests** |
 
 ---
 
@@ -1594,7 +1650,7 @@ Features required for MCP Server parity:
 | Named ranges | - | ✓ | - | P2 |
 | Merged cells | - | ✓ | - | P1 |
 | Formulas (read) | - | ✓ | - | P2 |
-| Charts | - | - | - | P3 (defer) |
+| Charts | - | - | - | P0 (Phase 7) |
 
 ---
 
