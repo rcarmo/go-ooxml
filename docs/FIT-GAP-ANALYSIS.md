@@ -20,6 +20,15 @@ This document provides a detailed analysis of features implemented versus ECMA-3
 
 **Overall:** Core document manipulation features are well-covered. Advanced features (charts, pivot tables, digital signatures) are not implemented.
 
+## Known Limitations
+
+The library focuses on core OOXML manipulation rather than full Office parity. The following areas are explicitly out of scope or only partially implemented today:
+
+- **OPC**: growth hint stream, interleaving, thumbnails, digital signatures.
+- **WordprocessingML**: background, keep-lines/page-break-before/widow control, advanced run effects (caps/smallCaps/emboss/etc.), field parsing, select table/row/cell properties (cell width/borders/vertical alignment), and some revision/move tracking elements.
+- **SpreadsheetML**: advanced features like charts, pivot tables, and macros are not implemented; focus is on cells, ranges, tables, comments, formulas, and formatting.
+- **PresentationML**: advanced slide master/theme effects and media features beyond shapes, tables, text, comments, and images are not implemented.
+
 ---
 
 ## Part 1: Open Packaging Conventions (OPC)
