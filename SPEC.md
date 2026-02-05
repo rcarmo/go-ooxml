@@ -1602,7 +1602,7 @@ Features required for MCP Server parity:
 
 Before declaring the library complete, ALL items must pass:
 
-- [ ] All interfaces implemented per this spec
+- [x] All interfaces implemented per this spec
 - [ ] All test fixtures round-trip without data loss
 - [ ] Unit test coverage > 90%
 - [x] All E2E workflow tests pass

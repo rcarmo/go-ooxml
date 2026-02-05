@@ -1,0 +1,22 @@
+package document
+
+var (
+	_ Document    = (*documentImpl)(nil)
+	_ Body        = (*bodyImpl)(nil)
+	_ Section     = (*sectionImpl)(nil)
+	_ Paragraph   = (*paragraphImpl)(nil)
+	_ Run         = (*runImpl)(nil)
+	_ Table       = (*tableImpl)(nil)
+	_ Row         = (*rowImpl)(nil)
+	_ Cell        = (*cellImpl)(nil)
+	_ Header      = (*headerImpl)(nil)
+	_ Footer      = (*footerImpl)(nil)
+	_ Styles      = (*stylesImpl)(nil)
+	_ Style       = (*styleImpl)(nil)
+	_ Comments    = (*commentsImpl)(nil)
+	_ Comment     = (*commentImpl)(nil)
+	_ TrackChanges = (*TrackChangesManager)(nil)
+	_ Revision    = (*revisionImpl)(nil)
+	_ BodyElement = (*paragraphImpl)(nil)
+	_ BodyElement = (*tableImpl)(nil)
+)
