@@ -1111,6 +1111,7 @@ func OpenReader(r io.ReaderAt, size int64) (Presentation, error)
 
 > [!CRITICAL]
 > Testing is not optional. Every interface method MUST have corresponding tests. The test suite must be comprehensive enough that refactoring can be done with confidence.
+> As advanced features are implemented, tests MUST be expanded in lockstep (unit + round-trip + fixture + fuzz + benchmarks where applicable).
 
 ### 7.1 Test Categories
 
@@ -1121,6 +1122,16 @@ func OpenReader(r io.ReaderAt, size int64) (Presentation, error)
 | **Round-Trip Tests** | Open → Modify → Save → Re-open | 100% of features | ✅ All packages |
 | **Fixture Tests** | Real-world document handling | All fixtures pass | ⚠️ Programmatic only |
 | **Fuzz Tests** | Random input handling | Critical parsers | ✅ Implemented |
+
+### 7.1.1 Advanced Feature Test Policy
+
+For every new advanced feature (Phase 7), the following are required before marking it complete:
+
+- **Unit tests** covering all new API surface.
+- **Round-trip tests** proving Open → Modify → Save → Re-open behavior.
+- **Fixture tests** using Office-authored documents that exercise the feature.
+- **Fuzz tests** for any new OOXML types or parsers.
+- **Benchmarks** when the feature introduces new heavy parts (charts, pivots, media).
 
 ### 7.2 Parameterized Test Pattern ✅ IMPLEMENTED
 
