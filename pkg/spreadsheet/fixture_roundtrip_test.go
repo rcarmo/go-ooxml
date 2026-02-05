@@ -69,6 +69,14 @@ func TestFixtureRoundTrip_Complex(t *testing.T) {
 				_ = sheet.Cell("B1").SetValue(10.5)
 				_ = sheet.Cell("C1").SetFormula("B1*3")
 				_ = sheet.Cell("B1").SetNumberFormat("0.00")
+				_ = sheet.Cell("D1").SetValue(1234.56)
+				_ = sheet.Cell("D1").SetNumberFormat("$#,##0.00")
+				_ = sheet.Cell("E1").SetValue(-987.65)
+				_ = sheet.Cell("E1").SetNumberFormat("$#,##0.00_);[Red]($#,##0.00)")
+				_ = sheet.Cell("F1").SetValue(0.25)
+				_ = sheet.Cell("F1").SetNumberFormat("0.00%")
+				_ = sheet.Cell("G1").SetValue(1000000)
+				_ = sheet.Cell("G1").SetNumberFormat("#,##0")
 			},
 			verify: func(t *testing.T, wb Workbook) {
 				sheet := wb.SheetsRaw()[0]
@@ -80,6 +88,18 @@ func TestFixtureRoundTrip_Complex(t *testing.T) {
 				}
 				if sheet.Cell("B1").NumberFormat() != "0.00" {
 					t.Errorf("B1 format = %q, want 0.00", sheet.Cell("B1").NumberFormat())
+				}
+				if sheet.Cell("D1").NumberFormat() != "$#,##0.00" {
+					t.Errorf("D1 format = %q, want $#,##0.00", sheet.Cell("D1").NumberFormat())
+				}
+				if sheet.Cell("E1").NumberFormat() != "$#,##0.00_);[Red]($#,##0.00)" {
+					t.Errorf("E1 format = %q, want $#,##0.00_);[Red]($#,##0.00)", sheet.Cell("E1").NumberFormat())
+				}
+				if sheet.Cell("F1").NumberFormat() != "0.00%" {
+					t.Errorf("F1 format = %q, want 0.00%%", sheet.Cell("F1").NumberFormat())
+				}
+				if sheet.Cell("G1").NumberFormat() != "#,##0" {
+					t.Errorf("G1 format = %q, want #,##0", sheet.Cell("G1").NumberFormat())
 				}
 			},
 		},
@@ -163,12 +183,30 @@ func TestFixtureRoundTrip_Complex(t *testing.T) {
 			name: "tables.xlsx",
 			mutate: func(t *testing.T, wb Workbook) {
 				sheet := wb.SheetsRaw()[0]
-				table := sheet.AddTable("A1:C2", "FixtureTable")
+				table := sheet.AddTable("A1:C3", "FixtureTable")
 				_ = table.UpdateRow(1, map[string]interface{}{
 					"Column1": "Item",
-					"Column2": 2,
-					"Column3": 3,
+					"Column2": "Qty",
+					"Column3": "Price",
 				})
+				_ = table.UpdateRow(2, map[string]interface{}{
+					"Column1": "Widget",
+					"Column2": 2,
+					"Column3": 19.99,
+				})
+				_ = table.AddRow(map[string]interface{}{
+					"Column1": "Gadget",
+					"Column2": 5,
+					"Column3": 3.5,
+				})
+				_ = table.DeleteRow(1)
+				table, _ = wb.Table("FixtureTable")
+				_ = table.UpdateRow(1, map[string]interface{}{
+					"Column2": 7,
+				})
+				if cell := sheet.Cell("C2"); cell != nil {
+					_ = cell.SetNumberFormat("$#,##0.00")
+				}
 			},
 			verify: func(t *testing.T, wb Workbook) {
 				table, err := wb.Table("FixtureTable")
@@ -177,6 +215,27 @@ func TestFixtureRoundTrip_Complex(t *testing.T) {
 				}
 				if len(table.Rows()) == 0 {
 					t.Error("Expected table rows after round-trip")
+				}
+				if got := table.Headers(); len(got) != 3 || got[0] != "Column1" || got[1] != "Column2" || got[2] != "Column3" {
+					t.Errorf("Table headers = %#v, want Column1/Column2/Column3", got)
+				}
+				if got := table.Reference(); got == "" {
+					t.Error("Expected table reference after round-trip")
+				}
+				rows := table.Rows()
+				if len(rows) < 2 {
+					t.Fatalf("Expected at least 2 rows after round-trip, got %d", len(rows))
+				}
+				values := rows[0].Values()
+				if values["Column2"] != 7.0 {
+					t.Errorf("Row1 Column2 = %v, want 7", values["Column2"])
+				}
+				if got := rows[0].Cell("Column3").NumberFormat(); got != "$#,##0.00" {
+					t.Errorf("Row1 Column3 format = %q, want $#,##0.00", got)
+				}
+				row2 := rows[1].Cell("Column1").Value()
+				if row2 != "Gadget" && row2 != "Widget" {
+					t.Errorf("Row2 Column1 = %v, want Gadget or Widget", row2)
 				}
 			},
 		},
