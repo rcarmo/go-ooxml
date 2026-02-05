@@ -20,6 +20,7 @@ type documentImpl struct {
 	styles   *wml.Styles
 	settings *wml.Settings
 	comments *wml.Comments
+	commentsExtended *wml.CommentsEx
 	numbering *wml.Numbering
 
 	// Tracking
@@ -27,6 +28,7 @@ type documentImpl struct {
 	trackAuthor      string
 	nextRevisionID   int
 	nextCommentID    int
+	nextCommentParaID int
 	nextAbstractNumID int
 	nextNumID         int
 	nextBookmarkID    int
@@ -60,6 +62,7 @@ func New() (Document, error) {
 		nextAbstractNumID: 1,
 		nextNumID:         1,
 		nextBookmarkID:    1,
+		nextCommentParaID: 1,
 	}
 
 	// Initialize package structure
@@ -93,6 +96,7 @@ func openFromPackage(pkg *packaging.Package) (*documentImpl, error) {
 		pkg:     pkg,
 		headers: make(map[string]*headerImpl),
 		footers: make(map[string]*footerImpl),
+		nextCommentParaID: 1,
 	}
 
 	// Parse document.xml
@@ -108,6 +112,7 @@ func openFromPackage(pkg *packaging.Package) (*documentImpl, error) {
 
 	// Parse comments.xml (optional)
 	_ = doc.parseComments()
+	_ = doc.parseCommentsExtended()
 	// Parse numbering.xml (optional)
 	_ = doc.parseNumbering()
 	doc.parseBookmarks()

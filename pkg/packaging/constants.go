@@ -36,6 +36,7 @@ const (
 	RelTypePPTXAuthors    = "http://schemas.microsoft.com/office/2018/10/relationships/authors"
 	RelTypePresProps      = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps"
 	RelTypeViewProps      = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps"
+	RelTypeCommentsExtended = "http://schemas.microsoft.com/office/2011/relationships/commentsExtended"
 )
 
 // Content types
@@ -54,6 +55,7 @@ const (
 	ContentTypePresentationProps = "application/vnd.openxmlformats-officedocument.presentationml.presProps+xml"
 	ContentTypePresentationViewProps = "application/vnd.openxmlformats-officedocument.presentationml.viewProps+xml"
 	ContentTypeNumbering        = "application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"
+	ContentTypeCommentsExtended = "application/vnd.ms-word.commentsExtended+xml"
 	ContentTypeHeader           = "application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"
 	ContentTypeWordHeader       = ContentTypeHeader
 	ContentTypeFooter           = "application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"
@@ -117,6 +119,7 @@ const (
 	WordSettingsPath       = "word/settings.xml"
 	WordNumberingPath      = "word/numbering.xml"
 	WordCommentsPath       = "word/comments.xml"
+	WordCommentsExtendedPath = "word/commentsExtended.xml"
 	ExcelWorkbookPath      = "xl/workbook.xml"
 	ExcelStylesPath        = "xl/styles.xml"
 	ExcelSharedStringsPath = "xl/sharedStrings.xml"

@@ -67,6 +67,7 @@ type commentsImpl struct {
 type commentImpl struct {
 	doc     *documentImpl
 	comment *wml.Comment
+	paraID  string
 }
 
 type sectionImpl struct {
@@ -104,4 +105,23 @@ func (s *sectionImpl) AddFooter(hfType HeaderFooterType) Footer {
 		return nil
 	}
 	return s.doc.AddFooter(hfType)
+}
+
+// PageMargins returns the page margins for the section.
+func (s *sectionImpl) PageMargins() (PageMargins, bool) {
+	if s == nil || s.sectPr == nil || s.sectPr.PgMar == nil {
+		return PageMargins{}, false
+	}
+	return *s.sectPr.PgMar, true
+}
+
+// SetPageMargins sets the page margins for the section.
+func (s *sectionImpl) SetPageMargins(margins PageMargins) {
+	if s == nil {
+		return
+	}
+	if s.sectPr == nil {
+		s.sectPr = &wml.SectPr{}
+	}
+	s.sectPr.PgMar = &margins
 }

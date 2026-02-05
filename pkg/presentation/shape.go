@@ -10,6 +10,7 @@ type shapeImpl struct {
 	slide *slideImpl
 	sp    *dml.Sp
 	graphicFrame *pml.GraphicFrame
+	pic   *pml.Pic
 }
 
 // ID returns the shape ID.
@@ -19,6 +20,9 @@ func (s *shapeImpl) ID() int {
 	}
 	if s.graphicFrame != nil && s.graphicFrame.NvGraphicFramePr != nil && s.graphicFrame.NvGraphicFramePr.CNvPr != nil {
 		return s.graphicFrame.NvGraphicFramePr.CNvPr.ID
+	}
+	if s.pic != nil && s.pic.NvPicPr != nil && s.pic.NvPicPr.CNvPr != nil {
+		return s.pic.NvPicPr.CNvPr.ID
 	}
 	return 0
 }
@@ -31,6 +35,9 @@ func (s *shapeImpl) Name() string {
 	if s.graphicFrame != nil && s.graphicFrame.NvGraphicFramePr != nil && s.graphicFrame.NvGraphicFramePr.CNvPr != nil {
 		return s.graphicFrame.NvGraphicFramePr.CNvPr.Name
 	}
+	if s.pic != nil && s.pic.NvPicPr != nil && s.pic.NvPicPr.CNvPr != nil {
+		return s.pic.NvPicPr.CNvPr.Name
+	}
 	return ""
 }
 
@@ -39,6 +46,16 @@ func (s *shapeImpl) SetName(name string) {
 	if s.graphicFrame != nil {
 		s.ensureNvGraphicFramePr()
 		s.graphicFrame.NvGraphicFramePr.CNvPr.Name = name
+		return
+	}
+	if s.pic != nil {
+		if s.pic.NvPicPr == nil {
+			s.pic.NvPicPr = &pml.NvPicPr{}
+		}
+		if s.pic.NvPicPr.CNvPr == nil {
+			s.pic.NvPicPr.CNvPr = &pml.CNvPr{}
+		}
+		s.pic.NvPicPr.CNvPr.Name = name
 		return
 	}
 	s.ensureNvSpPr()
@@ -53,6 +70,9 @@ func (s *shapeImpl) Type() ShapeType {
 		}
 		return ShapeTypeRectangle
 	}
+	if s.pic != nil {
+		return ShapeTypeRectangle
+	}
 	if s.sp.NvSpPr != nil && s.sp.NvSpPr.CNvSpPr != nil && s.sp.NvSpPr.CNvSpPr.TxBox != nil && *s.sp.NvSpPr.CNvSpPr.TxBox {
 		return ShapeTypeTextBox
 	}
@@ -60,6 +80,33 @@ func (s *shapeImpl) Type() ShapeType {
 		return geomToShapeType(s.sp.SpPr.PrstGeom.Prst)
 	}
 	return ShapeTypeRectangle
+}
+
+// IsPicture returns true if this shape is a picture.
+func (s *shapeImpl) IsPicture() bool {
+	return s.pic != nil
+}
+
+// ImageRelationshipID returns the image relationship ID for a picture shape.
+func (s *shapeImpl) ImageRelationshipID() string {
+	if s.pic == nil || s.pic.BlipFill == nil || s.pic.BlipFill.Blip == nil {
+		return ""
+	}
+	return s.pic.BlipFill.Blip.Embed
+}
+
+// SetImageRelationshipID sets the image relationship ID for a picture shape.
+func (s *shapeImpl) SetImageRelationshipID(relID string) {
+	if s.pic == nil {
+		return
+	}
+	if s.pic.BlipFill == nil {
+		s.pic.BlipFill = &dml.BlipFill{}
+	}
+	if s.pic.BlipFill.Blip == nil {
+		s.pic.BlipFill.Blip = &dml.Blip{}
+	}
+	s.pic.BlipFill.Blip.Embed = relID
 }
 
 // HasTable returns true if the shape contains a table.
@@ -83,6 +130,9 @@ func (s *shapeImpl) IsPlaceholder() bool {
 	if s.graphicFrame != nil && s.graphicFrame.NvGraphicFramePr != nil && s.graphicFrame.NvGraphicFramePr.NvPr != nil && s.graphicFrame.NvGraphicFramePr.NvPr.Ph != nil {
 		return true
 	}
+	if s.pic != nil && s.pic.NvPicPr != nil && s.pic.NvPicPr.NvPr != nil && s.pic.NvPicPr.NvPr.Ph != nil {
+		return true
+	}
 	return false
 }
 
@@ -93,6 +143,9 @@ func (s *shapeImpl) PlaceholderType() PlaceholderType {
 	}
 	if s.graphicFrame != nil && s.graphicFrame.NvGraphicFramePr != nil && s.graphicFrame.NvGraphicFramePr.NvPr != nil && s.graphicFrame.NvGraphicFramePr.NvPr.Ph != nil {
 		return phTypeToPlaceholderType(s.graphicFrame.NvGraphicFramePr.NvPr.Ph.Type)
+	}
+	if s.pic != nil && s.pic.NvPicPr != nil && s.pic.NvPicPr.NvPr != nil && s.pic.NvPicPr.NvPr.Ph != nil {
+		return phTypeToPlaceholderType(s.pic.NvPicPr.NvPr.Ph.Type)
 	}
 	return PlaceholderNone
 }
@@ -109,6 +162,9 @@ func (s *shapeImpl) Left() int64 {
 	if s.graphicFrame != nil && s.graphicFrame.Xfrm != nil && s.graphicFrame.Xfrm.Off != nil {
 		return s.graphicFrame.Xfrm.Off.X
 	}
+	if s.pic != nil && s.pic.SpPr != nil && s.pic.SpPr.Xfrm != nil && s.pic.SpPr.Xfrm.Off != nil {
+		return s.pic.SpPr.Xfrm.Off.X
+	}
 	return 0
 }
 
@@ -119,6 +175,9 @@ func (s *shapeImpl) Top() int64 {
 	}
 	if s.graphicFrame != nil && s.graphicFrame.Xfrm != nil && s.graphicFrame.Xfrm.Off != nil {
 		return s.graphicFrame.Xfrm.Off.Y
+	}
+	if s.pic != nil && s.pic.SpPr != nil && s.pic.SpPr.Xfrm != nil && s.pic.SpPr.Xfrm.Off != nil {
+		return s.pic.SpPr.Xfrm.Off.Y
 	}
 	return 0
 }
@@ -131,6 +190,9 @@ func (s *shapeImpl) Width() int64 {
 	if s.graphicFrame != nil && s.graphicFrame.Xfrm != nil && s.graphicFrame.Xfrm.Ext != nil {
 		return s.graphicFrame.Xfrm.Ext.Cx
 	}
+	if s.pic != nil && s.pic.SpPr != nil && s.pic.SpPr.Xfrm != nil && s.pic.SpPr.Xfrm.Ext != nil {
+		return s.pic.SpPr.Xfrm.Ext.Cx
+	}
 	return 0
 }
 
@@ -141,6 +203,9 @@ func (s *shapeImpl) Height() int64 {
 	}
 	if s.graphicFrame != nil && s.graphicFrame.Xfrm != nil && s.graphicFrame.Xfrm.Ext != nil {
 		return s.graphicFrame.Xfrm.Ext.Cy
+	}
+	if s.pic != nil && s.pic.SpPr != nil && s.pic.SpPr.Xfrm != nil && s.pic.SpPr.Xfrm.Ext != nil {
+		return s.pic.SpPr.Xfrm.Ext.Cy
 	}
 	return 0
 }
@@ -154,6 +219,20 @@ func (s *shapeImpl) SetPosition(left, top int64) {
 		}
 		s.graphicFrame.Xfrm.Off.X = left
 		s.graphicFrame.Xfrm.Off.Y = top
+		return
+	}
+	if s.pic != nil {
+		if s.pic.SpPr == nil {
+			s.pic.SpPr = &dml.SpPr{}
+		}
+		if s.pic.SpPr.Xfrm == nil {
+			s.pic.SpPr.Xfrm = &dml.Xfrm{}
+		}
+		if s.pic.SpPr.Xfrm.Off == nil {
+			s.pic.SpPr.Xfrm.Off = &dml.Off{}
+		}
+		s.pic.SpPr.Xfrm.Off.X = left
+		s.pic.SpPr.Xfrm.Off.Y = top
 		return
 	}
 	s.ensureXfrm()
@@ -175,6 +254,20 @@ func (s *shapeImpl) SetSize(width, height int64) {
 		s.graphicFrame.Xfrm.Ext.Cy = height
 		return
 	}
+	if s.pic != nil {
+		if s.pic.SpPr == nil {
+			s.pic.SpPr = &dml.SpPr{}
+		}
+		if s.pic.SpPr.Xfrm == nil {
+			s.pic.SpPr.Xfrm = &dml.Xfrm{}
+		}
+		if s.pic.SpPr.Xfrm.Ext == nil {
+			s.pic.SpPr.Xfrm.Ext = &dml.Ext{}
+		}
+		s.pic.SpPr.Xfrm.Ext.Cx = width
+		s.pic.SpPr.Xfrm.Ext.Cy = height
+		return
+	}
 	s.ensureXfrm()
 	if s.sp.SpPr.Xfrm.Ext == nil {
 		s.sp.SpPr.Xfrm.Ext = &dml.Ext{}
@@ -192,6 +285,9 @@ func (s *shapeImpl) HasTextFrame() bool {
 	if s.graphicFrame != nil {
 		return false
 	}
+	if s.pic != nil {
+		return false
+	}
 	if s.sp == nil {
 		return false
 	}
@@ -201,6 +297,9 @@ func (s *shapeImpl) HasTextFrame() bool {
 // TextFrame returns the text frame for the shape.
 func (s *shapeImpl) TextFrame() TextFrame {
 	if s.graphicFrame != nil {
+		return nil
+	}
+	if s.pic != nil {
 		return nil
 	}
 	if s.sp == nil {
@@ -232,6 +331,9 @@ func (s *shapeImpl) SetText(text string) error {
 	if s.graphicFrame != nil {
 		return ErrShapeNotFound
 	}
+	if s.pic != nil {
+		return ErrShapeNotFound
+	}
 	if tf, ok := s.TextFrame().(*textFrameImpl); ok {
 		tf.SetText(text)
 		return nil
@@ -248,6 +350,9 @@ func (s *shapeImpl) SetFillColor(hex string) {
 	if s.sp == nil {
 		return
 	}
+	if s.pic != nil {
+		return
+	}
 	s.ensureSpPr()
 	s.sp.SpPr.NoFill = nil
 	s.sp.SpPr.GradFill = nil
@@ -262,6 +367,9 @@ func (s *shapeImpl) SetNoFill() {
 	if s.sp == nil {
 		return
 	}
+	if s.pic != nil {
+		return
+	}
 	s.ensureSpPr()
 	s.sp.SpPr.SolidFill = nil
 	s.sp.SpPr.GradFill = nil
@@ -272,6 +380,9 @@ func (s *shapeImpl) SetNoFill() {
 // SetLineColor sets the outline color (hex format).
 func (s *shapeImpl) SetLineColor(hex string, widthEMU int64) {
 	if s.sp == nil {
+		return
+	}
+	if s.pic != nil {
 		return
 	}
 	s.ensureSpPr()

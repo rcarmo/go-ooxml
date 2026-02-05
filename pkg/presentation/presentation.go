@@ -4,6 +4,8 @@ package presentation
 import (
 	"fmt"
 	"io"
+	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -38,6 +40,7 @@ type presentationImpl struct {
 	commentAuthors *pml.AuthorList
 	masters       []*slideMasterImpl
 	layouts       []*slideLayoutImpl
+	nextImageID   int
 }
 
 // New creates a new empty presentation with standard 4:3 dimensions.
@@ -69,6 +72,7 @@ func NewWithSize(width, height int64) (Presentation, error) {
 		},
 		slides:      make([]*slideImpl, 0),
 		nextSlideID: 256, // PowerPoint typically starts slide IDs at 256
+		nextImageID: 1,
 	}
 
 	if err := p.initPackage(); err != nil {
@@ -107,6 +111,7 @@ func openFromPackage(pkg *packaging.Package) (*presentationImpl, error) {
 		pkg:         pkg,
 		slides:      make([]*slideImpl, 0),
 		nextSlideID: 256,
+		nextImageID: 1,
 		masters:     make([]*slideMasterImpl, 0),
 		layouts:     make([]*slideLayoutImpl, 0),
 	}
@@ -747,6 +752,34 @@ func (p *presentationImpl) updatePackage() error {
 	}
 
 	return nil
+}
+
+func (p *presentationImpl) addImagePart(imagePath string) (string, error) {
+	if p == nil || p.pkg == nil {
+		return "", utils.ErrDocumentClosed
+	}
+	data, err := os.ReadFile(imagePath)
+	if err != nil {
+		return "", err
+	}
+	ext := strings.TrimPrefix(strings.ToLower(path.Ext(imagePath)), ".")
+	contentType := packaging.ContentTypePNG
+	switch ext {
+	case "jpg", "jpeg":
+		contentType = packaging.ContentTypeJPEG
+	case "gif":
+		contentType = packaging.ContentTypeGIF
+	case "bmp":
+		contentType = packaging.ContentTypeBMP
+	case "tif", "tiff":
+		contentType = packaging.ContentTypeTIFF
+	}
+	imageName := fmt.Sprintf("ppt/media/image%d.%s", p.nextImageID, ext)
+	p.nextImageID++
+	if _, err := p.pkg.AddPart(imageName, contentType, data); err != nil {
+		return "", err
+	}
+	return strings.TrimPrefix(imageName, "ppt/"), nil
 }
 
 func relativeTarget(source, target string) string {

@@ -125,6 +125,12 @@ func (s *slideImpl) Shapes() []Shape {
 				graphicFrame: gf,
 			})
 		}
+		if pic, ok := item.(*pml.Pic); ok {
+			shapes = append(shapes, &shapeImpl{
+				slide: s,
+				pic:   pic,
+			})
+		}
 	}
 	return shapes
 }
@@ -234,7 +240,58 @@ func (s *slideImpl) AddShape(shapeType ShapeType) Shape {
 
 // AddPicture adds a picture placeholder (not implemented).
 func (s *slideImpl) AddPicture(imagePath string, left, top, width, height int64) (Shape, error) {
-	return nil, ErrInvalidIndex
+	if s == nil || s.pres == nil {
+		return nil, ErrInvalidIndex
+	}
+	s.ensureSpTree()
+
+	target, err := s.pres.addImagePart(imagePath)
+	if err != nil {
+		return nil, err
+	}
+	sourcePath := s.path
+	if sourcePath == "" {
+		sourcePath = fmt.Sprintf("ppt/slides/slide%d.xml", s.index+1)
+		s.path = sourcePath
+	}
+	rels := s.pres.pkg.GetRelationships(sourcePath)
+	relID := rels.NextID()
+	rels.AddWithID(relID, packaging.RelTypeImage, target, packaging.TargetModeInternal)
+	nextID := s.getNextShapeID()
+	noChange := true
+	picName := fmt.Sprintf("Picture %d", nextID)
+	pic := &pml.Pic{
+		NvPicPr: &pml.NvPicPr{
+			CNvPr: &pml.CNvPr{
+				ID:   nextID,
+				Name: picName,
+			},
+			CNvPicPr: &pml.CNvPicPr{
+				PicLocks: &pml.PicLocks{
+					NoChangeAspect: &noChange,
+				},
+			},
+			NvPr: &pml.NvPr{},
+		},
+		BlipFill: &dml.BlipFill{
+			Blip: &dml.Blip{
+				Embed: relID,
+			},
+			Stretch: &dml.Stretch{
+				FillRect: &dml.FillRect{},
+			},
+		},
+		SpPr: &dml.SpPr{
+			Xfrm: &dml.Xfrm{
+				Off: &dml.Off{X: left, Y: top},
+				Ext: &dml.Ext{Cx: width, Cy: height},
+			},
+			PrstGeom: &dml.PrstGeom{Prst: dml.PrstGeomRect},
+		},
+	}
+
+	s.slide.CSld.SpTree.Content = append(s.slide.CSld.SpTree.Content, pic)
+	return &shapeImpl{slide: s, pic: pic}, nil
 }
 
 // Comments returns slide comments.
@@ -247,6 +304,63 @@ func (s *slideImpl) Comments() []Comment {
 		result[i] = &commentImpl{slide: s, comment: c}
 	}
 	return result
+}
+
+// Pictures returns all picture shapes on the slide.
+func (s *slideImpl) Pictures() []Shape {
+	var pictures []Shape
+	for _, shape := range s.Shapes() {
+		if shape.IsPicture() {
+			pictures = append(pictures, shape)
+		}
+	}
+	return pictures
+}
+
+// Picture returns a picture shape by name or index (within picture list).
+func (s *slideImpl) Picture(identifier string) (Shape, error) {
+	pictures := s.Pictures()
+	if idx, err := strconv.Atoi(identifier); err == nil {
+		if idx < 0 || idx >= len(pictures) {
+			return nil, ErrShapeNotFound
+		}
+		return pictures[idx], nil
+	}
+	for _, shape := range pictures {
+		if shape.Name() == identifier {
+			return shape, nil
+		}
+	}
+	return nil, ErrShapeNotFound
+}
+
+// ReplacePictureImage replaces the image data for a picture shape.
+func (s *slideImpl) ReplacePictureImage(identifier, imagePath string) error {
+	pic, err := s.Picture(identifier)
+	if err != nil {
+		return err
+	}
+	shape, ok := pic.(*shapeImpl)
+	if !ok || shape.pic == nil {
+		return ErrShapeNotFound
+	}
+	if s.pres == nil {
+		return ErrInvalidIndex
+	}
+	target, err := s.pres.addImagePart(imagePath)
+	if err != nil {
+		return err
+	}
+	sourcePath := s.path
+	if sourcePath == "" {
+		sourcePath = fmt.Sprintf("ppt/slides/slide%d.xml", s.index+1)
+		s.path = sourcePath
+	}
+	rels := s.pres.pkg.GetRelationships(sourcePath)
+	relID := rels.NextID()
+	rels.AddWithID(relID, packaging.RelTypeImage, target, packaging.TargetModeInternal)
+	shape.SetImageRelationshipID(relID)
+	return nil
 }
 
 // AddComment adds a slide comment.
@@ -340,6 +454,13 @@ func (s *slideImpl) DeleteShape(identifier string) error {
 				}
 				shapeIdx++
 			}
+			if _, ok := item.(*pml.Pic); ok {
+				if shapeIdx == idx {
+					indexToDelete = i
+					break
+				}
+				shapeIdx++
+			}
 		}
 	} else {
 		for i, item := range s.slide.CSld.SpTree.Content {
@@ -351,6 +472,12 @@ func (s *slideImpl) DeleteShape(identifier string) error {
 			}
 			if gf, ok := item.(*pml.GraphicFrame); ok {
 				if gf.NvGraphicFramePr != nil && gf.NvGraphicFramePr.CNvPr != nil && gf.NvGraphicFramePr.CNvPr.Name == identifier {
+					indexToDelete = i
+					break
+				}
+			}
+			if pic, ok := item.(*pml.Pic); ok {
+				if pic.NvPicPr != nil && pic.NvPicPr.CNvPr != nil && pic.NvPicPr.CNvPr.Name == identifier {
 					indexToDelete = i
 					break
 				}
@@ -598,6 +725,11 @@ func (s *slideImpl) getNextShapeID() int {
 			if gf, ok := item.(*pml.GraphicFrame); ok {
 				if gf.NvGraphicFramePr != nil && gf.NvGraphicFramePr.CNvPr != nil && gf.NvGraphicFramePr.CNvPr.ID > maxID {
 					maxID = gf.NvGraphicFramePr.CNvPr.ID
+				}
+			}
+			if pic, ok := item.(*pml.Pic); ok {
+				if pic.NvPicPr != nil && pic.NvPicPr.CNvPr != nil && pic.NvPicPr.CNvPr.ID > maxID {
+					maxID = pic.NvPicPr.CNvPr.ID
 				}
 			}
 		}

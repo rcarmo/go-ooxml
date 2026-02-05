@@ -66,6 +66,9 @@ type Slide interface {
 	HasNotes() bool
 	Comments() []Comment
 	AddComment(text, author string, x, y float64) (Comment, error)
+	Pictures() []Shape
+	Picture(identifier string) (Shape, error)
+	ReplacePictureImage(identifier, imagePath string) error
 }
 
 // Shape represents a shape on a slide.
@@ -91,6 +94,9 @@ type Shape interface {
 	SetFillColor(hex string)
 	SetNoFill()
 	SetLineColor(hex string, widthEMU int64)
+	IsPicture() bool
+	ImageRelationshipID() string
+	SetImageRelationshipID(relID string)
 }
 
 // TextFrame represents the text content of a shape.

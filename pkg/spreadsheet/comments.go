@@ -115,6 +115,25 @@ func (ws *worksheetImpl) Comments() []Comment {
 	return result
 }
 
+// PageMargins returns the worksheet page margins.
+func (ws *worksheetImpl) PageMargins() (PageMargins, bool) {
+	if ws == nil || ws.worksheet == nil || ws.worksheet.PageMargins == nil {
+		return PageMargins{}, false
+	}
+	return *ws.worksheet.PageMargins, true
+}
+
+// SetPageMargins sets the worksheet page margins.
+func (ws *worksheetImpl) SetPageMargins(margins PageMargins) {
+	if ws == nil {
+		return
+	}
+	if ws.worksheet == nil {
+		ws.worksheet = &sml.Worksheet{}
+	}
+	ws.worksheet.PageMargins = &margins
+}
+
 // Comment returns the comment for a cell if present.
 func (c *cellImpl) Comment() (Comment, bool) {
 	if c == nil || c.worksheet == nil {

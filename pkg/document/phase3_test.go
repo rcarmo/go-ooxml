@@ -775,6 +775,37 @@ func TestComments(t *testing.T) {
 	}
 }
 
+func TestCommentRepliesRoundTrip(t *testing.T) {
+	h := NewTestHelper(t)
+	round := h.RoundTrip("comment-replies.docx", func(d Document) {
+		c, err := d.Comments().Add("Parent comment", "Author", "")
+		if err != nil {
+			t.Fatalf("Add() error = %v", err)
+		}
+		if _, err := c.AddReply("Reply comment", "Reviewer"); err != nil {
+			t.Fatalf("AddReply() error = %v", err)
+		}
+	})
+
+	defer round.Close()
+
+	if len(round.Comments().All()) < 2 {
+		t.Fatalf("Expected at least 2 comments, got %d", len(round.Comments().All()))
+	}
+	foundReply := false
+	for _, comment := range round.Comments().All() {
+		for _, reply := range comment.Replies() {
+			if reply.Text() == "Reply comment" {
+				foundReply = true
+				break
+			}
+		}
+	}
+	if !foundReply {
+		t.Error("Expected reply after round-trip")
+	}
+}
+
 func TestCommentByID(t *testing.T) {
 	doc, err := New()
 	if err != nil {

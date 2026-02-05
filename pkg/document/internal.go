@@ -2,6 +2,7 @@ package document
 
 import (
 	"encoding/xml"
+	"fmt"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
@@ -104,6 +105,25 @@ func (d *documentImpl) updatePackage() error {
 				return err
 			}
 			d.pkg.AddRelationship(packaging.WordDocumentPath, "comments.xml", packaging.RelTypeComments)
+		} else {
+			if err := commentsPart.SetContent(commentsData); err != nil {
+				return err
+			}
+		}
+	}
+
+	if d.commentsExtended != nil && len(d.commentsExtended.CommentEx) > 0 {
+		commentsData, err := utils.MarshalXMLWithHeader(d.commentsExtended)
+		if err != nil {
+			return err
+		}
+		commentsPart, _ := d.pkg.GetPart(packaging.WordCommentsExtendedPath)
+		if commentsPart == nil {
+			_, err = d.pkg.AddPart(packaging.WordCommentsExtendedPath, packaging.ContentTypeCommentsExtended, commentsData)
+			if err != nil {
+				return err
+			}
+			d.pkg.AddRelationship(packaging.WordDocumentPath, "commentsExtended.xml", packaging.RelTypeCommentsExtended)
 		} else {
 			if err := commentsPart.SetContent(commentsData); err != nil {
 				return err
@@ -247,6 +267,42 @@ func (d *documentImpl) parseComments() error {
 		}
 	}
 
+	if d.commentsExtended != nil && len(d.commentsExtended.CommentEx) != len(d.comments.Comment) {
+		d.commentsExtended.CommentEx = nil
+	}
+
+	return nil
+}
+
+// parseCommentsExtended parses the commentsExtended.xml part.
+func (d *documentImpl) parseCommentsExtended() error {
+	rels := d.pkg.GetRelationshipsByType(packaging.WordDocumentPath, packaging.RelTypeCommentsExtended)
+	if len(rels) == 0 {
+		return nil
+	}
+
+	commentsPath := packaging.ResolveRelationshipTarget(packaging.WordDocumentPath, rels[0].Target)
+	part, err := d.pkg.GetPart(commentsPath)
+	if err != nil {
+		return nil
+	}
+
+	content, err := part.Content()
+	if err != nil {
+		return err
+	}
+
+	d.commentsExtended = &wml.CommentsEx{}
+	if err := xml.Unmarshal(content, d.commentsExtended); err != nil {
+		return err
+	}
+
+	for _, ex := range d.commentsExtended.CommentEx {
+		if id := parseParaID(ex.ParaID); id >= d.nextCommentParaID {
+			d.nextCommentParaID = id + 1
+		}
+	}
+
 	return nil
 }
 
@@ -333,4 +389,15 @@ func maxBookmarkIDInContent(current int, content []interface{}) int {
 		}
 	}
 	return current
+}
+
+func parseParaID(hexID string) int {
+	var id int
+	if hexID == "" {
+		return 0
+	}
+	if _, err := fmt.Sscanf(hexID, "%x", &id); err != nil {
+		return 0
+	}
+	return id
 }

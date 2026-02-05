@@ -62,6 +62,12 @@ func (s *SpTree) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 					return err
 				}
 				s.Content = append(s.Content, gf)
+			case "pic":
+				pic := &Pic{}
+				if err := d.DecodeElement(pic, &t); err != nil {
+					return err
+				}
+				s.Content = append(s.Content, pic)
 			default:
 				if err := d.Skip(); err != nil {
 					return err
@@ -100,6 +106,10 @@ func (s *SpTree) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			}
 		case *GraphicFrame:
 			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "graphicFrame"}}); err != nil {
+				return err
+			}
+		case *Pic:
+			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "pic"}}); err != nil {
 				return err
 			}
 		default:
