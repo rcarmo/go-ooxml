@@ -1038,7 +1038,7 @@ type TableCell interface {
 ### 6.2 Types and Constants
 
 ```go
-// pkg/presentation/types.go
+// pkg/presentation/interfaces.go
 
 type ShapeType int
 const (
