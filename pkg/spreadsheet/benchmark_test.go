@@ -37,6 +37,25 @@ func BenchmarkWorkbookOpenReader(b *testing.B) {
 	}
 }
 
+func BenchmarkWorkbookOpenReaderLarge(b *testing.B) {
+	data, err := os.ReadFile(benchmarkFixturePath("tables.xlsx"))
+	if err != nil {
+		b.Skipf("fixture read failed: %v", err)
+	}
+	b.SetBytes(int64(len(data)))
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		wb, err := OpenReader(bytes.NewReader(data), int64(len(data)))
+		if err != nil {
+			b.Fatalf("OpenReader() error = %v", err)
+		}
+		if err := wb.Close(); err != nil {
+			b.Fatalf("Close() error = %v", err)
+		}
+	}
+}
+
 func BenchmarkWorkbookSaveAs(b *testing.B) {
 	wb, err := New()
 	if err != nil {
@@ -52,6 +71,37 @@ func BenchmarkWorkbookSaveAs(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		path := filepath.Join(tmpDir, fmt.Sprintf("bench-%d.xlsx", i))
+		if err := wb.SaveAs(path); err != nil {
+			b.Fatalf("SaveAs() error = %v", err)
+		}
+	}
+}
+
+func BenchmarkWorkbookSaveAsLarge(b *testing.B) {
+	wb, err := New()
+	if err != nil {
+		b.Fatalf("New() error = %v", err)
+	}
+	defer wb.Close()
+
+	sheet := wb.SheetsRaw()[0]
+	for row := 1; row <= 500; row++ {
+		sheet.CellByRC(row, 1).SetValue(fmt.Sprintf("Row %d", row))
+		sheet.CellByRC(row, 2).SetValue(row)
+		sheet.CellByRC(row, 3).SetValue(float64(row) * 1.25)
+	}
+	table := sheet.AddTable("A1:C501", "BenchmarkTable")
+	_ = table.UpdateRow(1, map[string]interface{}{
+		"Column1": "Name",
+		"Column2": "Count",
+		"Column3": "Value",
+	})
+
+	tmpDir := b.TempDir()
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		path := filepath.Join(tmpDir, fmt.Sprintf("bench-large-%d.xlsx", i))
 		if err := wb.SaveAs(path); err != nil {
 			b.Fatalf("SaveAs() error = %v", err)
 		}
