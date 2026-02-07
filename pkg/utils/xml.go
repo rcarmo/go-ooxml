@@ -35,6 +35,10 @@ func normalizeRelationshipPrefixes(data []byte) []byte {
 	data = bytes.ReplaceAll(data, []byte("relationships:id="), []byte("r:id="))
 	data = bytes.ReplaceAll(data, []byte("relationships:embed="), []byte("r:embed="))
 	data = bytes.ReplaceAll(data, []byte("relationships:link="), []byte("r:link="))
+	data = bytes.ReplaceAll(data, []byte("relationships:dm="), []byte("r:dm="))
+	data = bytes.ReplaceAll(data, []byte("relationships:lo="), []byte("r:lo="))
+	data = bytes.ReplaceAll(data, []byte("relationships:cs="), []byte("r:cs="))
+	data = bytes.ReplaceAll(data, []byte("relationships:qs="), []byte("r:qs="))
 	isPresentation := bytes.Contains(data, []byte("presentationml/2006/main")) ||
 		bytes.Contains(data, []byte("powerpoint/2018/8/main"))
 	if !isPresentation {

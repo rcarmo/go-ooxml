@@ -82,8 +82,8 @@ func (ws *worksheetImpl) addGraphic(fromCell, toCell, title string, kind drawing
 	}
 	if drawingID == "" {
 		drawingID = rels.NextID()
-		rels.AddWithID(drawingID, packaging.RelTypeDrawing, relativeTarget(sheetPath, drawingPath), packaging.TargetModeInternal)
 	}
+	rels.AddWithID(drawingID, packaging.RelTypeDrawing, relativeTarget(sheetPath, drawingPath), packaging.TargetModeInternal)
 	ws.worksheet.Drawing = &sml.Drawing{ID: drawingID}
 	if ws.worksheet.LegacyDrawing != nil && ws.worksheet.LegacyDrawing.ID == "" {
 		ws.worksheet.LegacyDrawing.ID = drawingID
@@ -211,7 +211,7 @@ func (ws *worksheetImpl) buildGraphicContent(sheetPath string, kind drawingKind,
 		}
 		relID := drawingRels.NextID()
 		drawingRels.AddWithID(relID, packaging.RelTypeImage, relativeTarget(drawingPath, imageName), packaging.TargetModeInternal)
-		return fmt.Sprintf(`<xdr:pic><xdr:nvPicPr><xdr:cNvPr id="%d" name="Picture"/><xdr:cNvPicPr/></xdr:nvPicPr><xdr:blipFill><a:blip r:embed="%s"/><a:stretch><a:fillRect/></a:stretch></xdr:blipFill><xdr:spPr><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr></xdr:pic>`,
+		return fmt.Sprintf(`<xdr:pic><xdr:nvPicPr><xdr:cNvPr id="%d" name="Picture"/><xdr:cNvPicPr/></xdr:nvPicPr><xdr:blipFill><a:blip r:embed="%s"/><a:stretch><a:fillRect/></a:stretch></xdr:blipFill><xdr:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr></xdr:pic>`,
 			shapeID,
 			relID,
 		), nil
@@ -234,7 +234,7 @@ func buildDrawingXML(anchor string) string {
 }
 
 func buildAnchorXML(start, end utils.CellRef, content string) string {
-	return fmt.Sprintf(`<xdr:twoCellAnchor><xdr:from><xdr:col>%d</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>%d</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:to><xdr:col>%d</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>%d</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to>%s<xdr:clientData/></xdr:twoCellAnchor>`,
+	return fmt.Sprintf(`<xdr:twoCellAnchor><xdr:from><xdr:col>%d</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>%d</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:to><xdr:col>%d</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>%d</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to><xdr:clientData/>%s</xdr:twoCellAnchor>`,
 		start.Col-1,
 		start.Row-1,
 		end.Col-1,
