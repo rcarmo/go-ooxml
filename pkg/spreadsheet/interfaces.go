@@ -54,6 +54,9 @@ type Worksheet interface {
 	MergedCells() []Range
 	MergeCells(ref string) error
 	UnmergeCells(ref string) error
+	AddChart(fromCell, toCell, title string) error
+	AddDiagram(fromCell, toCell, title string) error
+	AddPicture(imagePath, fromCell, toCell string) error
 	Comments() []Comment
 	PageMargins() (PageMargins, bool)
 	SetPageMargins(margins PageMargins)

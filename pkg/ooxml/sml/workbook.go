@@ -30,8 +30,9 @@ type FileVersion struct {
 
 // WorkbookPr represents workbook properties.
 type WorkbookPr struct {
-	DefaultThemeVersion string `xml:"defaultThemeVersion,attr,omitempty"`
-	Date1904            *bool  `xml:"date1904,attr,omitempty"`
+	DefaultThemeVersion  string `xml:"defaultThemeVersion,attr,omitempty"`
+	Date1904             *bool  `xml:"date1904,attr,omitempty"`
+	ChartTrackingRefBase *bool  `xml:"chartTrackingRefBase,attr,omitempty"`
 }
 
 // BookViews represents workbook views.
@@ -41,11 +42,11 @@ type BookViews struct {
 
 // WorkbookView represents a workbook view.
 type WorkbookView struct {
-	XWindow      int    `xml:"xWindow,attr,omitempty"`
-	YWindow      int    `xml:"yWindow,attr,omitempty"`
-	WindowWidth  int    `xml:"windowWidth,attr,omitempty"`
-	WindowHeight int    `xml:"windowHeight,attr,omitempty"`
-	ActiveTab    int    `xml:"activeTab,attr,omitempty"`
+	XWindow      int `xml:"xWindow,attr,omitempty"`
+	YWindow      int `xml:"yWindow,attr,omitempty"`
+	WindowWidth  int `xml:"windowWidth,attr,omitempty"`
+	WindowHeight int `xml:"windowHeight,attr,omitempty"`
+	ActiveTab    int `xml:"activeTab,attr,omitempty"`
 }
 
 // Sheets is a collection of sheet references.

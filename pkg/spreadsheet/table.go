@@ -177,7 +177,9 @@ func (t *tableImpl) DeleteRow(index int) error {
 	for col := start.Col; col <= end.Col; col++ {
 		cell := t.worksheet.CellByRC(row, col)
 		if cell != nil {
-			cell.SetValue(nil)
+			if err := cell.SetValue(nil); err != nil {
+				return err
+			}
 		}
 	}
 	end.Row--

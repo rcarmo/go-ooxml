@@ -128,6 +128,15 @@ github.com/[org]/ooxml-go/
 │   │   │   ├── notes.go            # CT_NotesSlide
 │   │   │   └── comments.go         # CT_CommentList
 │   │   │
+│   │   ├── chart/                   # DrawingML chart types
+│   │   │   └── chart.go            # CT_ChartSpace, CT_Chart
+│   │   │
+│   │   ├── diagram/                 # DrawingML diagram types
+│   │   │   └── diagram.go          # CT_DataModel, CT_LayoutDef
+│   │   │
+│   │   ├── theme/                   # DrawingML theme types
+│   │   │   └── theme.go            # CT_Theme
+│   │   │
 │   │   └── dml/                     # DrawingML types (shared)
 │   │       ├── shape.go            # CT_Shape, CT_ShapeProperties
 │   │       ├── text.go             # CT_TextBody, CT_TextParagraph
@@ -1465,9 +1474,9 @@ Goal: reach feature parity with advanced surfaces in openpyxl, python-docx, and 
 #### Phase 7A: OOXML Foundations (shared)
 | Task | Priority | Status |
 |------|----------|--------|
-| Add OOXML types for charts/diagrams/themes/media | P0 | ⏳ Planned |
-| Extend packaging constants (content types/relationships) | P0 | ⏳ Planned |
-| Add parsers + round-trip support for new parts | P0 | ⏳ Planned |
+| Add OOXML types for charts/diagrams/themes/media | P0 | ✅ Done |
+| Extend packaging constants (content types/relationships) | P0 | ✅ Done |
+| Add parsers + round-trip support for new parts | P0 | ✅ Done (package-level part preservation + round-trip tests) |
 
 #### Phase 7B: Spreadsheet Advanced (openpyxl parity)
 | Task | Priority | Status |

@@ -1,9 +1,19 @@
 package document
 
 import (
+	"bytes"
+	"encoding/xml"
+	"fmt"
+	"os"
+	"path"
+	"path/filepath"
 	"strings"
 
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/chart"
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/dml"
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/diagram"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
+	"github.com/rcarmo/go-ooxml/pkg/packaging"
 	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
@@ -107,6 +117,263 @@ func (p *paragraphImpl) AddRun() Run {
 	r := &wml.R{}
 	p.p.Content = append(p.p.Content, r)
 	return &runImpl{doc: p.doc, r: r}
+}
+
+// AddChart adds a chart drawing to the paragraph.
+func (p *paragraphImpl) AddChart(widthEMU, heightEMU int64, title string) error {
+	if p == nil || p.doc == nil || p.doc.pkg == nil {
+		return utils.ErrDocumentClosed
+	}
+	if widthEMU <= 0 || heightEMU <= 0 {
+		return utils.NewValidationError("size", "width and height must be positive", fmt.Sprintf("%d x %d", widthEMU, heightEMU))
+	}
+	chartID := p.doc.nextChartID
+	p.doc.nextChartID++
+	chartPath := fmt.Sprintf("word/charts/chart%d.xml", chartID)
+	cs := &chart.ChartSpace{
+		Chart: &chart.Chart{
+			PlotArea: &chart.PlotArea{Layout: &chart.Layout{}},
+			Title:    &chart.Title{},
+			Legend:   &chart.Legend{},
+		},
+	}
+	data, err := utils.MarshalXMLWithHeader(cs)
+	if err != nil {
+		return err
+	}
+	if _, err := p.doc.pkg.AddPart(chartPath, packaging.ContentTypeChart, data); err != nil {
+		return err
+	}
+
+	sourcePath := packaging.WordDocumentPath
+	relID := p.doc.pkg.GetRelationships(sourcePath).NextID()
+	p.doc.pkg.GetRelationships(sourcePath).AddWithID(relID, packaging.RelTypeChart, relativeTarget(sourcePath, chartPath), packaging.TargetModeInternal)
+
+	drawingID := p.doc.nextDrawingID
+	p.doc.nextDrawingID++
+	name := title
+	if name == "" {
+		name = fmt.Sprintf("Chart %d", drawingID)
+	}
+	inline := &dml.WPInline{
+		Ext:   &dml.WPSize{Cx: widthEMU, Cy: heightEMU},
+		DocPr: &dml.DocPr{ID: drawingID, Name: name},
+		Graphic: &dml.Graphic{
+			GraphicData: &dml.GraphicData{
+				URI:   dml.GraphicDataURIChart,
+				Chart: &dml.ChartRef{RID: relID},
+			},
+		},
+	}
+	if err := p.addDrawingInline(inline); err != nil {
+		return err
+	}
+	return nil
+}
+
+// AddDiagram adds a diagram (SmartArt) drawing to the paragraph.
+func (p *paragraphImpl) AddDiagram(widthEMU, heightEMU int64, title string) error {
+	if p == nil || p.doc == nil || p.doc.pkg == nil {
+		return utils.ErrDocumentClosed
+	}
+	if widthEMU <= 0 || heightEMU <= 0 {
+		return utils.NewValidationError("size", "width and height must be positive", fmt.Sprintf("%d x %d", widthEMU, heightEMU))
+	}
+	id := p.doc.nextDiagramID
+	p.doc.nextDiagramID++
+	dataModel := &diagram.DataModel{}
+	data, err := utils.MarshalXMLWithHeader(dataModel)
+	if err != nil {
+		return err
+	}
+	layoutData, err := utils.MarshalXMLWithHeader(&diagram.LayoutDef{})
+	if err != nil {
+		return err
+	}
+	styleData, err := utils.MarshalXMLWithHeader(&diagram.StyleDef{})
+	if err != nil {
+		return err
+	}
+	colorsData, err := utils.MarshalXMLWithHeader(&diagram.ColorsDef{})
+	if err != nil {
+		return err
+	}
+	dataPath := fmt.Sprintf("word/diagrams/data%d.xml", id)
+	layoutPath := fmt.Sprintf("word/diagrams/layout%d.xml", id)
+	stylePath := fmt.Sprintf("word/diagrams/style%d.xml", id)
+	colorsPath := fmt.Sprintf("word/diagrams/colors%d.xml", id)
+	if _, err := p.doc.pkg.AddPart(dataPath, packaging.ContentTypeDiagramData, data); err != nil {
+		return err
+	}
+	if _, err := p.doc.pkg.AddPart(layoutPath, packaging.ContentTypeDiagramLayout, layoutData); err != nil {
+		return err
+	}
+	if _, err := p.doc.pkg.AddPart(stylePath, packaging.ContentTypeDiagramStyle, styleData); err != nil {
+		return err
+	}
+	if _, err := p.doc.pkg.AddPart(colorsPath, packaging.ContentTypeDiagramColors, colorsData); err != nil {
+		return err
+	}
+
+	sourcePath := packaging.WordDocumentPath
+	rels := p.doc.pkg.GetRelationships(sourcePath)
+	dataRelID := rels.NextID()
+	rels.AddWithID(dataRelID, packaging.RelTypeDiagramData, relativeTarget(sourcePath, dataPath), packaging.TargetModeInternal)
+	layoutRelID := rels.NextID()
+	rels.AddWithID(layoutRelID, packaging.RelTypeDiagramLayout, relativeTarget(sourcePath, layoutPath), packaging.TargetModeInternal)
+	styleRelID := rels.NextID()
+	rels.AddWithID(styleRelID, packaging.RelTypeDiagramStyle, relativeTarget(sourcePath, stylePath), packaging.TargetModeInternal)
+	colorsRelID := rels.NextID()
+	rels.AddWithID(colorsRelID, packaging.RelTypeDiagramColors, relativeTarget(sourcePath, colorsPath), packaging.TargetModeInternal)
+
+	drawingID := p.doc.nextDrawingID
+	p.doc.nextDrawingID++
+	name := title
+	if name == "" {
+		name = fmt.Sprintf("Diagram %d", drawingID)
+	}
+	inline := &dml.WPInline{
+		Ext:   &dml.WPSize{Cx: widthEMU, Cy: heightEMU},
+		DocPr: &dml.DocPr{ID: drawingID, Name: name},
+		Graphic: &dml.Graphic{
+			GraphicData: &dml.GraphicData{
+				URI: dml.GraphicDataURIDiagram,
+				Diagram: &dml.DiagramRef{
+					Data:   dataRelID,
+					Layout: layoutRelID,
+					Colors: colorsRelID,
+					Style:  styleRelID,
+				},
+			},
+		},
+	}
+	if err := p.addDrawingInline(inline); err != nil {
+		return err
+	}
+	return nil
+}
+
+// AddPicture adds an image drawing to the paragraph.
+func (p *paragraphImpl) AddPicture(imagePath string, widthEMU, heightEMU int64) error {
+	if p == nil || p.doc == nil || p.doc.pkg == nil {
+		return utils.ErrDocumentClosed
+	}
+	if imagePath == "" {
+		return utils.ErrPathNotSet
+	}
+	if widthEMU <= 0 || heightEMU <= 0 {
+		return utils.NewValidationError("size", "width and height must be positive", fmt.Sprintf("%d x %d", widthEMU, heightEMU))
+	}
+	cleanPath := filepath.Clean(imagePath)
+	data, err := os.ReadFile(cleanPath)
+	if err != nil {
+		return err
+	}
+	ext := strings.TrimPrefix(strings.ToLower(path.Ext(cleanPath)), ".")
+	contentType := packaging.ContentTypePNG
+	switch ext {
+	case "jpg", "jpeg":
+		contentType = packaging.ContentTypeJPEG
+	case "gif":
+		contentType = packaging.ContentTypeGIF
+	case "bmp":
+		contentType = packaging.ContentTypeBMP
+	case "tif", "tiff":
+		contentType = packaging.ContentTypeTIFF
+	}
+	imageName := fmt.Sprintf("word/media/image%d.%s", p.doc.nextImageID, ext)
+	p.doc.nextImageID++
+	if _, err := p.doc.pkg.AddPart(imageName, contentType, data); err != nil {
+		return err
+	}
+	sourcePath := packaging.WordDocumentPath
+	rels := p.doc.pkg.GetRelationships(sourcePath)
+	relID := rels.NextID()
+	rels.AddWithID(relID, packaging.RelTypeImage, relativeTarget(sourcePath, imageName), packaging.TargetModeInternal)
+
+	drawingID := p.doc.nextDrawingID
+	p.doc.nextDrawingID++
+	name := fmt.Sprintf("Picture %d", drawingID)
+	inline := &dml.WPInline{
+		Ext:   &dml.WPSize{Cx: widthEMU, Cy: heightEMU},
+		DocPr: &dml.DocPr{ID: drawingID, Name: name},
+		Graphic: &dml.Graphic{
+			GraphicData: &dml.GraphicData{
+				URI: dml.GraphicDataURIPicture,
+				Picture: pictureXML(relID),
+			},
+		},
+	}
+	if err := p.addDrawingInline(inline); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *paragraphImpl) addDrawingInline(inline *dml.WPInline) error {
+	if inline == nil {
+		return utils.NewValidationError("drawing", "inline cannot be nil", nil)
+	}
+	data, err := utils.MarshalXMLWithHeader(inline)
+	if err != nil {
+		return err
+	}
+	inlineXML := string(stripXMLHeader(data))
+	inlineXML = strings.Replace(inlineXML, "<graphic>", "<a:graphic>", 1)
+	inlineXML = strings.Replace(inlineXML, "</graphic>", "</a:graphic>", 1)
+	inlineXML = strings.Replace(inlineXML, "<graphicData", "<a:graphicData", 1)
+	inlineXML = strings.Replace(inlineXML, "</graphicData>", "</a:graphicData>", 1)
+	inlineXML = ensureXMLNamespace(inlineXML, "a", packaging.NSDrawingML)
+	inlineXML = ensureXMLNamespace(inlineXML, "r", packaging.NSOfficeDocRels)
+	drawing := &wml.Drawing{Inner: inlineXML}
+	run := &wml.R{Content: []interface{}{drawing}}
+	p.p.Content = append(p.p.Content, run)
+	return nil
+}
+
+func pictureXML(relID string) *dml.PictureRef {
+	if relID == "" {
+		return &dml.PictureRef{}
+	}
+	payload := fmt.Sprintf(`<nvPicPr><cNvPr id="0" name="Picture"/><cNvPicPr/></nvPicPr><blipFill><blip r:embed="%s"/><stretch><fillRect/></stretch></blipFill><spPr><xfrm/><prstGeom prst="rect"><avLst/></prstGeom></spPr>`,
+		relID,
+	)
+	return &dml.PictureRef{
+		Attrs: []xml.Attr{{Name: xml.Name{Space: "xmlns", Local: "r"}, Value: packaging.NSOfficeDocRels}},
+		Inner: payload,
+	}
+}
+
+func relativeTarget(source, target string) string {
+	if source == "" {
+		return target
+	}
+	sourceDir := path.Dir(source)
+	rel, err := filepath.Rel(sourceDir, target)
+	if err != nil {
+		return strings.TrimPrefix(packaging.ResolveRelationshipTarget(source, target), "word/")
+	}
+	return filepath.ToSlash(rel)
+}
+
+func stripXMLHeader(data []byte) []byte {
+	return bytes.TrimPrefix(data, []byte(utils.XMLHeader))
+}
+
+func ensureXMLNamespace(xmlStr, prefix, uri string) string {
+	if strings.Contains(xmlStr, "xmlns:"+prefix+"=") {
+		return xmlStr
+	}
+	start := strings.Index(xmlStr, "<wp:inline")
+	if start == -1 {
+		return xmlStr
+	}
+	end := strings.Index(xmlStr[start:], ">")
+	if end == -1 {
+		return xmlStr
+	}
+	insertPos := start + end
+	return xmlStr[:insertPos] + fmt.Sprintf(" xmlns:%s=\"%s\"", prefix, uri) + xmlStr[insertPos:]
 }
 
 // Style returns the paragraph style ID.

@@ -1,8 +1,9 @@
-.PHONY: help install lint format test coverage check clean clean-all build build-all bump-patch push validate
+.PHONY: help install lint format test coverage check clean clean-all build build-all bump-patch push validate security
 
 GO ?= go
 GOFMT ?= gofumpt
 GOLINT ?= golangci-lint
+GOSEC ?= gosec
 DOTNET_ROOT ?= /home/linuxbrew/.linuxbrew/opt/dotnet/libexec
 VALIDATOR ?= tools/validator/OoxmlValidator
 
@@ -33,6 +34,10 @@ install: ## Install the binary
 lint: ## Run golangci-lint
 	@which $(GOLINT) > /dev/null || (echo "Installing golangci-lint..." && brew install golangci-lint)
 	$(GOLINT) run ./...
+
+security: ## Run gosec security scan
+	@which $(GOSEC) > /dev/null || (echo "Installing gosec..." && $(GO) install github.com/securego/gosec/v2/cmd/gosec@latest)
+	$$(go env GOPATH)/bin/$(GOSEC) ./...
 
 format: ## Format code with gofumpt
 	@which $(GOFMT) > /dev/null || (echo "Installing gofumpt..." && $(GO) install mvdan.cc/gofumpt@latest)

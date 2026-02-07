@@ -8,6 +8,7 @@ import (
 
 	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
+	"github.com/rcarmo/go-ooxml/pkg/packaging"
 )
 
 // =============================================================================
@@ -410,6 +411,22 @@ func TestRoundTrip(t *testing.T) {
 	// Verify structure
 	if p2.SlideCount() != 2 {
 		t.Errorf("SlideCount() = %d, want 2", p2.SlideCount())
+	}
+}
+
+func TestAdvancedPartsRoundTrip(t *testing.T) {
+	orig := testutil.OpenResource(t, Open, filepath.Join("..", "..", "testdata", "pptx", "images.pptx"))
+
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "advanced-roundtrip.pptx")
+	if err := orig.SaveAs(path); err != nil {
+		t.Fatalf("SaveAs() error = %v", err)
+	}
+
+	round := testutil.OpenResource(t, Open, path)
+	rels := round.(*presentationImpl).pkg.GetRelationships(packaging.PresentationPath)
+	if rels.FirstByType(packaging.RelTypeTheme) == nil {
+		t.Error("Expected theme relationship after round-trip")
 	}
 }
 

@@ -203,6 +203,9 @@ type Body interface {
 	ContentControls() []*ContentControl
 	AddParagraph() Paragraph
 	AddTable(rows, cols int) Table
+	AddChart(widthEMU, heightEMU int64, title string) (Paragraph, error)
+	AddDiagram(widthEMU, heightEMU int64, title string) (Paragraph, error)
+	AddPicture(imagePath string, widthEMU, heightEMU int64) (Paragraph, error)
 	InsertParagraphAt(index int) Paragraph
 	InsertParagraphBefore(target BodyElement) Paragraph
 	InsertParagraphAfter(target BodyElement) Paragraph
@@ -257,6 +260,9 @@ type Paragraph interface {
 	AddBookmarkLink(anchor, text string) (*Hyperlink, error)
 	AddBookmark(name string, startRun, endRun int) error
 	AddField(instruction, display string) (*Field, error)
+	AddChart(widthEMU, heightEMU int64, title string) error
+	AddDiagram(widthEMU, heightEMU int64, title string) error
+	AddPicture(imagePath string, widthEMU, heightEMU int64) error
 	Hyperlinks() []*Hyperlink
 	ContentControls() []*ContentControl
 }

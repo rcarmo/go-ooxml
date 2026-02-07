@@ -100,6 +100,33 @@ func (b *bodyImpl) AddTable(rows, cols int) Table {
 	return &tableImpl{doc: b.doc, tbl: tbl, index: len(b.body().Content) - 1}
 }
 
+// AddChart adds a chart drawing in a new paragraph.
+func (b *bodyImpl) AddChart(widthEMU, heightEMU int64, title string) (Paragraph, error) {
+	p := b.AddParagraph()
+	if err := p.AddChart(widthEMU, heightEMU, title); err != nil {
+		return nil, err
+	}
+	return p, nil
+}
+
+// AddDiagram adds a diagram drawing in a new paragraph.
+func (b *bodyImpl) AddDiagram(widthEMU, heightEMU int64, title string) (Paragraph, error) {
+	p := b.AddParagraph()
+	if err := p.AddDiagram(widthEMU, heightEMU, title); err != nil {
+		return nil, err
+	}
+	return p, nil
+}
+
+// AddPicture adds an image drawing in a new paragraph.
+func (b *bodyImpl) AddPicture(imagePath string, widthEMU, heightEMU int64) (Paragraph, error) {
+	p := b.AddParagraph()
+	if err := p.AddPicture(imagePath, widthEMU, heightEMU); err != nil {
+		return nil, err
+	}
+	return p, nil
+}
+
 // InsertParagraphBefore inserts a paragraph before a target element.
 func (b *bodyImpl) InsertParagraphBefore(target BodyElement) Paragraph {
 	return b.insertParagraphRelative(target, 0)

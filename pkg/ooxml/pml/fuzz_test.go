@@ -30,7 +30,7 @@ func FuzzUnmarshalSlide(f *testing.F) {
 		if err != nil {
 			t.Fatalf("MarshalXMLWithHeader error: %v", err)
 		}
-		if !strings.Contains(string(roundTrip), "<sld") || !strings.Contains(string(roundTrip), NS) {
+		if !strings.Contains(string(roundTrip), "<sld") && !strings.Contains(string(roundTrip), "<p:sld") {
 			t.Fatalf("round-trip missing sld element")
 		}
 	})

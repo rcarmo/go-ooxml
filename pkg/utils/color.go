@@ -1,9 +1,9 @@
 package utils
 
 import (
+	"encoding/hex"
 	"fmt"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -27,18 +27,35 @@ func ParseHexColor(hex string) (Color, error) {
 	var c Color
 	if len(hex) == 6 {
 		c.A = 255
-		val, _ := strconv.ParseUint(hex, 16, 32)
-		c.R = uint8(val >> 16)
-		c.G = uint8(val >> 8)
-		c.B = uint8(val)
+		bytes, err := hexDecode(hex)
+		if err != nil {
+			return Color{}, err
+		}
+		c.R = bytes[0]
+		c.G = bytes[1]
+		c.B = bytes[2]
 	} else {
-		val, _ := strconv.ParseUint(hex, 16, 32)
-		c.A = uint8(val >> 24)
-		c.R = uint8(val >> 16)
-		c.G = uint8(val >> 8)
-		c.B = uint8(val)
+		bytes, err := hexDecode(hex)
+		if err != nil {
+			return Color{}, err
+		}
+		c.A = bytes[0]
+		c.R = bytes[1]
+		c.G = bytes[2]
+		c.B = bytes[3]
 	}
 	return c, nil
+}
+
+func hexDecode(value string) ([]byte, error) {
+	bytes, err := hex.DecodeString(value)
+	if err != nil {
+		return nil, err
+	}
+	if len(bytes) != 3 && len(bytes) != 4 {
+		return nil, fmt.Errorf("invalid hex color length: %s", value)
+	}
+	return bytes, nil
 }
 
 // ToHex returns the color as a hex string without # (RRGGBB or AARRGGBB).

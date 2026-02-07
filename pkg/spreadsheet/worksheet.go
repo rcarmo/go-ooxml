@@ -266,6 +266,21 @@ func (ws *worksheetImpl) MergeCells(ref string) error {
 	return nil
 }
 
+// AddChart adds a chart to the worksheet.
+func (ws *worksheetImpl) AddChart(fromCell, toCell, title string) error {
+	return ws.addGraphic(fromCell, toCell, title, drawingKindChart, "")
+}
+
+// AddDiagram adds a diagram (SmartArt) to the worksheet.
+func (ws *worksheetImpl) AddDiagram(fromCell, toCell, title string) error {
+	return ws.addGraphic(fromCell, toCell, title, drawingKindDiagram, "")
+}
+
+// AddPicture adds an image to the worksheet.
+func (ws *worksheetImpl) AddPicture(imagePath, fromCell, toCell string) error {
+	return ws.addGraphic(fromCell, toCell, "", drawingKindPicture, imagePath)
+}
+
 // UnmergeCells unmerges a range of cells.
 func (ws *worksheetImpl) UnmergeCells(ref string) error {
 	if ws.worksheet.MergeCells == nil {

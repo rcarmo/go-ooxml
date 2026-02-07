@@ -55,12 +55,18 @@ func (r *R) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 					return err
 				}
 				r.Content = append(r.Content, fc)
-			case "instrText":
-				it := &InstrText{}
-				if err := d.DecodeElement(it, &t); err != nil {
-					return err
-				}
-				r.Content = append(r.Content, it)
+		case "instrText":
+			it := &InstrText{}
+			if err := d.DecodeElement(it, &t); err != nil {
+				return err
+			}
+			r.Content = append(r.Content, it)
+		case "drawing":
+			drawing := &Drawing{}
+			if err := d.DecodeElement(drawing, &t); err != nil {
+				return err
+			}
+			r.Content = append(r.Content, drawing)
 			default:
 				if err := d.Skip(); err != nil {
 					return err

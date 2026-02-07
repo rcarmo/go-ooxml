@@ -25,6 +25,8 @@ type workbookImpl struct {
 	nextTableID   int
 	comments      map[string]*SheetComments
 	styles        *stylesImpl
+	themeParts    map[string][]byte
+	extraParts    map[string]*packaging.Part
 }
 
 // New creates a new empty workbook with one sheet.
@@ -48,6 +50,8 @@ func New() (Workbook, error) {
 		nextTableID:   1,
 		comments:      make(map[string]*SheetComments),
 		styles:        newStyles(nil),
+		themeParts:    make(map[string][]byte),
+		extraParts:    make(map[string]*packaging.Part),
 	}
 
 	if err := w.initPackage(); err != nil {
@@ -93,6 +97,8 @@ func openFromPackage(pkg *packaging.Package) (*workbookImpl, error) {
 		nextTableID:   1,
 		comments:      make(map[string]*SheetComments),
 		styles:        newStyles(nil),
+		themeParts:    make(map[string][]byte),
+		extraParts:    make(map[string]*packaging.Part),
 	}
 
 	// Parse workbook.xml
@@ -113,6 +119,8 @@ func openFromPackage(pkg *packaging.Package) (*workbookImpl, error) {
 
 	// Parse worksheet comments
 	w.parseComments()
+
+	w.captureAdvancedParts()
 
 	return w, nil
 }
@@ -421,7 +429,9 @@ func (w *workbookImpl) parseSharedStrings() {
 		return
 	}
 
-	w.sharedStrings.parse(data)
+	if err := w.sharedStrings.parse(data); err != nil {
+		return
+	}
 }
 
 func (w *workbookImpl) parseStyles() {
@@ -456,10 +466,10 @@ func (w *workbookImpl) parseSheets() error {
 		var sheetPath string
 		for _, rel := range rels.Relationships {
 			if rel.ID == sheetRef.ID {
-			sheetPath = packaging.ResolveRelationshipTarget(packaging.ExcelWorkbookPath, rel.Target)
-			if !strings.HasPrefix(sheetPath, "xl/") {
-				sheetPath = "xl/" + strings.TrimPrefix(sheetPath, "/")
-			}
+				sheetPath = packaging.ResolveRelationshipTarget(packaging.ExcelWorkbookPath, rel.Target)
+				if !strings.HasPrefix(sheetPath, "xl/") {
+					sheetPath = "xl/" + strings.TrimPrefix(sheetPath, "/")
+				}
 				break
 			}
 		}
@@ -529,6 +539,7 @@ func (w *workbookImpl) commentsForSheet(sheetPath string) *SheetComments {
 	if commentRel == nil {
 		return nil
 	}
+	vmlRel := rels.FirstByType(packaging.RelTypeVML)
 	commentPath := packaging.ResolveRelationshipTarget(sheetPath, commentRel.Target)
 	part, err := w.pkg.GetPart(commentPath)
 	if err != nil {
@@ -543,6 +554,10 @@ func (w *workbookImpl) commentsForSheet(sheetPath string) *SheetComments {
 		return nil
 	}
 	comments := newSheetComments(commentPath, commentRel.ID, commentsXML)
+	if vmlRel != nil {
+		comments.vmlPath = packaging.ResolveRelationshipTarget(sheetPath, vmlRel.Target)
+		comments.vmlRelID = vmlRel.ID
+	}
 	w.comments[sheetPath] = comments
 	return comments
 }
@@ -589,6 +604,67 @@ func (w *workbookImpl) parseTables(sheet *worksheetImpl) error {
 	return nil
 }
 
+func (w *workbookImpl) captureAdvancedParts() {
+	if w.pkg == nil {
+		return
+	}
+	workbookRels := w.pkg.GetRelationships(packaging.ExcelWorkbookPath)
+	for _, rel := range workbookRels.ByType(packaging.RelTypeTheme) {
+		target := packaging.ResolveRelationshipTarget(packaging.ExcelWorkbookPath, rel.Target)
+		part, err := w.pkg.GetPart(target)
+		if err != nil {
+			continue
+		}
+		if data, err := part.Content(); err == nil {
+			w.themeParts[target] = data
+		}
+	}
+	for _, sheet := range w.sheets {
+		rels := w.pkg.GetRelationships(sheet.path)
+		for _, rel := range rels.Relationships {
+			switch rel.Type {
+			case packaging.RelTypeDrawing, packaging.RelTypeVML:
+			default:
+				continue
+			}
+			target := packaging.ResolveRelationshipTarget(sheet.path, rel.Target)
+			part, err := w.pkg.GetPart(target)
+			if err != nil {
+				continue
+			}
+			w.extraParts[target] = part
+			w.captureRelatedParts(target, 2)
+		}
+	}
+}
+
+func (w *workbookImpl) captureRelatedParts(sourcePath string, depth int) {
+	if depth <= 0 || w.pkg == nil {
+		return
+	}
+	rels := w.pkg.GetRelationships(sourcePath)
+	for _, rel := range rels.Relationships {
+		switch rel.Type {
+		case packaging.RelTypeChart, packaging.RelTypeChartStyle, packaging.RelTypeChartColorStyle,
+			packaging.RelTypeDiagramData, packaging.RelTypeDiagramLayout,
+			packaging.RelTypeDiagramColors, packaging.RelTypeDiagramStyle,
+			packaging.RelTypeImage, packaging.RelTypeAudio, packaging.RelTypeVideo, packaging.RelTypeMedia:
+		default:
+			continue
+		}
+		target := packaging.ResolveRelationshipTarget(sourcePath, rel.Target)
+		if _, ok := w.extraParts[target]; ok {
+			continue
+		}
+		part, err := w.pkg.GetPart(target)
+		if err != nil {
+			continue
+		}
+		w.extraParts[target] = part
+		w.captureRelatedParts(target, depth-1)
+	}
+}
+
 func (w *workbookImpl) updatePackage() error {
 	// Save workbook.xml
 	data, err := utils.MarshalXMLWithHeader(w.workbook)
@@ -632,7 +708,12 @@ func (w *workbookImpl) updatePackage() error {
 		if _, err := w.pkg.AddPart(packaging.ExcelSharedStringsPath, packaging.ContentTypeSharedStrings, ssData); err != nil {
 			return err
 		}
-		w.pkg.AddRelationship(packaging.ExcelWorkbookPath, "sharedStrings.xml", packaging.RelTypeSharedStrings)
+		rels := w.pkg.GetRelationships(packaging.ExcelWorkbookPath)
+		relID := rels.NextID()
+		if existing := rels.FirstByType(packaging.RelTypeSharedStrings); existing != nil {
+			relID = existing.ID
+		}
+		rels.AddWithID(relID, packaging.RelTypeSharedStrings, "sharedStrings.xml", packaging.TargetModeInternal)
 	}
 
 	// Save styles
@@ -644,9 +725,49 @@ func (w *workbookImpl) updatePackage() error {
 		if _, err := w.pkg.AddPart(packaging.ExcelStylesPath, packaging.ContentTypeExcelStyles, stylesData); err != nil {
 			return err
 		}
-		w.pkg.AddRelationship(packaging.ExcelWorkbookPath, "styles.xml", packaging.RelTypeStyles)
+		rels := w.pkg.GetRelationships(packaging.ExcelWorkbookPath)
+		relID := rels.NextID()
+		if existing := rels.FirstByType(packaging.RelTypeStyles); existing != nil {
+			relID = existing.ID
+		}
+		rels.AddWithID(relID, packaging.RelTypeStyles, "styles.xml", packaging.TargetModeInternal)
 	}
 
+	if err := w.writeAdvancedParts(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (w *workbookImpl) writeAdvancedParts() error {
+	if w.pkg == nil {
+		return nil
+	}
+	for partPath, data := range w.themeParts {
+		if _, err := w.pkg.AddPart(partPath, packaging.ContentTypeTheme, data); err != nil {
+			return err
+		}
+		rels := w.pkg.GetRelationships(packaging.ExcelWorkbookPath)
+		rel := rels.FirstByType(packaging.RelTypeTheme)
+		relID := rels.NextID()
+		if rel != nil {
+			relID = rel.ID
+		}
+		rels.AddWithID(relID, packaging.RelTypeTheme, relativeTarget(packaging.ExcelWorkbookPath, partPath), packaging.TargetModeInternal)
+	}
+	for partPath, part := range w.extraParts {
+		if part == nil {
+			continue
+		}
+		content, err := part.Content()
+		if err != nil {
+			return err
+		}
+		if _, err := w.pkg.AddPart(partPath, part.ContentType(), content); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -673,10 +794,48 @@ func (w *workbookImpl) updateComments(sheet *worksheetImpl, sheetPath string) er
 		sheet.comments.relID = relID
 	}
 	rels.AddWithID(relID, packaging.RelTypeComments, relativeTarget(sheetPath, commentsPath), packaging.TargetModeInternal)
-	if sheet.worksheet.LegacyDrawing != nil && sheet.worksheet.LegacyDrawing.ID == "" {
-		if vmlRel := rels.FirstByType(packaging.RelTypeVML); vmlRel != nil {
-			sheet.worksheet.LegacyDrawing.ID = vmlRel.ID
-		}
+	if err := w.updateCommentVML(sheet, sheetPath, rels); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (w *workbookImpl) updateCommentVML(sheet *worksheetImpl, sheetPath string, rels *packaging.Relationships) error {
+	if sheet == nil || sheet.comments == nil {
+		return nil
+	}
+	if sheet.comments.comments == nil || sheet.comments.comments.CommentList == nil {
+		return nil
+	}
+	if len(sheet.comments.comments.CommentList.Comment) == 0 {
+		return nil
+	}
+	if rels == nil {
+		rels = w.pkg.GetRelationships(sheetPath)
+	}
+	vmlPath := sheet.comments.vmlPath
+	if vmlPath == "" {
+		vmlPath = fmt.Sprintf("xl/drawings/commentsDrawing%d.vml", sheet.index+1)
+		sheet.comments.vmlPath = vmlPath
+	}
+	vmlData, err := buildCommentsVML(sheet.comments)
+	if err != nil {
+		return err
+	}
+	if _, err := w.pkg.AddPart(vmlPath, packaging.ContentTypeVML, vmlData); err != nil {
+		return err
+	}
+	vmlRelID := sheet.comments.vmlRelID
+	if vmlRelID == "" {
+		vmlRelID = rels.NextID()
+		sheet.comments.vmlRelID = vmlRelID
+	}
+	rels.AddWithID(vmlRelID, packaging.RelTypeVML, relativeTarget(sheetPath, vmlPath), packaging.TargetModeInternal)
+	if sheet.worksheet.LegacyDrawing == nil {
+		sheet.worksheet.LegacyDrawing = &sml.LegacyDrawing{}
+	}
+	if sheet.worksheet.LegacyDrawing.ID == "" {
+		sheet.worksheet.LegacyDrawing.ID = vmlRelID
 	}
 	return nil
 }

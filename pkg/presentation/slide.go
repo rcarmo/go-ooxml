@@ -6,9 +6,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/chart"
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/diagram"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/dml"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/pml"
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
+	"github.com/rcarmo/go-ooxml/pkg/utils"
 )
 
 // Slide represents a slide in the presentation.
@@ -113,22 +116,21 @@ func (s *slideImpl) Shapes() []Shape {
 
 	var shapes []Shape
 	for _, item := range s.slide.CSld.SpTree.Content {
-		if sp, ok := item.(*dml.Sp); ok {
+		switch v := item.(type) {
+		case *dml.Sp:
 			shapes = append(shapes, &shapeImpl{
 				slide: s,
-				sp:    sp,
+				sp:    v,
 			})
-		}
-		if gf, ok := item.(*pml.GraphicFrame); ok {
+		case *pml.GraphicFrame:
 			shapes = append(shapes, &shapeImpl{
 				slide: s,
-				graphicFrame: gf,
+				graphicFrame: v,
 			})
-		}
-		if pic, ok := item.(*pml.Pic); ok {
+		case *pml.Pic:
 			shapes = append(shapes, &shapeImpl{
 				slide: s,
-				pic:   pic,
+				pic:   v,
 			})
 		}
 	}
@@ -179,6 +181,7 @@ func (s *slideImpl) AddTextBox(left, top, width, height int64) Shape {
 			CNvSpPr: &dml.CNvSpPr{
 				TxBox: &isTextBox,
 			},
+			NvPr: &dml.NvPr{},
 		},
 		SpPr: &dml.SpPr{
 			Xfrm: &dml.Xfrm{
@@ -259,6 +262,7 @@ func (s *slideImpl) AddPicture(imagePath string, left, top, width, height int64)
 	rels.AddWithID(relID, packaging.RelTypeImage, target, packaging.TargetModeInternal)
 	nextID := s.getNextShapeID()
 	noChange := true
+	rotWithShape := true
 	picName := fmt.Sprintf("Picture %d", nextID)
 	pic := &pml.Pic{
 		NvPicPr: &pml.NvPicPr{
@@ -274,6 +278,7 @@ func (s *slideImpl) AddPicture(imagePath string, left, top, width, height int64)
 			NvPr: &pml.NvPr{},
 		},
 		BlipFill: &dml.BlipFill{
+			RotWithShape: &rotWithShape,
 			Blip: &dml.Blip{
 				Embed: relID,
 			},
@@ -292,6 +297,160 @@ func (s *slideImpl) AddPicture(imagePath string, left, top, width, height int64)
 
 	s.slide.CSld.SpTree.Content = append(s.slide.CSld.SpTree.Content, pic)
 	return &shapeImpl{slide: s, pic: pic}, nil
+}
+
+// AddChart adds a chart to the slide.
+func (s *slideImpl) AddChart(left, top, width, height int64, title string) (Shape, error) {
+	if s == nil || s.pres == nil {
+		return nil, ErrInvalidIndex
+	}
+	s.ensureSpTree()
+
+	nextID := s.getNextShapeID()
+	cs := &chart.ChartSpace{
+		Chart: &chart.Chart{
+			PlotArea: &chart.PlotArea{Layout: &chart.Layout{}},
+			Title:    &chart.Title{},
+			Legend:   &chart.Legend{},
+		},
+	}
+	data, err := utils.MarshalXMLWithHeader(cs)
+	if err != nil {
+		return nil, err
+	}
+	chartPath := fmt.Sprintf("ppt/charts/chart%d.xml", nextID)
+	if _, err := s.pres.pkg.AddPart(chartPath, packaging.ContentTypeChart, data); err != nil {
+		return nil, err
+	}
+
+	sourcePath := s.path
+	if sourcePath == "" {
+		sourcePath = fmt.Sprintf("ppt/slides/slide%d.xml", s.index+1)
+		s.path = sourcePath
+	}
+	rels := s.pres.pkg.GetRelationships(sourcePath)
+	relID := rels.NextID()
+	rels.AddWithID(relID, packaging.RelTypeChart, relativeTarget(sourcePath, chartPath), packaging.TargetModeInternal)
+
+	name := title
+	if name == "" {
+		name = fmt.Sprintf("Chart %d", nextID)
+	}
+	gf := &pml.GraphicFrame{
+		NvGraphicFramePr: &pml.NvGraphicFramePr{
+			CNvPr: &pml.CNvPr{
+				ID:   nextID,
+				Name: name,
+			},
+			CNvGraphicFramePr: &pml.CNvGraphicFramePr{},
+			NvPr:              &pml.NvPr{Ph: &pml.Ph{Type: pml.PhTypeChart}},
+		},
+		Xfrm: &pml.Xfrm{
+			Off: &pml.Off{X: left, Y: top},
+			Ext: &pml.Ext{Cx: width, Cy: height},
+		},
+		Graphic: &dml.Graphic{
+			GraphicData: &dml.GraphicData{
+				URI:   dml.GraphicDataURIChart,
+				Chart: &dml.ChartRef{RID: relID},
+			},
+		},
+	}
+	s.slide.CSld.SpTree.Content = append(s.slide.CSld.SpTree.Content, gf)
+	return &shapeImpl{slide: s, graphicFrame: gf}, nil
+}
+
+// AddDiagram adds a diagram (SmartArt) to the slide.
+func (s *slideImpl) AddDiagram(left, top, width, height int64, title string) (Shape, error) {
+	if s == nil || s.pres == nil {
+		return nil, ErrInvalidIndex
+	}
+	s.ensureSpTree()
+
+	dataModel := &diagram.DataModel{}
+	data, err := utils.MarshalXMLWithHeader(dataModel)
+	if err != nil {
+		return nil, err
+	}
+	layoutData, err := utils.MarshalXMLWithHeader(&diagram.LayoutDef{})
+	if err != nil {
+		return nil, err
+	}
+	styleData, err := utils.MarshalXMLWithHeader(&diagram.StyleDef{})
+	if err != nil {
+		return nil, err
+	}
+	colorsData, err := utils.MarshalXMLWithHeader(&diagram.ColorsDef{})
+	if err != nil {
+		return nil, err
+	}
+
+	id := s.getNextShapeID()
+	dataPath := fmt.Sprintf("ppt/diagrams/data%d.xml", id)
+	layoutPath := fmt.Sprintf("ppt/diagrams/layout%d.xml", id)
+	stylePath := fmt.Sprintf("ppt/diagrams/style%d.xml", id)
+	colorsPath := fmt.Sprintf("ppt/diagrams/colors%d.xml", id)
+
+	if _, err := s.pres.pkg.AddPart(dataPath, packaging.ContentTypeDiagramData, data); err != nil {
+		return nil, err
+	}
+	if _, err := s.pres.pkg.AddPart(layoutPath, packaging.ContentTypeDiagramLayout, layoutData); err != nil {
+		return nil, err
+	}
+	if _, err := s.pres.pkg.AddPart(stylePath, packaging.ContentTypeDiagramStyle, styleData); err != nil {
+		return nil, err
+	}
+	if _, err := s.pres.pkg.AddPart(colorsPath, packaging.ContentTypeDiagramColors, colorsData); err != nil {
+		return nil, err
+	}
+
+	sourcePath := s.path
+	if sourcePath == "" {
+		sourcePath = fmt.Sprintf("ppt/slides/slide%d.xml", s.index+1)
+		s.path = sourcePath
+	}
+	rels := s.pres.pkg.GetRelationships(sourcePath)
+	dataRelID := rels.NextID()
+	rels.AddWithID(dataRelID, packaging.RelTypeDiagramData, relativeTarget(sourcePath, dataPath), packaging.TargetModeInternal)
+	layoutRelID := rels.NextID()
+	rels.AddWithID(layoutRelID, packaging.RelTypeDiagramLayout, relativeTarget(sourcePath, layoutPath), packaging.TargetModeInternal)
+	styleRelID := rels.NextID()
+	rels.AddWithID(styleRelID, packaging.RelTypeDiagramStyle, relativeTarget(sourcePath, stylePath), packaging.TargetModeInternal)
+	colorsRelID := rels.NextID()
+	rels.AddWithID(colorsRelID, packaging.RelTypeDiagramColors, relativeTarget(sourcePath, colorsPath), packaging.TargetModeInternal)
+
+	name := title
+	if name == "" {
+		name = fmt.Sprintf("Diagram %d", id)
+	}
+	gf := &pml.GraphicFrame{
+		NvGraphicFramePr: &pml.NvGraphicFramePr{
+			CNvPr: &pml.CNvPr{
+				ID:   id,
+				Name: name,
+			},
+			CNvGraphicFramePr: &pml.CNvGraphicFramePr{},
+			NvPr:              &pml.NvPr{Ph: &pml.Ph{Type: pml.PhTypeDgm}},
+		},
+		Xfrm: &pml.Xfrm{
+			Off: &pml.Off{X: left, Y: top},
+			Ext: &pml.Ext{Cx: width, Cy: height},
+		},
+		Graphic: &dml.Graphic{
+			GraphicData: &dml.GraphicData{
+				URI: dml.GraphicDataURIDiagram,
+				Diagram: &dml.DiagramRef{
+					Data:   dataRelID,
+					Layout: layoutRelID,
+					Colors: colorsRelID,
+					Style:  styleRelID,
+				},
+			},
+		},
+	}
+
+	s.slide.CSld.SpTree.Content = append(s.slide.CSld.SpTree.Content, gf)
+	return &shapeImpl{slide: s, graphicFrame: gf}, nil
 }
 
 // Comments returns slide comments.
@@ -608,7 +767,7 @@ func (s *slideImpl) SetNotes(text string) error {
 		notesSp = &dml.Sp{
 			NvSpPr: &dml.NvSpPr{
 				CNvPr:   &dml.CNvPr{ID: 2, Name: "Notes Placeholder"},
-				CNvSpPr: &dml.CNvSpPr{},
+				CNvSpPr: &dml.CNvSpPr{SpLocks: &dml.SpLocks{NoGrp: utils.BoolPtr(true)}},
 				NvPr:    &dml.NvPr{Ph: &dml.Ph{Type: pml.PhTypeBody}},
 			},
 			SpPr: &dml.SpPr{},
@@ -694,6 +853,12 @@ func (s *slideImpl) ensureSpTree() {
 
 func (s *slideImpl) ensureNotes() {
 	if s.notes == nil {
+		grpXfrm := &pml.GrpXfrm{
+			Off:   &pml.Off{X: 0, Y: 0},
+			Ext:   &pml.Ext{Cx: 0, Cy: 0},
+			ChOff: &pml.Off{X: 0, Y: 0},
+			ChExt: &pml.Ext{Cx: 0, Cy: 0},
+		}
 		s.notes = &pml.Notes{
 			CSld: &pml.CSld{
 				SpTree: &pml.SpTree{
@@ -702,9 +867,10 @@ func (s *slideImpl) ensureNotes() {
 						CNvGrpSpPr: &pml.CNvGrpSpPr{},
 						NvPr:       &pml.NvPr{},
 					},
-					GrpSpPr: &pml.GrpSpPr{},
+					GrpSpPr: &pml.GrpSpPr{Xfrm: grpXfrm},
 				},
 			},
+			ClrMapOvr: &pml.ClrMapOvr{MasterClrMapping: &pml.MasterClrMapping{}},
 		}
 	}
 }
