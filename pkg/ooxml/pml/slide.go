@@ -29,6 +29,12 @@ type SpTree struct {
 	Content   []interface{} `xml:",any"` // Sp, Pic, GraphicFrame, etc.
 }
 
+// RawXML preserves unknown elements in the shape tree.
+type RawXML struct {
+	XMLName xml.Name
+	Inner   string `xml:",innerxml"`
+}
+
 // UnmarshalXML implements custom XML unmarshaling for SpTree to capture shapes.
 func (s *SpTree) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for {
@@ -69,9 +75,11 @@ func (s *SpTree) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				s.Content = append(s.Content, pic)
 			default:
-				if err := d.Skip(); err != nil {
+				raw := &RawXML{XMLName: t.Name}
+				if err := d.DecodeElement(raw, &t); err != nil {
 					return err
 				}
+				s.Content = append(s.Content, raw)
 			}
 		case xml.EndElement:
 			if t.Name == start.Name {
@@ -110,6 +118,10 @@ func (s *SpTree) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			}
 		case *Pic:
 			if err := e.EncodeElement(v, xml.StartElement{Name: xml.Name{Space: NS, Local: "pic"}}); err != nil {
+				return err
+			}
+		case *RawXML:
+			if err := e.EncodeElement(v, xml.StartElement{Name: v.XMLName}); err != nil {
 				return err
 			}
 		default:
@@ -207,7 +219,14 @@ type Ext struct {
 
 // Bg represents background.
 type Bg struct {
-	BgPr *BgPr `xml:"bgPr,omitempty"`
+	BgRef *BgRef `xml:"bgRef,omitempty"`
+	BgPr  *BgPr  `xml:"bgPr,omitempty"`
+}
+
+// BgRef represents a background reference.
+type BgRef struct {
+	Idx       int             `xml:"idx,attr,omitempty"`
+	SchemeClr *dml.SchemeClr `xml:"http://schemas.openxmlformats.org/drawingml/2006/main schemeClr,omitempty"`
 }
 
 // BgPr represents background properties.

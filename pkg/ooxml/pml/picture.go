@@ -10,8 +10,8 @@ import (
 type Pic struct {
 	XMLName  xml.Name  `xml:"http://schemas.openxmlformats.org/presentationml/2006/main pic"`
 	NvPicPr  *NvPicPr  `xml:"nvPicPr"`
-	BlipFill *dml.BlipFill `xml:"http://schemas.openxmlformats.org/drawingml/2006/main blipFill"`
-	SpPr     *dml.SpPr `xml:"http://schemas.openxmlformats.org/drawingml/2006/main spPr"`
+	BlipFill *dml.BlipFill `xml:"blipFill,omitempty"`
+	SpPr     *dml.SpPr `xml:"spPr,omitempty"`
 }
 
 // NvPicPr represents non-visual picture properties.

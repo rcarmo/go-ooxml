@@ -89,10 +89,10 @@ type GradPath struct {
 type BlipFill struct {
 	Dpi        int        `xml:"dpi,attr,omitempty"`
 	RotWithShape *bool    `xml:"rotWithShape,attr,omitempty"`
-	Blip       *Blip      `xml:"http://schemas.openxmlformats.org/drawingml/2006/main blip,omitempty"`
-	SrcRect    *SrcRect   `xml:"http://schemas.openxmlformats.org/drawingml/2006/main srcRect,omitempty"`
-	Tile       *Tile      `xml:"http://schemas.openxmlformats.org/drawingml/2006/main tile,omitempty"`
-	Stretch    *Stretch   `xml:"http://schemas.openxmlformats.org/drawingml/2006/main stretch,omitempty"`
+	Blip       *Blip      `xml:"blip,omitempty"`
+	SrcRect    *SrcRect   `xml:"srcRect,omitempty"`
+	Tile       *Tile      `xml:"tile,omitempty"`
+	Stretch    *Stretch   `xml:"stretch,omitempty"`
 }
 
 // Blip represents an image reference.
@@ -101,6 +101,18 @@ type Blip struct {
 	Embed   string   `xml:"http://schemas.openxmlformats.org/officeDocument/2006/relationships embed,attr,omitempty"`
 	Link    string   `xml:"http://schemas.openxmlformats.org/officeDocument/2006/relationships link,attr,omitempty"`
 	CState  string   `xml:"cstate,attr,omitempty"` // none, print, screen, email
+	ExtLst  *ExtLst  `xml:"http://schemas.openxmlformats.org/drawingml/2006/main extLst,omitempty"`
+}
+
+// ExtLst represents an extension list.
+type ExtLst struct {
+	Ext []*ExtContainer `xml:"ext,omitempty"`
+}
+
+// ExtContainer represents a generic extension container.
+type ExtContainer struct {
+	URI   string `xml:"uri,attr,omitempty"`
+	Inner string `xml:",innerxml"`
 }
 
 // SrcRect represents source rectangle for cropping.

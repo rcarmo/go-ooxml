@@ -4,34 +4,35 @@ import "encoding/xml"
 
 // Worksheet represents a worksheet part.
 type Worksheet struct {
-	XMLName        xml.Name        `xml:"http://schemas.openxmlformats.org/spreadsheetml/2006/main worksheet"`
-	SheetPr        *SheetPr        `xml:"sheetPr,omitempty"`
-	Dimension      *Dimension      `xml:"dimension,omitempty"`
-	SheetViews     *SheetViews     `xml:"sheetViews,omitempty"`
-	SheetFormatPr  *SheetFormatPr  `xml:"sheetFormatPr,omitempty"`
-	Cols           *Cols           `xml:"cols,omitempty"`
-	SheetData      *SheetData      `xml:"sheetData"`
-	SheetProtection *SheetProtection `xml:"sheetProtection,omitempty"`
-	MergeCells     *MergeCells     `xml:"mergeCells,omitempty"`
-	Hyperlinks     *Hyperlinks     `xml:"hyperlinks,omitempty"`
-	LegacyDrawing  *LegacyDrawing  `xml:"legacyDrawing,omitempty"`
+	XMLName               xml.Name                 `xml:"http://schemas.openxmlformats.org/spreadsheetml/2006/main worksheet"`
+	SheetPr               *SheetPr                 `xml:"sheetPr,omitempty"`
+	Dimension             *Dimension               `xml:"dimension,omitempty"`
+	SheetViews            *SheetViews              `xml:"sheetViews,omitempty"`
+	SheetFormatPr         *SheetFormatPr           `xml:"sheetFormatPr,omitempty"`
+	Cols                  *Cols                    `xml:"cols,omitempty"`
+	SheetData             *SheetData               `xml:"sheetData"`
+	SheetProtection       *SheetProtection         `xml:"sheetProtection,omitempty"`
+	MergeCells            *MergeCells              `xml:"mergeCells,omitempty"`
+	Hyperlinks            *Hyperlinks              `xml:"hyperlinks,omitempty"`
+	Drawing               *Drawing                 `xml:"drawing,omitempty"`
+	LegacyDrawing         *LegacyDrawing           `xml:"legacyDrawing,omitempty"`
 	ConditionalFormatting []*ConditionalFormatting `xml:"conditionalFormatting,omitempty"`
-	PageMargins    *PageMargins    `xml:"pageMargins,omitempty"`
-	PageSetup      *PageSetup      `xml:"pageSetup,omitempty"`
-	TableParts     *TableParts     `xml:"tableParts,omitempty"`
+	PageMargins           *PageMargins             `xml:"pageMargins,omitempty"`
+	PageSetup             *PageSetup               `xml:"pageSetup,omitempty"`
+	TableParts            *TableParts              `xml:"tableParts,omitempty"`
 }
 
 // SheetPr represents sheet properties.
 type SheetPr struct {
-	TabColor        *TabColor        `xml:"tabColor,omitempty"`
-	OutlinePr       *OutlinePr       `xml:"outlinePr,omitempty"`
-	PageSetUpPr     *PageSetUpPr     `xml:"pageSetUpPr,omitempty"`
+	TabColor    *TabColor    `xml:"tabColor,omitempty"`
+	OutlinePr   *OutlinePr   `xml:"outlinePr,omitempty"`
+	PageSetUpPr *PageSetUpPr `xml:"pageSetUpPr,omitempty"`
 }
 
 // TabColor represents the sheet tab color.
 type TabColor struct {
-	RGB   string `xml:"rgb,attr,omitempty"`
-	Theme int    `xml:"theme,attr,omitempty"`
+	RGB   string  `xml:"rgb,attr,omitempty"`
+	Theme int     `xml:"theme,attr,omitempty"`
 	Tint  float64 `xml:"tint,attr,omitempty"`
 }
 
@@ -58,20 +59,20 @@ type SheetViews struct {
 
 // SheetView represents a sheet view.
 type SheetView struct {
-	TabSelected      *bool      `xml:"tabSelected,attr,omitempty"`
-	WorkbookViewID   int        `xml:"workbookViewId,attr"`
-	ShowGridLines    *bool      `xml:"showGridLines,attr,omitempty"`
-	ShowRowColHeaders *bool     `xml:"showRowColHeaders,attr,omitempty"`
-	ZoomScale        int        `xml:"zoomScale,attr,omitempty"`
-	Selection        *Selection `xml:"selection,omitempty"`
-	Pane             *Pane      `xml:"pane,omitempty"`
+	TabSelected       *bool      `xml:"tabSelected,attr,omitempty"`
+	WorkbookViewID    int        `xml:"workbookViewId,attr"`
+	ShowGridLines     *bool      `xml:"showGridLines,attr,omitempty"`
+	ShowRowColHeaders *bool      `xml:"showRowColHeaders,attr,omitempty"`
+	ZoomScale         int        `xml:"zoomScale,attr,omitempty"`
+	Selection         *Selection `xml:"selection,omitempty"`
+	Pane              *Pane      `xml:"pane,omitempty"`
 }
 
 // Selection represents the current selection.
 type Selection struct {
-	ActiveCell   string `xml:"activeCell,attr,omitempty"`
-	SqRef        string `xml:"sqref,attr,omitempty"`
-	Pane         string `xml:"pane,attr,omitempty"`
+	ActiveCell string `xml:"activeCell,attr,omitempty"`
+	SqRef      string `xml:"sqref,attr,omitempty"`
+	Pane       string `xml:"pane,attr,omitempty"`
 }
 
 // Pane represents a split pane.
@@ -98,15 +99,15 @@ type Cols struct {
 
 // Col represents column properties.
 type Col struct {
-	Min         int     `xml:"min,attr"`
-	Max         int     `xml:"max,attr"`
-	Width       float64 `xml:"width,attr,omitempty"`
-	Style       int     `xml:"style,attr,omitempty"`
-	Hidden      *bool   `xml:"hidden,attr,omitempty"`
-	BestFit     *bool   `xml:"bestFit,attr,omitempty"`
-	CustomWidth *bool   `xml:"customWidth,attr,omitempty"`
-	Collapsed   *bool   `xml:"collapsed,attr,omitempty"`
-	OutlineLevel int    `xml:"outlineLevel,attr,omitempty"`
+	Min          int     `xml:"min,attr"`
+	Max          int     `xml:"max,attr"`
+	Width        float64 `xml:"width,attr,omitempty"`
+	Style        int     `xml:"style,attr,omitempty"`
+	Hidden       *bool   `xml:"hidden,attr,omitempty"`
+	BestFit      *bool   `xml:"bestFit,attr,omitempty"`
+	CustomWidth  *bool   `xml:"customWidth,attr,omitempty"`
+	Collapsed    *bool   `xml:"collapsed,attr,omitempty"`
+	OutlineLevel int     `xml:"outlineLevel,attr,omitempty"`
 }
 
 // SheetData contains all cell data.
@@ -130,14 +131,14 @@ type Row struct {
 
 // SheetProtection represents sheet protection settings.
 type SheetProtection struct {
-	Sheet        *bool  `xml:"sheet,attr,omitempty"`
-	Objects      *bool  `xml:"objects,attr,omitempty"`
-	Scenarios    *bool  `xml:"scenarios,attr,omitempty"`
-	Password     string `xml:"password,attr,omitempty"`
+	Sheet         *bool  `xml:"sheet,attr,omitempty"`
+	Objects       *bool  `xml:"objects,attr,omitempty"`
+	Scenarios     *bool  `xml:"scenarios,attr,omitempty"`
+	Password      string `xml:"password,attr,omitempty"`
 	AlgorithmName string `xml:"algorithmName,attr,omitempty"`
-	HashValue    string `xml:"hashValue,attr,omitempty"`
-	SaltValue    string `xml:"saltValue,attr,omitempty"`
-	SpinCount    int    `xml:"spinCount,attr,omitempty"`
+	HashValue     string `xml:"hashValue,attr,omitempty"`
+	SaltValue     string `xml:"saltValue,attr,omitempty"`
+	SpinCount     int    `xml:"spinCount,attr,omitempty"`
 }
 
 // MergeCells is a collection of merged cell ranges.
@@ -165,6 +166,11 @@ type Hyperlink struct {
 	Tooltip  string `xml:"tooltip,attr,omitempty"`
 }
 
+// Drawing references a drawing part (charts, images, shapes).
+type Drawing struct {
+	ID string `xml:"http://schemas.openxmlformats.org/officeDocument/2006/relationships id,attr"`
+}
+
 // LegacyDrawing references a VML drawing part (used for comments).
 type LegacyDrawing struct {
 	ID string `xml:"http://schemas.openxmlformats.org/officeDocument/2006/relationships id,attr"`
@@ -172,14 +178,14 @@ type LegacyDrawing struct {
 
 // ConditionalFormatting represents conditional formatting rules.
 type ConditionalFormatting struct {
-	SqRef string   `xml:"sqref,attr,omitempty"`
+	SqRef string    `xml:"sqref,attr,omitempty"`
 	Rules []*CfRule `xml:"cfRule,omitempty"`
 }
 
 // CfRule represents a conditional formatting rule.
 type CfRule struct {
-	Type      string     `xml:"type,attr,omitempty"`
-	Priority  int        `xml:"priority,attr,omitempty"`
+	Type       string      `xml:"type,attr,omitempty"`
+	Priority   int         `xml:"priority,attr,omitempty"`
 	ColorScale *ColorScale `xml:"colorScale,omitempty"`
 }
 
@@ -207,13 +213,13 @@ type PageMargins struct {
 
 // PageSetup represents page setup.
 type PageSetup struct {
-	PaperSize          int    `xml:"paperSize,attr,omitempty"`
-	Scale              int    `xml:"scale,attr,omitempty"`
-	Orientation        string `xml:"orientation,attr,omitempty"` // portrait, landscape
-	FitToWidth         int    `xml:"fitToWidth,attr,omitempty"`
-	FitToHeight        int    `xml:"fitToHeight,attr,omitempty"`
-	HorizontalDpi      int    `xml:"horizontalDpi,attr,omitempty"`
-	VerticalDpi        int    `xml:"verticalDpi,attr,omitempty"`
+	PaperSize     int    `xml:"paperSize,attr,omitempty"`
+	Scale         int    `xml:"scale,attr,omitempty"`
+	Orientation   string `xml:"orientation,attr,omitempty"` // portrait, landscape
+	FitToWidth    int    `xml:"fitToWidth,attr,omitempty"`
+	FitToHeight   int    `xml:"fitToHeight,attr,omitempty"`
+	HorizontalDpi int    `xml:"horizontalDpi,attr,omitempty"`
+	VerticalDpi   int    `xml:"verticalDpi,attr,omitempty"`
 }
 
 // TableParts is a collection of table part references.

@@ -18,6 +18,7 @@ type Presentation struct {
 	XMLName            xml.Name            `xml:"http://schemas.openxmlformats.org/presentationml/2006/main presentation"`
 	XMLNS_R            string              `xml:"xmlns:r,attr,omitempty"`
 	SldMasterIdLst     *SldMasterIdLst     `xml:"sldMasterIdLst,omitempty"`
+	NotesMasterIdLst   *NotesMasterIdLst   `xml:"notesMasterIdLst,omitempty"`
 	SldIdLst           *SldIdLst           `xml:"sldIdLst,omitempty"`
 	SldSz              *SldSz              `xml:"sldSz,omitempty"`
 	NotesSz            *NotesSz            `xml:"notesSz,omitempty"`
@@ -33,6 +34,36 @@ type SldMasterIdLst struct {
 type SldMasterId struct {
 	ID  int    `xml:"id,attr,omitempty"`
 	RID string `xml:"http://schemas.openxmlformats.org/officeDocument/2006/relationships id,attr"`
+}
+
+// NotesMasterIdLst is a list of notes master IDs.
+type NotesMasterIdLst struct {
+	NotesMasterId []*NotesMasterId `xml:"notesMasterId,omitempty"`
+}
+
+// NotesMasterId references a notes master.
+type NotesMasterId struct {
+	RID string `xml:"-"` // Manually handled
+}
+
+// UnmarshalXML customizes XML parsing to properly read r:id attribute.
+func (n *NotesMasterId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Space != "" && attr.Name.Local == "id" {
+			n.RID = attr.Value
+			break
+		}
+	}
+	return d.Skip()
+}
+
+// MarshalXML customizes XML output to use r: prefix for relationship ID.
+func (n NotesMasterId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "notesMasterId"
+	start.Attr = []xml.Attr{
+		{Name: xml.Name{Space: NSR, Local: "id"}, Value: n.RID},
+	}
+	return e.EncodeElement("", start)
 }
 
 // UnmarshalXML customizes XML parsing to properly read r:id attribute.

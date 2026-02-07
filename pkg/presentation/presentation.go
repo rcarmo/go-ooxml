@@ -2,6 +2,8 @@
 package presentation
 
 import (
+	"bytes"
+	_ "embed"
 	"fmt"
 	"io"
 	"os"
@@ -10,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/dml"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/pml"
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
 	"github.com/rcarmo/go-ooxml/pkg/utils"
@@ -30,6 +33,9 @@ const (
 	SlideHeight16x10 int64 = 6858000  // 7.5 inches
 )
 
+//go:embed templates/default.pptx
+var defaultTemplate []byte
+
 // Presentation represents a PowerPoint presentation.
 type presentationImpl struct {
 	pkg          *packaging.Package
@@ -38,47 +44,47 @@ type presentationImpl struct {
 	path         string
 	nextSlideID  int
 	commentAuthors *pml.AuthorList
+	notesMaster  *pml.NotesMaster
+	notesMasterPath string
+	notesMasterRelID string
+	notesMasterTheme []byte
+	notesMasterThemePath string
 	masters       []*slideMasterImpl
 	layouts       []*slideLayoutImpl
 	nextImageID   int
+	themeParts    map[string][]byte
+	extraParts    map[string]*packaging.Part
 }
 
 // New creates a new empty presentation with standard 4:3 dimensions.
 func New() (Presentation, error) {
+	p, err := newFromTemplate()
+	if err == nil {
+		return p, nil
+	}
 	return NewWithSize(SlideWidth4x3, SlideHeight4x3)
 }
 
 // NewWidescreen creates a new presentation with 16:9 widescreen dimensions.
 func NewWidescreen() (Presentation, error) {
+	p, err := newFromTemplate()
+	if err == nil {
+		_ = p.SetSlideSize(SlideWidth16x9, SlideHeight16x9)
+		return p, nil
+	}
 	return NewWithSize(SlideWidth16x9, SlideHeight16x9)
 }
 
 // NewWithSize creates a new presentation with specified dimensions in EMUs.
 func NewWithSize(width, height int64) (Presentation, error) {
-	p := &presentationImpl{
-		pkg: packaging.New(),
-		presentation: &pml.Presentation{
-			XMLNS_R: pml.NSR,
-			SldSz: &pml.SldSz{
-				Cx:   width,
-				Cy:   height,
-				Type: getSizeType(width, height),
-			},
-			NotesSz: &pml.NotesSz{
-				Cx: 6858000,  // Standard notes width
-				Cy: 9144000,  // Standard notes height
-			},
-			SldIdLst: &pml.SldIdLst{},
-		},
-		slides:      make([]*slideImpl, 0),
-		nextSlideID: 256, // PowerPoint typically starts slide IDs at 256
-		nextImageID: 1,
+	p, err := newFromTemplate()
+	if err != nil {
+		p, err = newEmptyPresentation(width, height)
 	}
-
-	if err := p.initPackage(); err != nil {
+	if err != nil {
 		return nil, err
 	}
-
+	_ = p.SetSlideSize(width, height)
 	return p, nil
 }
 
@@ -88,7 +94,6 @@ func Open(path string) (Presentation, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	p, err := openFromPackage(pkg)
 	if err != nil {
 		return nil, err
@@ -106,6 +111,65 @@ func OpenReader(r io.ReaderAt, size int64) (Presentation, error) {
 	return openFromPackage(pkg)
 }
 
+func newFromTemplate() (*presentationImpl, error) {
+	if len(defaultTemplate) == 0 {
+		return nil, utils.ErrPartNotFound
+	}
+	pkg, err := packaging.OpenReader(bytes.NewReader(defaultTemplate), int64(len(defaultTemplate)))
+	if err != nil {
+		return nil, err
+	}
+	p, err := openFromPackage(pkg)
+	if err != nil {
+		return nil, err
+	}
+	if p.presentation != nil {
+		p.presentation.SldIdLst = &pml.SldIdLst{}
+	}
+	p.slides = nil
+	p.nextSlideID = 256
+	presRels := p.pkg.GetRelationships(packaging.PresentationPath)
+	filtered := presRels.Relationships[:0]
+	for _, rel := range presRels.Relationships {
+		if rel.Type == packaging.RelTypeSlide {
+			continue
+		}
+		filtered = append(filtered, rel)
+	}
+	presRels.Relationships = filtered
+	return p, nil
+}
+
+func newEmptyPresentation(width, height int64) (*presentationImpl, error) {
+	p := &presentationImpl{
+		pkg: packaging.New(),
+		presentation: &pml.Presentation{
+			XMLNS_R: pml.NSR,
+			SldSz: &pml.SldSz{
+				Cx:   width,
+				Cy:   height,
+				Type: getSizeType(width, height),
+			},
+			NotesSz: &pml.NotesSz{
+				Cx: 6858000, // Standard notes width
+				Cy: 9144000, // Standard notes height
+			},
+			SldIdLst: &pml.SldIdLst{},
+		},
+		slides:      make([]*slideImpl, 0),
+		nextSlideID: 256, // PowerPoint typically starts slide IDs at 256
+		nextImageID: 1,
+		themeParts:  make(map[string][]byte),
+		extraParts:  make(map[string]*packaging.Part),
+	}
+
+	if err := p.initPackage(); err != nil {
+		return nil, err
+	}
+
+	return p, nil
+}
+
 func openFromPackage(pkg *packaging.Package) (*presentationImpl, error) {
 	p := &presentationImpl{
 		pkg:         pkg,
@@ -114,6 +178,8 @@ func openFromPackage(pkg *packaging.Package) (*presentationImpl, error) {
 		nextImageID: 1,
 		masters:     make([]*slideMasterImpl, 0),
 		layouts:     make([]*slideLayoutImpl, 0),
+		themeParts:  make(map[string][]byte),
+		extraParts:  make(map[string]*packaging.Part),
 	}
 
 	// Parse presentation.xml
@@ -127,7 +193,9 @@ func openFromPackage(pkg *packaging.Package) (*presentationImpl, error) {
 	}
 
 	p.parseMastersAndLayouts()
+	p.parseNotesMaster()
 	p.parseCommentAuthors()
+	p.captureAdvancedParts()
 
 	return p, nil
 }
@@ -238,7 +306,15 @@ func (p *presentationImpl) InsertSlide(index, layoutIndex int) Slide {
 	}
 
 	slideNum := len(p.slides) + 1
-	relID := fmt.Sprintf("rId%d", slideNum+10) // Start relationship IDs at 11
+	slidePath := fmt.Sprintf("ppt/slides/slide%d.xml", slideNum)
+	rels := p.pkg.GetRelationships(packaging.PresentationPath)
+	for _, rel := range rels.Relationships {
+		if rel.Type == packaging.RelTypeSlide && rel.Target == relativeTarget(packaging.PresentationPath, slidePath) {
+			rels.Remove(rel.ID)
+		}
+	}
+	relID := rels.NextID()
+	rels.AddWithID(relID, packaging.RelTypeSlide, relativeTarget(packaging.PresentationPath, slidePath), packaging.TargetModeInternal)
 
 	slide := &slideImpl{
 		pres:  p,
@@ -246,8 +322,21 @@ func (p *presentationImpl) InsertSlide(index, layoutIndex int) Slide {
 		id:    p.nextSlideID,
 		relID: relID,
 		index: index,
+		path:  slidePath,
 	}
 	p.nextSlideID++
+
+	if layoutIndex >= 0 && layoutIndex < len(p.layouts) {
+		if layoutPath := p.layouts[layoutIndex].path; layoutPath != "" {
+			if slide.slide.ClrMapOvr == nil {
+				slide.slide.ClrMapOvr = &pml.ClrMapOvr{
+					MasterClrMapping: &pml.MasterClrMapping{},
+				}
+			}
+			slideRels := p.pkg.GetRelationships(slidePath)
+			slideRels.AddWithID(slideRels.NextID(), packaging.RelTypeSlideLayout, relativeTarget(slidePath, layoutPath), packaging.TargetModeInternal)
+		}
+	}
 
 	// Insert into slide list
 	if index >= len(p.slides) {
@@ -415,6 +504,39 @@ func (p *presentationImpl) parsePresentation() error {
 }
 
 func (p *presentationImpl) parseSlides() error {
+	defer func() {
+		if len(p.slides) == 0 {
+			rels := p.pkg.GetRelationships(packaging.PresentationPath)
+			if rels == nil {
+				return
+			}
+			for _, rel := range rels.ByType(packaging.RelTypeSlide) {
+				slidePath := packaging.ResolveRelationshipTarget(packaging.PresentationPath, rel.Target)
+				part, err := p.pkg.GetPart(slidePath)
+				if err != nil {
+					continue
+				}
+				data, err := part.Content()
+				if err != nil {
+					continue
+				}
+				slide := &pml.Sld{}
+				if err := utils.UnmarshalXML(data, slide); err != nil {
+					continue
+				}
+				slideImpl := &slideImpl{
+					pres:  p,
+					slide: slide,
+					relID: rel.ID,
+					index: len(p.slides),
+					path:  slidePath,
+				}
+				slideImpl.comments = p.parseSlideComments(slidePath)
+				slideImpl.notes = p.parseSlideNotes(slidePath)
+				p.slides = append(p.slides, slideImpl)
+			}
+		}
+	}()
 	if p.presentation.SldIdLst == nil {
 		return nil
 	}
@@ -505,6 +627,153 @@ func (p *presentationImpl) parseLayoutsFromMaster(masterPath string) {
 	}
 }
 
+func (p *presentationImpl) parseNotesMaster() {
+	rels := p.pkg.GetRelationships(packaging.PresentationPath)
+	if rels == nil {
+		return
+	}
+	rel := rels.FirstByType(packaging.RelTypeNotesMaster)
+	if rel == nil {
+		return
+	}
+	target := packaging.ResolveRelationshipTarget(packaging.PresentationPath, rel.Target)
+	part, err := p.pkg.GetPart(target)
+	if err != nil {
+		return
+	}
+	data, err := part.Content()
+	if err != nil {
+		return
+	}
+		notesMaster := &pml.NotesMaster{}
+		if err := utils.UnmarshalXML(data, notesMaster); err != nil {
+			return
+		}
+	p.notesMaster = notesMaster
+	p.notesMasterPath = target
+	p.notesMasterRelID = rel.ID
+	if masterRels := p.pkg.GetRelationships(target); masterRels != nil {
+		themeRel := masterRels.FirstByType(packaging.RelTypeTheme)
+		if themeRel != nil {
+			themePath := packaging.ResolveRelationshipTarget(target, themeRel.Target)
+			if themePart, err := p.pkg.GetPart(themePath); err == nil {
+				if themeData, err := themePart.Content(); err == nil {
+					p.notesMasterTheme = themeData
+					p.notesMasterThemePath = themePath
+				}
+			}
+		}
+	}
+}
+
+func (p *presentationImpl) ensureNotesMaster() error {
+	if p.notesMaster != nil {
+		return nil
+	}
+	for _, path := range []string{"ppt/notesMasters/notesMaster1.xml"} {
+		part, err := p.pkg.GetPart(path)
+		if err != nil {
+			continue
+		}
+		data, err := part.Content()
+		if err != nil {
+			continue
+		}
+		notesMaster := &pml.NotesMaster{}
+		if err := utils.UnmarshalXML(data, notesMaster); err != nil {
+			continue
+		}
+		p.notesMaster = notesMaster
+		p.notesMasterPath = path
+		return nil
+	}
+	return p.createDefaultNotesMaster()
+}
+
+func (p *presentationImpl) createDefaultNotesMaster() error {
+	p.notesMasterPath = "ppt/notesMasters/notesMaster1.xml"
+	p.notesMaster = &pml.NotesMaster{
+		CSld: &pml.CSld{
+			Bg: &pml.Bg{
+				BgRef: &pml.BgRef{
+					Idx:       1001,
+					SchemeClr: &dml.SchemeClr{Val: "bg1"},
+				},
+			},
+			SpTree: &pml.SpTree{
+				NvGrpSpPr: &pml.NvGrpSpPr{
+					CNvPr:      &pml.CNvPr{ID: 1, Name: ""},
+					CNvGrpSpPr: &pml.CNvGrpSpPr{},
+					NvPr:       &pml.NvPr{},
+				},
+				GrpSpPr: &pml.GrpSpPr{
+					Xfrm: &pml.GrpXfrm{
+						Off:   &pml.Off{X: 0, Y: 0},
+						Ext:   &pml.Ext{Cx: 0, Cy: 0},
+						ChOff: &pml.Off{X: 0, Y: 0},
+						ChExt: &pml.Ext{Cx: 0, Cy: 0},
+					},
+				},
+				Content: []interface{}{},
+			},
+		},
+		ClrMap: &pml.ClrMap{
+			Bg1:      "lt1",
+			Tx1:      "dk1",
+			Bg2:      "lt2",
+			Tx2:      "dk2",
+			Accent1:  "accent1",
+			Accent2:  "accent2",
+			Accent3:  "accent3",
+			Accent4:  "accent4",
+			Accent5:  "accent5",
+			Accent6:  "accent6",
+			HLink:    "hlink",
+			FolHLink: "folHlink",
+		},
+		NotesStyle: &pml.NotesStyle{
+			Lvl1pPr: &pml.LvlPPr{},
+			Lvl2pPr: &pml.LvlPPr{},
+			Lvl3pPr: &pml.LvlPPr{},
+			Lvl4pPr: &pml.LvlPPr{},
+			Lvl5pPr: &pml.LvlPPr{},
+			Lvl6pPr: &pml.LvlPPr{},
+			Lvl7pPr: &pml.LvlPPr{},
+			Lvl8pPr: &pml.LvlPPr{},
+			Lvl9pPr: &pml.LvlPPr{},
+		},
+		ExtLst: &pml.NotesExtLst{
+			Ext: []*pml.NotesExt{{
+				URI: "{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}",
+				Any: `<p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="2696953737"/>`,
+			}},
+		},
+	}
+	p.notesMasterTheme = p.selectNotesMasterTheme()
+	return nil
+}
+
+func (p *presentationImpl) selectNotesMasterTheme() []byte {
+	if len(p.themeParts) > 0 {
+		for _, data := range p.themeParts {
+			return data
+		}
+	}
+	if part, err := p.pkg.GetPart("ppt/theme/theme2.xml"); err == nil {
+		if data, err := part.Content(); err == nil {
+			p.notesMasterThemePath = "ppt/theme/theme2.xml"
+			return data
+		}
+	}
+	if part, err := p.pkg.GetPart("ppt/theme/theme1.xml"); err == nil {
+		if data, err := part.Content(); err == nil {
+			p.notesMasterThemePath = "ppt/theme/theme1.xml"
+			return data
+		}
+	}
+	return nil
+}
+
 func (p *presentationImpl) parseSlideComments(slidePath string) *pml.CommentList {
 	rels := p.pkg.GetRelationships(slidePath)
 	if rels == nil {
@@ -580,6 +849,110 @@ func (p *presentationImpl) parseCommentAuthors() {
 	p.commentAuthors = authors
 }
 
+func (p *presentationImpl) captureAdvancedParts() {
+	if p.pkg == nil {
+		return
+	}
+	presRels := p.pkg.GetRelationships(packaging.PresentationPath)
+	for _, rel := range presRels.ByType(packaging.RelTypeTheme) {
+		target := packaging.ResolveRelationshipTarget(packaging.PresentationPath, rel.Target)
+		part, err := p.pkg.GetPart(target)
+		if err != nil {
+			continue
+		}
+		if data, err := part.Content(); err == nil {
+			p.themeParts[target] = data
+		}
+	}
+	for _, slide := range p.slides {
+		if slide.path == "" {
+			continue
+		}
+		rels := p.pkg.GetRelationships(slide.path)
+		for _, rel := range rels.Relationships {
+			switch rel.Type {
+			case packaging.RelTypeChart, packaging.RelTypeChartStyle, packaging.RelTypeChartColorStyle,
+				packaging.RelTypeDiagramData, packaging.RelTypeDiagramLayout,
+				packaging.RelTypeDiagramColors, packaging.RelTypeDiagramStyle,
+				packaging.RelTypeAudio, packaging.RelTypeVideo, packaging.RelTypeMedia:
+			default:
+				continue
+			}
+			target := packaging.ResolveRelationshipTarget(slide.path, rel.Target)
+			part, err := p.pkg.GetPart(target)
+			if err != nil {
+				continue
+			}
+			p.extraParts[target] = part
+			p.captureRelatedParts(target, 2)
+		}
+	}
+	for _, master := range p.masters {
+		p.capturePartsForPath(master.path)
+	}
+	for _, layout := range p.layouts {
+		p.capturePartsForPath(layout.path)
+	}
+}
+
+func (p *presentationImpl) capturePartsForPath(sourcePath string) {
+	if sourcePath == "" || p.pkg == nil {
+		return
+	}
+	rels := p.pkg.GetRelationships(sourcePath)
+	for _, rel := range rels.Relationships {
+		switch rel.Type {
+		case packaging.RelTypeChart, packaging.RelTypeChartStyle, packaging.RelTypeChartColorStyle,
+			packaging.RelTypeDiagramData, packaging.RelTypeDiagramLayout,
+			packaging.RelTypeDiagramColors, packaging.RelTypeDiagramStyle,
+			packaging.RelTypeAudio, packaging.RelTypeVideo, packaging.RelTypeMedia,
+			packaging.RelTypeTheme:
+		default:
+			continue
+		}
+		target := packaging.ResolveRelationshipTarget(sourcePath, rel.Target)
+		part, err := p.pkg.GetPart(target)
+		if err != nil {
+			continue
+		}
+		if rel.Type == packaging.RelTypeTheme {
+			if data, err := part.Content(); err == nil {
+				p.themeParts[target] = data
+			}
+			continue
+		}
+		p.extraParts[target] = part
+		p.captureRelatedParts(target, 2)
+	}
+}
+
+func (p *presentationImpl) captureRelatedParts(sourcePath string, depth int) {
+	if depth <= 0 || p.pkg == nil {
+		return
+	}
+	rels := p.pkg.GetRelationships(sourcePath)
+	for _, rel := range rels.Relationships {
+		switch rel.Type {
+		case packaging.RelTypeChart, packaging.RelTypeChartStyle, packaging.RelTypeChartColorStyle,
+			packaging.RelTypeDiagramData, packaging.RelTypeDiagramLayout,
+			packaging.RelTypeDiagramColors, packaging.RelTypeDiagramStyle,
+			packaging.RelTypeAudio, packaging.RelTypeVideo, packaging.RelTypeMedia:
+		default:
+			continue
+		}
+		target := packaging.ResolveRelationshipTarget(sourcePath, rel.Target)
+		if _, ok := p.extraParts[target]; ok {
+			continue
+		}
+		part, err := p.pkg.GetPart(target)
+		if err != nil {
+			continue
+		}
+		p.extraParts[target] = part
+		p.captureRelatedParts(target, depth-1)
+	}
+}
+
 func (p *presentationImpl) ensureCommentAuthor(name string) string {
 	if p.commentAuthors == nil {
 		p.commentAuthors = &pml.AuthorList{}
@@ -593,6 +966,8 @@ func (p *presentationImpl) ensureCommentAuthor(name string) string {
 		ID:       newCommentID(),
 		Name:     name,
 		Initials: initials(name),
+		UserID:   newCommentID(),
+		ProviderID: "copilot",
 	}
 	p.commentAuthors.Author = append(p.commentAuthors.Author, author)
 	return author.ID
@@ -671,6 +1046,9 @@ func (l *slideLayoutImpl) Path() string {
 }
 
 func (p *presentationImpl) updatePackage() error {
+	if err := p.ensureNotesMaster(); err != nil {
+		return err
+	}
 	// Save presentation.xml
 	data, err := utils.MarshalXMLWithHeader(p.presentation)
 	if err != nil {
@@ -712,6 +1090,29 @@ func (p *presentationImpl) updatePackage() error {
 				break
 			}
 			slideRels.AddWithID(relID, packaging.RelTypeNotesSlide, relativeTarget(slidePath, notesPath), packaging.TargetModeInternal)
+			notesRels := p.pkg.GetRelationships(notesPath)
+			notesRelID := notesRels.NextID()
+			if existing := notesRels.FirstByType(packaging.RelTypeNotesMaster); existing != nil {
+				notesRelID = existing.ID
+			}
+			notesRels.AddWithID(notesRelID, packaging.RelTypeNotesMaster, relativeTarget(notesPath, p.notesMasterPath), packaging.TargetModeInternal)
+			notesSlideRelID := notesRels.NextID()
+			if existing := notesRels.FirstByType(packaging.RelTypeSlide); existing != nil {
+				notesSlideRelID = existing.ID
+			}
+			notesRels.AddWithID(notesSlideRelID, packaging.RelTypeSlide, relativeTarget(notesPath, slidePath), packaging.TargetModeInternal)
+			if p.notesMasterRelID != "" && p.presentation != nil && p.presentation.NotesMasterIdLst != nil {
+				found := false
+				for _, id := range p.presentation.NotesMasterIdLst.NotesMasterId {
+					if id.RID == p.notesMasterRelID {
+						found = true
+						break
+					}
+				}
+				if !found {
+					p.presentation.NotesMasterIdLst.NotesMasterId = append(p.presentation.NotesMasterIdLst.NotesMasterId, &pml.NotesMasterId{RID: p.notesMasterRelID})
+				}
+			}
 		}
 
 		if slide.comments != nil && len(slide.comments.Comment) > 0 {
@@ -751,6 +1152,119 @@ func (p *presentationImpl) updatePackage() error {
 		rels.AddWithID(relID, packaging.RelTypePPTXAuthors, "authors.xml", packaging.TargetModeInternal)
 	}
 
+	if err := p.writeNotesMaster(); err != nil {
+		return err
+	}
+	if p.notesMasterRelID != "" && p.presentation != nil {
+		if p.presentation.NotesMasterIdLst == nil {
+			p.presentation.NotesMasterIdLst = &pml.NotesMasterIdLst{}
+		}
+		found := false
+		for _, id := range p.presentation.NotesMasterIdLst.NotesMasterId {
+			if id.RID == p.notesMasterRelID {
+				found = true
+				break
+			}
+		}
+		if !found {
+			p.presentation.NotesMasterIdLst.NotesMasterId = append(p.presentation.NotesMasterIdLst.NotesMasterId, &pml.NotesMasterId{RID: p.notesMasterRelID})
+		}
+		data, err := utils.MarshalXMLWithHeader(p.presentation)
+		if err != nil {
+			return err
+		}
+		if _, err := p.pkg.AddPart(packaging.PresentationPath, packaging.ContentTypePresentation, data); err != nil {
+			return err
+		}
+	}
+
+	if err := p.writeAdvancedParts(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *presentationImpl) writeNotesMaster() error {
+	if p.notesMaster == nil || p.notesMasterPath == "" {
+		return nil
+	}
+	notesData, err := utils.MarshalXMLWithHeader(p.notesMaster)
+	if err != nil {
+		return err
+	}
+	if _, err := p.pkg.AddPart(p.notesMasterPath, packaging.ContentTypeNotesMaster, notesData); err != nil {
+		return err
+	}
+	if p.notesMasterTheme != nil {
+		themePath := p.notesMasterThemePath
+		if themePath == "" {
+			themePath = "ppt/theme/theme2.xml"
+			p.notesMasterThemePath = themePath
+		}
+		if _, err := p.pkg.AddPart(themePath, packaging.ContentTypeTheme, p.notesMasterTheme); err != nil {
+			return err
+		}
+		notesMasterRels := p.pkg.GetRelationships(p.notesMasterPath)
+		relID := notesMasterRels.NextID()
+		if existing := notesMasterRels.FirstByType(packaging.RelTypeTheme); existing != nil {
+			relID = existing.ID
+		}
+		notesMasterRels.AddWithID(relID, packaging.RelTypeTheme, relativeTarget(p.notesMasterPath, themePath), packaging.TargetModeInternal)
+	}
+	rels := p.pkg.GetRelationships(packaging.PresentationPath)
+	relID := p.notesMasterRelID
+	if relID == "" {
+		relID = rels.NextID()
+		p.notesMasterRelID = relID
+	}
+	rels.AddWithID(relID, packaging.RelTypeNotesMaster, relativeTarget(packaging.PresentationPath, p.notesMasterPath), packaging.TargetModeInternal)
+	if p.presentation != nil {
+		if p.presentation.NotesMasterIdLst == nil {
+			p.presentation.NotesMasterIdLst = &pml.NotesMasterIdLst{}
+		}
+		found := false
+		for _, id := range p.presentation.NotesMasterIdLst.NotesMasterId {
+			if id.RID == relID {
+				found = true
+				break
+			}
+		}
+		if !found {
+			p.presentation.NotesMasterIdLst.NotesMasterId = append(p.presentation.NotesMasterIdLst.NotesMasterId, &pml.NotesMasterId{RID: relID})
+		}
+	}
+	return nil
+}
+
+func (p *presentationImpl) writeAdvancedParts() error {
+	if p.pkg == nil {
+		return nil
+	}
+	for partPath, data := range p.themeParts {
+		if _, err := p.pkg.AddPart(partPath, packaging.ContentTypeTheme, data); err != nil {
+			return err
+		}
+		rels := p.pkg.GetRelationships(packaging.PresentationPath)
+		rel := rels.FirstByType(packaging.RelTypeTheme)
+		relID := rels.NextID()
+		if rel != nil {
+			relID = rel.ID
+		}
+		rels.AddWithID(relID, packaging.RelTypeTheme, relativeTarget(packaging.PresentationPath, partPath), packaging.TargetModeInternal)
+	}
+	for partPath, part := range p.extraParts {
+		if part == nil {
+			continue
+		}
+		content, err := part.Content()
+		if err != nil {
+			return err
+		}
+		if _, err := p.pkg.AddPart(partPath, part.ContentType(), content); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -758,11 +1272,15 @@ func (p *presentationImpl) addImagePart(imagePath string) (string, error) {
 	if p == nil || p.pkg == nil {
 		return "", utils.ErrDocumentClosed
 	}
-	data, err := os.ReadFile(imagePath)
+	if imagePath == "" {
+		return "", utils.ErrPathNotSet
+	}
+	cleanPath := filepath.Clean(imagePath)
+	data, err := os.ReadFile(cleanPath)
 	if err != nil {
 		return "", err
 	}
-	ext := strings.TrimPrefix(strings.ToLower(path.Ext(imagePath)), ".")
+	ext := strings.TrimPrefix(strings.ToLower(path.Ext(cleanPath)), ".")
 	contentType := packaging.ContentTypePNG
 	switch ext {
 	case "jpg", "jpeg":

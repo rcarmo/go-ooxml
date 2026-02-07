@@ -7,6 +7,7 @@ import (
 
 	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
+	"github.com/rcarmo/go-ooxml/pkg/packaging"
 )
 
 // =============================================================================
@@ -604,6 +605,22 @@ func TestRoundTrip(t *testing.T) {
 	summarySheet, _ := w2.SheetRaw("Summary")
 	if summarySheet.Cell("A1").Formula() != "SUM(Data!B2)" {
 		t.Errorf("Formula = %q, want %q", summarySheet.Cell("A1").Formula(), "SUM(Data!B2)")
+	}
+}
+
+func TestAdvancedPartsRoundTrip(t *testing.T) {
+	orig := testutil.OpenResource(t, Open, filepath.Join("..", "..", "testdata", "excel", "formatting.xlsx"))
+
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "advanced-roundtrip.xlsx")
+	if err := orig.SaveAs(path); err != nil {
+		t.Fatalf("SaveAs() error = %v", err)
+	}
+
+	round := testutil.OpenResource(t, Open, path)
+	rels := round.(*workbookImpl).pkg.GetRelationships(packaging.ExcelWorkbookPath)
+	if rels.FirstByType(packaging.RelTypeTheme) == nil {
+		t.Error("Expected theme relationship after round-trip")
 	}
 }
 

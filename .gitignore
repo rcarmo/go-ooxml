@@ -12,6 +12,8 @@ go-ooxml
 # Output
 *.out
 coverage.out
+testdata/generated/
+artifacts/
 
 # Dependency directories
 vendor/

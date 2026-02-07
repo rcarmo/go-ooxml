@@ -44,6 +44,12 @@ type HlinkClick struct {
 // CNvSpPr represents non-visual shape drawing properties.
 type CNvSpPr struct {
 	TxBox *bool `xml:"txBox,attr,omitempty"` // Is text box
+	SpLocks *SpLocks `xml:"http://schemas.openxmlformats.org/drawingml/2006/main spLocks,omitempty"`
+}
+
+// SpLocks represents shape locking settings.
+type SpLocks struct {
+	NoGrp *bool `xml:"noGrp,attr,omitempty"`
 }
 
 // NvPr represents non-visual properties.

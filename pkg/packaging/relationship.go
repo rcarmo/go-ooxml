@@ -110,7 +110,9 @@ func (r *Relationships) NextID() string {
 	for _, rel := range r.Relationships {
 		if strings.HasPrefix(rel.ID, "rId") {
 			var num int
-			fmt.Sscanf(rel.ID, "rId%d", &num)
+			if _, err := fmt.Sscanf(rel.ID, "rId%d", &num); err != nil {
+				continue
+			}
 			if num > maxID {
 				maxID = num
 			}

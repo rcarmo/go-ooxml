@@ -136,7 +136,7 @@ type Xf struct {
 	FontID            int        `xml:"fontId,attr,omitempty"`
 	FillID            int        `xml:"fillId,attr,omitempty"`
 	BorderID          int        `xml:"borderId,attr,omitempty"`
-	XFID              int        `xml:"xfId,attr,omitempty"`
+	XFID              int        `xml:"xfId,attr"`
 	ApplyAlignment    *bool      `xml:"applyAlignment,attr,omitempty"`
 	ApplyNumberFormat *bool      `xml:"applyNumberFormat,attr,omitempty"`
 	Alignment         *Alignment `xml:"alignment,omitempty"`
@@ -157,7 +157,7 @@ type CellStyles struct {
 // CellStyle represents a named style.
 type CellStyle struct {
 	Name      string `xml:"name,attr,omitempty"`
-	XFID      int    `xml:"xfId,attr,omitempty"`
+	XFID      int    `xml:"xfId,attr"`
 	BuiltinID int    `xml:"builtinId,attr,omitempty"`
 	Hidden    *bool  `xml:"hidden,attr,omitempty"`
 }

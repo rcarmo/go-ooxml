@@ -42,7 +42,7 @@ func (s *stylesImpl) seedNumFormats() {
 // Style returns a new editable cell style derived from the default.
 func (s *stylesImpl) Style() CellStyle {
 	if s.stylesheet.CellXfs == nil || len(s.stylesheet.CellXfs.Xf) == 0 {
-		s.stylesheet.CellXfs = &sml.CellXfs{Xf: []*sml.Xf{{}}}
+		s.stylesheet.CellXfs = &sml.CellXfs{Xf: []*sml.Xf{{XFID: 0}}}
 	}
 	return &cellStyleImpl{
 		styles: s,
@@ -131,8 +131,8 @@ func defaultStyleSheet() *sml.StyleSheet {
 				Diagonal: &sml.BorderSide{},
 			}},
 		},
-		CellStyleXfs: &sml.CellStyleXfs{Xf: []*sml.Xf{{}}},
-		CellXfs:      &sml.CellXfs{Xf: []*sml.Xf{{}}},
+		CellStyleXfs: &sml.CellStyleXfs{Xf: []*sml.Xf{{XFID: 0}}},
+		CellXfs:      &sml.CellXfs{Xf: []*sml.Xf{{XFID: 0}}},
 		CellStyles:   &sml.CellStyles{CellStyle: []*sml.CellStyle{{Name: "Normal", XFID: 0, BuiltinID: 0}}},
 	}
 }
@@ -224,6 +224,9 @@ func (cs *cellStyleImpl) FillColor() string {
 func (cs *cellStyleImpl) SetFillColor(hex string) CellStyle {
 	cs.ensureFill()
 	cs.fill.PatternFill.PatternType = "solid"
+	if len(hex) == 6 {
+		hex = "FF" + hex
+	}
 	cs.fill.PatternFill.FgColor = &sml.Color{RGB: hex}
 	cs.fill.PatternFill.BgColor = &sml.Color{RGB: hex}
 	return cs

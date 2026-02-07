@@ -32,6 +32,10 @@ type documentImpl struct {
 	nextAbstractNumID int
 	nextNumID         int
 	nextBookmarkID    int
+	nextImageID       int
+	nextChartID       int
+	nextDiagramID     int
+	nextDrawingID     int
 
 	// Headers and footers (keyed by relID)
 	headers map[string]*headerImpl
@@ -63,6 +67,10 @@ func New() (Document, error) {
 		nextNumID:         1,
 		nextBookmarkID:    1,
 		nextCommentParaID: 1,
+		nextImageID:       1,
+		nextChartID:       1,
+		nextDiagramID:     1,
+		nextDrawingID:     1,
 	}
 
 	// Initialize package structure
@@ -118,6 +126,7 @@ func openFromPackage(pkg *packaging.Package) (*documentImpl, error) {
 	doc.parseBookmarks()
 	_ = doc.parseHeaders()
 	_ = doc.parseFooters()
+	doc.initDrawingCounters()
 
 	return doc, nil
 }

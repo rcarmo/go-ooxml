@@ -9,7 +9,9 @@ import (
 
 func FuzzUnmarshalWorksheet(f *testing.F) {
 	seed := `<worksheet xmlns="` + NS + `"><sheetData><row r="1"><c r="A1"><v>1</v></c></row></sheetData></worksheet>`
+	seedWithDrawing := `<worksheet xmlns="` + NS + `" xmlns:r="` + NSR + `"><drawing r:id="rId1"/><sheetData/></worksheet>`
 	f.Add(seed)
+	f.Add(seedWithDrawing)
 
 	f.Fuzz(func(t *testing.T, xmlInput string) {
 		if !strings.Contains(xmlInput, "<worksheet") || !strings.Contains(xmlInput, NS) {
@@ -50,4 +52,3 @@ func FuzzUnmarshalTable(f *testing.F) {
 		}
 	})
 }
-

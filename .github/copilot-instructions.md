@@ -14,6 +14,14 @@ make format        # Format code with gofumpt
 make check         # Run lint + tests
 ```
 
+## Makefile-First Workflow
+
+If you need a new workflow step, add a Make target rather than running ad-hoc commands.
+
+## CI/CD Convention
+
+CI should call `make check` (or `make lint` + `make test` if `check` is unavailable).
+
 For targeted tests, use `go test` directly:
 
 ```bash

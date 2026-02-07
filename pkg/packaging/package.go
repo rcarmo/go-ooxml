@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/rcarmo/go-ooxml/pkg/utils"
@@ -24,7 +25,11 @@ type Package struct {
 
 // Open opens an existing OPC package from a file path.
 func Open(filePath string) (*Package, error) {
-	f, err := os.Open(filePath)
+	if filePath == "" {
+		return nil, utils.ErrPathNotSet
+	}
+	cleanPath := filepath.Clean(filePath)
+	f, err := os.Open(cleanPath)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +44,7 @@ func Open(filePath string) (*Package, error) {
 	if err != nil {
 		return nil, err
 	}
-	pkg.path = filePath
+	pkg.path = cleanPath
 	return pkg, nil
 }
 
@@ -114,7 +119,11 @@ func (p *Package) SaveAs(filePath string) error {
 		return utils.ErrDocumentClosed
 	}
 
-	f, err := os.Create(filePath)
+	if filePath == "" {
+		return utils.ErrPathNotSet
+	}
+	cleanPath := filepath.Clean(filePath)
+	f, err := os.Create(cleanPath)
 	if err != nil {
 		return err
 	}
@@ -124,7 +133,7 @@ func (p *Package) SaveAs(filePath string) error {
 		return err
 	}
 
-	p.path = filePath
+	p.path = cleanPath
 	p.modified = false
 	return nil
 }

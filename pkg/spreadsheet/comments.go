@@ -48,6 +48,8 @@ func (c *commentImpl) SetText(text string) {
 type SheetComments struct {
 	path     string
 	relID    string
+	vmlPath  string
+	vmlRelID string
 	comments *sml.Comments
 }
 
@@ -163,12 +165,14 @@ func (c *cellImpl) SetComment(text, author string) error {
 		if existing.Ref == c.Reference() {
 			existing.Text = &sml.Text{T: text}
 			existing.AuthorID = comments.authorIndex(author)
+			existing.ShapeID = "0"
 			return nil
 		}
 	}
 	comment := &sml.Comment{
 		Ref:      c.Reference(),
 		AuthorID: comments.authorIndex(author),
+		ShapeID:  "0",
 		Text:     &sml.Text{T: text},
 	}
 	comments.comments.CommentList.Comment = append(comments.comments.CommentList.Comment, comment)

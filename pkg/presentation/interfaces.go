@@ -55,6 +55,8 @@ type Slide interface {
 	AddTextBox(left, top, width, height int64) Shape
 	AddTable(rows, cols int, left, top, width, height int64) Table
 	AddPicture(imagePath string, left, top, width, height int64) (Shape, error)
+	AddChart(left, top, width, height int64, title string) (Shape, error)
+	AddDiagram(left, top, width, height int64, title string) (Shape, error)
 	DeleteShape(identifier string) error
 	Placeholders() []Shape
 	TitlePlaceholder() Shape
