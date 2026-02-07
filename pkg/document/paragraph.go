@@ -339,7 +339,7 @@ func pictureXML(relID string) *dml.PictureRef {
 		relID,
 	)
 	return &dml.PictureRef{
-		Attrs: []xml.Attr{{Name: xml.Name{Space: "xmlns", Local: "r"}, Value: packaging.NSOfficeDocRels}},
+		Attrs: []xml.Attr{{Name: xml.Name{Local: "xmlns:r"}, Value: packaging.NSOfficeDocRels}},
 		Inner: payload,
 	}
 }

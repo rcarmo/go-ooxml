@@ -259,7 +259,7 @@ func (s *slideImpl) AddPicture(imagePath string, left, top, width, height int64)
 	}
 	rels := s.pres.pkg.GetRelationships(sourcePath)
 	relID := rels.NextID()
-	rels.AddWithID(relID, packaging.RelTypeImage, target, packaging.TargetModeInternal)
+	rels.AddWithID(relID, packaging.RelTypeImage, relativeTarget(sourcePath, "ppt/"+target), packaging.TargetModeInternal)
 	nextID := s.getNextShapeID()
 	noChange := true
 	rotWithShape := true
@@ -517,7 +517,7 @@ func (s *slideImpl) ReplacePictureImage(identifier, imagePath string) error {
 	}
 	rels := s.pres.pkg.GetRelationships(sourcePath)
 	relID := rels.NextID()
-	rels.AddWithID(relID, packaging.RelTypeImage, target, packaging.TargetModeInternal)
+	rels.AddWithID(relID, packaging.RelTypeImage, relativeTarget(sourcePath, "ppt/"+target), packaging.TargetModeInternal)
 	shape.SetImageRelationshipID(relID)
 	return nil
 }
