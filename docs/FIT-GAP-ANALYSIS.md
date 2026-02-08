@@ -18,16 +18,16 @@ This document provides a detailed analysis of features implemented versus ECMA-3
 | **PresentationML** | §19 | 80+ | 50 | 63% |
 | **DrawingML** | §20-21 | 60+ | 15 | 25% |
 
-**Overall:** Core document manipulation features are well-covered. Advanced features (charts, pivot tables, digital signatures) are not implemented.
+**Overall:** Core document manipulation features are well-covered. Advanced features (pivot tables, digital signatures) are not implemented; charts/diagrams/pictures are minimal/partial.
 
 ## Known Limitations
 
 The library focuses on core OOXML manipulation rather than full Office parity. The following areas are explicitly out of scope or only partially implemented today:
 
 - **OPC**: growth hint stream, interleaving, thumbnails, digital signatures.
-- **WordprocessingML**: background, keep-lines/page-break-before/widow control, advanced run effects (caps/smallCaps/emboss/etc.), field parsing, select table/row/cell properties (cell width/borders/vertical alignment), and some revision/move tracking elements.
-- **SpreadsheetML**: advanced features like charts, pivot tables, and macros are not implemented; focus is on cells, ranges, tables, comments, formulas, and formatting.
-- **PresentationML**: advanced slide master/theme effects and media features beyond shapes, tables, text, comments, and images are not implemented.
+- **WordprocessingML**: background, field parsing, select table/row/cell properties (cell width/borders/vertical alignment), and some revision/move tracking elements.
+- **SpreadsheetML**: advanced features like pivot tables, macros, and full charting are not implemented; focus is on cells, ranges, tables, comments, formulas, and formatting with minimal drawing support.
+- **PresentationML**: advanced slide master/theme effects and media features beyond shapes, tables, text, comments, images, and basic charts/diagrams are not implemented.
 
 ---
 
@@ -321,8 +321,8 @@ Based on ECMA-376 Part 1, §18.
 | `<sheets>` | §18.2.20 | ✅ Implemented | Sheet collection |
 | `<sheet>` | §18.2.19 | ✅ Implemented | Sheet reference |
 | `<workbookPr>` | §18.2.28 | ⚠️ Preserved | Not exposed |
-| `<workbookView>` | §18.2.30 | ❌ Not implemented | |
-| `<definedNames>` | §18.2.6 | ❌ Not implemented | Named ranges |
+| `<workbookView>` | §18.2.30 | ✅ Implemented | Basic window settings |
+| `<definedNames>` | §18.2.6 | ✅ Implemented | Named ranges |
 | `<calcPr>` | §18.2.2 | ❌ Not implemented | Calc settings |
 | `<externalReferences>` | §18.2.9 | ❌ Not implemented | |
 
@@ -338,20 +338,20 @@ Based on ECMA-376 Part 1, §18.
 | `<f>` (formula) | §18.3.1.40 | ✅ Implemented | `Cell.SetFormula()` |
 | Cell types (s,n,b,d,e) | §18.18.11 | ✅ Implemented | `CellType` enum |
 | `<is>` (inline string) | §18.3.1.53 | ⚠️ Partial | Basic support |
-| `<sheetViews>` | §18.3.1.88 | ❌ Not implemented | |
-| `<sheetFormatPr>` | §18.3.1.81 | ❌ Not implemented | |
+| `<sheetViews>` | §18.3.1.88 | ✅ Implemented | Default view |
+| `<sheetFormatPr>` | §18.3.1.81 | ✅ Implemented | Default row height |
 | `<cols>` | §18.3.1.17 | ❌ Not implemented | Column widths |
 | `<mergeCells>` | §18.3.1.55 | ✅ Implemented | `MergeCells()` |
 | `<hyperlinks>` | §18.3.1.48 | ❌ Not implemented | |
-| `<pageMargins>` | §18.3.1.62 | ❌ Not implemented | |
+| `<pageMargins>` | §18.3.1.62 | ✅ Implemented | `Worksheet.SetPageMargins()` |
 | `<pageSetup>` | §18.3.1.63 | ❌ Not implemented | |
 | `<headerFooter>` | §18.3.1.46 | ❌ Not implemented | |
-| `<drawing>` | §18.3.1.36 | ❌ Not implemented | |
+| `<drawing>` | §18.3.1.36 | ⚠️ Partial | Charts/diagrams/pictures via drawing parts |
 | `<conditionalFormatting>` | §18.3.1.18 | ❌ Not implemented | |
 | `<dataValidations>` | §18.3.1.33 | ❌ Not implemented | |
 | `<autoFilter>` | §18.3.1.2 | ❌ Not implemented | |
 | `<sortState>` | §18.3.1.92 | ❌ Not implemented | |
-| `<tableParts>` | §18.3.1.95 | ❌ Not implemented | |
+| `<tableParts>` | §18.3.1.95 | ✅ Implemented | Table parts + rels |
 | Row height | §18.3.1.73 | ✅ Implemented | `Row.SetHeight()` |
 | Row hidden | §18.3.1.73 | ✅ Implemented | `Row.SetHidden()` |
 | Sheet visibility | §18.2.19 | ✅ Implemented | `Worksheet.SetHidden()` |
@@ -393,16 +393,16 @@ Based on ECMA-376 Part 1, §18.
 
 | Feature | Section | Status | Notes |
 |---------|---------|--------|-------|
-| `<table>` | §18.5.1.2 | ❌ Not implemented | |
-| Table columns | §18.5.1 | ❌ Not implemented | |
-| Table styles | §18.5.1 | ❌ Not implemented | |
+| `<table>` | §18.5.1.2 | ✅ Implemented | Basic table definitions |
+| Table columns | §18.5.1 | ✅ Implemented | Default columns |
+| Table styles | §18.5.1 | ⚠️ Partial | Style info only |
 | Structured references | §18.5.1 | ❌ Not implemented | |
 
 ### Charts (§21.2)
 
 | Feature | Section | Status | Notes |
 |---------|---------|--------|-------|
-| All chart types | §21.2 | ❌ Not implemented | |
+| All chart types | §21.2 | ⚠️ Partial | Minimal chart parts only |
 
 ---
 
