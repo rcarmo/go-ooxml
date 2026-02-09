@@ -46,6 +46,16 @@ func (ws *worksheetImpl) addGraphic(fromCell, toCell, title string, kind drawing
 	}
 	rels := ws.workbook.pkg.GetRelationships(sheetPath)
 	drawingRel := rels.FirstByType(packaging.RelTypeDrawing)
+	var tableRelIDs map[string]struct{}
+	if ws.worksheet.TableParts != nil {
+		tableRelIDs = make(map[string]struct{}, len(ws.worksheet.TableParts.TablePart))
+		for _, tablePart := range ws.worksheet.TableParts.TablePart {
+			if tablePart == nil || tablePart.ID == "" {
+				continue
+			}
+			tableRelIDs[tablePart.ID] = struct{}{}
+		}
+	}
 	drawingID := ""
 	drawingPath := ""
 	if drawingRel != nil {
@@ -86,6 +96,26 @@ func (ws *worksheetImpl) addGraphic(fromCell, toCell, title string, kind drawing
 	}
 	if drawingID == "" {
 		drawingID = rels.NextID()
+		if tableRelIDs != nil {
+			if _, exists := tableRelIDs[drawingID]; exists {
+				num, err := strconv.Atoi(strings.TrimPrefix(drawingID, "rId"))
+				if err != nil {
+					num = 0
+				}
+				for {
+					num++
+					nextID := fmt.Sprintf("rId%d", num)
+					if _, conflict := tableRelIDs[nextID]; conflict {
+						continue
+					}
+					if rels.ByID(nextID) != nil {
+						continue
+					}
+					drawingID = nextID
+					break
+				}
+			}
+		}
 	}
 	rels.AddWithID(drawingID, packaging.RelTypeDrawing, relativeTarget(sheetPath, drawingPath), packaging.TargetModeInternal)
 	ws.worksheet.Drawing = &sml.Drawing{ID: drawingID}

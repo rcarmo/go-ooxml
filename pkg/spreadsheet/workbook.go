@@ -675,29 +675,30 @@ func (w *workbookImpl) updatePackage() error {
 		return err
 	}
 
-	// Save each worksheet
-	for i, sheet := range w.sheets {
-		sheetPath := fmt.Sprintf("xl/worksheets/sheet%d.xml", i+1)
-		sheetData, err := utils.MarshalXMLWithHeader(sheet.worksheet)
-		if err != nil {
-			return err
-		}
-		if _, err := w.pkg.AddPart(sheetPath, packaging.ContentTypeWorksheet, sheetData); err != nil {
-			return err
-		}
+		// Save each worksheet
+		for i, sheet := range w.sheets {
+			sheetPath := fmt.Sprintf("xl/worksheets/sheet%d.xml", i+1)
 
-		// Add relationship with the correct ID
-		rels := w.pkg.GetRelationships(packaging.ExcelWorkbookPath)
-		rels.AddWithID(sheet.relID, packaging.RelTypeWorksheet, "worksheets/sheet"+fmt.Sprintf("%d.xml", i+1), packaging.TargetModeInternal)
+			if err := w.updateTables(sheet, i+1); err != nil {
+				return err
+			}
 
-		if err := w.updateTables(sheet, i+1); err != nil {
-			return err
-		}
+			if err := w.updateComments(sheet, sheetPath); err != nil {
+				return err
+			}
 
-		if err := w.updateComments(sheet, sheetPath); err != nil {
-			return err
+			sheetData, err := utils.MarshalXMLWithHeader(sheet.worksheet)
+			if err != nil {
+				return err
+			}
+			if _, err := w.pkg.AddPart(sheetPath, packaging.ContentTypeWorksheet, sheetData); err != nil {
+				return err
+			}
+
+			// Add relationship with the correct ID
+			rels := w.pkg.GetRelationships(packaging.ExcelWorkbookPath)
+			rels.AddWithID(sheet.relID, packaging.RelTypeWorksheet, "worksheets/sheet"+fmt.Sprintf("%d.xml", i+1), packaging.TargetModeInternal)
 		}
-	}
 
 	// Save shared strings
 	if w.sharedStrings.Count() > 0 {
