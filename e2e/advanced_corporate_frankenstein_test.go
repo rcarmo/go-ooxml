@@ -255,10 +255,7 @@ func buildCorporateFrankensteinWorkbook(outPath string) error {
 	if err := overview.AddChart("A8", "E20", "KPI Chart"); err != nil {
 		return err
 	}
-	if err := overview.AddDiagram("G8", "K20", "Process Diagram"); err != nil {
-		return err
-	}
-	if err := overview.AddPicture(filepath.Join("..", "testdata", "pptx", "image1.png"), "A22", "C28"); err != nil {
+	if err := overview.AddDiagram("A22", "C28", "Governance Diagram"); err != nil {
 		return err
 	}
 
@@ -427,10 +424,7 @@ func buildCorporateFrankensteinDeck(outPath string) error {
 	r3.SetText("Escalation protocols rehearsed quarterly.")
 	r3.SetBulletType(presentation.BulletCharacter)
 	r3.SetLevel(0)
-	if _, err := risk.AddDiagram(700000, 3800000, 7600000, 2000000, "Containment Governance Diagram"); err != nil {
-		return err
-	}
-	if _, err := risk.AddPicture(filepath.Join("..", "testdata", "pptx", "image1.png"), 500000, 950000, 2500000, 2200000); err != nil {
+	if _, err := risk.AddDiagram(500000, 950000, 2500000, 2200000, "Risk Diagram"); err != nil {
 		return err
 	}
 

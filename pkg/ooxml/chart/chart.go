@@ -19,8 +19,8 @@ type ChartSpace struct {
 
 // Chart represents a chart container.
 type Chart struct {
-	PlotArea *PlotArea `xml:"plotArea,omitempty"`
 	Title    *Title    `xml:"title,omitempty"`
+	PlotArea *PlotArea `xml:"plotArea,omitempty"`
 	Legend   *Legend   `xml:"legend,omitempty"`
 }
 
