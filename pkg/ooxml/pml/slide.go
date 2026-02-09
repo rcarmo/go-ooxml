@@ -19,8 +19,8 @@ type Sld struct {
 // CSld represents common slide data.
 type CSld struct {
 	Name   string  `xml:"name,attr,omitempty"`
-	SpTree *SpTree `xml:"spTree"`
 	Bg     *Bg     `xml:"bg,omitempty"`
+	SpTree *SpTree `xml:"spTree"`
 }
 
 // SpTree is a shape tree containing all shapes on the slide.

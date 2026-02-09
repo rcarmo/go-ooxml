@@ -10,7 +10,8 @@ const (
 
 // DataModel represents a diagram data part.
 type DataModel struct {
-	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/drawingml/2006/diagram dataModel"`
+	XMLName  xml.Name `xml:"http://schemas.openxmlformats.org/drawingml/2006/diagram dataModel"`
+	InnerXML string   `xml:",innerxml"`
 }
 
 // LayoutDef represents a diagram layout definition part.
@@ -32,6 +33,13 @@ type ColorsDef struct {
 func DefaultDataModel() *DataModel {
 	return &DataModel{
 		XMLName: xml.Name{Space: NS, Local: "dataModel"},
+		InnerXML: `<ptLst>` +
+			`<pt modelId="{00000000-0000-0000-0000-000000000001}" type="doc"><prSet/></pt>` +
+			`<pt modelId="{00000000-0000-0000-0000-000000000002}" type="node"><prSet/><t>Diagram</t></pt>` +
+			`</ptLst>` +
+			`<cxnLst>` +
+			`<cxn modelId="{00000000-0000-0000-0000-000000000003}" type="parOf" srcId="{00000000-0000-0000-0000-000000000001}" destId="{00000000-0000-0000-0000-000000000002}" srcOrd="0" destOrd="0"/>` +
+			`</cxnLst>`,
 	}
 }
 

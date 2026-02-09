@@ -168,6 +168,8 @@ func normalizeRelationshipPrefixes(data []byte) []byte {
 	data = bytes.ReplaceAll(data, []byte("<blipFill>"), []byte("<a:blipFill>"))
 	data = bytes.ReplaceAll(data, []byte("</blipFill>"), []byte("</a:blipFill>"))
 	data = bytes.ReplaceAll(data, []byte("<blipFill "), []byte("<a:blipFill "))
+	data = bytes.ReplaceAll(data, []byte("<a:blipFill"), []byte("<p:blipFill"))
+	data = bytes.ReplaceAll(data, []byte("</a:blipFill>"), []byte("</p:blipFill>"))
 	data = bytes.ReplaceAll(data, []byte("<blip "), []byte("<a:blip "))
 	data = bytes.ReplaceAll(data, []byte("</blip>"), []byte("</a:blip>"))
 	data = bytes.ReplaceAll(data, []byte("<stretch>"), []byte("<a:stretch>"))
