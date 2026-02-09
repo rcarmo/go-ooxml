@@ -60,6 +60,10 @@ func (ws *worksheetImpl) addGraphic(fromCell, toCell, title string, kind drawing
 	if err != nil {
 		return err
 	}
+	if drawingXML != "" {
+		drawingXML = strings.ReplaceAll(drawingXML, utils.XMLHeader, "")
+		drawingXML = strings.TrimSpace(drawingXML)
+	}
 
 	nextShapeID := ws.nextDrawingShapeID(drawingXML)
 	content, err := ws.buildGraphicContent(sheetPath, kind, title, imagePath, nextShapeID)
@@ -113,13 +117,7 @@ func (ws *worksheetImpl) buildGraphicContent(sheetPath string, kind drawingKind,
 	case drawingKindChart:
 		chartID := shapeID
 		chartPath := fmt.Sprintf("xl/charts/chart%d.xml", chartID)
-		cs := &chart.ChartSpace{
-			Chart: &chart.Chart{
-				PlotArea: &chart.PlotArea{Layout: &chart.Layout{}},
-				Title:    &chart.Title{},
-				Legend:   &chart.Legend{},
-			},
-		}
+		cs := chart.DefaultChartSpace()
 		data, err := utils.MarshalXMLWithHeader(cs)
 		if err != nil {
 			return "", err
@@ -137,20 +135,20 @@ func (ws *worksheetImpl) buildGraphicContent(sheetPath string, kind drawingKind,
 		), nil
 	case drawingKindDiagram:
 		id := shapeID
-		dataModel := &diagram.DataModel{}
+		dataModel := diagram.DefaultDataModel()
 		data, err := utils.MarshalXMLWithHeader(dataModel)
 		if err != nil {
 			return "", err
 		}
-		layoutData, err := utils.MarshalXMLWithHeader(&diagram.LayoutDef{})
+		layoutData, err := utils.MarshalXMLWithHeader(diagram.DefaultLayoutDef())
 		if err != nil {
 			return "", err
 		}
-		styleData, err := utils.MarshalXMLWithHeader(&diagram.StyleDef{})
+		styleData, err := utils.MarshalXMLWithHeader(diagram.DefaultStyleDef())
 		if err != nil {
 			return "", err
 		}
-		colorsData, err := utils.MarshalXMLWithHeader(&diagram.ColorsDef{})
+		colorsData, err := utils.MarshalXMLWithHeader(diagram.DefaultColorsDef())
 		if err != nil {
 			return "", err
 		}
@@ -234,7 +232,7 @@ func buildDrawingXML(anchor string) string {
 }
 
 func buildAnchorXML(start, end utils.CellRef, content string) string {
-	return fmt.Sprintf(`<xdr:twoCellAnchor><xdr:from><xdr:col>%d</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>%d</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:to><xdr:col>%d</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>%d</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to><xdr:clientData/>%s</xdr:twoCellAnchor>`,
+	return fmt.Sprintf(`<xdr:twoCellAnchor><xdr:from><xdr:col>%d</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>%d</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:to><xdr:col>%d</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>%d</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to>%s<xdr:clientData/></xdr:twoCellAnchor>`,
 		start.Col-1,
 		start.Row-1,
 		end.Col-1,

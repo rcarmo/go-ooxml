@@ -1,7 +1,10 @@
 // Package chart provides DrawingML chart types.
 package chart
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"fmt"
+)
 
 // Namespaces used in DrawingML chart parts.
 const (
@@ -35,3 +38,53 @@ type Title struct{}
 
 // Legend represents chart legend.
 type Legend struct{}
+
+// RawXML allows embedding raw chart XML elements.
+type RawXML struct {
+	XMLName xml.Name
+	Inner   string `xml:",innerxml"`
+}
+
+// DefaultChartSpace returns a minimal chart definition with a single series.
+func DefaultChartSpace() *ChartSpace {
+	const (
+		catAxisID = 48650112
+		valAxisID = 48672768
+	)
+
+	barChart := &RawXML{
+		XMLName: xml.Name{Space: NS, Local: "barChart"},
+		Inner: fmt.Sprintf(
+			`<barDir val="col"/><grouping val="clustered"/><ser><idx val="0"/><order val="0"/><tx><v>Series 1</v></tx><cat><strLit><ptCount val="1"/><pt idx="0"><v>Category 1</v></pt></strLit></cat><val><numLit><ptCount val="1"/><pt idx="0"><v>1</v></pt></numLit></val></ser><axId val="%d"/><axId val="%d"/>`,
+			catAxisID,
+			valAxisID,
+		),
+	}
+	catAx := &RawXML{
+		XMLName: xml.Name{Space: NS, Local: "catAx"},
+		Inner: fmt.Sprintf(
+			`<axId val="%d"/><scaling><orientation val="minMax"/></scaling><axPos val="l"/><majorTickMark val="out"/><minorTickMark val="none"/><tickLblPos val="nextTo"/><crossAx val="%d"/><crosses val="autoZero"/><auto val="1"/><lblAlgn val="ctr"/><lblOffset val="100"/>`,
+			catAxisID,
+			valAxisID,
+		),
+	}
+	valAx := &RawXML{
+		XMLName: xml.Name{Space: NS, Local: "valAx"},
+		Inner: fmt.Sprintf(
+			`<axId val="%d"/><scaling><orientation val="minMax"/></scaling><axPos val="b"/><majorTickMark val="out"/><minorTickMark val="none"/><tickLblPos val="nextTo"/><crossAx val="%d"/><crosses val="autoZero"/><crossBetween val="between"/>`,
+			valAxisID,
+			catAxisID,
+		),
+	}
+
+	return &ChartSpace{
+		Chart: &Chart{
+			PlotArea: &PlotArea{
+				Layout:  &Layout{},
+				Content: []interface{}{barChart, catAx, valAx},
+			},
+			Title:  &Title{},
+			Legend: &Legend{},
+		},
+	}
+}

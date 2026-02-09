@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"io"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
@@ -203,6 +204,29 @@ func (d *documentImpl) Properties() DocumentProperties {
 		return DocumentProperties{}
 	}
 	return *props
+}
+
+// BackgroundColor returns the document background color (hex without #).
+func (d *documentImpl) BackgroundColor() string {
+	if d == nil || d.document == nil || d.document.Background == nil {
+		return ""
+	}
+	return d.document.Background.Color
+}
+
+// SetBackgroundColor sets the document background color (hex without #).
+func (d *documentImpl) SetBackgroundColor(hex string) {
+	if d == nil || d.document == nil {
+		return
+	}
+	if hex == "" {
+		d.document.Background = nil
+		return
+	}
+	if d.document.Background == nil {
+		d.document.Background = &wml.Background{}
+	}
+	d.document.Background.Color = strings.TrimPrefix(hex, "#")
 }
 
 // AddParagraph adds a new paragraph to the document body.

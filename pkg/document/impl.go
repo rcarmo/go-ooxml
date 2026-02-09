@@ -125,3 +125,26 @@ func (s *sectionImpl) SetPageMargins(margins PageMargins) {
 	}
 	s.sectPr.PgMar = &margins
 }
+
+// TitlePage reports whether the section uses a different first page.
+func (s *sectionImpl) TitlePage() bool {
+	if s == nil || s.sectPr == nil || s.sectPr.TitlePg == nil {
+		return false
+	}
+	return s.sectPr.TitlePg.Enabled()
+}
+
+// SetTitlePage sets whether the section uses a different first page.
+func (s *sectionImpl) SetTitlePage(v bool) {
+	if s == nil {
+		return
+	}
+	if s.sectPr == nil {
+		s.sectPr = &wml.SectPr{}
+	}
+	if v {
+		s.sectPr.TitlePg = wml.NewOnOffEnabled()
+	} else {
+		s.sectPr.TitlePg = nil
+	}
+}

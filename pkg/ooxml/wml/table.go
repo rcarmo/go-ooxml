@@ -122,6 +122,7 @@ type TcPr struct {
 	VAlign     *VAlign        `xml:"vAlign,omitempty"`
 	NoWrap     *OnOff         `xml:"noWrap,omitempty"`
 	TcMar      *TcMar         `xml:"tcMar,omitempty"`
+	TextDirection *TextDirection `xml:"textDirection,omitempty"`
 }
 
 // GridSpan represents cell column span.
@@ -151,6 +152,11 @@ type Shd struct {
 
 // VAlign represents vertical alignment.
 type VAlign struct {
+	Val string `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main val,attr"`
+}
+
+// TextDirection represents cell text direction.
+type TextDirection struct {
 	Val string `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main val,attr"`
 }
 

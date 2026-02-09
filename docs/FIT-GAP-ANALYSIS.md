@@ -25,7 +25,7 @@ This document provides a detailed analysis of features implemented versus ECMA-3
 The library focuses on core OOXML manipulation rather than full Office parity. The following areas are explicitly out of scope or only partially implemented today:
 
 - **OPC**: growth hint stream, interleaving, thumbnails, digital signatures.
-- **WordprocessingML**: background, field parsing, select table/row/cell properties (cell width/borders/vertical alignment), and some revision/move tracking elements.
+- **WordprocessingML**: field parsing (no evaluation), remaining revision/move tracking elements (sect/table/row/cell property changes), and permissions/spell/grammar are not implemented.
 - **SpreadsheetML**: advanced features like pivot tables, macros, and full charting are not implemented; focus is on cells, ranges, tables, comments, formulas, and formatting with minimal drawing support.
 - **PresentationML**: advanced slide master/theme effects and media features beyond shapes, tables, text, comments, images, and basic charts/diagrams are not implemented.
 
@@ -123,7 +123,7 @@ Based on ECMA-376 Part 1, §17.
 |---------|---------|--------|-------|
 | `<w:body>` | §17.2.2 | ✅ Implemented | `Document.Body()` |
 | `<w:document>` | §17.2.3 | ✅ Implemented | Root element |
-| Background | §17.2.1 | ❌ Not implemented | |
+| Background | §17.2.1 | ✅ Implemented | `Document.SetBackgroundColor()` |
 
 ### §17.3 Paragraphs and Rich Formatting
 
@@ -151,7 +151,7 @@ Based on ECMA-376 Part 1, §17.
 | `<w:i>` (italic) | §17.3.2.16 | ✅ Implemented | `Run.SetItalic()` |
 | `<w:u>` (underline) | §17.3.2.38 | ✅ Implemented | `Run.SetUnderline()` |
 | `<w:strike>` | §17.3.2.34 | ✅ Implemented | `Run.SetStrike()` |
-| `<w:dstrike>` (double strike) | §17.3.2.9 | ❌ Not implemented | |
+| `<w:dstrike>` (double strike) | §17.3.2.9 | ✅ Implemented | `Run.SetDoubleStrike()` |
 | `<w:vertAlign>` | §17.3.2.42 | ✅ Implemented | Super/subscript |
 | `<w:sz>` (font size) | §17.3.2.35 | ✅ Implemented | `Run.SetFontSize()` |
 | `<w:rFonts>` (fonts) | §17.3.2.24 | ✅ Implemented | `Run.SetFontName()` |
@@ -163,12 +163,12 @@ Based on ECMA-376 Part 1, §17.
 | `<w:imprint>` | §17.3.2.14 | ✅ Implemented | `Run.SetImprint()` |
 | `<w:outline>` | §17.3.2.21 | ✅ Implemented | `Run.SetOutline()` |
 | `<w:shadow>` | §17.3.2.30 | ✅ Implemented | `Run.SetShadow()` |
-| `<w:vanish>` | §17.3.2.41 | ❌ Not implemented | |
+| `<w:vanish>` | §17.3.2.41 | ✅ Implemented | `Run.SetVanish()` |
 | `<w:rStyle>` | §17.3.2.29 | ✅ Implemented | `Run.SetStyle()` |
 | **Special Characters** | §17.3.3 | | |
-| `<w:sym>` (symbol) | §17.3.3.29 | ❌ Not implemented | |
-| `<w:lastRenderedPageBreak>` | §17.3.3.13 | ❌ Not implemented | |
-| `<w:fld*>` (fields) | §17.16 | ❌ Not implemented | |
+| `<w:sym>` (symbol) | §17.3.3.29 | ✅ Implemented | `Run.AddSymbol()` |
+| `<w:lastRenderedPageBreak>` | §17.3.3.13 | ✅ Implemented | `Run.AddLastRenderedPageBreak()` |
+| `<w:fld*>` (fields) | §17.16 | ⚠️ Partial | `Paragraph.AddField()` (no evaluation) |
 
 ### §17.4 Tables
 
@@ -186,10 +186,10 @@ Based on ECMA-376 Part 1, §17.
 | `<w:gridSpan>` | §17.4.17 | ✅ Implemented | `Cell.SetGridSpan()` |
 | `<w:vMerge>` | §17.4.85 | ✅ Implemented | `Cell.SetVerticalMerge()` |
 | `<w:shd>` (shading) | §17.4.33 | ✅ Implemented | `Cell.SetShading()` |
-| `<w:tcW>` (cell width) | §17.4.72 | ❌ Not implemented | |
-| `<w:tcBorders>` | §17.4.67 | ❌ Not implemented | |
-| `<w:vAlign>` | §17.4.84 | ❌ Not implemented | |
-| `<w:textDirection>` | §17.4.73 | ❌ Not implemented | |
+| `<w:tcW>` (cell width) | §17.4.72 | ✅ Implemented | `Cell.SetWidth()` |
+| `<w:tcBorders>` | §17.4.67 | ✅ Implemented | `Cell.SetBorders()` |
+| `<w:vAlign>` | §17.4.84 | ✅ Implemented | `Cell.SetVerticalAlign()` |
+| `<w:textDirection>` | §17.4.73 | ✅ Implemented | `Cell.SetTextDirection()` |
 | Nested tables | §17.4 | ✅ Implemented | |
 
 ### §17.7 Styles
@@ -203,15 +203,15 @@ Based on ECMA-376 Part 1, §17.
 | Paragraph styles | §17.7.8 | ✅ Implemented | `AddParagraphStyle()` |
 | Character styles | §17.7.9 | ✅ Implemented | `AddCharacterStyle()` |
 | Table styles | §17.7.6 | ✅ Implemented | `AddTableStyle()` |
-| Numbering styles | §17.7.7 | ❌ Not implemented | |
+| Numbering styles | §17.7.7 | ✅ Implemented | `AddNumberingStyle()` |
 | `<w:basedOn>` inheritance | §17.7.4.3 | ✅ Implemented | `Style.SetBasedOn()` |
-| `<w:next>` | §17.7.4.10 | ❌ Not exposed | |
-| `<w:link>` | §17.7.4.6 | ❌ Not exposed | |
+| `<w:next>` | §17.7.4.10 | ✅ Implemented | `Style.SetNext()` |
+| `<w:link>` | §17.7.4.6 | ✅ Implemented | `Style.SetLink()` |
 | `<w:name>` | §17.7.4.9 | ✅ Implemented | `Style.Name()` |
-| `<w:uiPriority>` | §17.7.4.19 | ❌ Not exposed | |
-| `<w:qFormat>` | §17.7.4.14 | ❌ Not exposed | |
+| `<w:uiPriority>` | §17.7.4.19 | ✅ Implemented | `Style.SetUIPriority()` |
+| `<w:qFormat>` | §17.7.4.14 | ✅ Implemented | `Style.SetQFormat()` |
 | Default style flag | §17.7.4.17 | ✅ Implemented | `Style.SetDefault()` |
-| Custom style flag | §17.7.4.17 | ❌ Not exposed | |
+| Custom style flag | §17.7.4.17 | ✅ Implemented | `Style.SetCustomStyle()` |
 
 ### §17.10 Headers and Footers
 
@@ -224,7 +224,7 @@ Based on ECMA-376 Part 1, §17.
 | Default header/footer | ST_HdrFtr | ✅ Implemented | `HeaderFooterDefault` |
 | First page header/footer | ST_HdrFtr | ✅ Implemented | `HeaderFooterFirst` |
 | Even page header/footer | ST_HdrFtr | ✅ Implemented | `HeaderFooterEven` |
-| `<w:titlePg>` | §17.10.6 | ❌ Not exposed | Different first page |
+| `<w:titlePg>` | §17.10.6 | ✅ Implemented | `Section.SetTitlePage()` |
 
 ### §17.13 Annotations
 
@@ -241,7 +241,7 @@ Based on ECMA-376 Part 1, §17.
 | `<w:commentRangeStart>` | §17.13.4.3 | ✅ Implemented | Anchoring |
 | `<w:commentRangeEnd>` | §17.13.4.4 | ✅ Implemented | Anchoring |
 | `<w:commentReference>` | §17.13.4.5 | ✅ Implemented | Anchoring |
-| Comment replies | Extended | ❌ Not implemented | |
+| Comment replies | Extended | ✅ Implemented | `Comment.AddReply()` |
 
 #### §17.13.5 Revisions (Track Changes)
 
@@ -260,9 +260,9 @@ Based on ECMA-376 Part 1, §17.
 | `<w:tblPrChange>` | §17.13.5.32 | ❌ Not implemented | |
 | `<w:trPrChange>` | §17.13.5.37 | ❌ Not implemented | |
 | `<w:tcPrChange>` | §17.13.5.36 | ❌ Not implemented | |
-| `<w:moveFrom>` | §17.13.5.21 | ❌ Not implemented | |
-| `<w:moveTo>` | §17.13.5.24 | ❌ Not implemented | |
-| Move range markers | §17.13.5.22-23 | ❌ Not implemented | |
+| `<w:moveFrom>` | §17.13.5.21 | ✅ Implemented | Parsed in paragraph content |
+| `<w:moveTo>` | §17.13.5.24 | ✅ Implemented | Parsed in paragraph content |
+| Move range markers | §17.13.5.22-23 | ✅ Implemented | Parsed in paragraph content |
 
 ### §17.14 Mail Merge
 
@@ -304,8 +304,8 @@ Based on ECMA-376 Part 1, §17.
 | `<w:sdtContent>` | §17.5.2 | ✅ Implemented | Run/paragraph content |
 | Rich text control | §17.5.2 | ⚠️ Partial | Basic content only |
 | Plain text control | §17.5.2 | ⚠️ Partial | Basic content only |
-| Drop-down list | §17.5.2 | ❌ Not implemented | |
-| Date picker | §17.5.2 | ❌ Not implemented | |
+| Drop-down list | §17.5.2 | ✅ Implemented | `ContentControl.SetDropDownList()` |
+| Date picker | §17.5.2 | ✅ Implemented | `ContentControl.SetDateConfig()` |
 
 ---
 

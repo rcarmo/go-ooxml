@@ -18,6 +18,8 @@ func (r *runImpl) Text() string {
 			sb.WriteString("\n")
 		case *wml.Tab:
 			sb.WriteString("\t")
+		case *wml.Sym:
+			sb.WriteRune(symToRune(v.Char))
 		}
 	}
 	return sb.String()
@@ -127,6 +129,24 @@ func (r *runImpl) SetStrike(v bool) {
 	}
 }
 
+// DoubleStrike returns whether the run has double strikethrough.
+func (r *runImpl) DoubleStrike() bool {
+	if r.r.RPr != nil && r.r.RPr.Dstrike != nil {
+		return r.r.RPr.Dstrike.Enabled()
+	}
+	return false
+}
+
+// SetDoubleStrike sets the double strikethrough formatting.
+func (r *runImpl) SetDoubleStrike(v bool) {
+	r.ensureRPr()
+	if v {
+		r.r.RPr.Dstrike = wml.NewOnOffEnabled()
+	} else {
+		r.r.RPr.Dstrike = nil
+	}
+}
+
 // Caps returns whether the run uses all caps.
 func (r *runImpl) Caps() bool {
 	if r.r.RPr != nil && r.r.RPr.Caps != nil {
@@ -232,6 +252,24 @@ func (r *runImpl) SetImprint(v bool) {
 		r.r.RPr.Imprint = wml.NewOnOffEnabled()
 	} else {
 		r.r.RPr.Imprint = nil
+	}
+}
+
+// Vanish returns whether the run uses hidden text formatting.
+func (r *runImpl) Vanish() bool {
+	if r.r.RPr != nil && r.r.RPr.Vanish != nil {
+		return r.r.RPr.Vanish.Enabled()
+	}
+	return false
+}
+
+// SetVanish sets hidden text formatting.
+func (r *runImpl) SetVanish(v bool) {
+	r.ensureRPr()
+	if v {
+		r.r.RPr.Vanish = wml.NewOnOffEnabled()
+	} else {
+		r.r.RPr.Vanish = nil
 	}
 }
 
@@ -371,6 +409,19 @@ func (r *runImpl) AddPageBreak() {
 // AddTab adds a tab character to the run.
 func (r *runImpl) AddTab() {
 	r.r.Content = append(r.r.Content, &wml.Tab{})
+}
+
+// AddSymbol adds a symbol run element.
+func (r *runImpl) AddSymbol(font, char string) {
+	if char == "" {
+		return
+	}
+	r.r.Content = append(r.r.Content, &wml.Sym{Font: font, Char: char})
+}
+
+// AddLastRenderedPageBreak adds a last rendered page break marker.
+func (r *runImpl) AddLastRenderedPageBreak() {
+	r.r.Content = append(r.r.Content, &wml.LastRenderedPageBreak{})
 }
 
 func (r *runImpl) ensureRPr() {

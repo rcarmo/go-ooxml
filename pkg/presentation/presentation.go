@@ -1073,6 +1073,8 @@ func (p *presentationImpl) updatePackage() error {
 		rels := p.pkg.GetRelationships(packaging.PresentationPath)
 		rels.AddWithID(slide.relID, packaging.RelTypeSlide, "slides/slide"+fmt.Sprintf("%d.xml", i+1), packaging.TargetModeInternal)
 
+		slideRels := p.pkg.GetRelationships(slidePath)
+
 		// Save notes if present
 		if slide.notes != nil {
 			notesPath := fmt.Sprintf("ppt/notesSlides/notesSlide%d.xml", i+1)
@@ -1083,7 +1085,6 @@ func (p *presentationImpl) updatePackage() error {
 			if _, err := p.pkg.AddPart(notesPath, packaging.ContentTypeNotesSlide, notesData); err != nil {
 				return err
 			}
-			slideRels := p.pkg.GetRelationships(slidePath)
 			relID := slideRels.NextID()
 			for _, rel := range slideRels.ByType(packaging.RelTypeNotesSlide) {
 				relID = rel.ID
@@ -1121,16 +1122,58 @@ func (p *presentationImpl) updatePackage() error {
 			if err != nil {
 				return err
 			}
+			commentsDataStr := string(commentsData)
+			commentsDataStr = strings.ReplaceAll(commentsDataStr, "<cmLst", "<p188:cmLst")
+			commentsDataStr = strings.ReplaceAll(commentsDataStr, "</cmLst>", "</p188:cmLst>")
+			commentsDataStr = strings.ReplaceAll(commentsDataStr, "<cm ", "<p188:cm ")
+			commentsDataStr = strings.ReplaceAll(commentsDataStr, "</cm>", "</p188:cm>")
+			commentsDataStr = strings.ReplaceAll(commentsDataStr, "<pos ", "<p188:pos ")
+			commentsDataStr = strings.ReplaceAll(commentsDataStr, "</pos>", "</p188:pos>")
+			commentsDataStr = strings.ReplaceAll(commentsDataStr, "<txBody", "<p188:txBody")
+			commentsDataStr = strings.ReplaceAll(commentsDataStr, "</txBody>", "</p188:txBody>")
+			commentsDataStr = strings.ReplaceAll(commentsDataStr, `xmlns="`+pml.PPTXCommentsNS+`"`, `xmlns:p188="`+pml.PPTXCommentsNS+`"`)
+			commentsDataStr = strings.ReplaceAll(commentsDataStr, `xmlns:p="`+pml.NS+`"`, `xmlns:a="`+pml.NSA+`" xmlns:r="`+pml.NSR+`"`)
+			commentsDataStr = strings.ReplaceAll(commentsDataStr, `xmlns:a="`+pml.NSA+`" xmlns:a="`+pml.NSA+`"`, `xmlns:a="`+pml.NSA+`"`)
+			commentsDataStr = strings.ReplaceAll(commentsDataStr, `xmlns:p188="`+pml.PPTXCommentsNS+`" xmlns:p188="`+pml.PPTXCommentsNS+`"`, `xmlns:p188="`+pml.PPTXCommentsNS+`"`)
+			commentsData = []byte(commentsDataStr)
 			if _, err := p.pkg.AddPart(commentsPath, packaging.ContentTypePPTXComments, commentsData); err != nil {
 				return err
 			}
-			slideRels := p.pkg.GetRelationships(slidePath)
 			relID := slideRels.NextID()
 			for _, rel := range slideRels.ByType(packaging.RelTypePPTXComments) {
 				relID = rel.ID
 				break
 			}
 			slideRels.AddWithID(relID, packaging.RelTypePPTXComments, relativeTarget(slidePath, commentsPath), packaging.TargetModeInternal)
+			if slide.slide != nil {
+				if slide.slide.ExtLst == nil {
+					slide.slide.ExtLst = &pml.ExtLst{}
+				}
+				slide.slide.ExtLst.Ext = nil
+				found := false
+				for _, ext := range slide.slide.ExtLst.Ext {
+					if ext != nil && ext.URI == pml.PPTXCommentRelURI {
+						found = true
+						break
+					}
+				}
+				if !found {
+					slide.slide.ExtLst.Ext = append(slide.slide.ExtLst.Ext, &pml.ExtItem{
+						URI: pml.PPTXCommentRelURI,
+						Any: fmt.Sprintf(`<p188:commentRel xmlns:p188="%s" r:id="%s"/>`, pml.PPTXCommentsNS, relID),
+					})
+				}
+			}
+		}
+
+		if len(slideRels.Relationships) > 0 && slide.slide != nil {
+			slideData, err := utils.MarshalXMLWithHeader(slide.slide)
+			if err != nil {
+				return err
+			}
+			if _, err := p.pkg.AddPart(slidePath, packaging.ContentTypeSlide, slideData); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -1140,6 +1183,16 @@ func (p *presentationImpl) updatePackage() error {
 		if err != nil {
 			return err
 		}
+		authorsDataStr := string(authorsData)
+		authorsDataStr = strings.ReplaceAll(authorsDataStr, "<authorLst", "<p188:authorLst")
+		authorsDataStr = strings.ReplaceAll(authorsDataStr, "</authorLst>", "</p188:authorLst>")
+		authorsDataStr = strings.ReplaceAll(authorsDataStr, "<author ", "<p188:author ")
+		authorsDataStr = strings.ReplaceAll(authorsDataStr, "</author>", "</p188:author>")
+		authorsDataStr = strings.ReplaceAll(authorsDataStr, `xmlns="`+pml.PPTXCommentsNS+`"`, `xmlns:p188="`+pml.PPTXCommentsNS+`"`)
+		authorsDataStr = strings.ReplaceAll(authorsDataStr, `xmlns:p="`+pml.NS+`"`, `xmlns:a="`+pml.NSA+`" xmlns:r="`+pml.NSR+`"`)
+		authorsDataStr = strings.ReplaceAll(authorsDataStr, `xmlns:a="`+pml.NSA+`" xmlns:a="`+pml.NSA+`"`, `xmlns:a="`+pml.NSA+`"`)
+		authorsDataStr = strings.ReplaceAll(authorsDataStr, `xmlns:p188="`+pml.PPTXCommentsNS+`" xmlns:p188="`+pml.PPTXCommentsNS+`"`, `xmlns:p188="`+pml.PPTXCommentsNS+`"`)
+		authorsData = []byte(authorsDataStr)
 		if _, err := p.pkg.AddPart(authorsPath, packaging.ContentTypePPTXAuthors, authorsData); err != nil {
 			return err
 		}

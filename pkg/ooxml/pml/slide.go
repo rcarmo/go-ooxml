@@ -11,6 +11,7 @@ type Sld struct {
 	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/presentationml/2006/main sld"`
 	CSld    *CSld    `xml:"cSld"`
 	ClrMapOvr *ClrMapOvr `xml:"clrMapOvr,omitempty"`
+	ExtLst  *ExtLst  `xml:"extLst,omitempty"`
 	Timing  *Timing  `xml:"timing,omitempty"`
 	Show    *bool    `xml:"show,attr,omitempty"` // false means hidden
 }
@@ -241,6 +242,17 @@ type ClrMapOvr struct {
 
 // MasterClrMapping indicates to use master color mapping.
 type MasterClrMapping struct {
+}
+
+// ExtLst represents an extension list.
+type ExtLst struct {
+	Ext []*ExtItem `xml:"ext,omitempty"`
+}
+
+// ExtItem represents an extension entry.
+type ExtItem struct {
+	URI string `xml:"uri,attr,omitempty"`
+	Any string `xml:",innerxml"`
 }
 
 // Timing represents slide timing.

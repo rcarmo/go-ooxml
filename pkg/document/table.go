@@ -269,6 +269,90 @@ func (c *cellImpl) SetGridSpan(span int) {
 	}
 }
 
+// Width returns the cell width value (twips for dxa).
+func (c *cellImpl) Width() int64 {
+	if c.tc.TcPr != nil && c.tc.TcPr.TcW != nil {
+		return c.tc.TcPr.TcW.W
+	}
+	return 0
+}
+
+// WidthType returns the cell width type (dxa, pct, etc.).
+func (c *cellImpl) WidthType() string {
+	if c.tc.TcPr != nil && c.tc.TcPr.TcW != nil {
+		return c.tc.TcPr.TcW.Type
+	}
+	return ""
+}
+
+// SetWidth sets the cell width and width type.
+func (c *cellImpl) SetWidth(width int64, widthType string) {
+	if c.tc.TcPr == nil {
+		c.tc.TcPr = &wml.TcPr{}
+	}
+	if width <= 0 || widthType == "" {
+		c.tc.TcPr.TcW = nil
+		return
+	}
+	c.tc.TcPr.TcW = &wml.TblWidth{W: width, Type: widthType}
+}
+
+// Borders returns the cell borders.
+func (c *cellImpl) Borders() *wml.TcBorders {
+	if c.tc.TcPr == nil {
+		return nil
+	}
+	return c.tc.TcPr.TcBorders
+}
+
+// SetBorders sets the cell borders.
+func (c *cellImpl) SetBorders(borders *wml.TcBorders) {
+	if c.tc.TcPr == nil {
+		c.tc.TcPr = &wml.TcPr{}
+	}
+	c.tc.TcPr.TcBorders = borders
+}
+
+// VerticalAlign returns the cell vertical alignment.
+func (c *cellImpl) VerticalAlign() string {
+	if c.tc.TcPr != nil && c.tc.TcPr.VAlign != nil {
+		return c.tc.TcPr.VAlign.Val
+	}
+	return ""
+}
+
+// SetVerticalAlign sets the cell vertical alignment.
+func (c *cellImpl) SetVerticalAlign(valign string) {
+	if c.tc.TcPr == nil {
+		c.tc.TcPr = &wml.TcPr{}
+	}
+	if valign == "" {
+		c.tc.TcPr.VAlign = nil
+	} else {
+		c.tc.TcPr.VAlign = &wml.VAlign{Val: valign}
+	}
+}
+
+// TextDirection returns the cell text direction.
+func (c *cellImpl) TextDirection() string {
+	if c.tc.TcPr != nil && c.tc.TcPr.TextDirection != nil {
+		return c.tc.TcPr.TextDirection.Val
+	}
+	return ""
+}
+
+// SetTextDirection sets the cell text direction.
+func (c *cellImpl) SetTextDirection(direction string) {
+	if c.tc.TcPr == nil {
+		c.tc.TcPr = &wml.TcPr{}
+	}
+	if direction == "" {
+		c.tc.TcPr.TextDirection = nil
+	} else {
+		c.tc.TcPr.TextDirection = &wml.TextDirection{Val: direction}
+	}
+}
+
 // VerticalMerge returns the vertical merge type.
 func (c *cellImpl) VerticalMerge() VerticalMerge {
 	if c.tc.TcPr != nil && c.tc.TcPr.VMerge != nil {

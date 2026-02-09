@@ -44,6 +44,7 @@ func normalizeRelationshipPrefixes(data []byte) []byte {
 	if !isPresentation {
 		return data
 	}
+	isSlide := bytes.Contains(data, []byte("<sld")) || bytes.Contains(data, []byte("<p:sld"))
 	data = bytes.ReplaceAll(data, []byte("<sld xmlns=\"http://schemas.openxmlformats.org/presentationml/2006/main\""), []byte("<p:sld xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\""))
 	data = bytes.ReplaceAll(data, []byte("</sld>"), []byte("</p:sld>"))
 	data = bytes.ReplaceAll(data, []byte("<notes xmlns=\"http://schemas.openxmlformats.org/presentationml/2006/main\""), []byte("<p:notes xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\""))
@@ -63,13 +64,17 @@ func normalizeRelationshipPrefixes(data []byte) []byte {
 	notesExtReplacement := bytes.Contains(data, []byte("notesMaster")) || bytes.Contains(data, []byte("notesMasterId"))
 	data = bytes.ReplaceAll(data, []byte("<notesStyle>"), []byte("<p:notesStyle>"))
 	data = bytes.ReplaceAll(data, []byte("</notesStyle>"), []byte("</p:notesStyle>"))
-	if notesExtReplacement {
+	if notesExtReplacement || isSlide {
+		// Keep slide extLst in presentation namespace (p:extLst) and leave nested DrawingML extLst alone.
 		data = bytes.ReplaceAll(data, []byte("<extLst>"), []byte("<p:extLst>"))
 		data = bytes.ReplaceAll(data, []byte("</extLst>"), []byte("</p:extLst>"))
-	}
-	if notesExtReplacement {
 		data = bytes.ReplaceAll(data, []byte("<p:extLst><ext"), []byte("<p:extLst><p:ext"))
+		data = bytes.ReplaceAll(data, []byte("<ext uri="), []byte("<p:ext uri="))
+		data = bytes.ReplaceAll(data, []byte("</ext><p:ext"), []byte("</p:ext><p:ext"))
 		data = bytes.ReplaceAll(data, []byte("</ext></p:extLst>"), []byte("</p:ext></p:extLst>"))
+		data = bytes.ReplaceAll(data, []byte("</a:ext></a:extLst>"), []byte("</p:ext></p:extLst>"))
+		data = bytes.ReplaceAll(data, []byte("</a:ext></p:extLst>"), []byte("</p:ext></p:extLst>"))
+		data = bytes.ReplaceAll(data, []byte("</a:extLst>"), []byte("</p:extLst>"))
 	} else {
 		data = bytes.ReplaceAll(data, []byte("<p:extLst xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">"), []byte("<a:extLst>"))
 		data = bytes.ReplaceAll(data, []byte("<p:extLst xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\""), []byte("<a:extLst"))
@@ -139,12 +144,18 @@ func normalizeRelationshipPrefixes(data []byte) []byte {
 	data = bytes.ReplaceAll(data, []byte("</grpSpPr>"), []byte("</p:grpSpPr>"))
 	data = bytes.ReplaceAll(data, []byte("<p:grpSpPr xmlns=\"http://schemas.openxmlformats.org/presentationml/2006/main\">"), []byte("<p:grpSpPr>"))
 	data = bytes.ReplaceAll(data, []byte("<p:grpSpPr xmlns=\"http://schemas.openxmlformats.org/presentationml/2006/main\""), []byte("<p:grpSpPr"))
-	data = bytes.ReplaceAll(data, []byte("<extLst"), []byte("<a:extLst"))
-	data = bytes.ReplaceAll(data, []byte("</extLst>"), []byte("</a:extLst>"))
-	data = bytes.ReplaceAll(data, []byte("<a:extLst xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">"), []byte("<a:extLst>"))
-	data = bytes.ReplaceAll(data, []byte("<a:extLst xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\""), []byte("<a:extLst"))
-	data = bytes.ReplaceAll(data, []byte("</p:extLst>"), []byte("</a:extLst>"))
-	data = bytes.ReplaceAll(data, []byte("<p:extLst "), []byte("<a:extLst "))
+	if !isSlide && !notesExtReplacement {
+		data = bytes.ReplaceAll(data, []byte("<extLst"), []byte("<a:extLst"))
+		data = bytes.ReplaceAll(data, []byte("</extLst>"), []byte("</a:extLst>"))
+		data = bytes.ReplaceAll(data, []byte("<a:extLst xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">"), []byte("<a:extLst>"))
+		data = bytes.ReplaceAll(data, []byte("<a:extLst xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\""), []byte("<a:extLst"))
+		data = bytes.ReplaceAll(data, []byte("</p:extLst>"), []byte("</a:extLst>"))
+		data = bytes.ReplaceAll(data, []byte("<p:extLst "), []byte("<a:extLst "))
+	}
+	if notesExtReplacement || isSlide {
+		data = bytes.ReplaceAll(data, []byte("<p:ext uri=\"{6950BFC3-D8DA-4A85-94F7-54DA5524770B}\"><p188:commentRel"), []byte("<p:ext uri=\"{6950BFC3-D8DA-4A85-94F7-54DA5524770B}\"><p188:commentRel"))
+		data = bytes.ReplaceAll(data, []byte("</a:ext></p:extLst>"), []byte("</p:ext></p:extLst>"))
+	}
 	data = bytes.ReplaceAll(data, []byte("<clrMapOvr>"), []byte("<p:clrMapOvr>"))
 	data = bytes.ReplaceAll(data, []byte("</clrMapOvr>"), []byte("</p:clrMapOvr>"))
 	data = bytes.ReplaceAll(data, []byte("<masterClrMapping"), []byte("<a:masterClrMapping"))
@@ -171,8 +182,46 @@ func normalizeRelationshipPrefixes(data []byte) []byte {
 	data = bytes.ReplaceAll(data, []byte("</a:xfrm><a:graphic"), []byte("</p:xfrm><a:graphic"))
 	data = bytes.ReplaceAll(data, []byte("<off "), []byte("<a:off "))
 	data = bytes.ReplaceAll(data, []byte("</off>"), []byte("</a:off>"))
-	data = bytes.ReplaceAll(data, []byte("<ext "), []byte("<a:ext "))
-	data = bytes.ReplaceAll(data, []byte("</ext>"), []byte("</a:ext>"))
+	data = bytes.ReplaceAll(data, []byte("<ext xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">"), []byte("<a:ext>"))
+	data = bytes.ReplaceAll(data, []byte("<ext xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\""), []byte("<a:ext"))
+	if !isSlide && !notesExtReplacement {
+		data = bytes.ReplaceAll(data, []byte("<ext>"), []byte("<a:ext>"))
+		data = bytes.ReplaceAll(data, []byte("<ext "), []byte("<a:ext "))
+		data = bytes.ReplaceAll(data, []byte("</ext>"), []byte("</a:ext>"))
+	}
+	data = bytes.ReplaceAll(data, []byte("</ext><a:"), []byte("</a:ext><a:"))
+	data = bytes.ReplaceAll(data, []byte("</ext></a:xfrm>"), []byte("</a:ext></a:xfrm>"))
+	data = bytes.ReplaceAll(data, []byte("</ext></p:xfrm>"), []byte("</a:ext></p:xfrm>"))
+	data = bytes.ReplaceAll(data, []byte("</ext></a:extLst>"), []byte("</a:ext></a:extLst>"))
+	if !isSlide && !notesExtReplacement {
+		data = bytes.ReplaceAll(data, []byte("<ext "), []byte("<a:ext "))
+	}
+	if notesExtReplacement || isSlide {
+		data = bytes.ReplaceAll(data, []byte("<extLst xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">"), []byte("<a:extLst>"))
+		data = bytes.ReplaceAll(data, []byte("<extLst xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\""), []byte("<a:extLst"))
+		data = bytes.ReplaceAll(data, []byte("</extLst>"), []byte("</a:extLst>"))
+		data = bytes.ReplaceAll(data, []byte("<a:ext uri="), []byte("<a:ext uri="))
+		data = bytes.ReplaceAll(data, []byte("<a:extLst><p:ext"), []byte("<a:extLst><a:ext"))
+		data = bytes.ReplaceAll(data, []byte("</p:ext></a:extLst>"), []byte("</a:ext></a:extLst>"))
+	}
+	if notesExtReplacement || isSlide {
+		data = bytes.ReplaceAll(data, []byte("</a:ext></p:extLst>"), []byte("</p:ext></p:extLst>"))
+		data = bytes.ReplaceAll(data, []byte("<a:blip><a:extLst><p:ext"), []byte("<a:blip><a:extLst><a:ext"))
+		data = bytes.ReplaceAll(data, []byte("</p:ext></a:extLst></a:blip>"), []byte("</a:ext></a:extLst></a:blip>"))
+		data = bytes.ReplaceAll(data, []byte("</p:ext></a:extLst>"), []byte("</a:ext></a:extLst>"))
+	}
+	if notesExtReplacement || isSlide {
+		data = bytes.ReplaceAll(data, []byte("<a:blip><extLst"), []byte("<a:blip><a:extLst"))
+		data = bytes.ReplaceAll(data, []byte("</extLst></a:blip>"), []byte("</a:extLst></a:blip>"))
+		data = bytes.ReplaceAll(data, []byte("<a:blip><a:extLst xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">"), []byte("<a:blip><a:extLst>"))
+		data = bytes.ReplaceAll(data, []byte("<a:blip><a:extLst xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\""), []byte("<a:blip><a:extLst"))
+		data = bytes.ReplaceAll(data, []byte("<a:blip><p:extLst"), []byte("<a:blip><a:extLst"))
+		data = bytes.ReplaceAll(data, []byte("</p:extLst></a:blip>"), []byte("</a:extLst></a:blip>"))
+		data = bytes.ReplaceAll(data, []byte("<a:blip><a:extLst><p:ext"), []byte("<a:blip><a:extLst><a:ext"))
+		data = bytes.ReplaceAll(data, []byte("</p:ext></a:extLst>"), []byte("</a:ext></a:extLst>"))
+		data = bytes.ReplaceAll(data, []byte("</p:ext></extLst>"), []byte("</a:ext></a:extLst>"))
+		data = bytes.ReplaceAll(data, []byte("</p:ext></p:extLst></a:blip>"), []byte("</a:ext></a:extLst></a:blip>"))
+	}
 	data = bytes.ReplaceAll(data, []byte("<prstGeom "), []byte("<a:prstGeom "))
 	data = bytes.ReplaceAll(data, []byte("</prstGeom>"), []byte("</a:prstGeom>"))
 	data = bytes.ReplaceAll(data, []byte("<picLocks "), []byte("<a:picLocks "))
@@ -193,7 +242,7 @@ func normalizeRelationshipPrefixes(data []byte) []byte {
 	data = bytes.ReplaceAll(data, []byte("</tr>"), []byte("</a:tr>"))
 	data = bytes.ReplaceAll(data, []byte("<tc xmlns:a="), []byte("<a:tc xmlns:a="))
 	data = bytes.ReplaceAll(data, []byte("</tc>"), []byte("</a:tc>"))
-	if !bytes.Contains(data, []byte("http://schemas.microsoft.com/office/powerpoint/2018/8/main")) {
+	if isSlide || !bytes.Contains(data, []byte("http://schemas.microsoft.com/office/powerpoint/2018/8/main")) {
 		data = bytes.ReplaceAll(data, []byte("<txBody>"), []byte("<p:txBody>"))
 		data = bytes.ReplaceAll(data, []byte("<txBody "), []byte("<p:txBody "))
 		data = bytes.ReplaceAll(data, []byte("</txBody>"), []byte("</p:txBody>"))

@@ -43,6 +43,42 @@ func (p *P) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 					return err
 				}
 				p.Content = append(p.Content, del)
+			case "moveTo":
+				moveTo := &MoveTo{}
+				if err := d.DecodeElement(moveTo, &t); err != nil {
+					return err
+				}
+				p.Content = append(p.Content, moveTo)
+			case "moveFrom":
+				moveFrom := &MoveFrom{}
+				if err := d.DecodeElement(moveFrom, &t); err != nil {
+					return err
+				}
+				p.Content = append(p.Content, moveFrom)
+			case "moveToRangeStart":
+				start := &MoveToRangeStart{}
+				if err := d.DecodeElement(start, &t); err != nil {
+					return err
+				}
+				p.Content = append(p.Content, start)
+			case "moveToRangeEnd":
+				end := &MoveToRangeEnd{}
+				if err := d.DecodeElement(end, &t); err != nil {
+					return err
+				}
+				p.Content = append(p.Content, end)
+			case "moveFromRangeStart":
+				start := &MoveFromRangeStart{}
+				if err := d.DecodeElement(start, &t); err != nil {
+					return err
+				}
+				p.Content = append(p.Content, start)
+			case "moveFromRangeEnd":
+				end := &MoveFromRangeEnd{}
+				if err := d.DecodeElement(end, &t); err != nil {
+					return err
+				}
+				p.Content = append(p.Content, end)
 			case "commentRangeStart":
 				crs := &CommentRangeStart{}
 				if err := d.DecodeElement(crs, &t); err != nil {

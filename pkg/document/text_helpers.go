@@ -1,6 +1,7 @@
 package document
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
@@ -16,10 +17,27 @@ func textFromRun(r *wml.R) string {
 			sb.WriteString("\n")
 		case *wml.Tab:
 			sb.WriteString("\t")
+		case *wml.Sym:
+			sb.WriteRune(symToRune(v.Char))
 		}
 	}
 	return sb.String()
 }
+
+func symToRune(char string) rune {
+	if len(char) == 1 {
+		return rune(char[0])
+	}
+	if len(char) == 0 {
+		return 0
+	}
+	val, err := strconv.ParseUint(char, 16, 16)
+	if err != nil {
+		return 0
+	}
+	return rune(val)
+}
+
 
 func textFromParagraph(p *wml.P) string {
 	return textFromInlineContent(p.Content)
