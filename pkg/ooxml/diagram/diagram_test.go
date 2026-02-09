@@ -11,10 +11,10 @@ func TestDiagramPartsRoundTrip(t *testing.T) {
 		name string
 		doc  interface{}
 	}{
-		{"dataModel", &DataModel{}},
-		{"layoutDef", &LayoutDef{}},
-		{"styleDef", &StyleDef{}},
-		{"colorsDef", &ColorsDef{}},
+		{"dataModel", DefaultDataModel()},
+		{"layoutDef", DefaultLayoutDef()},
+		{"styleDef", DefaultStyleDef()},
+		{"colorsDef", DefaultColorsDef()},
 	}
 
 	for _, tt := range tests {

@@ -772,6 +772,33 @@ func TestECMA376_TrackChangesInSettings(t *testing.T) {
 	}
 }
 
+func TestECMA376_TitlePageAndBackground(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.CreateDocument(func(d Document) {
+		sections := d.Sections()
+		if len(sections) > 0 {
+			sections[0].SetTitlePage(true)
+		}
+		d.SetBackgroundColor("DDDDDD")
+	})
+	defer doc.Close()
+
+	path := h.SaveDocument(doc, "titlepg_background.docx")
+	doc.Close()
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("ReadFile() error = %v", err)
+	}
+	xml := extractDocumentXML(t, data)
+	if !xmlContainsElement(xml, "titlePg") {
+		t.Error("Expected titlePg element in document.xml")
+	}
+	if !strings.Contains(xml, "background") {
+		t.Error("Expected background element in document.xml")
+	}
+}
+
 // TestECMA376_RoundTrip_Phase3Features tests round-trip of Phase 3 features
 func TestECMA376_RoundTrip_Phase3Features(t *testing.T) {
 	// Create document with Phase 3 features

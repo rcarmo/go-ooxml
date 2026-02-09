@@ -66,6 +66,84 @@ func (s *styleImpl) SetBasedOn(styleID string) {
 	s.style.BasedOn = &wml.StyleBasedOn{Val: styleID}
 }
 
+// Next returns the next style ID.
+func (s *styleImpl) Next() string {
+	if s.style.Next != nil {
+		return s.style.Next.Val
+	}
+	return ""
+}
+
+// SetNext sets the next style ID.
+func (s *styleImpl) SetNext(styleID string) {
+	if styleID == "" {
+		s.style.Next = nil
+		return
+	}
+	s.style.Next = &wml.StyleNext{Val: styleID}
+}
+
+// Link returns the linked style ID.
+func (s *styleImpl) Link() string {
+	if s.style.Link != nil {
+		return s.style.Link.Val
+	}
+	return ""
+}
+
+// SetLink sets the linked style ID.
+func (s *styleImpl) SetLink(styleID string) {
+	if styleID == "" {
+		s.style.Link = nil
+		return
+	}
+	s.style.Link = &wml.StyleLink{Val: styleID}
+}
+
+// UIPriority returns the UI priority for the style.
+func (s *styleImpl) UIPriority() int {
+	if s.style.UIPriority != nil {
+		return s.style.UIPriority.Val
+	}
+	return 0
+}
+
+// SetUIPriority sets the UI priority for the style.
+func (s *styleImpl) SetUIPriority(priority int) {
+	if priority <= 0 {
+		s.style.UIPriority = nil
+		return
+	}
+	s.style.UIPriority = &wml.UIPriority{Val: priority}
+}
+
+// QFormat returns whether the style is a quick format.
+func (s *styleImpl) QFormat() bool {
+	if s.style.QFormat != nil {
+		return s.style.QFormat.Enabled()
+	}
+	return false
+}
+
+// SetQFormat sets whether the style is a quick format.
+func (s *styleImpl) SetQFormat(v bool) {
+	if v {
+		s.style.QFormat = wml.NewOnOffEnabled()
+	} else {
+		s.style.QFormat = nil
+	}
+}
+
+// CustomStyle returns whether the style is marked custom.
+func (s *styleImpl) CustomStyle() bool {
+	return s.style.CustomStyle != nil && *s.style.CustomStyle
+}
+
+// SetCustomStyle sets whether the style is marked custom.
+func (s *styleImpl) SetCustomStyle(v bool) {
+	s.style.CustomStyle = &v
+}
+
 // IsDefault returns whether this is a default style.
 func (s *styleImpl) IsDefault() bool {
 	return s.style.Default != nil && *s.style.Default

@@ -130,13 +130,7 @@ func (p *paragraphImpl) AddChart(widthEMU, heightEMU int64, title string) error 
 	chartID := p.doc.nextChartID
 	p.doc.nextChartID++
 	chartPath := fmt.Sprintf("word/charts/chart%d.xml", chartID)
-	cs := &chart.ChartSpace{
-		Chart: &chart.Chart{
-			PlotArea: &chart.PlotArea{Layout: &chart.Layout{}},
-			Title:    &chart.Title{},
-			Legend:   &chart.Legend{},
-		},
-	}
+	cs := chart.DefaultChartSpace()
 	data, err := utils.MarshalXMLWithHeader(cs)
 	if err != nil {
 		return err
@@ -181,20 +175,20 @@ func (p *paragraphImpl) AddDiagram(widthEMU, heightEMU int64, title string) erro
 	}
 	id := p.doc.nextDiagramID
 	p.doc.nextDiagramID++
-	dataModel := &diagram.DataModel{}
+	dataModel := diagram.DefaultDataModel()
 	data, err := utils.MarshalXMLWithHeader(dataModel)
 	if err != nil {
 		return err
 	}
-	layoutData, err := utils.MarshalXMLWithHeader(&diagram.LayoutDef{})
+	layoutData, err := utils.MarshalXMLWithHeader(diagram.DefaultLayoutDef())
 	if err != nil {
 		return err
 	}
-	styleData, err := utils.MarshalXMLWithHeader(&diagram.StyleDef{})
+	styleData, err := utils.MarshalXMLWithHeader(diagram.DefaultStyleDef())
 	if err != nil {
 		return err
 	}
-	colorsData, err := utils.MarshalXMLWithHeader(&diagram.ColorsDef{})
+	colorsData, err := utils.MarshalXMLWithHeader(diagram.DefaultColorsDef())
 	if err != nil {
 		return err
 	}

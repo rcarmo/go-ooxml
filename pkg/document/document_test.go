@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/common"
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
 )
 
 // =============================================================================
@@ -304,13 +305,18 @@ func TestRun_AdvancedEffects(t *testing.T) {
 	defer doc.Close()
 
 	run := doc.AddParagraph().AddRun()
+	run.SetDoubleStrike(true)
 	run.SetCaps(true)
 	run.SetSmallCaps(true)
 	run.SetOutline(true)
 	run.SetShadow(true)
 	run.SetEmboss(true)
 	run.SetImprint(true)
+	run.SetVanish(true)
 
+	if !run.DoubleStrike() {
+		t.Error("DoubleStrike() should be true")
+	}
 	if !run.Caps() {
 		t.Error("Caps() should be true")
 	}
@@ -328,6 +334,9 @@ func TestRun_AdvancedEffects(t *testing.T) {
 	}
 	if !run.Imprint() {
 		t.Error("Imprint() should be true")
+	}
+	if !run.Vanish() {
+		t.Error("Vanish() should be true")
 	}
 }
 
@@ -418,6 +427,20 @@ func TestRun_VerticalAlign(t *testing.T) {
 	}
 	if run2.Superscript() {
 		t.Error("Superscript() should be false")
+	}
+}
+
+func TestRun_SymbolAndLastRenderedPageBreak(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.CreateDocument(nil)
+	defer doc.Close()
+
+	run := doc.AddParagraph().AddRun()
+	run.AddSymbol("Wingdings", "F04A")
+	run.AddLastRenderedPageBreak()
+
+	if got := doc.Paragraphs()[0].Text(); got == "" {
+		t.Error("Expected symbol text in paragraph")
 	}
 }
 
@@ -613,6 +636,36 @@ func TestCell_Shading(t *testing.T) {
 	}
 }
 
+func TestCell_Properties(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.CreateDocument(nil)
+	defer doc.Close()
+
+	cell := doc.AddTable(1, 1).Cell(0, 0)
+	cell.SetWidth(2400, "dxa")
+	cell.SetVerticalAlign("center")
+	cell.SetTextDirection("tbRl")
+	cell.SetBorders(&wml.TcBorders{
+		Top: &wml.Border{Val: "single", Sz: 8, Color: "000000"},
+	})
+
+	if got := cell.Width(); got != 2400 {
+		t.Errorf("Width() = %d, want 2400", got)
+	}
+	if got := cell.WidthType(); got != "dxa" {
+		t.Errorf("WidthType() = %q, want dxa", got)
+	}
+	if got := cell.VerticalAlign(); got != "center" {
+		t.Errorf("VerticalAlign() = %q, want center", got)
+	}
+	if got := cell.TextDirection(); got != "tbRl" {
+		t.Errorf("TextDirection() = %q, want tbRl", got)
+	}
+	if cell.Borders() == nil || cell.Borders().Top == nil {
+		t.Error("Expected borders to be set")
+	}
+}
+
 // =============================================================================
 // Round-Trip Tests - Using Fixtures
 // =============================================================================
@@ -680,6 +733,26 @@ func TestRoundTrip_FormattingPreserved(t *testing.T) {
 	}
 	if runs[2].FontName() != "Arial" {
 		t.Errorf("third run font = %q, want Arial", runs[2].FontName())
+	}
+}
+
+func TestSection_TitlePageAndBackground(t *testing.T) {
+	h := NewTestHelper(t)
+	doc := h.CreateDocument(nil)
+	defer doc.Close()
+
+	sections := doc.Sections()
+	if len(sections) == 0 {
+		t.Fatal("Expected section")
+	}
+	sections[0].SetTitlePage(true)
+	doc.SetBackgroundColor("EEEEEE")
+
+	if !sections[0].TitlePage() {
+		t.Error("TitlePage() should be true")
+	}
+	if got := doc.BackgroundColor(); got != "EEEEEE" {
+		t.Errorf("BackgroundColor() = %q, want EEEEEE", got)
 	}
 }
 

@@ -1,7 +1,9 @@
 // Package wml provides WordprocessingML types for OOXML documents.
 package wml
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+)
 
 // Namespaces used in WordprocessingML documents.
 const (
@@ -14,8 +16,18 @@ const (
 // Document is the root element of a WordprocessingML document.
 type Document struct {
 	XMLName             xml.Name `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main document"`
-	MCIgnorable         string   `xml:"http://schemas.openxmlformats.org/markup-compatibility/2006 Ignorable,attr,omitempty"`
-	Body                *Body    `xml:"body"`
+	MCIgnorable string      `xml:"http://schemas.openxmlformats.org/markup-compatibility/2006 Ignorable,attr,omitempty"`
+	Background  *Background `xml:"background,omitempty"`
+	Body        *Body       `xml:"body"`
+}
+
+// Background represents document background.
+type Background struct {
+	XMLName    xml.Name `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main background"`
+	Color      string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main color,attr,omitempty"`
+	ThemeColor string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main themeColor,attr,omitempty"`
+	ThemeTint  string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main themeTint,attr,omitempty"`
+	ThemeShade string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main themeShade,attr,omitempty"`
 }
 
 // Body contains the block-level content of the document.
@@ -114,6 +126,7 @@ type SectPr struct {
 	XMLName     xml.Name    `xml:"sectPr"`
 	HeaderRefs  []HeaderRef `xml:"headerReference,omitempty"`
 	FooterRefs  []FooterRef `xml:"footerReference,omitempty"`
+	TitlePg     *OnOff      `xml:"titlePg,omitempty"`
 	PgSz        *PgSz       `xml:"pgSz,omitempty"`
 	PgMar       *PgMar      `xml:"pgMar,omitempty"`
 	Cols        *Cols       `xml:"cols,omitempty"`

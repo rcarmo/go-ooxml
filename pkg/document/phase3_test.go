@@ -1007,6 +1007,11 @@ func TestStyleFormatting(t *testing.T) {
 	s.SetAlignment("center")
 	s.SetSpacingBefore(240)
 	s.SetSpacingAfter(120)
+	s.SetNext("NextStyle")
+	s.SetLink("LinkedStyle")
+	s.SetUIPriority(5)
+	s.SetQFormat(true)
+	s.SetCustomStyle(true)
 
 	// Verify properties were set (basic check - they don't error)
 	if s.ParagraphProperties() == nil {
@@ -1014,6 +1019,21 @@ func TestStyleFormatting(t *testing.T) {
 	}
 	if s.RunProperties() == nil {
 		t.Error("Expected run properties to be set")
+	}
+	if s.Next() != "NextStyle" {
+		t.Errorf("Next() = %q, want NextStyle", s.Next())
+	}
+	if s.Link() != "LinkedStyle" {
+		t.Errorf("Link() = %q, want LinkedStyle", s.Link())
+	}
+	if s.UIPriority() != 5 {
+		t.Errorf("UIPriority() = %d, want 5", s.UIPriority())
+	}
+	if !s.QFormat() {
+		t.Error("QFormat() should be true")
+	}
+	if !s.CustomStyle() {
+		t.Error("CustomStyle() should be true")
 	}
 }
 

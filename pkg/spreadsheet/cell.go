@@ -228,7 +228,9 @@ func (c *cellImpl) Formula() string {
 func (c *cellImpl) SetFormula(formula string) error {
 	c.cell.F = &sml.Formula{Content: formula}
 	c.cell.T = ""
-	c.cell.V = "" // Value will be calculated by Excel
+	if c.cell.V == "" {
+		c.cell.V = "0"
+	}
 	return nil
 }
 

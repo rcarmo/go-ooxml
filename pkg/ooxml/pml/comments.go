@@ -5,6 +5,8 @@ import "encoding/xml"
 const (
 	// PPTXCommentsNS is the namespace for modern PowerPoint comments.
 	PPTXCommentsNS = "http://schemas.microsoft.com/office/powerpoint/2018/8/main"
+	// PPTXCommentRelURI is the extension URI for comment relationships on slides.
+	PPTXCommentRelURI = "{6950BFC3-D8DA-4A85-94F7-54DA5524770B}"
 )
 
 // CommentList represents modern PowerPoint comments.

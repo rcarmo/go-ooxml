@@ -7,13 +7,7 @@ import (
 )
 
 func TestChartSpaceRoundTrip(t *testing.T) {
-	cs := &ChartSpace{
-		Chart: &Chart{
-			PlotArea: &PlotArea{Layout: &Layout{}},
-			Title:    &Title{},
-			Legend:   &Legend{},
-		},
-	}
+	cs := DefaultChartSpace()
 
 	data, err := utils.MarshalXMLWithHeader(cs)
 	if err != nil {
@@ -30,5 +24,8 @@ func TestChartSpaceRoundTrip(t *testing.T) {
 	}
 	if parsed.Chart.Title == nil || parsed.Chart.Legend == nil {
 		t.Fatalf("expected title/legend after round-trip")
+	}
+	if len(parsed.Chart.PlotArea.Content) == 0 {
+		t.Fatalf("expected plotArea content after round-trip")
 	}
 }

@@ -107,6 +107,16 @@ type Style interface {
 	Type() StyleType
 	BasedOn() string
 	SetBasedOn(styleID string)
+	Next() string
+	SetNext(styleID string)
+	Link() string
+	SetLink(styleID string)
+	UIPriority() int
+	SetUIPriority(priority int)
+	QFormat() bool
+	SetQFormat(v bool)
+	CustomStyle() bool
+	SetCustomStyle(v bool)
 	IsDefault() bool
 	SetDefault(v bool)
 	SetBold(v bool)
@@ -192,6 +202,8 @@ type Document interface {
 	AddContentControl(tag, alias, text string) *ContentControl
 	AddBlockContentControl(tag, alias, text string) *ContentControl
 	ContentControlByTag(tag string) *ContentControl
+	BackgroundColor() string
+	SetBackgroundColor(hex string)
 }
 
 
@@ -220,6 +232,8 @@ type Section interface {
 	AddFooter(hfType HeaderFooterType) Footer
 	PageMargins() (PageMargins, bool)
 	SetPageMargins(margins PageMargins)
+	TitlePage() bool
+	SetTitlePage(v bool)
 }
 // Paragraph represents a paragraph.
 type Paragraph interface {
@@ -281,6 +295,8 @@ type Run interface {
 	SetUnderlineStyle(style string)
 	Strike() bool
 	SetStrike(v bool)
+	DoubleStrike() bool
+	SetDoubleStrike(v bool)
 	Caps() bool
 	SetCaps(v bool)
 	SmallCaps() bool
@@ -293,6 +309,8 @@ type Run interface {
 	SetEmboss(v bool)
 	Imprint() bool
 	SetImprint(v bool)
+	Vanish() bool
+	SetVanish(v bool)
 	FontSize() float64
 	SetFontSize(points float64)
 	FontName() string
@@ -306,6 +324,8 @@ type Run interface {
 	Subscript() bool
 	SetSubscript(v bool)
 	Properties() RunProperties
+	AddSymbol(font, char string)
+	AddLastRenderedPageBreak()
 	AddBreak()
 	AddPageBreak()
 	AddTab()
@@ -348,6 +368,15 @@ type Cell interface {
 	SetVerticalMerge(v VerticalMerge)
 	GridSpan() int
 	SetGridSpan(span int)
+	Width() int64
+	WidthType() string
+	SetWidth(width int64, widthType string)
+	Borders() *wml.TcBorders
+	SetBorders(borders *wml.TcBorders)
+	VerticalAlign() string
+	SetVerticalAlign(valign string)
+	TextDirection() string
+	SetTextDirection(direction string)
 	Shading() string
 	SetShading(fill string)
 	Index() int

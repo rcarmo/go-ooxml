@@ -27,3 +27,31 @@ type StyleDef struct {
 type ColorsDef struct {
 	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/drawingml/2006/diagram colorsDef"`
 }
+
+// DefaultDataModel returns a minimal SmartArt data model payload.
+func DefaultDataModel() *DataModel {
+	return &DataModel{
+		XMLName: xml.Name{Space: NS, Local: "dataModel"},
+	}
+}
+
+// DefaultLayoutDef returns a minimal SmartArt layout definition payload.
+func DefaultLayoutDef() *LayoutDef {
+	return &LayoutDef{
+		XMLName: xml.Name{Space: NS, Local: "layoutDef"},
+	}
+}
+
+// DefaultStyleDef returns a minimal SmartArt style definition payload.
+func DefaultStyleDef() *StyleDef {
+	return &StyleDef{
+		XMLName: xml.Name{Space: NS, Local: "styleDef"},
+	}
+}
+
+// DefaultColorsDef returns a minimal SmartArt colors definition payload.
+func DefaultColorsDef() *ColorsDef {
+	return &ColorsDef{
+		XMLName: xml.Name{Space: NS, Local: "colorsDef"},
+	}
+}

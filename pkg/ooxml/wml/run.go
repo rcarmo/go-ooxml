@@ -55,18 +55,30 @@ func (r *R) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 					return err
 				}
 				r.Content = append(r.Content, fc)
-		case "instrText":
-			it := &InstrText{}
-			if err := d.DecodeElement(it, &t); err != nil {
-				return err
-			}
-			r.Content = append(r.Content, it)
-		case "drawing":
-			drawing := &Drawing{}
-			if err := d.DecodeElement(drawing, &t); err != nil {
-				return err
-			}
-			r.Content = append(r.Content, drawing)
+			case "sym":
+				sym := &Sym{}
+				if err := d.DecodeElement(sym, &t); err != nil {
+					return err
+				}
+				r.Content = append(r.Content, sym)
+			case "lastRenderedPageBreak":
+				lrpb := &LastRenderedPageBreak{}
+				if err := d.DecodeElement(lrpb, &t); err != nil {
+					return err
+				}
+				r.Content = append(r.Content, lrpb)
+			case "instrText":
+				it := &InstrText{}
+				if err := d.DecodeElement(it, &t); err != nil {
+					return err
+				}
+				r.Content = append(r.Content, it)
+			case "drawing":
+				drawing := &Drawing{}
+				if err := d.DecodeElement(drawing, &t); err != nil {
+					return err
+				}
+				r.Content = append(r.Content, drawing)
 			default:
 				if err := d.Skip(); err != nil {
 					return err
@@ -226,6 +238,18 @@ type Br struct {
 // Tab represents a tab character.
 type Tab struct {
 	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main tab"`
+}
+
+// Sym represents a symbol character.
+type Sym struct {
+	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main sym"`
+	Font    string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main font,attr,omitempty"`
+	Char    string   `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main char,attr"`
+}
+
+// LastRenderedPageBreak represents a last rendered page break.
+type LastRenderedPageBreak struct {
+	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main lastRenderedPageBreak"`
 }
 
 // NewT creates a new text element.

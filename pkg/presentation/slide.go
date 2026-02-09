@@ -307,13 +307,7 @@ func (s *slideImpl) AddChart(left, top, width, height int64, title string) (Shap
 	s.ensureSpTree()
 
 	nextID := s.getNextShapeID()
-	cs := &chart.ChartSpace{
-		Chart: &chart.Chart{
-			PlotArea: &chart.PlotArea{Layout: &chart.Layout{}},
-			Title:    &chart.Title{},
-			Legend:   &chart.Legend{},
-		},
-	}
+	cs := chart.DefaultChartSpace()
 	data, err := utils.MarshalXMLWithHeader(cs)
 	if err != nil {
 		return nil, err
@@ -367,20 +361,20 @@ func (s *slideImpl) AddDiagram(left, top, width, height int64, title string) (Sh
 	}
 	s.ensureSpTree()
 
-	dataModel := &diagram.DataModel{}
+	dataModel := diagram.DefaultDataModel()
 	data, err := utils.MarshalXMLWithHeader(dataModel)
 	if err != nil {
 		return nil, err
 	}
-	layoutData, err := utils.MarshalXMLWithHeader(&diagram.LayoutDef{})
+	layoutData, err := utils.MarshalXMLWithHeader(diagram.DefaultLayoutDef())
 	if err != nil {
 		return nil, err
 	}
-	styleData, err := utils.MarshalXMLWithHeader(&diagram.StyleDef{})
+	styleData, err := utils.MarshalXMLWithHeader(diagram.DefaultStyleDef())
 	if err != nil {
 		return nil, err
 	}
-	colorsData, err := utils.MarshalXMLWithHeader(&diagram.ColorsDef{})
+	colorsData, err := utils.MarshalXMLWithHeader(diagram.DefaultColorsDef())
 	if err != nil {
 		return nil, err
 	}
@@ -534,7 +528,7 @@ func (s *slideImpl) AddComment(text, author string, x, y float64) (Comment, erro
 	comment := &pml.Comment{
 		ID:       newCommentID(),
 		AuthorID: authorID,
-		Created:  time.Now().Format(time.RFC3339),
+		Created:  time.Now().Format("2006-01-02T15:04:05.000"),
 		Pos: &pml.CommentPos{
 			X: int64(x),
 			Y: int64(y),
