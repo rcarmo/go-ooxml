@@ -125,6 +125,8 @@ func normalizeRelationshipPrefixes(data []byte) []byte {
 	data = bytes.ReplaceAll(data, []byte("</cNvPr>"), []byte("</p:cNvPr>"))
 	data = bytes.ReplaceAll(data, []byte("<cNvSpPr"), []byte("<p:cNvSpPr"))
 	data = bytes.ReplaceAll(data, []byte("</cNvSpPr>"), []byte("</p:cNvSpPr>"))
+	data = bytes.ReplaceAll(data, []byte("<graphicFrame"), []byte("<p:graphicFrame"))
+	data = bytes.ReplaceAll(data, []byte("</graphicFrame>"), []byte("</p:graphicFrame>"))
 	// Keep spLocks in DrawingML namespace for notes placeholders.
 	data = bytes.ReplaceAll(data, []byte("<nvPr>"), []byte("<p:nvPr>"))
 	data = bytes.ReplaceAll(data, []byte("</nvPr>"), []byte("</p:nvPr>"))

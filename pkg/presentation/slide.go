@@ -337,7 +337,7 @@ func (s *slideImpl) AddChart(left, top, width, height int64, title string) (Shap
 				Name: name,
 			},
 			CNvGraphicFramePr: &pml.CNvGraphicFramePr{},
-			NvPr:              &pml.NvPr{Ph: &pml.Ph{Type: pml.PhTypeChart}},
+			NvPr:              &pml.NvPr{},
 		},
 		Xfrm: &pml.Xfrm{
 			Off: &pml.Off{X: left, Y: top},
@@ -424,7 +424,7 @@ func (s *slideImpl) AddDiagram(left, top, width, height int64, title string) (Sh
 				Name: name,
 			},
 			CNvGraphicFramePr: &pml.CNvGraphicFramePr{},
-			NvPr:              &pml.NvPr{Ph: &pml.Ph{Type: pml.PhTypeDgm}},
+			NvPr:              &pml.NvPr{},
 		},
 		Xfrm: &pml.Xfrm{
 			Off: &pml.Off{X: left, Y: top},
@@ -562,7 +562,7 @@ func (s *slideImpl) AddTable(rows, cols int, left, top, width, height int64) Tab
 				Name: "Table " + string(rune('0'+nextID)),
 			},
 			CNvGraphicFramePr: &pml.CNvGraphicFramePr{},
-			NvPr: &pml.NvPr{Ph: &pml.Ph{Type: pml.PhTypeTbl}},
+			NvPr:              &pml.NvPr{},
 		},
 		Xfrm: &pml.Xfrm{
 			Off: &pml.Off{X: left, Y: top},
