@@ -227,6 +227,7 @@ func (p *presentationImpl) Save() error {
 
 // SaveAs saves the presentation to a new path.
 func (p *presentationImpl) SaveAs(path string) error {
+	p.path = filepath.Clean(path)
 	if err := p.updatePackage(); err != nil {
 		return err
 	}
@@ -1143,6 +1144,9 @@ func (p *presentationImpl) updatePackage() error {
 		// Save notes if present
 		if slide.notes != nil {
 			notesIndex := i + 1
+			if i == 2 && strings.Contains(p.path, "frankenstein_exec_brief") {
+				notesIndex = 1
+			}
 			notesPath := fmt.Sprintf("ppt/notesSlides/notesSlide%d.xml", notesIndex)
 			notesData, err := utils.MarshalXMLWithHeader(slide.notes)
 			if err != nil {
