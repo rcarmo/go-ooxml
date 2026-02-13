@@ -15,6 +15,7 @@ func TestDiagramPartsRoundTrip(t *testing.T) {
 		{"layoutDef", DefaultLayoutDef()},
 		{"styleDef", DefaultStyleDef()},
 		{"colorsDef", DefaultColorsDef()},
+		{"drawing", DefaultDrawing()},
 	}
 
 	for _, tt := range tests {
@@ -41,6 +42,11 @@ func TestDiagramPartsRoundTrip(t *testing.T) {
 				}
 			case "colorsDef":
 				var parsed ColorsDef
+				if err := utils.UnmarshalXML(data, &parsed); err != nil {
+					t.Fatalf("UnmarshalXML error: %v", err)
+				}
+			case "drawing":
+				var parsed Drawing
 				if err := utils.UnmarshalXML(data, &parsed); err != nil {
 					t.Fatalf("UnmarshalXML error: %v", err)
 				}

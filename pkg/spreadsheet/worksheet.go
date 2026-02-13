@@ -351,6 +351,9 @@ func (ws *worksheetImpl) getOrCreateRow(rowNum int) *sml.Row {
 }
 
 func (ws *worksheetImpl) addTablePart(relID string) {
+	if ws == nil || ws.workbook == nil {
+		return
+	}
 	if ws.worksheet.TableParts == nil {
 		ws.worksheet.TableParts = &sml.TableParts{}
 	}
@@ -419,6 +422,7 @@ func (r *rowImpl) SetHeight(height float64) {
 	r.row.Ht = height
 	customHeight := true
 	r.row.CustomHeight = &customHeight
+	r.row.DyDescent = 0.2
 }
 
 // Hidden returns whether the row is hidden.

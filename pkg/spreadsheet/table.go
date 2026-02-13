@@ -30,14 +30,16 @@ func newTable(ws *worksheetImpl, id int, name, displayName, ref string) *tableIm
 		Name:           name,
 		DisplayName:    displayName,
 		Ref:            ref,
-		HeaderRowCount: 1,
+		HeaderRowCount: 0,
 		TableColumns: &sml.TableColumns{
 			Count:       colCount,
 			TableColumn: columns,
 		},
 		TableStyleInfo: &sml.TableStyleInfo{
-			Name:            "TableStyleMedium2",
-			ShowRowStripes:  utils.BoolPtr(true),
+			Name:              "TableStyleMedium2",
+			ShowFirstColumn:   utils.BoolPtr(false),
+			ShowLastColumn:    utils.BoolPtr(false),
+			ShowRowStripes:    utils.BoolPtr(true),
 			ShowColumnStripes: utils.BoolPtr(false),
 		},
 	}
@@ -123,6 +125,9 @@ func (t *tableImpl) AddRow(values map[string]interface{}) error {
 	if err != nil {
 		return err
 	}
+	if t.table.HeaderRowCount == 0 {
+		t.table.HeaderRowCount = 1
+	}
 	end.Row++
 	t.table.Ref = formatRange(start, end)
 	return t.UpdateRow(end.Row-start.Row, values)
@@ -132,6 +137,9 @@ func (t *tableImpl) AddRow(values map[string]interface{}) error {
 func (t *tableImpl) UpdateRow(index int, values map[string]interface{}) error {
 	if index < 1 {
 		return utils.ErrInvalidIndex
+	}
+	if t.table.HeaderRowCount == 0 {
+		t.table.HeaderRowCount = 1
 	}
 	dataRange := t.DataRange()
 	if dataRange == nil {
@@ -165,6 +173,9 @@ func (t *tableImpl) UpdateRow(index int, values map[string]interface{}) error {
 func (t *tableImpl) DeleteRow(index int) error {
 	if index < 1 {
 		return utils.ErrInvalidIndex
+	}
+	if t.table.HeaderRowCount == 0 {
+		t.table.HeaderRowCount = 1
 	}
 	start, end, err := parseRange(t.table.Ref)
 	if err != nil {

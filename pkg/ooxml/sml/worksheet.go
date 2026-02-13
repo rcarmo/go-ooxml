@@ -5,6 +5,16 @@ import "encoding/xml"
 // Worksheet represents a worksheet part.
 type Worksheet struct {
 	XMLName               xml.Name                 `xml:"http://schemas.openxmlformats.org/spreadsheetml/2006/main worksheet"`
+	XMLNS_R               string                   `xml:"xmlns:r,attr,omitempty"`
+	XMLNS_XDR             string                   `xml:"xmlns:xdr,attr,omitempty"`
+	XMLNS_X14             string                   `xml:"xmlns:x14,attr,omitempty"`
+	XMLNS_MC              string                   `xml:"xmlns:mc,attr,omitempty"`
+	MCIgnorable           string                   `xml:"mc:Ignorable,attr,omitempty"`
+	XMLNS_X14AC           string                   `xml:"xmlns:x14ac,attr,omitempty"`
+	XMLNS_XR              string                   `xml:"xmlns:xr,attr,omitempty"`
+	XMLNS_XR2             string                   `xml:"xmlns:xr2,attr,omitempty"`
+	XMLNS_XR3             string                   `xml:"xmlns:xr3,attr,omitempty"`
+	XRUID                 string                   `xml:"http://schemas.microsoft.com/office/spreadsheetml/2014/revision uid,attr,omitempty"`
 	SheetPr               *SheetPr                 `xml:"sheetPr,omitempty"`
 	Dimension             *Dimension               `xml:"dimension,omitempty"`
 	SheetViews            *SheetViews              `xml:"sheetViews,omitempty"`
@@ -14,10 +24,10 @@ type Worksheet struct {
 	SheetProtection       *SheetProtection         `xml:"sheetProtection,omitempty"`
 	MergeCells            *MergeCells              `xml:"mergeCells,omitempty"`
 	Hyperlinks            *Hyperlinks              `xml:"hyperlinks,omitempty"`
+	PageMargins           *PageMargins             `xml:"pageMargins,omitempty"`
 	Drawing               *Drawing                 `xml:"drawing,omitempty"`
 	LegacyDrawing         *LegacyDrawing           `xml:"legacyDrawing,omitempty"`
 	ConditionalFormatting []*ConditionalFormatting `xml:"conditionalFormatting,omitempty"`
-	PageMargins           *PageMargins             `xml:"pageMargins,omitempty"`
 	PageSetup             *PageSetup               `xml:"pageSetup,omitempty"`
 	TableParts            *TableParts              `xml:"tableParts,omitempty"`
 }
@@ -86,10 +96,12 @@ type Pane struct {
 
 // SheetFormatPr represents sheet format properties.
 type SheetFormatPr struct {
+	BaseColWidth     int     `xml:"baseColWidth,attr,omitempty"`
 	DefaultColWidth  float64 `xml:"defaultColWidth,attr,omitempty"`
 	DefaultRowHeight float64 `xml:"defaultRowHeight,attr"`
 	OutlineLevelRow  int     `xml:"outlineLevelRow,attr,omitempty"`
 	OutlineLevelCol  int     `xml:"outlineLevelCol,attr,omitempty"`
+	DyDescent        float64 `xml:"http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac dyDescent,attr,omitempty"`
 }
 
 // Cols is a collection of column definitions.
@@ -126,6 +138,7 @@ type Row struct {
 	CustomHeight *bool   `xml:"customHeight,attr,omitempty"`
 	OutlineLevel int     `xml:"outlineLevel,attr,omitempty"`
 	Collapsed    *bool   `xml:"collapsed,attr,omitempty"`
+	DyDescent    float64 `xml:"http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac dyDescent,attr,omitempty"`
 	C            []*Cell `xml:"c,omitempty"` // Cells
 }
 

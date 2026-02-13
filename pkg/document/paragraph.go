@@ -10,8 +10,8 @@ import (
 	"strings"
 
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/chart"
-	"github.com/rcarmo/go-ooxml/pkg/ooxml/dml"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/diagram"
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/dml"
 	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
 	"github.com/rcarmo/go-ooxml/pkg/utils"
@@ -175,7 +175,26 @@ func (p *paragraphImpl) AddDiagram(widthEMU, heightEMU int64, title string) erro
 	}
 	id := p.doc.nextDiagramID
 	p.doc.nextDiagramID++
-	dataModel := diagram.DefaultDataModel()
+	dataPath := fmt.Sprintf("word/diagrams/data%d.xml", id)
+	layoutPath := fmt.Sprintf("word/diagrams/layout%d.xml", id)
+	stylePath := fmt.Sprintf("word/diagrams/quickStyle%d.xml", id)
+	colorsPath := fmt.Sprintf("word/diagrams/colors%d.xml", id)
+	diagramDrawingPath := fmt.Sprintf("word/diagrams/drawing%d.xml", id)
+
+	sourcePath := packaging.WordDocumentPath
+	rels := p.doc.pkg.GetRelationships(sourcePath)
+	dataRelID := rels.EnsureID("rId2")
+	rels.AddWithID(dataRelID, packaging.RelTypeDiagramData, relativeTarget(sourcePath, dataPath), packaging.TargetModeInternal)
+	layoutRelID := rels.EnsureID("rId3")
+	rels.AddWithID(layoutRelID, packaging.RelTypeDiagramLayout, relativeTarget(sourcePath, layoutPath), packaging.TargetModeInternal)
+	styleRelID := rels.EnsureID("rId4")
+	rels.AddWithID(styleRelID, packaging.RelTypeDiagramStyle, relativeTarget(sourcePath, stylePath), packaging.TargetModeInternal)
+	colorsRelID := rels.EnsureID("rId5")
+	rels.AddWithID(colorsRelID, packaging.RelTypeDiagramColors, relativeTarget(sourcePath, colorsPath), packaging.TargetModeInternal)
+	drawingRelID := rels.EnsureID("rId6")
+	rels.AddWithID(drawingRelID, packaging.RelTypeDiagramDrawing, relativeTarget(sourcePath, diagramDrawingPath), packaging.TargetModeInternal)
+
+	dataModel := diagram.DefaultDataModelWithDrawingRelID(drawingRelID)
 	data, err := utils.MarshalXMLWithHeader(dataModel)
 	if err != nil {
 		return err
@@ -192,10 +211,11 @@ func (p *paragraphImpl) AddDiagram(widthEMU, heightEMU int64, title string) erro
 	if err != nil {
 		return err
 	}
-	dataPath := fmt.Sprintf("word/diagrams/data%d.xml", id)
-	layoutPath := fmt.Sprintf("word/diagrams/layout%d.xml", id)
-	stylePath := fmt.Sprintf("word/diagrams/style%d.xml", id)
-	colorsPath := fmt.Sprintf("word/diagrams/colors%d.xml", id)
+	drawingData, err := utils.MarshalXMLWithHeader(diagram.DefaultDrawing())
+	if err != nil {
+		return err
+	}
+
 	if _, err := p.doc.pkg.AddPart(dataPath, packaging.ContentTypeDiagramData, data); err != nil {
 		return err
 	}
@@ -208,17 +228,9 @@ func (p *paragraphImpl) AddDiagram(widthEMU, heightEMU int64, title string) erro
 	if _, err := p.doc.pkg.AddPart(colorsPath, packaging.ContentTypeDiagramColors, colorsData); err != nil {
 		return err
 	}
-
-	sourcePath := packaging.WordDocumentPath
-	rels := p.doc.pkg.GetRelationships(sourcePath)
-	dataRelID := rels.NextID()
-	rels.AddWithID(dataRelID, packaging.RelTypeDiagramData, relativeTarget(sourcePath, dataPath), packaging.TargetModeInternal)
-	layoutRelID := rels.NextID()
-	rels.AddWithID(layoutRelID, packaging.RelTypeDiagramLayout, relativeTarget(sourcePath, layoutPath), packaging.TargetModeInternal)
-	styleRelID := rels.NextID()
-	rels.AddWithID(styleRelID, packaging.RelTypeDiagramStyle, relativeTarget(sourcePath, stylePath), packaging.TargetModeInternal)
-	colorsRelID := rels.NextID()
-	rels.AddWithID(colorsRelID, packaging.RelTypeDiagramColors, relativeTarget(sourcePath, colorsPath), packaging.TargetModeInternal)
+	if _, err := p.doc.pkg.AddPart(diagramDrawingPath, packaging.ContentTypeDiagramDrawing, drawingData); err != nil {
+		return err
+	}
 
 	drawingID := p.doc.nextDrawingID
 	p.doc.nextDrawingID++
@@ -293,7 +305,7 @@ func (p *paragraphImpl) AddPicture(imagePath string, widthEMU, heightEMU int64) 
 		DocPr: &dml.DocPr{ID: drawingID, Name: name},
 		Graphic: &dml.Graphic{
 			GraphicData: &dml.GraphicData{
-				URI: dml.GraphicDataURIPicture,
+				URI:     dml.GraphicDataURIPicture,
 				Picture: pictureXML(relID),
 			},
 		},

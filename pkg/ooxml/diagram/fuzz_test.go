@@ -13,6 +13,7 @@ func FuzzUnmarshalDiagramParts(f *testing.F) {
 		`<dgm:layoutDef xmlns:dgm="` + NS + `"></dgm:layoutDef>`,
 		`<dgm:styleDef xmlns:dgm="` + NS + `"></dgm:styleDef>`,
 		`<dgm:colorsDef xmlns:dgm="` + NS + `"></dgm:colorsDef>`,
+		`<dsp:drawing xmlns:dsp="` + NSDiagramDrawing + `" xmlns:dgm="` + NS + `"></dsp:drawing>`,
 	}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -70,6 +71,18 @@ func FuzzUnmarshalDiagramParts(f *testing.F) {
 			}
 			if !strings.Contains(string(out), "colorsDef") {
 				t.Fatalf("round-trip missing colorsDef")
+			}
+		case strings.Contains(xmlInput, "drawing"):
+			var d Drawing
+			if err := utils.UnmarshalXML([]byte(xmlInput), &d); err != nil {
+				return
+			}
+			out, err := utils.MarshalXMLWithHeader(&d)
+			if err != nil {
+				t.Fatalf("MarshalXMLWithHeader error: %v", err)
+			}
+			if !strings.Contains(string(out), "drawing") {
+				t.Fatalf("round-trip missing drawing")
 			}
 		}
 	})

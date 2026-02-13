@@ -30,6 +30,9 @@ func (c *commentImpl) Text() string {
 	if c == nil || c.comment == nil || c.comment.Text == nil {
 		return ""
 	}
+	if len(c.comment.Text.R) > 0 {
+		return c.comment.Text.R[0].T
+	}
 	return c.comment.Text.T
 }
 
@@ -41,6 +44,7 @@ func (c *commentImpl) SetText(text string) {
 	if c.comment.Text == nil {
 		c.comment.Text = &sml.Text{}
 	}
+	c.comment.Text.R = nil
 	c.comment.Text.T = text
 }
 
@@ -163,7 +167,7 @@ func (c *cellImpl) SetComment(text, author string) error {
 	comments.ensure()
 	for _, existing := range comments.comments.CommentList.Comment {
 		if existing.Ref == c.Reference() {
-			existing.Text = &sml.Text{T: text}
+			existing.Text = buildCommentText(text)
 			existing.AuthorID = comments.authorIndex(author)
 			existing.ShapeID = "0"
 			return nil
@@ -173,7 +177,7 @@ func (c *cellImpl) SetComment(text, author string) error {
 		Ref:      c.Reference(),
 		AuthorID: comments.authorIndex(author),
 		ShapeID:  "0",
-		Text:     &sml.Text{T: text},
+		Text:     buildCommentText(text),
 	}
 	comments.comments.CommentList.Comment = append(comments.comments.CommentList.Comment, comment)
 	return nil
@@ -184,4 +188,19 @@ func commentAuthor(authors *sml.Authors, index int) string {
 		return ""
 	}
 	return authors.Author[index]
+}
+
+func buildCommentText(text string) *sml.Text {
+	return &sml.Text{
+		R: []*sml.CommentRun{{
+			RPr: &sml.CommentRunProps{
+				Sz:     &sml.FloatVal{Val: 11},
+				Color:  &sml.CommentColor{Theme: utils.IntPtr(1)},
+				RFont:  &sml.CommentFont{Val: "Aptos Narrow"},
+				Family: &sml.IntVal{Val: 2},
+				Scheme: &sml.StringVal{Val: "minor"},
+			},
+			T: text,
+		}},
+	}
 }

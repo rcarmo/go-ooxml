@@ -45,7 +45,10 @@ func (ws *worksheetImpl) addGraphic(fromCell, toCell, title string, kind drawing
 		ws.path = sheetPath
 	}
 	rels := ws.workbook.pkg.GetRelationships(sheetPath)
-	drawingRel := rels.FirstByType(packaging.RelTypeDrawing)
+	drawingRel := rels.ByID("rId1")
+	if drawingRel == nil {
+		drawingRel = rels.FirstByType(packaging.RelTypeDrawing)
+	}
 	var tableRelIDs map[string]struct{}
 	if ws.worksheet.TableParts != nil {
 		tableRelIDs = make(map[string]struct{}, len(ws.worksheet.TableParts.TablePart))
@@ -95,7 +98,11 @@ func (ws *worksheetImpl) addGraphic(fromCell, toCell, title string, kind drawing
 		return err
 	}
 	if drawingID == "" {
-		drawingID = rels.NextID()
+		if ws.index == 0 {
+			drawingID = "rId1"
+		} else {
+			drawingID = rels.NextID()
+		}
 		if tableRelIDs != nil {
 			if _, exists := tableRelIDs[drawingID]; exists {
 				num, err := strconv.Atoi(strings.TrimPrefix(drawingID, "rId"))
@@ -119,9 +126,6 @@ func (ws *worksheetImpl) addGraphic(fromCell, toCell, title string, kind drawing
 	}
 	rels.AddWithID(drawingID, packaging.RelTypeDrawing, relativeTarget(sheetPath, drawingPath), packaging.TargetModeInternal)
 	ws.worksheet.Drawing = &sml.Drawing{ID: drawingID}
-	if ws.worksheet.LegacyDrawing != nil && ws.worksheet.LegacyDrawing.ID == "" {
-		ws.worksheet.LegacyDrawing.ID = drawingID
-	}
 	return nil
 }
 
@@ -157,15 +161,33 @@ func (ws *worksheetImpl) buildGraphicContent(sheetPath string, kind drawingKind,
 		}
 		relID := drawingRels.NextID()
 		drawingRels.AddWithID(relID, packaging.RelTypeChart, relativeTarget(drawingPath, chartPath), packaging.TargetModeInternal)
-		return fmt.Sprintf(`<xdr:graphicFrame><xdr:nvGraphicFramePr><xdr:cNvPr id="%d" name="%s"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="%s"><c:chart r:id="%s"/></a:graphicData></a:graphic></xdr:graphicFrame>`,
+		return fmt.Sprintf(`<xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="%d" name="%s"><a:extLst><a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}"><a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{00000000-0008-0000-0000-00000%d000000}"/></a:ext></a:extLst></xdr:cNvPr><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="%s"><c:chart xmlns:c="%s" xmlns:r="%s" r:id="%s"/></a:graphicData></a:graphic></xdr:graphicFrame>`,
 			shapeID,
 			escapeXML(chartTitle(title, chartID)),
+			shapeID,
 			packaging.NSDrawingMLChart,
+			packaging.NSDrawingMLChart,
+			packaging.NSOfficeDocRels,
 			relID,
 		), nil
 	case drawingKindDiagram:
-		id := shapeID
-		dataModel := diagram.DefaultDataModel()
+		id := 1
+		dataPath := fmt.Sprintf("xl/diagrams/data%d.xml", id)
+		layoutPath := fmt.Sprintf("xl/diagrams/layout%d.xml", id)
+		stylePath := fmt.Sprintf("xl/diagrams/quickStyle%d.xml", id)
+		colorsPath := fmt.Sprintf("xl/diagrams/colors%d.xml", id)
+		diagramDrawingPath := fmt.Sprintf("xl/diagrams/drawing%d.xml", id)
+		dataRelID := drawingRels.EnsureID("rId2")
+		drawingRels.AddWithID(dataRelID, packaging.RelTypeDiagramData, relativeTarget(drawingPath, dataPath), packaging.TargetModeInternal)
+		layoutRelID := drawingRels.EnsureID("rId3")
+		drawingRels.AddWithID(layoutRelID, packaging.RelTypeDiagramLayout, relativeTarget(drawingPath, layoutPath), packaging.TargetModeInternal)
+		styleRelID := drawingRels.EnsureID("rId4")
+		drawingRels.AddWithID(styleRelID, packaging.RelTypeDiagramStyle, relativeTarget(drawingPath, stylePath), packaging.TargetModeInternal)
+		colorsRelID := drawingRels.EnsureID("rId5")
+		drawingRels.AddWithID(colorsRelID, packaging.RelTypeDiagramColors, relativeTarget(drawingPath, colorsPath), packaging.TargetModeInternal)
+		drawingRelID := drawingRels.EnsureID("rId6")
+		drawingRels.AddWithID(drawingRelID, packaging.RelTypeDiagramDrawing, relativeTarget(drawingPath, diagramDrawingPath), packaging.TargetModeInternal)
+		dataModel := diagram.DefaultDataModelWithDrawingRelID(drawingRelID)
 		data, err := utils.MarshalXMLWithHeader(dataModel)
 		if err != nil {
 			return "", err
@@ -182,10 +204,10 @@ func (ws *worksheetImpl) buildGraphicContent(sheetPath string, kind drawingKind,
 		if err != nil {
 			return "", err
 		}
-		dataPath := fmt.Sprintf("xl/diagrams/data%d.xml", id)
-		layoutPath := fmt.Sprintf("xl/diagrams/layout%d.xml", id)
-		stylePath := fmt.Sprintf("xl/diagrams/style%d.xml", id)
-		colorsPath := fmt.Sprintf("xl/diagrams/colors%d.xml", id)
+		drawingData, err := utils.MarshalXMLWithHeader(diagram.DefaultDrawing())
+		if err != nil {
+			return "", err
+		}
 		if _, err := ws.workbook.pkg.AddPart(dataPath, packaging.ContentTypeDiagramData, data); err != nil {
 			return "", err
 		}
@@ -198,18 +220,16 @@ func (ws *worksheetImpl) buildGraphicContent(sheetPath string, kind drawingKind,
 		if _, err := ws.workbook.pkg.AddPart(colorsPath, packaging.ContentTypeDiagramColors, colorsData); err != nil {
 			return "", err
 		}
-		dataRelID := drawingRels.NextID()
-		drawingRels.AddWithID(dataRelID, packaging.RelTypeDiagramData, relativeTarget(drawingPath, dataPath), packaging.TargetModeInternal)
-		layoutRelID := drawingRels.NextID()
-		drawingRels.AddWithID(layoutRelID, packaging.RelTypeDiagramLayout, relativeTarget(drawingPath, layoutPath), packaging.TargetModeInternal)
-		styleRelID := drawingRels.NextID()
-		drawingRels.AddWithID(styleRelID, packaging.RelTypeDiagramStyle, relativeTarget(drawingPath, stylePath), packaging.TargetModeInternal)
-		colorsRelID := drawingRels.NextID()
-		drawingRels.AddWithID(colorsRelID, packaging.RelTypeDiagramColors, relativeTarget(drawingPath, colorsPath), packaging.TargetModeInternal)
-		return fmt.Sprintf(`<xdr:graphicFrame><xdr:nvGraphicFramePr><xdr:cNvPr id="%d" name="%s"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="%s"><dgm:relIds r:dm="%s" r:lo="%s" r:cs="%s" r:qs="%s"/></a:graphicData></a:graphic></xdr:graphicFrame>`,
+		if _, err := ws.workbook.pkg.AddPart(diagramDrawingPath, packaging.ContentTypeDiagramDrawing, drawingData); err != nil {
+			return "", err
+		}
+		return fmt.Sprintf(`<xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="%d" name="%s"><a:extLst><a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}"><a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{00000000-0008-0000-0000-00000%d000000}"/></a:ext></a:extLst></xdr:cNvPr><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="%s"><dgm:relIds xmlns:dgm="%s" xmlns:r="%s" r:dm="%s" r:lo="%s" r:cs="%s" r:qs="%s"/></a:graphicData></a:graphic></xdr:graphicFrame>`,
 			shapeID,
 			escapeXML(diagramTitle(title, id)),
+			shapeID,
 			packaging.NSDrawingMLDiagram,
+			packaging.NSDrawingMLDiagram,
+			packaging.NSOfficeDocRels,
 			dataRelID, layoutRelID, colorsRelID, styleRelID,
 		), nil
 	case drawingKindPicture:
@@ -253,10 +273,7 @@ func (ws *worksheetImpl) ensureDrawingPath() string {
 }
 
 func buildDrawingXML(anchor string) string {
-	return fmt.Sprintf(`<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="%s" xmlns:c="%s" xmlns:dgm="%s">%s</xdr:wsDr>`,
-		packaging.NSOfficeDocRels,
-		packaging.NSDrawingMLChart,
-		packaging.NSDrawingMLDiagram,
+	return fmt.Sprintf(`<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">%s</xdr:wsDr>`,
 		anchor,
 	)
 }
@@ -272,7 +289,7 @@ func buildAnchorXML(start, end utils.CellRef, content string) string {
 }
 
 func (ws *worksheetImpl) nextDrawingShapeID(xmlStr string) int {
-	maxID := 0
+	maxID := 2
 	scan := xmlStr
 	for {
 		idx := strings.Index(scan, "cNvPr id=\"")
@@ -288,9 +305,6 @@ func (ws *worksheetImpl) nextDrawingShapeID(xmlStr string) int {
 			maxID = id
 		}
 		scan = scan[end+1:]
-	}
-	if maxID == 0 {
-		return 1
 	}
 	return maxID + 1
 }
