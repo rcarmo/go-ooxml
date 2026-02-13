@@ -12,6 +12,9 @@ import (
 
 type vmlCommentsRoot struct {
 	XMLName xml.Name `xml:"xml"`
+	XMLNS_V string   `xml:"xmlns:v,attr,omitempty"`
+	XMLNS_O string   `xml:"xmlns:o,attr,omitempty"`
+	XMLNS_X string   `xml:"xmlns:x,attr,omitempty"`
 	Content string   `xml:",innerxml"`
 }
 
@@ -35,10 +38,14 @@ func buildCommentsVML(comments *SheetComments) ([]byte, error) {
 		shapeIndex++
 	}
 	var buf bytes.Buffer
-	buf.WriteString(`<o:shapelayout xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml" v:ext="edit">`)
-	buf.WriteString(`<o:idmap v:ext="edit" data="1"/>`)
+	buf.WriteString(`<o:shapelayout v:ext="edit">`)
+	idmap := "1"
+	if strings.Contains(comments.vmlPath, "vmlDrawing2") {
+		idmap = "2"
+	}
+	buf.WriteString(fmt.Sprintf(`<o:idmap v:ext="edit" data="%s"/>`, idmap))
 	buf.WriteString(`</o:shapelayout>`)
-	buf.WriteString(`<v:shapetype xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" id="_x0000_t202" coordsize="21600,21600" o:spt="202" path="m,l,21600r21600,l21600,xe">`)
+	buf.WriteString(`<v:shapetype id="_x0000_t202" coordsize="21600,21600" o:spt="202" path="m,l,21600r21600,l21600,xe">`)
 	buf.WriteString(`<v:stroke joinstyle="miter"/>`)
 	buf.WriteString(`<v:path gradientshapeok="t" o:connecttype="rect"/>`)
 	buf.WriteString(`</v:shapetype>`)
@@ -47,25 +54,39 @@ func buildCommentsVML(comments *SheetComments) ([]byte, error) {
 		if row < 0 || col < 0 {
 			continue
 		}
-		shapeID := 1026 + i
-		buf.WriteString(`<v:shape xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" type="#_x0000_t202"`)
-		buf.WriteString(` style="position:absolute; margin-left:59.25pt;margin-top:1.5pt;width:144px;height:79px;z-index:1;visibility:hidden"`)
-		buf.WriteString(` fillcolor="#ffffe1" o:insetmode="auto"`)
+		baseID := 1026
+		if idmap == "2" {
+			baseID = 2049
+		}
+		shapeID := baseID + i
+		buf.WriteString(`<v:shape type="#_x0000_t202"`)
+		buf.WriteString(` style='position:absolute; margin-left:59pt;margin-top:2pt;width:108pt;height:59pt;z-index:1;visibility:hidden'`)
+		buf.WriteString(` fillcolor="#ffffe1 [80]" strokecolor="none [81]" o:insetmode="auto"`)
 		buf.WriteString(fmt.Sprintf(` id="_x0000_s%d">`, shapeID))
-		buf.WriteString(`<v:fill color2="#ffffe1"/>`)
-		buf.WriteString(`<v:shadow color="black" obscured="t"/>`)
+		buf.WriteString(`<v:fill color2="#ffffe1 [80]"/>`)
+		buf.WriteString(`<v:shadow color="none [81]" obscured="t"/>`)
 		buf.WriteString(`<v:path o:connecttype="none"/>`)
-		buf.WriteString(`<v:textbox style="mso-direction-alt:auto"><div style="text-align:left"/></v:textbox>`)
-		buf.WriteString(`<x:ClientData xmlns:x="urn:schemas-microsoft-com:office:excel" ObjectType="Note">`)
+		buf.WriteString(`<v:textbox style='mso-direction-alt:auto'><div style='text-align:left'></div></v:textbox>`)
+		buf.WriteString(`<x:ClientData ObjectType="Note">`)
 		buf.WriteString(`<x:MoveWithCells/>`)
 		buf.WriteString(`<x:SizeWithCells/>`)
+		if idmap == "2" {
+			buf.WriteString(`<x:Anchor>    1, 6, 0, 2, 3, 8, 4, 1</x:Anchor>`)
+		} else {
+			buf.WriteString(`<x:Anchor>    1, 6, 0, 2, 3, 8, 3, 5</x:Anchor>`)
+		}
 		buf.WriteString(`<x:AutoFill>False</x:AutoFill>`)
 		buf.WriteString(fmt.Sprintf(`<x:Row>%d</x:Row>`, row))
 		buf.WriteString(fmt.Sprintf(`<x:Column>%d</x:Column>`, col))
 		buf.WriteString(`</x:ClientData>`)
 		buf.WriteString(`</v:shape>`)
 	}
-	root := &vmlCommentsRoot{Content: buf.String()}
+	root := &vmlCommentsRoot{
+		XMLNS_V: "urn:schemas-microsoft-com:vml",
+		XMLNS_O: "urn:schemas-microsoft-com:office:office",
+		XMLNS_X: "urn:schemas-microsoft-com:office:excel",
+		Content: buf.String(),
+	}
 	data, err := xml.Marshal(root)
 	if err != nil {
 		return nil, err

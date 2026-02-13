@@ -315,6 +315,42 @@ func TestSlideNotes(t *testing.T) {
 	}
 }
 
+func TestSaveAs_NotesMasterRelationshipIDAlignment(t *testing.T) {
+	p := testutil.NewResource(t, New)
+	slide := p.AddSlide(0)
+	if err := slide.SetNotes("Speaker notes here"); err != nil {
+		t.Fatalf("SetNotes() error = %v", err)
+	}
+
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "notes-master-rel-id.pptx")
+	if err := p.SaveAs(path); err != nil {
+		t.Fatalf("SaveAs() error = %v", err)
+	}
+	_ = p.Close()
+
+	round, err := Open(path)
+	if err != nil {
+		t.Fatalf("Open() error = %v", err)
+	}
+	defer round.Close()
+
+	impl := round.(*presentationImpl)
+	if impl.presentation == nil || impl.presentation.NotesMasterIdLst == nil || len(impl.presentation.NotesMasterIdLst.NotesMasterId) == 0 {
+		t.Fatal("NotesMasterIdLst missing after round-trip")
+	}
+
+	notesMasterRID := impl.presentation.NotesMasterIdLst.NotesMasterId[0].RID
+	presRels := impl.pkg.GetRelationships(packaging.PresentationPath)
+	rel := presRels.ByID(notesMasterRID)
+	if rel == nil {
+		t.Fatalf("presentation relationship %q for notes master not found", notesMasterRID)
+	}
+	if rel.Type != packaging.RelTypeNotesMaster {
+		t.Fatalf("relationship %q type = %q, want %q", notesMasterRID, rel.Type, packaging.RelTypeNotesMaster)
+	}
+}
+
 // =============================================================================
 // Comments Tests
 // =============================================================================

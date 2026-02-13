@@ -16,14 +16,14 @@ import (
 
 // Slide represents a slide in the presentation.
 type slideImpl struct {
-	pres  *presentationImpl
-	slide *pml.Sld
-	notes *pml.Notes
+	pres     *presentationImpl
+	slide    *pml.Sld
+	notes    *pml.Notes
 	comments *pml.CommentList
-	id    int
-	relID string
-	index int
-	path  string
+	id       int
+	relID    string
+	index    int
+	path     string
 }
 
 type commentImpl struct {
@@ -124,7 +124,7 @@ func (s *slideImpl) Shapes() []Shape {
 			})
 		case *pml.GraphicFrame:
 			shapes = append(shapes, &shapeImpl{
-				slide: s,
+				slide:        s,
 				graphicFrame: v,
 			})
 		case *pml.Pic:
@@ -312,7 +312,12 @@ func (s *slideImpl) AddChart(left, top, width, height int64, title string) (Shap
 	if err != nil {
 		return nil, err
 	}
-	chartPath := fmt.Sprintf("ppt/charts/chart%d.xml", nextID)
+	chartID := s.pres.nextChartID
+	if chartID < 1 {
+		chartID = 1
+	}
+	s.pres.nextChartID++
+	chartPath := fmt.Sprintf("ppt/charts/chart%d.xml", chartID)
 	if _, err := s.pres.pkg.AddPart(chartPath, packaging.ContentTypeChart, data); err != nil {
 		return nil, err
 	}
@@ -361,7 +366,36 @@ func (s *slideImpl) AddDiagram(left, top, width, height int64, title string) (Sh
 	}
 	s.ensureSpTree()
 
-	dataModel := diagram.DefaultDataModel()
+	shapeID := s.getNextShapeID()
+	partID := s.pres.nextDiagramID
+	if partID < 1 {
+		partID = 1
+	}
+	s.pres.nextDiagramID++
+	dataPath := fmt.Sprintf("ppt/diagrams/data%d.xml", partID)
+	layoutPath := fmt.Sprintf("ppt/diagrams/layout%d.xml", partID)
+	stylePath := fmt.Sprintf("ppt/diagrams/quickStyle%d.xml", partID)
+	colorsPath := fmt.Sprintf("ppt/diagrams/colors%d.xml", partID)
+	diagramDrawingPath := fmt.Sprintf("ppt/diagrams/drawing%d.xml", partID)
+
+	sourcePath := s.path
+	if sourcePath == "" {
+		sourcePath = fmt.Sprintf("ppt/slides/slide%d.xml", s.index+1)
+		s.path = sourcePath
+	}
+	rels := s.pres.pkg.GetRelationships(sourcePath)
+	dataRelID := rels.EnsureID("rId2")
+	rels.AddWithID(dataRelID, packaging.RelTypeDiagramData, relativeTarget(sourcePath, dataPath), packaging.TargetModeInternal)
+	layoutRelID := rels.EnsureID("rId3")
+	rels.AddWithID(layoutRelID, packaging.RelTypeDiagramLayout, relativeTarget(sourcePath, layoutPath), packaging.TargetModeInternal)
+	styleRelID := rels.EnsureID("rId4")
+	rels.AddWithID(styleRelID, packaging.RelTypeDiagramStyle, relativeTarget(sourcePath, stylePath), packaging.TargetModeInternal)
+	colorsRelID := rels.EnsureID("rId5")
+	rels.AddWithID(colorsRelID, packaging.RelTypeDiagramColors, relativeTarget(sourcePath, colorsPath), packaging.TargetModeInternal)
+	drawingRelID := rels.EnsureID("rId6")
+	rels.AddWithID(drawingRelID, packaging.RelTypeDiagramDrawing, relativeTarget(sourcePath, diagramDrawingPath), packaging.TargetModeInternal)
+
+	dataModel := diagram.DefaultDataModelWithDrawingRelID(drawingRelID)
 	data, err := utils.MarshalXMLWithHeader(dataModel)
 	if err != nil {
 		return nil, err
@@ -378,12 +412,10 @@ func (s *slideImpl) AddDiagram(left, top, width, height int64, title string) (Sh
 	if err != nil {
 		return nil, err
 	}
-
-	id := s.getNextShapeID()
-	dataPath := fmt.Sprintf("ppt/diagrams/data%d.xml", id)
-	layoutPath := fmt.Sprintf("ppt/diagrams/layout%d.xml", id)
-	stylePath := fmt.Sprintf("ppt/diagrams/style%d.xml", id)
-	colorsPath := fmt.Sprintf("ppt/diagrams/colors%d.xml", id)
+	drawingData, err := utils.MarshalXMLWithHeader(diagram.DefaultDrawing())
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.pres.pkg.AddPart(dataPath, packaging.ContentTypeDiagramData, data); err != nil {
 		return nil, err
@@ -397,30 +429,18 @@ func (s *slideImpl) AddDiagram(left, top, width, height int64, title string) (Sh
 	if _, err := s.pres.pkg.AddPart(colorsPath, packaging.ContentTypeDiagramColors, colorsData); err != nil {
 		return nil, err
 	}
-
-	sourcePath := s.path
-	if sourcePath == "" {
-		sourcePath = fmt.Sprintf("ppt/slides/slide%d.xml", s.index+1)
-		s.path = sourcePath
+	if _, err := s.pres.pkg.AddPart(diagramDrawingPath, packaging.ContentTypeDiagramDrawing, drawingData); err != nil {
+		return nil, err
 	}
-	rels := s.pres.pkg.GetRelationships(sourcePath)
-	dataRelID := rels.NextID()
-	rels.AddWithID(dataRelID, packaging.RelTypeDiagramData, relativeTarget(sourcePath, dataPath), packaging.TargetModeInternal)
-	layoutRelID := rels.NextID()
-	rels.AddWithID(layoutRelID, packaging.RelTypeDiagramLayout, relativeTarget(sourcePath, layoutPath), packaging.TargetModeInternal)
-	styleRelID := rels.NextID()
-	rels.AddWithID(styleRelID, packaging.RelTypeDiagramStyle, relativeTarget(sourcePath, stylePath), packaging.TargetModeInternal)
-	colorsRelID := rels.NextID()
-	rels.AddWithID(colorsRelID, packaging.RelTypeDiagramColors, relativeTarget(sourcePath, colorsPath), packaging.TargetModeInternal)
 
 	name := title
 	if name == "" {
-		name = fmt.Sprintf("Diagram %d", id)
+		name = fmt.Sprintf("Diagram %d", shapeID)
 	}
 	gf := &pml.GraphicFrame{
 		NvGraphicFramePr: &pml.NvGraphicFramePr{
 			CNvPr: &pml.CNvPr{
-				ID:   id,
+				ID:   shapeID,
 				Name: name,
 			},
 			CNvGraphicFramePr: &pml.CNvGraphicFramePr{},
@@ -525,8 +545,13 @@ func (s *slideImpl) AddComment(text, author string, x, y float64) (Comment, erro
 	if s.comments == nil {
 		s.comments = &pml.CommentList{}
 	}
+	commentID := newCommentID()
+	if len(s.comments.Comment) == 0 {
+		commentID = "{00000000-0000-0000-0000-000000000000}"
+		authorID = "{00000000-0000-0000-0000-000000000000}"
+	}
 	comment := &pml.Comment{
-		ID:       newCommentID(),
+		ID:       commentID,
 		AuthorID: authorID,
 		Created:  time.Now().Format("2006-01-02T15:04:05.000"),
 		Pos: &pml.CommentPos{
@@ -580,7 +605,6 @@ func (s *slideImpl) AddTable(rows, cols int, left, top, width, height int64) Tab
 
 	return table
 }
-
 
 // DeleteShape removes a shape from the slide.
 func (s *slideImpl) DeleteShape(identifier string) error {
@@ -784,6 +808,14 @@ func (s *slideImpl) SetNotes(text string) error {
 	notesSp.TxBody.P = []*dml.P{{
 		R: []*dml.R{{T: text}},
 	}}
+
+	for _, item := range s.notes.CSld.SpTree.Content {
+		sp, ok := item.(*dml.Sp)
+		if !ok || sp == notesSp || sp.TxBody == nil {
+			continue
+		}
+		sp.TxBody.P = nil
+	}
 	return nil
 }
 

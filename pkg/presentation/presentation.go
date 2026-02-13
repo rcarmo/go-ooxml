@@ -127,8 +127,16 @@ func newFromTemplate() (*presentationImpl, error) {
 		return nil, err
 	}
 	if p.presentation != nil {
+		notesMasterRID := p.notesMasterRelID
+		if notesMasterRID == "" {
+			if rel := p.pkg.GetRelationships(packaging.PresentationPath).FirstByType(packaging.RelTypeNotesMaster); rel != nil {
+				notesMasterRID = rel.ID
+			}
+		}
 		p.presentation.SldIdLst = &pml.SldIdLst{}
-		p.presentation.NotesMasterIdLst = &pml.NotesMasterIdLst{NotesMasterId: []*pml.NotesMasterId{{RID: "rId7"}}}
+		if notesMasterRID != "" {
+			p.presentation.NotesMasterIdLst = &pml.NotesMasterIdLst{NotesMasterId: []*pml.NotesMasterId{{RID: notesMasterRID}}}
+		}
 		p.presentation.ExtLst = &pml.ExtLst{
 			Ext: []*pml.ExtItem{{
 				URI: "{EFAFB233-063F-42B5-8137-9DF3F51BA10A}",
@@ -1134,8 +1142,11 @@ func (p *presentationImpl) updatePackage() error {
 		if slide.relID == "" {
 			slide.relID = rels.NextID()
 		}
-		if strings.Contains(p.path, "frankenstein_exec_brief") && i < 5 {
-			slide.relID = fmt.Sprintf("rId%d", i+2)
+		if p.presentation != nil && p.presentation.SldIdLst != nil && i < len(p.presentation.SldIdLst.SldId) {
+			if existingRID := p.presentation.SldIdLst.SldId[i].RID; existingRID != "" {
+				slide.relID = existingRID
+			}
+			p.presentation.SldIdLst.SldId[i].RID = slide.relID
 		}
 		rels.AddWithID(slide.relID, packaging.RelTypeSlide, "slides/slide"+fmt.Sprintf("%d.xml", i+1), packaging.TargetModeInternal)
 
@@ -1143,11 +1154,12 @@ func (p *presentationImpl) updatePackage() error {
 
 		// Save notes if present
 		if slide.notes != nil {
-			notesIndex := i + 1
-			if i == 2 && strings.Contains(p.path, "frankenstein_exec_brief") {
-				notesIndex = 1
+			notesPath := ""
+			if existing := slideRels.FirstByType(packaging.RelTypeNotesSlide); existing != nil {
+				notesPath = packaging.ResolveRelationshipTarget(slidePath, existing.Target)
+			} else {
+				notesPath = fmt.Sprintf("ppt/notesSlides/notesSlide%d.xml", i+1)
 			}
-			notesPath := fmt.Sprintf("ppt/notesSlides/notesSlide%d.xml", notesIndex)
 			notesData, err := utils.MarshalXMLWithHeader(slide.notes)
 			if err != nil {
 				return err
@@ -1198,7 +1210,7 @@ func (p *presentationImpl) updatePackage() error {
 			if _, err := p.pkg.AddPart(commentsPath, packaging.ContentTypePPTXComments, commentsData); err != nil {
 				return err
 			}
-			relID := "rId3"
+			relID := slideRels.NextID()
 			for _, rel := range slideRels.ByType(packaging.RelTypePPTXComments) {
 				relID = rel.ID
 				break
@@ -1234,25 +1246,7 @@ func (p *presentationImpl) updatePackage() error {
 				return err
 			}
 		}
-		if i == 2 && strings.Contains(p.path, "frankenstein_exec_brief") {
-			slideRels.Relationships = []packaging.Relationship{
-				{ID: "rId3", Type: packaging.RelTypePPTXComments, Target: "../comments/modernComment_102_0.xml"},
-				{ID: "rId2", Type: packaging.RelTypeNotesSlide, Target: "../notesSlides/notesSlide1.xml"},
-				{ID: "rId1", Type: packaging.RelTypeSlideLayout, Target: "../slideLayouts/slideLayout1.xml"},
-				{ID: "rId4", Type: packaging.RelTypeChart, Target: "../charts/chart1.xml"},
-			}
-		} else if i == 3 && strings.Contains(p.path, "frankenstein_exec_brief") {
-			slideRels.Relationships = []packaging.Relationship{
-				{ID: "rId3", Type: packaging.RelTypeDiagramLayout, Target: "../diagrams/layout1.xml"},
-				{ID: "rId2", Type: packaging.RelTypeDiagramData, Target: "../diagrams/data1.xml"},
-				{ID: "rId1", Type: packaging.RelTypeSlideLayout, Target: "../slideLayouts/slideLayout1.xml"},
-				{ID: "rId6", Type: packaging.RelTypeDiagramDrawing, Target: "../diagrams/drawing1.xml"},
-				{ID: "rId5", Type: packaging.RelTypeDiagramColors, Target: "../diagrams/colors1.xml"},
-				{ID: "rId4", Type: packaging.RelTypeDiagramStyle, Target: "../diagrams/quickStyle1.xml"},
-			}
-		} else {
-			// Preserve existing slide relationships for non-Frankenstein slides.
-		}
+		// Preserve existing slide relationships for non-Frankenstein slides.
 	}
 
 	if p.commentAuthors != nil && len(p.commentAuthors.Author) > 0 {
@@ -1289,10 +1283,6 @@ func (p *presentationImpl) updatePackage() error {
 
 	if err := p.writeAdvancedParts(); err != nil {
 		return err
-	}
-
-	if strings.Contains(p.path, "frankenstein_exec_brief") {
-		p.reorderPresentationRels()
 	}
 
 	data, err = utils.MarshalXMLWithHeader(p.presentation)
@@ -1405,7 +1395,14 @@ func (p *presentationImpl) writeNotesMaster() error {
 	}
 	rels.AddWithID(relID, packaging.RelTypeNotesMaster, relativeTarget(packaging.PresentationPath, p.notesMasterPath), packaging.TargetModeInternal)
 	if p.presentation != nil {
-		// Notes master list is already present in template.
+		if p.presentation.NotesMasterIdLst == nil {
+			p.presentation.NotesMasterIdLst = &pml.NotesMasterIdLst{}
+		}
+		if len(p.presentation.NotesMasterIdLst.NotesMasterId) == 0 {
+			p.presentation.NotesMasterIdLst.NotesMasterId = []*pml.NotesMasterId{{RID: relID}}
+		} else {
+			p.presentation.NotesMasterIdLst.NotesMasterId[0].RID = relID
+		}
 	}
 	return nil
 }

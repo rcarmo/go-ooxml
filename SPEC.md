@@ -1132,6 +1132,8 @@ func OpenReader(r io.ReaderAt, size int64) (Presentation, error)
 | **Fixture Tests** | Real-world document handling | All fixtures pass | ⚠️ Programmatic only |
 | **Fuzz Tests** | Random input handling | Critical parsers | ✅ Implemented |
 
+> **PowerPoint Repair Prompts:** when debugging Office repair warnings, add a minimal fixture that reproduces the prompt and validate generated files with the OpenXML SDK validator before declaring them fixed.
+
 ### 7.1.1 Advanced Feature Test Policy
 
 For every new advanced feature (Phase 7), the following are required before marking it complete:

@@ -197,10 +197,11 @@ func (d *documentImpl) Footer(hfType HeaderFooterType) Footer {
 
 // AddHeader adds a header of the specified type.
 func (d *documentImpl) AddHeader(hfType HeaderFooterType) Header {
-	// Generate unique filename
-	num := len(d.headers) + 1
+	// Generate unique filename and relationship ID
+	num := maxPartCounter(d.pkg, "word/header", ".xml")
 	filename := fmt.Sprintf("header%d.xml", num)
-	relID := fmt.Sprintf("rId%d", 100+num)
+	rels := d.pkg.GetRelationships(packaging.WordDocumentPath)
+	relID := rels.NextID()
 	
 	header := &wml.Header{
 		Content: []interface{}{&wml.P{}},
@@ -225,17 +226,18 @@ func (d *documentImpl) AddHeader(hfType HeaderFooterType) Header {
 	}
 	
 	d.headers[relID] = h
-	d.pkg.AddRelationship(packaging.WordDocumentPath, filename, packaging.RelTypeHeader)
+	rels.AddWithID(relID, packaging.RelTypeHeader, filename, packaging.TargetModeInternal)
 	
 	return h
 }
 
 // AddFooter adds a footer of the specified type.
 func (d *documentImpl) AddFooter(hfType HeaderFooterType) Footer {
-	// Generate unique filename
-	num := len(d.footers) + 1
+	// Generate unique filename and relationship ID
+	num := maxPartCounter(d.pkg, "word/footer", ".xml")
 	filename := fmt.Sprintf("footer%d.xml", num)
-	relID := fmt.Sprintf("rId%d", 200+num)
+	rels := d.pkg.GetRelationships(packaging.WordDocumentPath)
+	relID := rels.NextID()
 	
 	footer := &wml.Footer{
 		Content: []interface{}{&wml.P{}},
@@ -260,7 +262,7 @@ func (d *documentImpl) AddFooter(hfType HeaderFooterType) Footer {
 	}
 	
 	d.footers[relID] = f
-	d.pkg.AddRelationship(packaging.WordDocumentPath, filename, packaging.RelTypeFooter)
+	rels.AddWithID(relID, packaging.RelTypeFooter, filename, packaging.TargetModeInternal)
 	
 	return f
 }

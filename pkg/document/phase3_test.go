@@ -4,6 +4,8 @@ package document
 import (
 	"strings"
 	"testing"
+
+	"github.com/rcarmo/go-ooxml/pkg/packaging"
 )
 
 // =============================================================================
@@ -1293,6 +1295,51 @@ func TestHeaderFooterGetByType(t *testing.T) {
 	h3 := doc.Header(HeaderFooterEven)
 	if h3 != nil {
 		t.Error("Expected nil for non-existent header type")
+	}
+}
+
+func TestHeaderFooterRelationshipConsistency(t *testing.T) {
+	doc, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer doc.Close()
+
+	doc.AddHeader(HeaderFooterDefault).SetText("Default header")
+	doc.AddHeader(HeaderFooterFirst).SetText("First header")
+	doc.AddFooter(HeaderFooterDefault).SetText("Default footer")
+	doc.AddFooter(HeaderFooterFirst).SetText("First footer")
+
+	impl := doc.(*documentImpl)
+	rels := impl.pkg.GetRelationships(packaging.WordDocumentPath)
+	if impl.document.Body == nil || impl.document.Body.SectPr == nil {
+		t.Fatal("Section properties missing")
+	}
+	sectPr := impl.document.Body.SectPr
+
+	used := map[string]struct{}{}
+	for _, ref := range sectPr.HeaderRefs {
+		used[ref.ID] = struct{}{}
+		rel := rels.ByID(ref.ID)
+		if rel == nil || rel.Type != packaging.RelTypeHeader {
+			t.Fatalf("header ref %q does not resolve to header relationship", ref.ID)
+		}
+	}
+	for _, ref := range sectPr.FooterRefs {
+		used[ref.ID] = struct{}{}
+		rel := rels.ByID(ref.ID)
+		if rel == nil || rel.Type != packaging.RelTypeFooter {
+			t.Fatalf("footer ref %q does not resolve to footer relationship", ref.ID)
+		}
+	}
+
+	for _, rel := range rels.Relationships {
+		if rel.Type != packaging.RelTypeHeader && rel.Type != packaging.RelTypeFooter {
+			continue
+		}
+		if _, ok := used[rel.ID]; !ok {
+			t.Fatalf("orphan %s relationship found: %s", rel.Type, rel.ID)
+		}
 	}
 }
 

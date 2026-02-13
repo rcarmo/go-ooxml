@@ -88,6 +88,7 @@ func main() {
 - **Slides:** `pres.AddSlide(layoutIndex)`, `pres.Slides()`
 - **Shapes:** `slide.AddShape(type)`, `slide.AddTextBox(...)`, `shape.SetText(text)`
 - **Tables:** `slide.AddTable(rows, cols, left, top, width, height)`
+- **Validation:** `dotnet tools/validator/OoxmlValidator/bin/Release/net10.0/OoxmlValidator.dll <file>` (use when debugging repair prompts)
 
 ## Development
 

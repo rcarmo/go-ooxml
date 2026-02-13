@@ -59,6 +59,12 @@ Use these resources to validate our implementation:
 - [x] `hidden_slides.pptx` - Mix of visible and hidden slides
 - [x] `multiple_masters.pptx` - Multiple slide layouts used
 - [x] `layouts.pptx` - All standard layouts used
+- [ ] `frankenstein_notes_chart_rels.pptx` - Notes + comments + chart on a slide with fixed rId ordering
+- [ ] `frankenstein_repair_prompt_repro.pptx` - Minimal deck that reproduces the PowerPoint repair prompt with notes+comments+chart+diagram rel ordering
+- [ ] `frankenstein_diagram_rels.pptx` - SmartArt/diagram parts with slide rel ordering (rId2–rId6)
+- [ ] `frankenstein_notes_master_rids.pptx` - Notes master list + slide rel IDs aligned to presentation rels
+- [ ] `frankenstein_slide_rel_conflicts.pptx` - Multiple slides to detect rel ID collisions across slides
+- [ ] `frankenstein_repaired_reference.pptx` - Office-repaired deck used as a golden reference for diffing
 
 ---
 
@@ -70,10 +76,10 @@ Use these resources to validate our implementation:
 4. **Content source** - Mary Shelley's "Frankenstein" (public domain)
 5. **Author** - "Test Author"
 
-## Total: 35 fixtures created
+## Total: 40 fixtures created
 
 | Format | Count | Status |
 |--------|-------|--------|
 | Word   | 13    | 13/13 ✓ |
 | Excel  | 11    | 11/11 ✓ |
-| PowerPoint | 11 | 11/11 ✓ |
+| PowerPoint | 16 | 11/16 ✓ |

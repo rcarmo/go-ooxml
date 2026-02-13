@@ -121,6 +121,17 @@ func (r *Relationships) NextID() string {
 	return fmt.Sprintf("rId%d", maxID+1)
 }
 
+// EnsureID reserves the requested ID if available, otherwise returns NextID.
+func (r *Relationships) EnsureID(id string) string {
+	if id == "" {
+		return r.NextID()
+	}
+	if r.ByID(id) == nil {
+		return id
+	}
+	return r.NextID()
+}
+
 // MarshalXML implements custom XML marshaling for TargetMode.
 func (tm TargetMode) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	if tm == TargetModeExternal {

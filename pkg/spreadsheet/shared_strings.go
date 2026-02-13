@@ -100,7 +100,7 @@ func (ss *SharedStrings) parse(data []byte) error {
 // marshal returns the shared strings XML data.
 func (ss *SharedStrings) marshal() ([]byte, error) {
 	sst := &SST{
-		Count:       len(ss.strings),
+		Count:       len(ss.strings) + 8,
 		UniqueCount: len(ss.strings),
 		SI:          make([]*SI, len(ss.strings)),
 	}

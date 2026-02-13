@@ -198,6 +198,93 @@ func TestWorksheet_Comments_RoundTrip(t *testing.T) {
 	}
 }
 
+func TestWorksheet_Relationships_WithTablesDrawingsAndComments(t *testing.T) {
+	w := testutil.NewResource(t, New)
+
+	sheet1 := w.SheetsRaw()[0]
+	sheet1.Cell("A1").SetValue("H1")
+	sheet1.Cell("B1").SetValue("H2")
+	sheet1.Cell("C1").SetValue("H3")
+	sheet1.Cell("A2").SetValue("R1")
+	sheet1.Cell("B2").SetValue(1)
+	sheet1.Cell("C2").SetValue(2)
+	table := sheet1.AddTable("A1:C2", "OverviewTable")
+	_ = table.UpdateRow(1, map[string]interface{}{
+		"Column1": "R1",
+		"Column2": 1,
+		"Column3": 2,
+	})
+	if err := sheet1.AddChart("A4", "E12", "Chart"); err != nil {
+		t.Fatalf("AddChart() error = %v", err)
+	}
+	if err := sheet1.AddDiagram("A14", "C20", "Diagram"); err != nil {
+		t.Fatalf("AddDiagram() error = %v", err)
+	}
+	if err := sheet1.Cell("A2").SetComment("note", "author"); err != nil {
+		t.Fatalf("SetComment() error = %v", err)
+	}
+
+	_ = w.AddSheet("Budget")
+	risk := w.AddSheet("Risk")
+	risk.Cell("A1").SetValue("Risk")
+	risk.Cell("B1").SetValue("Level")
+	risk.Cell("A2").SetValue("Exposure")
+	risk.Cell("B2").SetValue("High")
+	riskTable := risk.AddTable("A1:B2", "RiskTable")
+	_ = riskTable.UpdateRow(1, map[string]interface{}{
+		"Column1": "Exposure",
+		"Column2": "High",
+	})
+	if err := risk.Cell("A2").SetComment("watch", "author"); err != nil {
+		t.Fatalf("SetComment() error = %v", err)
+	}
+
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "rels.xlsx")
+	if err := w.SaveAs(path); err != nil {
+		t.Fatalf("SaveAs() error = %v", err)
+	}
+	_ = w.Close()
+
+	round, err := Open(path)
+	if err != nil {
+		t.Fatalf("Open() error = %v", err)
+	}
+	defer round.Close()
+
+	impl := round.(*workbookImpl)
+	s1 := impl.sheets[0]
+	rels1 := impl.pkg.GetRelationships("xl/worksheets/sheet1.xml")
+	if s1.worksheet.Drawing == nil || s1.worksheet.Drawing.ID == "" {
+		t.Fatal("sheet1 drawing relationship ID missing")
+	}
+	if s1.worksheet.LegacyDrawing == nil || s1.worksheet.LegacyDrawing.ID == "" {
+		t.Fatal("sheet1 legacy drawing relationship ID missing")
+	}
+	if s1.worksheet.Drawing.ID == s1.worksheet.LegacyDrawing.ID {
+		t.Fatalf("sheet1 drawing and legacy drawing share ID %q", s1.worksheet.Drawing.ID)
+	}
+	if rel := rels1.ByID(s1.worksheet.Drawing.ID); rel == nil || rel.Type != packaging.RelTypeDrawing {
+		t.Fatalf("sheet1 drawing relationship invalid for %q", s1.worksheet.Drawing.ID)
+	}
+	if rel := rels1.ByID(s1.worksheet.LegacyDrawing.ID); rel == nil || rel.Type != packaging.RelTypeVML {
+		t.Fatalf("sheet1 legacy drawing relationship invalid for %q", s1.worksheet.LegacyDrawing.ID)
+	}
+	for _, tp := range s1.worksheet.TableParts.TablePart {
+		if rel := rels1.ByID(tp.ID); rel == nil || rel.Type != packaging.RelTypeTable {
+			t.Fatalf("sheet1 table part relationship invalid for %q", tp.ID)
+		}
+	}
+
+	s3 := impl.sheets[2]
+	rels3 := impl.pkg.GetRelationships("xl/worksheets/sheet3.xml")
+	for _, tp := range s3.worksheet.TableParts.TablePart {
+		if rel := rels3.ByID(tp.ID); rel == nil || rel.Type != packaging.RelTypeTable {
+			t.Fatalf("sheet3 table part relationship invalid for %q", tp.ID)
+		}
+	}
+}
+
 // =============================================================================
 // Sheet Management Tests
 // =============================================================================

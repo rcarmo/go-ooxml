@@ -23,6 +23,7 @@ type Presentation struct {
 	SldSz              *SldSz              `xml:"sldSz,omitempty"`
 	NotesSz            *NotesSz            `xml:"notesSz,omitempty"`
 	DefaultTextStyle   *DefaultTextStyle   `xml:"defaultTextStyle,omitempty"`
+	ExtLst             *ExtLst             `xml:"extLst,omitempty"`
 }
 
 // SldMasterIdLst is a list of slide master IDs.
