@@ -1944,3 +1944,8 @@ including reversed/quoted-sheet references and blank slots, up to100000 position
 Formulas are never evaluated and cached formula/error values refuse. Worksheet
 extensions, merged interiors, dynamic/named/external/2D sources and ambiguous
 cell ownership refuse. Shared strings and whole-row/column support are unfinished.
+
+AllowedValues also resolves shared-string indices against the retained si sequence
+without deduplication and reads supported rich inline/shared runs. Missing/external/
+ambiguous tables, bad indices and mixed/extended text structures refuse. Values are
+raw XML-decoded stored text, not Excel display or _xHHHH_ escape interpretation.

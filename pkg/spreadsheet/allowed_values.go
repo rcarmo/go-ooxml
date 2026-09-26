@@ -324,6 +324,7 @@ func (s *EditSession) AllowedValues(sheet, cell string) ([]ValidationValue, erro
 		return nil, err
 	}
 	out := make([]ValidationValue, 0, count)
+	shared := &validationStringTable{}
 	for i := 0; i < count; i++ {
 		c := formula.Cell{Row: bounds.loRow, Column: bounds.loCol}
 		if bounds.loRow == bounds.hiRow {
@@ -337,7 +338,7 @@ func (s *EditSession) AllowedValues(sheet, cell string) ([]ValidationValue, erro
 		e, ok := cells[[2]int{c.Row, c.Column}]
 		value := ValidationValue{Kind: "blank"}
 		if ok {
-			value, err = v.storedValue(e)
+			value, err = v.storedValue(s, e, shared)
 			if err != nil {
 				return nil, err
 			}
@@ -424,7 +425,7 @@ func (v validationXML) storedCells() (map[[2]int]losslessxml.Element, error) {
 	}
 	return cells, nil
 }
-func (v validationXML) storedValue(cell losslessxml.Element) (ValidationValue, error) {
+func (v validationXML) storedValue(session *EditSession, cell losslessxml.Element, shared *validationStringTable) (ValidationValue, error) {
 	fail := func(detail string) (ValidationValue, error) {
 		return ValidationValue{}, editRefusal("unsupported_structure", detail)
 	}
@@ -458,21 +459,9 @@ func (v validationXML) storedValue(cell losslessxml.Element) (ValidationValue, e
 		if value.Name() != expanded("is") || len(value.Attributes()) != 0 {
 			return fail("inline string structure unsupported")
 		}
-		if err := validationWhitespace(value); err != nil {
+		text, err := v.stringValue(value)
+		if err != nil {
 			return ValidationValue{}, err
-		}
-		ts := v.children[value]
-		if len(ts) != 1 || ts[0].Name() != expanded("t") {
-			return fail("plain inline text required")
-		}
-		text, leaf := ts[0].Text()
-		if !leaf {
-			return fail("mixed inline text")
-		}
-		for _, a := range ts[0].Attributes() {
-			if a.Name != (xml.Name{Space: "http://www.w3.org/XML/1998/namespace", Local: "space"}) || (a.Value != "preserve" && a.Value != "default") {
-				return fail("unknown inline text attribute")
-			}
 		}
 		return ValidationValue{Kind: "string", Text: text}, nil
 	}
@@ -484,6 +473,22 @@ func (v validationXML) storedValue(cell losslessxml.Element) (ValidationValue, e
 		return ValidationValue{}, err
 	}
 	switch kind {
+	case "s":
+		index, err := unsignedIndex(text)
+		if err != nil {
+			return fail("malformed shared string index")
+		}
+		if !shared.loaded {
+			shared.values, err = session.validationSharedStrings()
+			if err != nil {
+				return ValidationValue{}, err
+			}
+			shared.loaded = true
+		}
+		if index >= uint64(len(shared.values)) {
+			return fail("shared string index out of range")
+		}
+		return ValidationValue{Kind: "string", Text: shared.values[index]}, nil
 	case "", "n":
 		n, err := strconv.ParseFloat(text, 64)
 		if err != nil || math.IsNaN(n) || math.IsInf(n, 0) {

@@ -625,3 +625,9 @@ AllowedValues reads literal lists and finite static1D ranges without mutation,
 returning tagged stored values and explicit blank positions. Ambiguous/dynamic/
 formula/error/merged sources refuse.264 native cases pass; whole-row/column and
 shared-string support follow separately. No calculation or display formatting.
+
+### Increment073: exact shared-string indices
+
+Validation reads preserve duplicate si positions and rich-run text order. Invalid
+indices, absent/ambiguous tables and mixed rich/plain structures refuse unchanged.
+272 native cases pass; strings remain raw stored XML-decoded values.

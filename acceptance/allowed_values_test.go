@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 
 	"github.com/cucumber/godog"
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
@@ -60,6 +61,8 @@ func vocabularySteps(sc *godog.ScenarioContext) {
 		extraValidation, merge, extension := "", "", ""
 		cells := `<row r="1"><c r="A1" t="inlineStr"><is><t>Yes</t></is></c></row><row r="3"><c r="A3" t="inlineStr"><is><t xml:space="preserve"> No </t></is></c></row>`
 		want = []spreadsheet.ValidationValue{str(" Yes"), str("No "), str(`A"B`), str("")}
+		shared := ""
+		sharedRels := 1
 		switch condition {
 		case "literal whitespace quotes and empty item":
 		case "no matching validation":
@@ -80,6 +83,34 @@ func vocabularySteps(sc *godog.ScenarioContext) {
 			expr = "A1:A3"
 			cells = `<row r="1"><c r="A1" t="b"><v>1</v></c></row><row r="2"><c r="A2"><v>12.50</v></c></row><row r="3"><c r="A3" t="inlineStr"><is><t/></is></c></row>`
 			want = []spreadsheet.ValidationValue{{Kind: "boolean", Text: "1"}, {Kind: "number", Text: "12.50"}, str("")}
+		case "shared strings with duplicate entries", "out of range shared index", "missing shared string relationship", "duplicate shared string relationships", "mixed shared string structure", "rich shared string":
+			expr = "A1:A3"
+			cells = `<row r="1"><c r="A1" t="s"><v>1</v></c></row><row r="2"><c r="A2" t="s"><v>2</v></c></row><row r="3"><c r="A3" t="s"><v>0</v></c></row>`
+			shared = `<sst xmlns="` + packaging.NSSpreadsheetML + `" count="3" uniqueCount="3"><si><t>Dup</t></si><si><t>Dup</t></si><si><t>Last</t></si></sst>`
+			want = []spreadsheet.ValidationValue{str("Dup"), str("Last"), str("Dup")}
+			if condition == "out of range shared index" {
+				cells = strings.Replace(cells, `<v>1</v>`, `<v>9</v>`, 1)
+			}
+			if condition == "missing shared string relationship" {
+				sharedRels = 0
+			}
+			if condition == "duplicate shared string relationships" {
+				sharedRels = 2
+			}
+			if condition == "mixed shared string structure" {
+				shared = strings.Replace(shared, `<si><t>Last</t></si>`, `<si><t>Last</t><r><t>extra</t></r></si>`, 1)
+			}
+			if condition == "rich shared string" {
+				shared = strings.Replace(shared, `<si><t>Last</t></si>`, `<si><r><rPr><b/></rPr><t xml:space="preserve"> rich </t></r><r><t>text</t></r></si>`, 1)
+				want[1] = str(" rich text")
+			}
+		case "rich inline string", "missing rich run text":
+			expr = "A1"
+			cells = `<row r="1"><c r="A1" t="inlineStr"><is><r><rPr><b/></rPr><t xml:space="preserve"> rich </t></r><r><t>text</t></r></is></c></row>`
+			want = []spreadsheet.ValidationValue{str(" rich text")}
+			if condition == "missing rich run text" {
+				cells = strings.Replace(cells, `<r><t>text</t></r>`, `<r><rPr><i/></rPr></r>`, 1)
+			}
 		case "two matching lists":
 			extraValidation = `<dataValidation type="list" sqref="D1"><formula1>&quot;X,Y&quot;</formula1></dataValidation>`
 		case "invalid literal quote":
@@ -125,6 +156,12 @@ func vocabularySteps(sc *godog.ScenarioContext) {
 		q.AddRelationship("", "xl/workbook.xml", packaging.RelTypeOfficeDocument)
 		q.AddRelationship("xl/workbook.xml", "sheet1.xml", packaging.RelTypeWorksheet)
 		q.AddRelationship("xl/workbook.xml", "sheet2.xml", packaging.RelTypeWorksheet)
+		if shared != "" {
+			_, _ = q.AddPart("xl/sharedStrings.xml", packaging.ContentTypeSharedStrings, []byte(shared))
+			for i := 0; i < sharedRels; i++ {
+				q.AddRelationship("xl/workbook.xml", "sharedStrings.xml", packaging.RelTypeSharedStrings)
+			}
+		}
 		var b bytes.Buffer
 		if err := q.WriteTo(&b); err != nil {
 			return err
