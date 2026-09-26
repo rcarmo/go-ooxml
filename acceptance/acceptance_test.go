@@ -98,6 +98,7 @@ func TestAcceptance(t *testing.T) {
 		receiptSteps(sc)
 		xmlSteps(sc)
 		graphSteps(sc)
+		wordSteps(sc)
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil

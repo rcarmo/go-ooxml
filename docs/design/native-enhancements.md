@@ -263,3 +263,12 @@ Read `reports/batches/009.md`; B03 integration remains partial.
 resolves internal targets and reports inbound counts without rewriting XML or
 fetching external links. Unsupported registry extensions refuse. No part deletion,
 allocation, import or automatic orphan collection is implied. See batch 010.
+
+### Increment 011: first bounded Word editor
+
+`document.OpenEditing` and concrete `EditSession` provide exact complete-leaf body
+run corrections through retained source, namespace-aware splices and OPC graph
+checks. Protection, fields, revisions, wrappers and unsupported whitespace refuse.
+Successful changes consume targets; no-op/refusal do not. Other prior targets
+become stale conservatively. This implements one bounded adapter toward B10,
+not full Word/extended search or review parity. See SPEC.md and batch 011.

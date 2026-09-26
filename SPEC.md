@@ -1732,3 +1732,16 @@ parts/content types/inbound ownership counts and source/ID/type/target edges.
 External targets are never fetched. Missing local parts, ambiguous registries and
 unknown extensions refuse with relationship_policy. Read-only graph validity is
 separate from graph surgery; allocation/copy/delete/import are not implemented.
+
+## Initial Word safe-edit subset
+
+`document.OpenEditing(source, packaging.Limits)` returns an additive concrete
+`EditSession` after OPC graph and main-part checks. `FindOne` targets one exact
+complete `w:t` leaf. `Replace` checks session identity/generation/fingerprint and
+consumes a target only after a changing edit succeeds. It currently permits only
+direct body paragraph/run/text ownership; fields, review/range markers, controls,
+hyperlinks, protection and unsupported whitespace refuse. No-op and refusal keep
+targets reusable; any successful text change invalidates other old targets
+conservatively. `SaveAs` returns the preserved package receipt. Cross-run search,
+all-story editing, tracked edits and full extended revision/protection semantics are
+not implemented by this subset. Existing Document interfaces are unchanged.
