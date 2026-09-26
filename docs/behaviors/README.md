@@ -18,9 +18,9 @@ not exploratory-fuzz or performance results. Helpers and acceptance binding-only
 files remain visible, even when they declare no executable test entry point.
 
 The current inventory contains 155 native test files and 404 declarations.
-Reviewed family mappings cover 105 declarations in 90 candidate outcomes across
+Reviewed family mappings cover 129 declarations in 114 candidate outcomes across
 formula, XML, archive, mutable package-model, delivery, graph, test-custody,
-utility and OOXML-model families; 299 declarations remain unreviewed. This denominator is the static
+utility, OOXML-model and WML-model families; 275 declarations remain unreviewed. This denominator is the static
 inventory snapshot, not the number of executed leaf cases. Checkout guard tests
 are now included. The executable native Gherkin result is separate at 291 cases.
 See [testing.md](../testing.md) for released/candidate reference setup and limits.
@@ -29,6 +29,12 @@ packages. Field equality, marker-only output predicates and decode-error early
 returns remain distinct; the 18 explicit fuzz seed tuples do not constitute an
 exploratory campaign. New declarations added after the frozen inventory snapshot
 remain outside that denominator until a deliberate inventory refresh.
+The WML-model family adds 20 unit declarations and four fuzz targets with 12 seed
+strings. Its two dynamic `tt.name` sites expand four OnOff and five NewT literal
+rows. Single-character output predicates remain weaker than element assertions;
+revision-author, container-count and helper results retain their stated limits.
+Historical 91/404 and 105/404 checkpoints remain in batches094/104; neither the
+model review nor later control-test changes resets the frozen denominator.
 The [graph/ZIP64 handoff](graph-archive-handoff.md) compares selected assertions
 with the exact v0.4 released IDs, retaining operation, fixture, error-code and
 output-encoding gaps. It adds no reviewed declaration or execution credit.
