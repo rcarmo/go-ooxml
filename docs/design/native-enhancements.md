@@ -336,3 +336,10 @@ and full result-report parity are not implied. Batch020.
 ReplaceBatch preflights selected targets, merges disjoint changes within shared
 leaves and commits once. Any selected refusal aborts the batch; targets survive
 rollback/no-op. This is not extended replace_all's per-match continuation API. Batch021.
+
+### Increment 022: explicit normalised search
+
+Unicode-15 full casefold/punctuation/space matching maps back to whole original
+characters. Search Near ranks all candidates with stable ties; Nth is explicit and
+mutually exclusive. Runtime remains dependency-free; data/generator/licence retained.
+Still paragraph-local/current main story. Batch022.

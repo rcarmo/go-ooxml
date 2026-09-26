@@ -1800,3 +1800,12 @@ It merges disjoint rune deltas for targets sharing a text leaf, commits once, an
 consumes changing targets only after success. All-no-op batches keep targets live.
 This API is deliberately distinct from extended replace_all's per-match refusal
 reporting/continue policy; that convenience API remains pending.
+
+`EditSession.Search(text, SearchOptions)` adds opt-in Unicode-15 full default
+casefolding, smart punctuation folding, whitespace collapse and soft-hyphen removal
+with exact source-rune maps. Matches cannot select only part of an expanded folded
+character. Near ranks the complete candidate set by main-story source-character
+distance; stable ties and missing contexts retain order. Nth is one-based and
+mutually exclusive with Near. Original raw text remains target evidence. Search
+is still paragraph-local/current-main-story; cross-paragraph/all-story policy
+coverage remains pending. Unicode data licence is retained under tools/casefold.
