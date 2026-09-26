@@ -527,3 +527,9 @@ Local/central ZIP64 values and explicit64-bit descriptors now verify, including
 empty deflate payloads. Terminal record gaps/extents and malformed extras refuse.
 Batch053 passes183 native cases and the existing74-fixture no-op corpus. B01 remains
 partial; no multi-gigabyte or exploratory fuzz run.
+
+### Increment054: ZIP64 delivery boundaries
+
+Edited forced-ZIP64 archives and subsequent graph additions deliver/reopen under
+bounded tests. The native writer emits ZIP64 at exactly65535 entries; a lower intake
+entry cap refuses. Extra fields cannot borrow a following TLV's bytes. Batch054.
