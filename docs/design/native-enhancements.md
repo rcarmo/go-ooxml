@@ -574,3 +574,9 @@ FindNotes/ReplaceNotes inspect and edit a uniquely owned existing single-run not
 body without creating missing parts. Other placeholders/registries remain exact;
 fields/locks/ambiguous owners/multiline content refuse. Batch062 passes211 native
 cases. P09 multiline and broad fixture parity are unfinished.
+
+### Increment063: pinned notes fixture
+
+The existing hash-pinned Go notes fixture now passes exact one-part replacement,
+save/reopen and handle/refusal checks. A grouping-only noGrp lock no longer blocks
+text editing; unknown/text locks still refuse. Batch063 passes213 native cases.

@@ -19,6 +19,14 @@ Feature: Guarded edits to an existing notes body
     When I replace that notes body with "Updated notes"
     Then only the notes body text bytes change after delivery
 
+  @NOTES-004
+  Scenario: Grouping-only notes shape lock does not prevent text correction
+    Given a presentation with notes condition "grouping-only lock"
+    When I find the existing notes body
+    Then the notes text is "Original notes"
+    When I replace that notes body with "Updated notes"
+    Then only the notes body text bytes change after delivery
+
   @NOTES-003
   Scenario Outline: Unproved notes selection or replacement refuses atomically
     Given a presentation with notes condition "<condition>"
@@ -32,5 +40,6 @@ Feature: Guarded edits to an existing notes body
       | shared notes part |
       | field in body |
       | locked body |
+      | malformed grouping lock |
       | bad replacement character |
       | multiline replacement |

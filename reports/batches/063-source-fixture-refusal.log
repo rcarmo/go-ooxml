@@ -1,0 +1,12 @@
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	(cached)
+--- FAIL: TestExistingNotesFixtureBatch (0.01s)
+    --- FAIL: TestExistingNotesFixtureBatch/exact_part_budget_and_existing_placeholders (0.00s)
+        notes_edit_test.go:37: presentation_edit: protected_operation (): notes shape is locked
+    --- FAIL: TestExistingNotesFixtureBatch/no-op_rollback_foreign_stale_handles_and_empty_output (0.00s)
+        notes_edit_test.go:98: presentation_edit: protected_operation (): notes shape is locked
+    --- FAIL: TestExistingNotesFixtureBatch/part_fingerprint_catches_direct_low_level_change (0.00s)
+        notes_edit_test.go:138: presentation_edit: protected_operation (): notes shape is locked
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/pkg/presentation	0.557s
+FAIL
+ok  	github.com/rcarmo/go-ooxml/acceptance	(cached)

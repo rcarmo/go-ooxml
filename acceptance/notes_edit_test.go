@@ -59,6 +59,12 @@ func notesEditSteps(sc *godog.ScenarioContext) {
 			}
 			body := func(id string) string {
 				nv := `<p:cNvSpPr/>`
+				if c == "grouping-only lock" {
+					nv = `<p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>`
+				}
+				if c == "malformed grouping lock" {
+					nv = `<p:cNvSpPr><a:spLocks noGrp="maybe"/></p:cNvSpPr>`
+				}
 				if c == "locked body" {
 					nv = `<p:cNvSpPr><a:spLocks noTextEdit="1"/></p:cNvSpPr>`
 				}

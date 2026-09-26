@@ -174,7 +174,20 @@ func (s *EditSession) FindNotes(slidePart string) (*NotesTarget, error) {
 		}
 		n := e.Name()
 		if n == name(packaging.NSDrawingML, "spLocks") {
-			return nil, editRefusal("protected_operation", "notes shape is locked")
+			value, leaf := e.Text()
+			if !leaf || strings.TrimSpace(value) != "" {
+				return nil, editRefusal("unsupported_structure", "extended notes lock structure")
+			}
+			// Grouping is not performed by this text-only operation. Unknown
+			// locks (including text-edit locks) keep the conservative refusal.
+			for _, a := range e.Attributes() {
+				if a.Name != (xml.Name{Local: "noGrp"}) {
+					return nil, editRefusal("protected_operation", "notes shape has an unproved lock")
+				}
+				if a.Value != "0" && a.Value != "1" && a.Value != "true" && a.Value != "false" {
+					return nil, editRefusal("unsupported_structure", "invalid notes grouping lock")
+				}
+			}
 		}
 		for _, a := range e.Attributes() {
 			if a.Name.Space != "" && a.Name.Space != "http://www.w3.org/XML/1998/namespace" {
