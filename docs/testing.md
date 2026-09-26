@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.2.0`, commit
-`631b1136c9d65451d21746db2ae2635866902cb4`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.3.0`, commit
+`a3048639f5b9c521852b9d126b83639c08eae056`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -32,16 +32,14 @@ OOXML_REFERENCE_PIN=/path/to/candidate-pin.json \
 GOMAXPROCS=2 make test-batch
 ```
 
-The released v0.2 pin uses schema1 with `commit`, `tag`, `tag_object`,
-`manifest_sha256`, `shared_pack_sha256`, `assets`, `facts`, `workflows` and
-`workflow_cases`. The next-layout candidate uses pin schema2 with the same fields
-except `shared_pack_sha256`, which must be absent. Its root manifest seals the
-explicit `workflows/mutation-safety.feature` and `contracts/mutation-safety.json`.
-The default remains v0.2 until the coordinator announces the new release.
+The released pin uses schema2 with `commit`, `tag`, `tag_object`,
+`manifest_sha256`, `assets`, `facts`, `workflows` and `workflow_cases`.
+There is no separate pack seal. The root manifest seals the explicit
+`workflows/mutation-safety.feature` and `contracts/mutation-safety.json`.
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.2.0` contains 123 manifest assets, including 115 unique fixtures in
+Release `v0.3.0` contains 122 manifest assets, including 115 unique fixtures in
 32 format/scenario groups, plus 149 facts and 39 workflows/55 expanded cases.
 
 Once a release is approved, update the gitlink and
@@ -52,8 +50,7 @@ existing release tag to follow changing content.
 ## Integrity and output custody
 
 Root-module and acceptance checks require the exact reference HEAD, the pinned
-root seal (plus the older pack seal for schema1), clean index/worktree and tracked
-bytes/modes. Release tags must be annotated.
+root seal, clean index/worktree and tracked bytes/modes. Release tags must be annotated.
 Changes to facts or workflows fail even when fixture manifest hashes still match;
 `assume-unchanged` does not hide altered tracked bytes. Verification is read-only.
 An absent Git checkout, mismatched pin or missing input is a failure, not a skip.
@@ -64,7 +61,7 @@ redirects. Never regenerate or rebaseline the shared inputs during a test run.
 
 ## Mutation workflow contract
 
-The root-only candidate removes the old wrapper and generated expanded-case input.
+The root-only release removes the old wrapper and generated expanded-case input.
 Go compiles the official Gherkin and derives stable scenario/Examples keys and typed
 step arguments locally. The compact contract points to canonical asset IDs and
 readback facts. Exact part membership is required; preserved hashes are the
@@ -72,9 +69,10 @@ complement of `allowedChangedPartsForSuccess`. Native semantic assertions and th
 direct cache-invalidation outcome are unchanged. Contract inventory validation
 grants no workflow execution credit.
 
-Compatibility with released v0.2 is selected only by the pinned schema, never by
-checking which files happen to exist. Candidate results and temporary field-mapping
-failures are recorded separately in `../reports/batches/095.md`.
+Historical v0.2 compatibility is selected only by a schema1 pin, never by checking
+which files happen to exist. Current schema2 verification reads no old wrapper or
+generated inventory. Migration results and temporary field-mapping failures are
+recorded separately in `../reports/batches/095.md`.
 
 ## Batched verification
 
@@ -86,7 +84,7 @@ duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
 The default released-reference batch and bounded race results are in
-`../reports/batches/091.md`: 291 implemented native Gherkin cases; 20 planned and
+`../reports/batches/096.md`: 291 implemented native Gherkin cases; 20 planned and
 one external case unrun. Package/unit/subtest counts are separate metrics.
 No live Office rendering/calculation or exploratory fuzz campaign ran in that batch.
 Historical reports retain the commands and outcomes from their original runs.

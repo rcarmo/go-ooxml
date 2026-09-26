@@ -34,11 +34,11 @@ The target layout is one shared schema2 manifest and grouped
 `fixtures/<format>/<scenarioGroup>/` inputs. Native labels resolve fixture IDs;
 physical files are deduplicated by SHA-256. `spec/reference-distribution.json`
 records the commit, annotated release tag and seals. All prepared consumers use
-released `v0.2.0`, commit `631b1136c9d65451d21746db2ae2635866902cb4`; default
+released `v0.3.0`, commit `a3048639f5b9c521852b9d126b83639c08eae056`; default
 checks need no override. Candidate checking is separate, as described in
 `../testing.md`.
 
-Tests verify the pinned full tracked tree, checkout identity, seals and shared
+Tests verify the pinned full tracked tree, checkout identity, root manifest seal and shared
 fact/workflow links. Only locally executed assertions earn execution credit;
 planned cases and sibling outcomes remain separate.
 
@@ -52,7 +52,7 @@ required without claiming an annotated release. Missing inputs fail.
 
 The default released-reference library/acceptance batch passes with 291 native
 Gherkin cases; 20 planned and one external case remain unrun. See
-`../../reports/batches/091.md` for commands, race scope and checkout custody.
+`../../reports/batches/096.md` for commands, race scope and checkout custody.
 Historical reports retain original measured results, with sanitised implementation
 citations marked as historical. No removed inventory row becomes completed work.
 

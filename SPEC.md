@@ -1887,7 +1887,9 @@ Native tests read shared assets from `references/fixtures-ooxml`; the explicit
 `OOXML_FIXTURES_ROOT` override supports a candidate distribution before tag freeze.
 Missing inputs fail; tests do not fall back to local testdata or opt out. Outputs
 remain consumer-local, with generated-output guards against shared-root writes.
-The code-free V2 distribution seal is separate from its retained workflow IDs and
-fixture hashes. The schema2 shared checkout is pinned to annotated v0.2.0; default
-batches require no override. Exact commit/tag/seals and full tracked-tree custody
-are checked. See docs/testing.md for candidate policy and current verification.
+The root manifest seals the mutation-safety feature and compact contract, with
+fixture bytes addressed by canonical asset IDs. Official Gherkin supplies expanded
+cases at verification; no wrapper or generated case inventory is read. The
+schema2 shared checkout is pinned to annotated v0.3.0; default batches require no
+override. Exact commit/tag/root seal and full tracked-tree custody are checked.
+See docs/testing.md for candidate policy and current verification.
