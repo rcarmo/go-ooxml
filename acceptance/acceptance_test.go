@@ -93,6 +93,7 @@ func TestAcceptance(t *testing.T) {
 	suite := godog.TestSuite{Name: "go-ooxml", Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{"../features"}, Tags: "@implemented && @go", Strict: true, Concurrency: 1}}
 	suite.ScenarioInitializer = func(sc *godog.ScenarioContext) {
 		safetySteps(sc)
+		limitSteps(sc)
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil
@@ -102,7 +103,7 @@ func TestAcceptance(t *testing.T) {
 			if w.pkg != nil {
 				_ = w.pkg.Close()
 			}
-			return ctx, err
+			return ctx, nil
 		})
 		sc.Step(`^the repository fixture "([^"]+)"$`, w.fixture)
 		sc.Step(`^I open its Office package$`, w.open)

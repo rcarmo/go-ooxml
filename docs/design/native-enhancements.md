@@ -201,3 +201,14 @@ returns archive-finalisation errors and rejects closed packages. Member groups
 serialize in sorted order. Directory fsync/crash durability and platform-specific
 replacement semantics are not certified by this increment. Source preservation,
 relationship closure validation and guarded format transactions are still pending.
+
+### Increment 003: explicit intake budgets
+
+`packaging.OpenReaderWithLimits` adds source-byte, entry-count, per-part and total
+inflated-byte budgets without changing existing OpenReader defaults. Zero disables
+a budget. Source bytes are checked before ZIP parsing; count/declared sizes are
+checked before decompression, then actual payload length and CRC are validated.
+Payload allocation is bounded by the declared size plus one. Invalid arguments,
+resource-limit refusals and invalid-package refusals remain distinct. Central
+metadata parsing still requires a finite source budget to bound its input.
+Header/overlap validation is pending. See `reports/batches/003.md`.

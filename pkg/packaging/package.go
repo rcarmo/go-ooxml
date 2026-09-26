@@ -52,6 +52,10 @@ func Open(filePath string) (*Package, error) {
 
 // OpenReader opens an OPC package from an io.ReaderAt.
 func OpenReader(r io.ReaderAt, size int64) (*Package, error) {
+	return OpenReaderWithLimits(r, size, Limits{})
+}
+
+func openReader(r io.ReaderAt, size int64, limits Limits) (*Package, error) {
 	zr, err := zip.NewReader(r, size)
 	if err != nil {
 		return nil, err
@@ -60,6 +64,10 @@ func OpenReader(r io.ReaderAt, size int64) (*Package, error) {
 	pkg := &Package{
 		parts:         make(map[string]*Part),
 		relationships: make(map[string]*Relationships),
+	}
+
+	if err := validateBudgets(zr.File, limits); err != nil {
+		return nil, err
 	}
 
 	// Validate names before inflating or inserting members into a map. Never
@@ -424,10 +432,20 @@ func (p *Package) parseRelationships() error {
 func readZipFile(f *zip.File) ([]byte, error) {
 	rc, err := f.Open()
 	if err != nil {
-		return nil, err
+		return nil, invalidPart("open", f.Name, err.Error())
 	}
 	defer rc.Close()
-	return io.ReadAll(rc)
+	// Read at most the declared length plus one byte, even if a malicious
+	// stream expands beyond its advertised size. ReadAll must reach checksum
+	// verification before any bytes enter the package model.
+	content, err := io.ReadAll(io.LimitReader(rc, int64(f.UncompressedSize64)+1))
+	if err != nil {
+		return nil, invalidPart("open", f.Name, err.Error())
+	}
+	if uint64(len(content)) != f.UncompressedSize64 {
+		return nil, invalidPart("open", f.Name, "declared and actual sizes differ")
+	}
+	return content, nil
 }
 
 func writeZipFile(zw *zip.Writer, name string, data []byte) error {

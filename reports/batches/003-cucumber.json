@@ -1,0 +1,1302 @@
+[
+    {
+        "uri": "../features/implemented/package/io-safety.feature",
+        "id": "archive-intake-and-failure-safe-package-delivery",
+        "keyword": "Feature",
+        "name": "Archive intake and failure-safe package delivery",
+        "description": "  Ambiguous archive names and failed writes must not produce a successful edit.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@package",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;2",
+                "keyword": "Scenario Outline",
+                "name": "Unsafe archive names refuse before package parsing",
+                "description": "",
+                "line": 13,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a synthetic archive with \"duplicate\" member names",
+                        "line": 7,
+                        "match": {
+                            "location": "io_test.go:130"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 849409
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to open the synthetic archive",
+                        "line": 8,
+                        "match": {
+                            "location": "io_test.go:131"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 42280
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "archive intake fails without changing the source bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "io_test.go:132"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17305
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;3",
+                "keyword": "Scenario Outline",
+                "name": "Unsafe archive names refuse before package parsing",
+                "description": "",
+                "line": 14,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a synthetic archive with \"collision\" member names",
+                        "line": 7,
+                        "match": {
+                            "location": "io_test.go:130"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 107645
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to open the synthetic archive",
+                        "line": 8,
+                        "match": {
+                            "location": "io_test.go:131"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 21820
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "archive intake fails without changing the source bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "io_test.go:132"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17923
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;4",
+                "keyword": "Scenario Outline",
+                "name": "Unsafe archive names refuse before package parsing",
+                "description": "",
+                "line": 15,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a synthetic archive with \"traversal\" member names",
+                        "line": 7,
+                        "match": {
+                            "location": "io_test.go:130"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 82902
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to open the synthetic archive",
+                        "line": 8,
+                        "match": {
+                            "location": "io_test.go:131"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 19180
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "archive intake fails without changing the source bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "io_test.go:132"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17411
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;5",
+                "keyword": "Scenario Outline",
+                "name": "Unsafe archive names refuse before package parsing",
+                "description": "",
+                "line": 16,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a synthetic archive with \"absolute\" member names",
+                        "line": 7,
+                        "match": {
+                            "location": "io_test.go:130"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 91717
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to open the synthetic archive",
+                        "line": 8,
+                        "match": {
+                            "location": "io_test.go:131"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 20591
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "archive intake fails without changing the source bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "io_test.go:132"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17607
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;6",
+                "keyword": "Scenario Outline",
+                "name": "Unsafe archive names refuse before package parsing",
+                "description": "",
+                "line": 17,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a synthetic archive with \"backslash\" member names",
+                        "line": 7,
+                        "match": {
+                            "location": "io_test.go:130"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 89105
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to open the synthetic archive",
+                        "line": 8,
+                        "match": {
+                            "location": "io_test.go:131"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 20544
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "archive intake fails without changing the source bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "io_test.go:132"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16889
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;stream-finalisation-failure-is-returned-to-the-caller",
+                "keyword": "Scenario",
+                "name": "Stream finalisation failure is returned to the caller",
+                "description": "",
+                "line": 20,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-002",
+                        "line": 19
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a small new Office package",
+                        "line": 21,
+                        "match": {
+                            "location": "io_test.go:133"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 13952
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I write it to a stream that fails during finalisation",
+                        "line": 22,
+                        "match": {
+                            "location": "io_test.go:134"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 120229
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the write reports the injected failure",
+                        "line": 23,
+                        "match": {
+                            "location": "io_test.go:135"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 19098
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;a-serialisation-failure-preserves-an-existing-destination",
+                "keyword": "Scenario",
+                "name": "A serialisation failure preserves an existing destination",
+                "description": "",
+                "line": 26,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-003",
+                        "line": 25
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an existing destination and an unserialisable package",
+                        "line": 27,
+                        "match": {
+                            "location": "io_test.go:141"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 100848
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to save over the destination",
+                        "line": 28,
+                        "match": {
+                            "location": "io_test.go:142"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 45917
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "saving fails and the destination and package state remain unchanged",
+                        "line": 29,
+                        "match": {
+                            "location": "io_test.go:143"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 55915
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "no temporary files remain in the destination directory",
+                        "line": 30,
+                        "match": {
+                            "location": "io_test.go:144"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 131311
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "uri": "../features/implemented/package/limits.feature",
+        "id": "caller-defined-package-intake-budgets",
+        "keyword": "Feature",
+        "name": "Caller-defined package intake budgets",
+        "description": "  Budget violations are refused before payload allocation or decompression.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@package",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "caller-defined-package-intake-budgets;intake-enforces-a-configured-resource-ceiling;;2",
+                "keyword": "Scenario Outline",
+                "name": "Intake enforces a configured resource ceiling",
+                "description": "",
+                "line": 13,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@LIMIT-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an archive exceeding its \"source\" budget",
+                        "line": 7,
+                        "match": {
+                            "location": "limits_test.go:43"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 211792
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open it with the configured resource limits",
+                        "line": 8,
+                        "match": {
+                            "location": "limits_test.go:62"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 19311
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "I receive a typed resource-limit refusal",
+                        "line": 9,
+                        "match": {
+                            "location": "limits_test.go:66"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 11726
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "caller-defined-package-intake-budgets;intake-enforces-a-configured-resource-ceiling;;3",
+                "keyword": "Scenario Outline",
+                "name": "Intake enforces a configured resource ceiling",
+                "description": "",
+                "line": 14,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@LIMIT-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an archive exceeding its \"entries\" budget",
+                        "line": 7,
+                        "match": {
+                            "location": "limits_test.go:43"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 59018
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open it with the configured resource limits",
+                        "line": 8,
+                        "match": {
+                            "location": "limits_test.go:62"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 176138
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "I receive a typed resource-limit refusal",
+                        "line": 9,
+                        "match": {
+                            "location": "limits_test.go:66"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 38689
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "caller-defined-package-intake-budgets;intake-enforces-a-configured-resource-ceiling;;4",
+                "keyword": "Scenario Outline",
+                "name": "Intake enforces a configured resource ceiling",
+                "description": "",
+                "line": 15,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@LIMIT-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an archive exceeding its \"part\" budget",
+                        "line": 7,
+                        "match": {
+                            "location": "limits_test.go:43"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 110839
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open it with the configured resource limits",
+                        "line": 8,
+                        "match": {
+                            "location": "limits_test.go:62"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17169
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "I receive a typed resource-limit refusal",
+                        "line": 9,
+                        "match": {
+                            "location": "limits_test.go:66"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 10883
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "caller-defined-package-intake-budgets;intake-enforces-a-configured-resource-ceiling;;5",
+                "keyword": "Scenario Outline",
+                "name": "Intake enforces a configured resource ceiling",
+                "description": "",
+                "line": 16,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@LIMIT-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an archive exceeding its \"total\" budget",
+                        "line": 7,
+                        "match": {
+                            "location": "limits_test.go:43"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 62562
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open it with the configured resource limits",
+                        "line": 8,
+                        "match": {
+                            "location": "limits_test.go:62"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 14248
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "I receive a typed resource-limit refusal",
+                        "line": 9,
+                        "match": {
+                            "location": "limits_test.go:66"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 11213
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "caller-defined-package-intake-budgets;finite-sufficient-budgets-permit-normal-intake",
+                "keyword": "Scenario",
+                "name": "Finite sufficient budgets permit normal intake",
+                "description": "",
+                "line": 19,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@LIMIT-002",
+                        "line": 18
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an archive within all configured budgets",
+                        "line": 20,
+                        "match": {
+                            "location": "limits_test.go:61"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 75769
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open it with the configured resource limits",
+                        "line": 21,
+                        "match": {
+                            "location": "limits_test.go:62"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 49190
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "its XML payload is available without changes",
+                        "line": 22,
+                        "match": {
+                            "location": "limits_test.go:76"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 11531
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "uri": "../features/implemented/package/baseline.feature",
+        "id": "existing-office-fixture-intake",
+        "keyword": "Feature",
+        "name": "Existing Office fixture intake",
+        "description": "  Repository fixtures can be inspected without a fixed workspace mount.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@package",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;2",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 13,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"word/minimal.docx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 56899
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:109"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1711190
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"word/document.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:110"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 30158
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;3",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 14,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"pptx/minimal.pptx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 43205
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:109"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 699379
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"ppt/presentation.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:110"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 14955
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;4",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 15,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"excel/minimal.xlsx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 25782
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:109"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 140922
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:110"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 12231
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;5",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 16,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"pptx/comments.pptx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 120174
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:109"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1139360
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"ppt/presentation.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:110"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 31682
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;6",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 17,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"excel/formatting.xlsx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 40045
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:109"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 249951
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:110"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 25709
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;7",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 18,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"excel/formulas.xlsx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 37384
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:109"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 231485
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:110"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 19655
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;8",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 19,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"excel/conditional_format.xlsx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 61428
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:109"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 225278
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:110"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 20197
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]
