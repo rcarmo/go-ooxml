@@ -580,3 +580,9 @@ cases. P09 multiline and broad fixture parity are unfinished.
 The existing hash-pinned Go notes fixture now passes exact one-part replacement,
 save/reopen and handle/refusal checks. A grouping-only noGrp lock no longer blocks
 text editing; unknown/text locks still refuse. Batch063 passes213 native cases.
+
+### Increment064: Office link identity
+
+Twelve XLSX/PPTX intake cases verify expanded attribute names under alias/local
+namespace bindings, plain-id exclusion and exact relationship Type URIs. Current
+readers pass without runtime changes. Batch064 passes225 native cases.

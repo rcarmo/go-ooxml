@@ -1,0 +1,5 @@
+ok  	github.com/rcarmo/go-ooxml/internal/losslessxml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/presentation	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	(cached)
+ok  	github.com/rcarmo/go-ooxml/acceptance	1.099s
