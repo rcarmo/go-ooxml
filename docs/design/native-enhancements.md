@@ -412,3 +412,9 @@ namespace matching in new Go XLSX/PPTX editors and their synthetic fixtures; bot
 corrected to officeDocument relationships. Four fixtures verified, zero of19 shared
 workflow cases executed. Pin/spec and report: spec/shared-contracts-v2.json, batch033.
 Shared binary redistribution remains unapproved; no fixtures copied into the repo.
+
+### Increment 034: shared fixture native readback
+
+Native Go reads the pinned Word body, PPTX title/subtitle, default-style XLSX string
+and cross-sheet formula/cache input facts. Input verification is distinct from the
+19 planned mutation scenarios and emits no workflow pass outcomes. Batch034.

@@ -105,6 +105,7 @@ func TestSharedPackV2(t *testing.T) {
 		t.Fatal("wrong fixture inventory")
 	}
 	fixtureHashes := map[string]string{}
+	readbacks := map[string]any{}
 	for _, f := range fixtures.Fixtures {
 		t.Run(f.ID, func(t *testing.T) {
 			data, err := pinnedFile(root, f.Path, f.SHA256)
@@ -153,6 +154,11 @@ func TestSharedPackV2(t *testing.T) {
 			if !bytes.Equal(data, out.Bytes()) {
 				t.Fatal("no-op changed fixture")
 			}
+			readback, err := sharedReadback(f.ID, data, members)
+			if err != nil {
+				t.Fatal(err)
+			}
+			readbacks[f.ID] = readback
 			if filepath.Ext(f.ID) == ".xlsx" {
 				s, err := spreadsheet.OpenEditing(data, packaging.Limits{})
 				if err != nil {
@@ -209,7 +215,7 @@ func TestSharedPackV2(t *testing.T) {
 	if err = os.MkdirAll(dir, 0755); err != nil {
 		t.Fatal(err)
 	}
-	writeJSON(t, filepath.Join(dir, "shared-v2-verification.json"), map[string]any{"schema": 1, "contractRevision": pack.Revision, "packManifestSHA256": sharedPackHash, "fixtures": fixtureHashes, "verifiedFixtureCount": 4, "inventoriedWorkflowCases": 19, "executedWorkflowCases": 0, "status": "fixture-and-contract-integrity-only", "subject": map[string]string{"kind": "native-library", "transport": "none"}})
+	writeJSON(t, filepath.Join(dir, "shared-v2-verification.json"), map[string]any{"schema": 1, "contractRevision": pack.Revision, "packManifestSHA256": sharedPackHash, "fixtures": fixtureHashes, "verifiedFixtureCount": 4, "nativeReadbacks": readbacks, "inventoriedWorkflowCases": 19, "executedWorkflowCases": 0, "status": "fixture-and-contract-integrity-only", "subject": map[string]string{"kind": "native-library", "transport": "none"}})
 }
 func validateTypedTable(argument json.RawMessage) error {
 	if len(argument) == 0 || string(argument) == "null" {
