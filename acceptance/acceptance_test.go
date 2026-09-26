@@ -102,6 +102,7 @@ func TestAcceptance(t *testing.T) {
 		slideSteps(sc)
 		cellSteps(sc)
 		storySteps(sc)
+		spanSteps(sc)
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil

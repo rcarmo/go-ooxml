@@ -28,6 +28,9 @@ type TextTarget struct {
 	hash       string
 	text       string
 	consumed   bool
+	segments   []textSegment
+	paragraph  losslessxml.Element
+	start, end int
 }
 
 func editRefusal(kind, detail string) error {
@@ -86,21 +89,14 @@ func (s *EditSession) FindOne(text string) (*TextTarget, error) {
 	if err != nil {
 		return nil, err
 	}
-	var matches []losslessxml.Element
-	for _, e := range d.Elements() {
-		if e.Name() == (xml.Name{Space: packaging.NSWordprocessingML, Local: "t"}) {
-			if got, leaf := e.Text(); leaf && got == text {
-				matches = append(matches, e)
-			}
-		}
-	}
+	matches := s.findExact(d, hash, text)
 	if len(matches) == 0 {
-		return nil, editRefusal("missing_target", "no complete text leaf matched; cross-run search not yet supported")
+		return nil, editRefusal("missing_target", "no exact text span matched")
 	}
 	if len(matches) != 1 {
-		return nil, editRefusal("ambiguous_target", "multiple exact text leaves")
+		return nil, editRefusal("ambiguous_target", "multiple exact text spans")
 	}
-	return &TextTarget{session: s, generation: s.generation, doc: d, element: matches[0], hash: hash, text: text}, nil
+	return matches[0], nil
 }
 
 func (s *EditSession) guard(target *TextTarget, replacement string) error {
@@ -224,6 +220,9 @@ func (s *EditSession) Replace(target *TextTarget, text string) error {
 	}
 	if current != target.hash {
 		return editRefusal("stale_target", "part fingerprint changed")
+	}
+	if len(target.segments) != 1 || target.segments[0].start != 0 || target.segments[0].end != len([]rune(target.segments[0].text)) {
+		return editRefusal("unsupported_structure", "substring and multi-run replacement require span planner")
 	}
 	if err = s.guard(target, text); err != nil {
 		return err

@@ -317,3 +317,9 @@ paragraphs without double-counting text boxes. Basic revision wrappers project;
 alternate-content branches/field evaluation/property revisions expose limitations.
 StoryBlock is inert evidence, not an editing anchor. D01 remains partial pending
 per-story fixtures and complete source-case mapping. See batch 017.
+
+### Increment 019: exact run-fragmented Word spans
+
+FindText/FindOne share exact current-view main-story paragraph run maps with Unicode
+rune offsets and explicit repeated candidates. Span text is immutable evidence;
+substring/cross-run writes still refuse until the mutation planner. Batch019.

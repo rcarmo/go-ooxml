@@ -1778,3 +1778,10 @@ move wrappers, preserves literal tabs/breaks and assigns nested textbox text to 
 nearest paragraph only. AlternateContent branches are skipped with warnings; field
 instructions and property revisions are not evaluated. StoryBlock is not a live
 mutation target. Full extended outline/report/revision scope remains incomplete.
+
+Word `FindText` now inventories all exact non-overlapping matches within main-story
+current-view paragraphs across run fragmentation. `FindOne` uses the same spans
+and refuses zero/multiple matches. Internal offsets are Unicode rune offsets;
+original text is returned by `TextTarget.Text()`. Paragraph boundaries are not
+implicitly joined. In this increment replacement still requires one whole leaf;
+substring/multi-run targets refuse until the planner is implemented.
