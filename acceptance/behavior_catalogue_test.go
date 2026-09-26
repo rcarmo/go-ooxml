@@ -13,10 +13,18 @@ import (
 // Validate reviewed staging candidates without executing or awarding canonical
 // coverage. The shared registry owns the reconciled behaviour specification.
 func TestBehaviourCatalogueCandidates(t *testing.T) {
+	for _, name := range []string{"formula", "xml"} {
+		t.Run(name, func(t *testing.T) { validateCatalogueFamily(t, name) })
+	}
+}
+
+func validateCatalogueFamily(t *testing.T, name string) {
+	t.Helper()
 	const base = "../docs/behaviors/"
 	var mapping struct {
 		Status    string `json:"status"`
 		Feature   string `json:"feature"`
+		Prefix    string `json:"native_prefix"`
 		Canonical bool   `json:"canonical_ids_assigned"`
 		Execution bool   `json:"execution_credit"`
 		Mappings  []struct {
@@ -26,14 +34,14 @@ func TestBehaviourCatalogueCandidates(t *testing.T) {
 			Coverage string   `json:"coverage"`
 		} `json:"mappings"`
 	}
-	b, err := os.ReadFile(base + "formula-mapping.json")
+	b, err := os.ReadFile(base + name + "-mapping.json")
 	if err != nil {
 		t.Fatal(err)
 	}
 	if err = json.Unmarshal(b, &mapping); err != nil {
 		t.Fatal(err)
 	}
-	if mapping.Status != "central-reconciliation-staging" || mapping.Canonical || mapping.Execution {
+	if mapping.Status != "central-reconciliation-staging" || mapping.Canonical || mapping.Execution || mapping.Prefix == "" {
 		t.Fatal("staging claims canonical/executed status")
 	}
 	var inv struct {
@@ -61,7 +69,7 @@ func TestBehaviourCatalogueCandidates(t *testing.T) {
 	required := map[string]bool{}
 	for _, d := range inv.Declarations {
 		decls[d.ID] = d.File
-		if strings.HasPrefix(d.File, "internal/formula/") {
+		if strings.HasPrefix(d.File, mapping.Prefix) {
 			required[d.ID] = true
 		}
 	}
@@ -117,7 +125,7 @@ func TestBehaviourCatalogueCandidates(t *testing.T) {
 	}
 	for id := range required {
 		if !seen[id] {
-			t.Fatal("missing formula declaration", id)
+			t.Fatal("missing native declaration", id)
 		}
 	}
 	for id := range ids {

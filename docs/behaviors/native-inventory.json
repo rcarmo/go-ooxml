@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "observation_revision": "c34f01b224bbe2543d1d80631575e3af805b540d",
+  "observation_revision": "bd6f04b8370704fe0d4564f5d712c569d81208af",
   "files": [
     {
       "path": "acceptance/acceptance_test.go",
@@ -19,7 +19,7 @@
     },
     {
       "path": "acceptance/behavior_catalogue_test.go",
-      "sha256": "b3adb54c3f01738d9cf1b25ebf5cf9fb8b8371e32d3b7040a8302d2eddd43503",
+      "sha256": "1f024fa85126b6ce2db2ddb979435445a6e20380cd72bce264a210328cbf79cc",
       "helpers_only": false
     },
     {
@@ -851,22 +851,23 @@
       "line": 15,
       "function": "TestBehaviourCatalogueCandidates",
       "kind": "test",
-      "subtests": [],
-      "parameter_groups": [],
+      "subtests": [
+        {
+          "line": 17,
+          "expression": "name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 16,
+          "expression": "[]string",
+          "rows": 2
+        }
+      ],
       "calls": [
-        "Close",
-        "Contains",
-        "Fatal",
-        "Fatalf",
-        "HasPrefix",
-        "Open",
-        "ParseGherkinDocument",
-        "Pickles",
-        "ReadFile",
-        "Sprint",
-        "ToLower",
-        "Unmarshal",
-        "len"
+        "Run",
+        "validateCatalogueFamily"
       ],
       "scenario_ids": [],
       "coverage": "unreviewed"

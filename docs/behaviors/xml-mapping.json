@@ -1,0 +1,569 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "xml-candidates.feature",
+  "native_prefix": "internal/losslessxml/",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "internal/losslessxml/attributes_test.go::TestAttributeSpliceBatch",
+      "source_sha256": "54c87bdb247dd1160b743f4e133da9b8c653c654829380caa6cad6039bd5f3e7",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-xml-001",
+        "@candidate-go-xml-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 18,
+          "expression": "tc.value",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 14,
+          "expression": "[]struct {\n\tname\t\txml.Name\n\tvalue, want\tstring\n}",
+          "rows": 3,
+          "names": [
+            "x'y&z",
+            "new",
+            "value"
+          ]
+        },
+        {
+          "line": 19,
+          "expression": "[]AttributeEdit",
+          "rows": 1
+        },
+        {
+          "line": 25,
+          "expression": "[][]AttributeEdit",
+          "rows": 5
+        }
+      ],
+      "remaining": "Runtime fuzz input space is not enumerated or executed by this staging catalogue."
+    },
+    {
+      "native_id": "internal/losslessxml/boundary_test.go::TestLexicalDocumentBoundaryBatch",
+      "source_sha256": "befd555cfa2924e766ee8d7c23d1b640e054e173c125ff6ece3373bf78688fea",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-xml-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 10,
+          "expression": "source",
+          "dynamic": true
+        },
+        {
+          "line": 21,
+          "expression": "source",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 9,
+          "expression": "[]string",
+          "rows": 7
+        },
+        {
+          "line": 20,
+          "expression": "[]string",
+          "rows": 3
+        }
+      ],
+      "remaining": "Runtime fuzz input space is not enumerated or executed by this staging catalogue."
+    },
+    {
+      "native_id": "internal/losslessxml/children_test.go::TestStructuredChildInsertionBatch",
+      "source_sha256": "ee41101b00fc7edbfa87b346a6116e2650143b6a02bde64e86dca557ed0453bb",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-xml-006",
+        "@candidate-go-xml-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 15,
+          "name": "fresh prefix scoped without collision",
+          "dynamic": false
+        },
+        {
+          "line": 33,
+          "name": "atomic invalid inputs",
+          "dynamic": false
+        },
+        {
+          "line": 41,
+          "name": "nested targets and empty no op",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 16,
+          "expression": "[]xml.Attr",
+          "rows": 1
+        },
+        {
+          "line": 16,
+          "expression": "[]NewElement",
+          "rows": 1
+        },
+        {
+          "line": 17,
+          "expression": "[]ChildInsertion",
+          "rows": 1
+        },
+        {
+          "line": 17,
+          "expression": "[]NewElement",
+          "rows": 1
+        },
+        {
+          "line": 35,
+          "expression": "[][]ChildInsertion",
+          "rows": 5
+        },
+        {
+          "line": 35,
+          "expression": "[]NewElement",
+          "rows": 1
+        },
+        {
+          "line": 35,
+          "expression": "[]NewElement",
+          "rows": 1
+        },
+        {
+          "line": 35,
+          "expression": "[]NewElement",
+          "rows": 1
+        },
+        {
+          "line": 35,
+          "expression": "[]NewElement",
+          "rows": 1
+        },
+        {
+          "line": 35,
+          "expression": "[]NewElement",
+          "rows": 1
+        },
+        {
+          "line": 35,
+          "expression": "[]NewElement",
+          "rows": 1
+        },
+        {
+          "line": 35,
+          "expression": "[]NewElement",
+          "rows": 1
+        },
+        {
+          "line": 42,
+          "expression": "[]ChildInsertion",
+          "rows": 2
+        },
+        {
+          "line": 42,
+          "expression": "[]NewElement",
+          "rows": 1
+        },
+        {
+          "line": 42,
+          "expression": "[]NewElement",
+          "rows": 1
+        }
+      ],
+      "remaining": "Runtime fuzz input space is not enumerated or executed by this staging catalogue."
+    },
+    {
+      "native_id": "internal/losslessxml/document_test.go::TestNamespaceAndLeafContracts",
+      "source_sha256": "644ed23d98dc53ee2f8b1ff5e929d6483ebcbd3e52292cf570897dd79e420b2e",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-xml-001",
+        "@candidate-go-xml-002",
+        "@candidate-go-xml-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 11,
+          "expression": "s",
+          "dynamic": true
+        },
+        {
+          "line": 17,
+          "name": "namespace scope and attribute copies",
+          "dynamic": false
+        },
+        {
+          "line": 35,
+          "name": "self closing remains no op but refuses insertion",
+          "dynamic": false
+        },
+        {
+          "line": 53,
+          "name": "mixed content and comments refuse",
+          "dynamic": false
+        },
+        {
+          "line": 68,
+          "name": "CDATA entity unicode and no op",
+          "dynamic": false
+        },
+        {
+          "line": 91,
+          "name": "duplicate targets and invalid characters refuse",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 9,
+          "expression": "[]string",
+          "rows": 11
+        },
+        {
+          "line": 45,
+          "expression": "[]TextEdit",
+          "rows": 1,
+          "names": [
+            ""
+          ]
+        },
+        {
+          "line": 49,
+          "expression": "[]TextEdit",
+          "rows": 1,
+          "names": [
+            "new"
+          ]
+        },
+        {
+          "line": 54,
+          "expression": "[]string",
+          "rows": 2
+        },
+        {
+          "line": 63,
+          "expression": "[]TextEdit",
+          "rows": 1,
+          "names": [
+            "x"
+          ]
+        },
+        {
+          "line": 82,
+          "expression": "[]TextEdit",
+          "rows": 1
+        },
+        {
+          "line": 86,
+          "expression": "[]TextEdit",
+          "rows": 1,
+          "names": [
+            "😀&"
+          ]
+        },
+        {
+          "line": 100,
+          "expression": "[][]TextEdit",
+          "rows": 3
+        }
+      ],
+      "remaining": "Runtime fuzz input space is not enumerated or executed by this staging catalogue."
+    },
+    {
+      "native_id": "internal/losslessxml/fuzz_test.go::FuzzImmutableLeafEdits",
+      "source_sha256": "58909987aab89c48263ecd4f3628c07f7023fbd02d4eb35fcd7c9eb8e9a65e56",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-xml-001",
+        "@candidate-go-xml-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 9,
+          "expression": "[]string",
+          "rows": 5
+        },
+        {
+          "line": 34,
+          "expression": "[]TextEdit",
+          "rows": 1
+        }
+      ],
+      "remaining": "Runtime fuzz input space is not enumerated or executed by this staging catalogue."
+    },
+    {
+      "native_id": "internal/losslessxml/insertion_properties_test.go::TestInsertedExpandedNamesMatrix",
+      "source_sha256": "745f2ef12be7d935222c2a7c0af0d66604ad6e4c0799fbaf1ccad160414f3a74",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-xml-006",
+        "@candidate-go-xml-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 12,
+          "expression": "[]string",
+          "rows": 4
+        },
+        {
+          "line": 13,
+          "expression": "[]string",
+          "rows": 5
+        },
+        {
+          "line": 22,
+          "expression": "[]xml.Attr",
+          "rows": 1
+        },
+        {
+          "line": 23,
+          "expression": "[]NewElement",
+          "rows": 1
+        },
+        {
+          "line": 24,
+          "expression": "[]ChildInsertion",
+          "rows": 1
+        },
+        {
+          "line": 24,
+          "expression": "[]NewElement",
+          "rows": 1
+        }
+      ],
+      "remaining": "Runtime fuzz input space is not enumerated or executed by this staging catalogue."
+    },
+    {
+      "native_id": "internal/losslessxml/insertion_properties_test.go::FuzzStructuredChildRoundTrip",
+      "source_sha256": "745f2ef12be7d935222c2a7c0af0d66604ad6e4c0799fbaf1ccad160414f3a74",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-xml-006",
+        "@candidate-go-xml-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 50,
+          "expression": "[][2]string",
+          "rows": 3,
+          "names": [
+            "a",
+            "x\r\ny",
+            "😀&<"
+          ]
+        },
+        {
+          "line": 61,
+          "expression": "[]xml.Attr",
+          "rows": 1
+        },
+        {
+          "line": 62,
+          "expression": "[]ChildInsertion",
+          "rows": 1
+        },
+        {
+          "line": 62,
+          "expression": "[]NewElement",
+          "rows": 1
+        }
+      ],
+      "remaining": "Runtime fuzz input space is not enumerated or executed by this staging catalogue."
+    },
+    {
+      "native_id": "internal/losslessxml/normalization_test.go::TestXMLWhitespaceNormalizationBatch",
+      "source_sha256": "567743243ede823579578510d3ad342e5743563342fc15a915f14b7aaa25f964",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-xml-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 11,
+          "expression": "tc.raw",
+          "dynamic": true
+        },
+        {
+          "line": 27,
+          "name": "namespace declaration values normalize",
+          "dynamic": false
+        },
+        {
+          "line": 36,
+          "name": "CDATA line endings and original offsets",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 10,
+          "expression": "[]struct{ raw, want string }",
+          "rows": 5,
+          "names": [
+            "\t\n\r\r\n",
+            "&#9;&#10;&#13;",
+            " A  B ",
+            "A\r\nB&#xD;\nC",
+            "a&amp;b&quot;c&apos;d&lt;e&gt;"
+          ]
+        },
+        {
+          "line": 21,
+          "expression": "[]AttributeEdit",
+          "rows": 1
+        },
+        {
+          "line": 47,
+          "expression": "[]TextEdit",
+          "rows": 1,
+          "names": [
+            "new"
+          ]
+        }
+      ],
+      "remaining": "Runtime fuzz input space is not enumerated or executed by this staging catalogue."
+    },
+    {
+      "native_id": "internal/losslessxml/qname_test.go::TestQNameAndBoundaryBatch",
+      "source_sha256": "f0eb1334446c6281474c7016281a341bde7d875498e760d0c923ea2d56dd405b",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-xml-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 7,
+          "expression": "bad",
+          "dynamic": true
+        },
+        {
+          "line": 14,
+          "expression": "good",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 6,
+          "expression": "[]string",
+          "rows": 7
+        },
+        {
+          "line": 13,
+          "expression": "[]string",
+          "rows": 5
+        }
+      ],
+      "remaining": "Runtime fuzz input space is not enumerated or executed by this staging catalogue."
+    },
+    {
+      "native_id": "internal/losslessxml/remove_test.go::TestElementRemovalBatch",
+      "source_sha256": "f9e32b0e1541655dc4d29cac5e63a2cd901215151ace1bdeedc6c669db471720",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-xml-008"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 15,
+          "expression": "[]Element",
+          "rows": 2
+        },
+        {
+          "line": 20,
+          "expression": "[][]Element",
+          "rows": 5
+        },
+        {
+          "line": 29,
+          "expression": "[]Element",
+          "rows": 1
+        }
+      ],
+      "remaining": "Runtime fuzz input space is not enumerated or executed by this staging catalogue."
+    },
+    {
+      "native_id": "internal/losslessxml/replace_elements_test.go::TestReplaceElementsBatch",
+      "source_sha256": "a76fa1e277a62be5b914f71d597b4ef636974a7647ffd6475252685a1c6065f3",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-xml-009"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 16,
+          "name": "replacement namespace is parent scope",
+          "dynamic": false
+        },
+        {
+          "line": 27,
+          "name": "disjoint replacement and deletion",
+          "dynamic": false
+        },
+        {
+          "line": 33,
+          "name": "invalid selection or content cannot escape",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 18,
+          "expression": "[]ElementReplacement",
+          "rows": 1
+        },
+        {
+          "line": 18,
+          "expression": "[]NewElement",
+          "rows": 2
+        },
+        {
+          "line": 28,
+          "expression": "[]ElementReplacement",
+          "rows": 2
+        },
+        {
+          "line": 28,
+          "expression": "[]NewElement",
+          "rows": 1
+        },
+        {
+          "line": 35,
+          "expression": "[][]ElementReplacement",
+          "rows": 5
+        },
+        {
+          "line": 35,
+          "expression": "[]NewElement",
+          "rows": 1
+        }
+      ],
+      "remaining": "Runtime fuzz input space is not enumerated or executed by this staging catalogue."
+    }
+  ]
+}
