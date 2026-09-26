@@ -45,7 +45,18 @@ func cacheSteps(sc *godog.ScenarioContext) {
 		if condition == "unknown sheet" {
 			f = "Missing!A1*2"
 		}
-		_, _ = q.AddPart("xl/worksheets/sheet1.xml", packaging.ContentTypeWorksheet, []byte(`<worksheet xmlns="`+packaging.NSSpreadsheetML+`"><sheetData><row r="1"><c r="A1"><v>1</v></c><c r="C1"><v>5</v></c></row></sheetData></worksheet>`))
+		unrelated := `<c r="C1"><v>5</v></c>`
+		if condition == "duplicate unrelated value" {
+			unrelated = `<c r="C1"><v>5</v><v>6</v></c>`
+		}
+		if condition == "unclassified cell metadata" {
+			unrelated = `<c r="C1" cm="1"><v>5</v></c>`
+		}
+		extraData := ""
+		if condition == "duplicate sheetData containers" {
+			extraData = `<sheetData><row r="2"><c r="D2"><v>8</v></c></row></sheetData>`
+		}
+		_, _ = q.AddPart("xl/worksheets/sheet1.xml", packaging.ContentTypeWorksheet, []byte(`<worksheet xmlns="`+packaging.NSSpreadsheetML+`"><sheetData><row r="1"><c r="A1"><v>1</v></c>`+unrelated+`</row></sheetData>`+extraData+`</worksheet>`))
 		_, _ = q.AddPart("xl/worksheets/sheet2.xml", packaging.ContentTypeWorksheet, []byte(`<worksheet xmlns="`+packaging.NSSpreadsheetML+`"><sheetData><row r="1"><c r="A1"><f`+fAttrs+`>`+f+`</f><v>2</v></c><c r="B1"><f>A1+1</f><v>3</v></c><c r="C1"><f>42</f><v>42</v></c></row></sheetData></worksheet>`))
 		_, _ = q.AddPart("custom/opaque.bin", "application/octet-stream", []byte("sentinel"))
 		q.AddRelationship("", "xl/workbook.xml", packaging.RelTypeOfficeDocument)
@@ -97,6 +108,7 @@ func cacheSteps(sc *godog.ScenarioContext) {
 	})
 	sc.Step(`^a workbook with input one and a static cross-sheet formula chain$`, func() error { return setup("") })
 	sc.Step(`^a formula workbook containing "([^"]+)"$`, setup)
+	sc.Step(`^a dependency workbook with "([^"]+)"$`, setup)
 	sc.Step(`^I set the input to ten with explicit invalidation$`, func() error { return apply("A1") })
 	sc.Step(`^direct and transitive cached results are absent or empty$`, func() error {
 		parts, err := zipPayloads(output)

@@ -469,3 +469,9 @@ Batch042;18 others unexecuted, external calculation not performed.
 Operators/delimiters must be punctuation tokens, never identical text inside quoted
 literals. This closes false acceptance and false rejection cases in the static parser.
 Batch043; full expression support remains conservative.
+
+### Increment044: dependency worksheet structure
+
+The invalidation planner validates all cell value/metadata structures and unique
+sheetData/row ownership before analysis, including unrelated input cells. Malformed
+structures refuse before commit. Batch044; shared cache input still executes.

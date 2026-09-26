@@ -142,6 +142,30 @@ func (s *EditSession) SetNumberWithInvalidation(target *NumberTarget, value floa
 			return result, err
 		}
 		es := doc.Elements()
+		if es[0].Name() != expanded("worksheet") {
+			return result, editRefusal("unsupported_structure", "worksheet root required")
+		}
+		sheetDataCount := 0
+		rowIDs := map[string]bool{}
+		for _, e := range es {
+			if e.Name() == expanded("sheetData") {
+				p, ok := e.Parent()
+				if !ok || p != es[0] {
+					return result, editRefusal("unsupported_structure", "nested sheetData")
+				}
+				sheetDataCount++
+			}
+			if e.Name() == expanded("row") {
+				id := attr(e, "r")
+				if rowIDs[id] {
+					return result, editRefusal("ambiguous_target", "duplicate row identity")
+				}
+				rowIDs[id] = true
+			}
+		}
+		if sheetDataCount != 1 {
+			return result, editRefusal("unsupported_structure", "exactly one sheetData container required")
+		}
 		cells := map[string]losslessxml.Element{}
 		children := map[losslessxml.Element][]losslessxml.Element{}
 		for _, e := range es {
@@ -188,6 +212,20 @@ func (s *EditSession) SetNumberWithInvalidation(target *NumberTarget, value floa
 				case expanded("v"):
 					v = child
 					vc++
+				}
+			}
+			for _, a := range e.Attributes() {
+				if a.Name.Space != "" || a.Name.Local != "r" && a.Name.Local != "s" && a.Name.Local != "t" {
+					return result, editRefusal("unsupported_structure", "unclassified cell metadata")
+				}
+			}
+			if vc > 1 {
+				return result, editRefusal("unsupported_structure", "duplicate cell value")
+			}
+			if vc == 1 {
+				_, leaf := v.Text()
+				if !leaf || len(v.Attributes()) != 0 {
+					return result, editRefusal("unsupported_structure", "invalid value leaf")
 				}
 			}
 			if fc == 0 {
