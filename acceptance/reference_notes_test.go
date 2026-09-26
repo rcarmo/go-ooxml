@@ -1,11 +1,13 @@
 package acceptance
 
 import (
+	"archive/zip"
 	"bytes"
 	"encoding/xml"
 	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"testing"
 
 	"github.com/rcarmo/go-ooxml/internal/losslessxml"
@@ -13,16 +15,53 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/presentation"
 )
 
-// Explicitly requested read-only source fixture checks; no Python runtime or
-// fixture redistribution. Missing/hash-mismatched inputs fail requested runs.
-func TestRetiredNotesFixtures(t *testing.T) {
-	root := testutil.ReferencePath("reference-assets", "pptx")
+// Owned notes inputs and a native synthetic paragraph variant retain the same
+// no-op, edit, clear, reopen, payload-budget and placeholder assertions.
+func TestOwnedNotesFixtures(t *testing.T) {
+	root := testutil.FixturePath()
 	observations := []map[string]any{}
-	for _, f := range []struct{ path, sha string }{{"[retired external test identity]", "72f375efdbecdb8b95adf37c8fc753ec5416b4353b48bad8f6b89c0dedb74abf"}, {"[retired external test identity]", "a4ce1dae2558ced03ea5df2a415c32b57c9a10a0eedc8a1bfd60e588ee7cbf98"}} {
-		t.Run(f.path, func(t *testing.T) {
+	for _, f := range []struct {
+		name, path, sha string
+		variant         bool
+	}{
+		{"owned notes", "pptx/notes.pptx", "04faba67841dda25dc3ff9e3e6e345e6feeeef1cf25a6b9065bf5fbdc83163dc", false},
+		{"native blank paragraph variant", "pptx/notes.pptx", "04faba67841dda25dc3ff9e3e6e345e6feeeef1cf25a6b9065bf5fbdc83163dc", true},
+	} {
+		t.Run(f.name, func(t *testing.T) {
 			source, err := pinnedFile(root, f.path, f.sha)
 			if err != nil {
 				t.Fatal(err)
+			}
+			original := bytes.Clone(source)
+			wantInitial := "Remember to emphasize the Gothic elements"
+			if f.variant {
+				parts, err := zipPayloads(source)
+				if err != nil {
+					t.Fatal(err)
+				}
+				name := "ppt/notesSlides/notesSlide1.xml"
+				parts[name] = bytes.Replace(parts[name], []byte(`</p:txBody>`), []byte(`<a:p/></p:txBody>`), 1)
+				var output bytes.Buffer
+				zw := zip.NewWriter(&output)
+				names := make([]string, 0, len(parts))
+				for name := range parts {
+					names = append(names, name)
+				}
+				sort.Strings(names)
+				for _, name := range names {
+					w, err := zw.Create(name)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if _, err = w.Write(parts[name]); err != nil {
+						t.Fatal(err)
+					}
+				}
+				if err := zw.Close(); err != nil {
+					t.Fatal(err)
+				}
+				source = output.Bytes()
+				wantInitial += "\n"
 			}
 			s, err := presentation.OpenEditing(source, packaging.Limits{MaxSourceBytes: 32 << 20, MaxEntries: 4096, MaxPartBytes: 16 << 20, MaxTotalBytes: 64 << 20})
 			if err != nil {
@@ -34,7 +73,7 @@ func TestRetiredNotesFixtures(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if n.Text() != "Speaker notes for the clone fixture." {
+			if n.Text() != wantInitial {
 				t.Fatalf("initial readback %q", n.Text())
 			}
 			dir := t.TempDir()
@@ -113,10 +152,10 @@ func TestRetiredNotesFixtures(t *testing.T) {
 				t.Fatal("empty reopen", err)
 			}
 			sourceNow, err := os.ReadFile(filepath.Join(root, f.path))
-			if err != nil || !bytes.Equal(source, sourceNow) {
+			if err != nil || !bytes.Equal(original, sourceNow) {
 				t.Fatal("source fixture changed", err)
 			}
-			observations = append(observations, map[string]any{"path": f.path, "sha256": f.sha, "initialText": n.Text(), "multilineReadback": got.Text(), "emptyReadback": emptyNotes.Text(), "changedParts": receipt.Changes, "sourceUnchanged": true, "noOpByteIdentical": true, "otherPayloadsExact": true, "otherPlaceholdersExact": true, "otherPlaceholderCount": len(unchangedShapes), "outputSHA256": sha256hex(output)})
+			observations = append(observations, map[string]any{"name": f.name, "path": f.path, "sha256": f.sha, "syntheticVariant": f.variant, "inputSHA256": sha256hex(source), "initialText": n.Text(), "multilineReadback": got.Text(), "emptyReadback": emptyNotes.Text(), "changedParts": receipt.Changes, "sourceUnchanged": true, "noOpByteIdentical": true, "otherPayloadsExact": true, "otherPlaceholdersExact": true, "otherPlaceholderCount": len(unchangedShapes), "outputSHA256": sha256hex(output)})
 		})
 	}
 	dir := os.Getenv("OOXML_REPORT_DIR")
@@ -126,7 +165,7 @@ func TestRetiredNotesFixtures(t *testing.T) {
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		t.Fatal(err)
 	}
-	writeJSON(t, filepath.Join(dir, "retired-notes-readback.json"), map[string]any{"schema": 1, "sourceRevision": "[retired implementation revision]", "subject": "native-library", "transport": "none", "observations": observations, "pythonExecuted": false, "officeExecuted": false})
+	writeJSON(t, filepath.Join(dir, "owned-notes-readback.json"), map[string]any{"schema": 1, "referenceDistribution": loadReferencePin(t).Commit, "subject": "native-library", "transport": "none", "observations": observations, "pythonExecuted": false, "officeExecuted": false})
 }
 
 func otherNotesShapes(t *testing.T, data []byte) [][]byte {

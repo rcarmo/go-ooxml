@@ -1,0 +1,56 @@
+{
+  "observations": [
+    {
+      "changedParts": [
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "before_sha256": "55818a66cd51636ba47615dda13d9c344647b8b8d9d29ffaaa244e71282d0701",
+          "after_sha256": "aa803b9278a869480367bc45d6b9ece0b9a69f4edc9b7bea6f095c2f58d08030"
+        }
+      ],
+      "emptyReadback": "",
+      "initialText": "Remember to emphasize the Gothic elements",
+      "inputSHA256": "04faba67841dda25dc3ff9e3e6e345e6feeeef1cf25a6b9065bf5fbdc83163dc",
+      "multilineReadback": "First line\nSecond line\n\nFourth line",
+      "name": "owned notes",
+      "noOpByteIdentical": true,
+      "otherPayloadsExact": true,
+      "otherPlaceholderCount": 2,
+      "otherPlaceholdersExact": true,
+      "outputSHA256": "28198e2a93c563c5c53a0c886ac7f651e6a254bb84de116d1102029211f4305d",
+      "path": "pptx/notes.pptx",
+      "sha256": "04faba67841dda25dc3ff9e3e6e345e6feeeef1cf25a6b9065bf5fbdc83163dc",
+      "sourceUnchanged": true,
+      "syntheticVariant": false
+    },
+    {
+      "changedParts": [
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "before_sha256": "131ae466da657df0c25ece0fd563965e5f96fc96e245e613d512be3d3d089187",
+          "after_sha256": "aa803b9278a869480367bc45d6b9ece0b9a69f4edc9b7bea6f095c2f58d08030"
+        }
+      ],
+      "emptyReadback": "",
+      "initialText": "Remember to emphasize the Gothic elements\n",
+      "inputSHA256": "432a041a93e64577ce30fb5a3f9390035ec6493800e448022285a356579dde82",
+      "multilineReadback": "First line\nSecond line\n\nFourth line",
+      "name": "native blank paragraph variant",
+      "noOpByteIdentical": true,
+      "otherPayloadsExact": true,
+      "otherPlaceholderCount": 2,
+      "otherPlaceholdersExact": true,
+      "outputSHA256": "6c4c4e482697a0ef82a2c982451609eef3e8a2eeb02905467088e3cd4c5b3efe",
+      "path": "pptx/notes.pptx",
+      "sha256": "04faba67841dda25dc3ff9e3e6e345e6feeeef1cf25a6b9065bf5fbdc83163dc",
+      "sourceUnchanged": true,
+      "syntheticVariant": true
+    }
+  ],
+  "officeExecuted": false,
+  "pythonExecuted": false,
+  "referenceDistribution": "1a96bff902a3bfabaf7b3c90ce6234cabbcd9373",
+  "schema": 1,
+  "subject": "native-library",
+  "transport": "none"
+}

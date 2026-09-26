@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "meaning": "Qualified native capabilities with implemented regression bindings; no external source-case equivalence.",
+  "links": [
+    {
+      "id": "native-capability-001",
+      "families": [
+        "D02"
+      ],
+      "go_api": "document.EditSession.FindText/FindOne",
+      "scenario_ids": [
+        "@SPAN-001"
+      ],
+      "state": "partial",
+      "limits": "Synthetic main-story current-view inputs; reference fixture not yet ported and all-story/search API parity incomplete."
+    },
+    {
+      "id": "native-capability-002",
+      "families": [
+        "D03"
+      ],
+      "go_api": "document.EditSession.Replace",
+      "scenario_ids": [
+        "@REPLACE-001"
+      ],
+      "state": "partial",
+      "limits": "Ordinary body spans only; wrappers and field/revision structures refuse more broadly than extended."
+    },
+    {
+      "id": "native-capability-003",
+      "families": [
+        "D03"
+      ],
+      "go_api": "document.EditSession.Replace",
+      "scenario_ids": [
+        "@REPLACE-002"
+      ],
+      "state": "partial",
+      "limits": "Synthetic TermTerm case and exhaustive small-alphabet interval tests; reference fixture/report fields not yet equivalent."
+    },
+    {
+      "id": "native-capability-004",
+      "families": [
+        "D02",
+        "D03"
+      ],
+      "go_api": "document.EditSession.Replace/ReplaceBatch",
+      "scenario_ids": [
+        "@WORD-001",
+        "@BATCH-003"
+      ],
+      "state": "partial",
+      "limits": "Go conservatively invalidates all generation-old targets; extended element-local freshness semantics differ."
+    },
+    {
+      "id": "native-capability-005",
+      "families": [
+        "D03"
+      ],
+      "go_api": "document.EditSession.ReplaceAll",
+      "scenario_ids": [
+        "@ALL-003"
+      ],
+      "state": "partial",
+      "limits": "Untracked only, synthetic illegal NUL; tracked=True case remains unlinked and pending."
+    },
+    {
+      "id": "native-capability-006",
+      "families": [
+        "D02"
+      ],
+      "go_api": "document.EditSession.Search",
+      "scenario_ids": [
+        "@SEARCH-001",
+        "@EDGE-001"
+      ],
+      "state": "partial",
+      "limits": "Pinned Unicode15 synthetic cases; complete normalization/fixture matrix pending."
+    },
+    {
+      "id": "native-capability-007",
+      "families": [
+        "D02"
+      ],
+      "go_api": "document.EditSession.Search",
+      "scenario_ids": [
+        "@SEARCH-002"
+      ],
+      "state": "partial",
+      "limits": "Synthetic sharp-s and unit variants; broader source cases/report parity pending."
+    },
+    {
+      "id": "native-capability-008",
+      "families": [
+        "X10",
+        "B04"
+      ],
+      "go_api": "spreadsheet.EditSession.FindImage/ReplaceImage",
+      "scenario_ids": [
+        "@IMAGE-001",
+        "@SURGERY-001"
+      ],
+      "state": "partial",
+      "limits": "Synthetic directly anchored PNG/JPEG pictures only; Go selects cNvPr ID, refuses chart/group drawings and treats identical bytes as a no-op. extended selects anchors/objects and always adds fresh media in this source case. Pinned reference fixture not executed."
+    },
+    {
+      "id": "native-capability-009",
+      "families": [
+        "X10",
+        "B04"
+      ],
+      "go_api": "packaging.Preserved.PlanGraphMutation/ApplyGraphPlan",
+      "scenario_ids": [
+        "@TARGETFORM-001",
+        "@IMAGE-001"
+      ],
+      "state": "partial",
+      "limits": "Synthetic graph relative/absolute target forms and escaped names; adapter uses this planner. Source anchor-based fixture and identical-byte replacement semantics not executed as equivalents."
+    },
+    {
+      "id": "native-capability-010",
+      "families": [
+        "X10"
+      ],
+      "go_api": "spreadsheet.EditSession.FindImage/ReplaceImage",
+      "scenario_ids": [
+        "@IMAGE-002"
+      ],
+      "state": "partial",
+      "limits": "Synthetic shared-rId/shared-drawing refusal preserves exact package bytes. Go reports ambiguous_target and does not expose extended's shared-image-relationship kind or legacy ledger/object handles."
+    },
+    {
+      "id": "native-capability-011",
+      "families": [
+        "P09"
+      ],
+      "go_api": "presentation.EditSession.FindNotes/ReplaceNotes",
+      "scenario_ids": [
+        "@NOTES-001",
+        "@NOTES-004"
+      ],
+      "state": "partial",
+      "limits": "Native synthetic/Go corpus plus two hash-pinned extended notes inputs cover ordinary multiline read/edit/clear, first-run/paragraph templates, exact part budgets and source preservation. Templates limited to known property choices; endParaRPr template policy differs/uncompared. Target handle API and missing-notes refusal differ. Python tests and live Office not executed; opt-in reference fixture checks separate from Gherkin."
+    },
+    {
+      "id": "native-capability-012",
+      "families": [
+        "P09"
+      ],
+      "go_api": "presentation.EditSession.FindNotes/ReplaceNotes",
+      "scenario_ids": [
+        "@NOTES-001"
+      ],
+      "state": "partial",
+      "limits": "Native synthetic/Go corpus plus two hash-pinned extended notes inputs cover ordinary multiline read/edit/clear, first-run/paragraph templates, exact part budgets and source preservation. Templates limited to known property choices; endParaRPr template policy differs/uncompared. Target handle API and missing-notes refusal differ. Python tests and live Office not executed; opt-in reference fixture checks separate from Gherkin."
+    },
+    {
+      "id": "native-capability-013",
+      "families": [
+        "P09"
+      ],
+      "go_api": "presentation.EditSession.FindNotes/ReplaceNotes",
+      "scenario_ids": [
+        "@NOTES-003"
+      ],
+      "state": "partial",
+      "limits": "Native synthetic/Go corpus plus two hash-pinned extended notes inputs cover ordinary multiline read/edit/clear, first-run/paragraph templates, exact part budgets and source preservation. Templates limited to known property choices; endParaRPr template policy differs/uncompared. Target handle API and missing-notes refusal differ. Python tests and live Office not executed; opt-in reference fixture checks separate from Gherkin."
+    },
+    {
+      "id": "native-capability-014",
+      "families": [
+        "P09"
+      ],
+      "go_api": "presentation.EditSession.FindNotes/ReplaceNotes",
+      "scenario_ids": [
+        "@NOTELINES-001",
+        "@NOTELINES-002",
+        "@NOTEPROP-001"
+      ],
+      "state": "partial",
+      "limits": "Native synthetic/Go corpus plus two hash-pinned extended notes inputs cover ordinary multiline read/edit/clear, first-run/paragraph templates, exact part budgets and source preservation. Templates limited to known property choices; endParaRPr template policy differs/uncompared. Target handle API and missing-notes refusal differ. Python tests and live Office not executed; opt-in reference fixture checks separate from Gherkin."
+    },
+    {
+      "id": "native-capability-015",
+      "families": [
+        "P09"
+      ],
+      "go_api": "presentation.EditSession.FindNotes/ReplaceNotes",
+      "scenario_ids": [
+        "@NOTELINES-002",
+        "@NOTES-005"
+      ],
+      "state": "partial",
+      "limits": "Native synthetic/Go corpus plus two hash-pinned extended notes inputs cover ordinary multiline read/edit/clear, first-run/paragraph templates, exact part budgets and source preservation. Templates limited to known property choices; endParaRPr template policy differs/uncompared. Target handle API and missing-notes refusal differ. Python tests and live Office not executed; opt-in reference fixture checks separate from Gherkin."
+    }
+  ]
+}
