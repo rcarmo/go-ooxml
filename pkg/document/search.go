@@ -119,6 +119,13 @@ func (s *EditSession) Search(text string, options SearchOptions) ([]*TextTarget,
 		if len(segments) == 0 {
 			continue
 		}
+		covered := 0
+		for _, seg := range segments {
+			covered += seg.end - seg.start
+		}
+		if covered != end-start {
+			cross = true
+		}
 		if first := segments[0]; first.start == first.end {
 			continue
 		}
@@ -214,8 +221,10 @@ func matchIntervals(value, needle []rune, mapping []int) [][2]int {
 		end := i + len(needle)
 		if (i == 0 || mapping[i-1] != mapping[i]) && (end == len(mapping) || mapping[end-1] != mapping[end]) {
 			intervals = append(intervals, [2]int{mapping[i], mapping[end-1] + 1})
+			i = end
+		} else {
+			i++
 		}
-		i = end
 	}
 	return intervals
 }

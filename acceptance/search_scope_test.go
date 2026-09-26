@@ -74,6 +74,7 @@ func searchScopeSteps(sc *godog.ScenarioContext) {
 		matches, err = s.Search("first\nsecond", document.SearchOptions{})
 		return err
 	})
+	sc.Step(`^I search for text ending at the paragraph separator$`, func() error { var err error; matches, err = s.Search("first\n", document.SearchOptions{}); return err })
 	sc.Step(`^one cross-paragraph match reports the exact combined text$`, func() error {
 		if len(matches) != 1 || matches[0].Text() != "first\nsecond" {
 			return fmt.Errorf("cross-paragraph match missing")

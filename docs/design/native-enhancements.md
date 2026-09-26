@@ -367,3 +367,9 @@ refusals are not full extended formatting/revision result parity. Batch025.
 Explicit Search scopes a related story and revision view, preserving literal paragraph
 newlines and raw text identity. Historical/cross-paragraph/related-story targets are
 inspection-only; main-body editors retain conservative ownership gates. Batch026.
+
+### Increment 027: search boundary regressions
+
+Invalid partial casefold candidates no longer hide later source-aligned matches.
+Any synthetic paragraph-separator coverage makes a target inspection-only, including
+a match that ends at the separator. Both defects have red/green batches. Batch027.
