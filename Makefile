@@ -53,6 +53,11 @@ acceptance: ## Run strict native Gherkin and report reconciliation
 
 test-batch: test acceptance ## Run library and acceptance modules
 
+.PHONY: shared-pack-check
+shared-pack-check: ## Verify shared V2 pack and native readbacks in a complete test batch
+	@test -n "$(OOXML_SHARED_PACK)" || (echo 'Set OOXML_SHARED_PACK to the pinned V2 directory'; exit 1)
+	cd acceptance && OOXML_SHARED_PACK="$(abspath $(OOXML_SHARED_PACK))" $(GO) test -p $(TEST_JOBS) ./...
+
 coverage: ## Run tests with coverage
 	$(GO) test -coverprofile=coverage.out ./...
 	$(GO) tool cover -func=coverage.out

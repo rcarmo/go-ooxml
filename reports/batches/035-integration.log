@@ -1,0 +1,26 @@
+go test -p 2 ./...
+ok  	github.com/rcarmo/go-ooxml/e2e	1.995s
+ok  	github.com/rcarmo/go-ooxml/internal/losslessxml	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/document	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/chart	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/common	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/diagram	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/dml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/pml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/sml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/theme	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/wml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/presentation	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/utils	(cached)
+?   	github.com/rcarmo/go-ooxml/tools/casefold	[no test files]
+ok  	github.com/rcarmo/go-ooxml/tools/retired-inventory	(cached)
+cd acceptance && go test -p 2 ./...
+ok  	github.com/rcarmo/go-ooxml/acceptance	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	2.119s
+ok  	github.com/rcarmo/go-ooxml/pkg/document	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/presentation	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	3.493s
+ok  	github.com/rcarmo/go-ooxml/acceptance	4.734s
