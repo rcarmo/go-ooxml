@@ -52,87 +52,45 @@ func caseKey(id string, values map[string]string) string {
 	return id + ":" + b.String()
 }
 
-type sharedFixture struct {
-	ID           string            `json:"id"`
-	Path         string            `json:"path"`
-	AssetID      string            `json:"assetId"`
-	SHA256       string            `json:"sha256"`
-	MemberSHA256 map[string]string `json:"memberSha256"`
-	Preserve     map[string]string `json:"mustPreservePayloads"`
-}
-
-// The shared code-free distribution is required for native fixture/contract
-// checks. Integrity verification does not count as workflow execution.
+// Both releases use the same native fixture/readback assertions. The current
+// candidate compiles Gherkin directly and is sealed by the root manifest.
 func TestSharedPackV2(t *testing.T) {
-	root := testutil.ReferencePath("shared", "v2", "pack")
-	sharedPackHash := loadReferencePin(t).Pack
-	b, err := pinnedFile(root, "pack-manifest.json", sharedPackHash)
+	pin := loadReferencePin(t)
+	contract, cases, err := loadMutationContract(pin)
 	if err != nil {
 		t.Fatal(err)
-	}
-	var pack struct {
-		Revision      string            `json:"contractRevision"`
-		Distribution  string            `json:"distributionRevision"`
-		ScenarioCount int               `json:"scenarioCount"`
-		CaseCount     int               `json:"expandedCaseCount"`
-		Files         map[string]string `json:"files"`
-	}
-	if err = json.Unmarshal(b, &pack); err != nil {
-		t.Fatal(err)
-	}
-	if pack.Revision != "ooxml-shared-contracts-v2" || pack.Distribution != "fixtures-ooxml-v0.2.0" || pack.ScenarioCount != 8 || pack.CaseCount != 19 {
-		t.Fatal("wrong shared revision/inventory")
-	}
-	for name, hash := range pack.Files {
-		if _, err = pinnedFile(root, name, hash); err != nil {
-			t.Fatal(err)
-		}
-	}
-	b, err = pinnedFile(root, "fixture-manifest.json", pack.Files["fixture-manifest.json"])
-	if err != nil {
-		t.Fatal(err)
-	}
-	var fixtures struct {
-		Schema   int             `json:"schemaVersion"`
-		PathBase string          `json:"pathBase"`
-		Fixtures []sharedFixture `json:"fixtures"`
-	}
-	if err = json.Unmarshal(b, &fixtures); err != nil {
-		t.Fatal(err)
-	}
-	if fixtures.Schema != 2 || fixtures.PathBase != "repository-root" || len(fixtures.Fixtures) != 4 {
-		t.Fatal("wrong fixture inventory")
 	}
 	fixtureHashes := map[string]string{}
 	readbacks := map[string]any{}
-	for _, f := range fixtures.Fixtures {
+	for _, f := range contract.Fixtures {
 		t.Run(f.ID, func(t *testing.T) {
 			path, err := testutil.LookupFixture(f.AssetID)
 			if err != nil {
 				t.Fatal(err)
 			}
-			if path != testutil.ReferencePath(f.Path) {
-				t.Fatal("shared path and fixture ID differ")
-			}
-			data, err := pinnedFile(testutil.ReferenceRoot(), f.Path, f.SHA256)
+			data, err := os.ReadFile(path)
 			if err != nil {
 				t.Fatal(err)
 			}
-			fixtureHashes[f.ID] = f.SHA256
+			fixtureHashes[f.ID] = sha256hex(data)
 			members, err := zipPayloads(data)
 			if err != nil {
 				t.Fatal(err)
 			}
-			if len(members) != len(f.MemberSHA256) {
+			if len(members) != len(f.Members) {
 				t.Fatal("member inventory differs")
 			}
-			for name, hash := range f.MemberSHA256 {
+			for name, hash := range f.Members {
 				if sha256hex(members[name]) != hash {
 					t.Fatalf("member hash %s", name)
 				}
 			}
-			for name, hash := range f.Preserve {
-				if f.MemberSHA256[name] != hash {
+			preserve, err := preservedMembers(f)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for name, hash := range preserve {
+				if f.Members[name] != hash {
 					t.Fatalf("preservation hash inconsistent %s", name)
 				}
 			}
@@ -164,6 +122,15 @@ func TestSharedPackV2(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			if err := verifySharedFacts(f, readback, members); err != nil {
+				t.Fatal(err)
+			}
+			// A contract edit cannot invent a measured fact even if its JSON is valid.
+			bad := f
+			bad.Facts = map[string]any{"unproved": true}
+			if err := verifySharedFacts(bad, readback, members); err == nil {
+				t.Fatal("unproved facts accepted")
+			}
 			readbacks[f.ID] = readback
 			if filepath.Ext(f.ID) == ".xlsx" {
 				s, err := spreadsheet.OpenEditing(data, packaging.Limits{})
@@ -176,44 +143,6 @@ func TestSharedPackV2(t *testing.T) {
 			}
 		})
 	}
-	b, err = pinnedFile(root, "expanded-contracts.json", pack.Files["expanded-contracts.json"])
-	if err != nil {
-		t.Fatal(err)
-	}
-	var compiled struct {
-		Cases []struct {
-			ID            string            `json:"stableCaseKey"`
-			ScenarioID    string            `json:"scenarioId"`
-			ExampleValues map[string]string `json:"examples"`
-			Lifecycle     string            `json:"lifecycle"`
-			Execution     string            `json:"execution"`
-			Steps         []struct {
-				Argument json.RawMessage `json:"argument"`
-			} `json:"expandedSteps"`
-		} `json:"inventory"`
-	}
-	if err = json.Unmarshal(b, &compiled); err != nil {
-		t.Fatal(err)
-	}
-	if len(compiled.Cases) != 19 {
-		t.Fatalf("compiled cases: %d", len(compiled.Cases))
-	}
-	seen := map[string]bool{}
-	for _, c := range compiled.Cases {
-		key := caseKey(c.ScenarioID, c.ExampleValues)
-		if c.ID != key || seen[key] {
-			t.Fatalf("unstable/duplicate case key %s", key)
-		}
-		seen[key] = true
-		if c.Lifecycle != "planned" || c.Execution != "not-run" {
-			t.Fatal("pack overclaims execution")
-		}
-		for _, step := range c.Steps {
-			if err := validateTypedTable(step.Argument); err != nil {
-				t.Fatal(err)
-			}
-		}
-	}
 	dir := os.Getenv("OOXML_REPORT_DIR")
 	if dir == "" {
 		dir = "../reports/acceptance"
@@ -221,7 +150,7 @@ func TestSharedPackV2(t *testing.T) {
 	if err = os.MkdirAll(dir, 0755); err != nil {
 		t.Fatal(err)
 	}
-	writeJSON(t, filepath.Join(dir, "shared-v2-verification.json"), map[string]any{"schema": 1, "contractRevision": pack.Revision, "distributionRevision": pack.Distribution, "packManifestSHA256": sharedPackHash, "fixtures": fixtureHashes, "verifiedFixtureCount": 4, "nativeReadbacks": readbacks, "inventoriedWorkflowCases": 19, "executedWorkflowCases": 0, "status": "fixture-and-contract-integrity-only", "subject": map[string]string{"kind": "native-library", "transport": "none"}})
+	writeJSON(t, filepath.Join(dir, "shared-v2-verification.json"), map[string]any{"schema": 1, "contractRevision": contract.Revision, "referenceCommit": pin.Commit, "rootManifestSHA256": pin.Manifest, "compiledCases": cases, "fixtures": fixtureHashes, "verifiedFixtureCount": 4, "nativeReadbacks": readbacks, "inventoriedWorkflowCases": 19, "executedWorkflowCases": 0, "status": "fixture-and-contract-integrity-only", "subject": map[string]string{"kind": "native-library", "transport": "none"}})
 }
 func validateTypedTable(argument json.RawMessage) error {
 	if len(argument) == 0 || string(argument) == "null" {

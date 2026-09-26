@@ -32,8 +32,12 @@ OOXML_REFERENCE_PIN=/path/to/candidate-pin.json \
 GOMAXPROCS=2 make test-batch
 ```
 
-The pin uses schema1 with `commit`, `tag`, `tag_object`, `manifest_sha256`,
-`shared_pack_sha256`, `assets`, `facts`, `workflows` and `workflow_cases`.
+The released v0.2 pin uses schema1 with `commit`, `tag`, `tag_object`,
+`manifest_sha256`, `shared_pack_sha256`, `assets`, `facts`, `workflows` and
+`workflow_cases`. The next-layout candidate uses pin schema2 with the same fields
+except `shared_pack_sha256`, which must be absent. Its root manifest seals the
+explicit `workflows/mutation-safety.feature` and `contracts/mutation-safety.json`.
+The default remains v0.2 until the coordinator announces the new release.
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
@@ -47,8 +51,9 @@ existing release tag to follow changing content.
 
 ## Integrity and output custody
 
-Root-module and acceptance checks require the exact reference HEAD, root and pack
-seals, clean index/worktree and tracked bytes/modes. Release tags must be annotated.
+Root-module and acceptance checks require the exact reference HEAD, the pinned
+root seal (plus the older pack seal for schema1), clean index/worktree and tracked
+bytes/modes. Release tags must be annotated.
 Changes to facts or workflows fail even when fixture manifest hashes still match;
 `assume-unchanged` does not hide altered tracked bytes. Verification is read-only.
 An absent Git checkout, mismatched pin or missing input is a failure, not a skip.
@@ -56,6 +61,20 @@ An absent Git checkout, mismatched pin or missing input is a failure, not a skip
 Write outputs under `t.TempDir()` or consumer-local `artifacts/generated`.
 Persistent output guards reject reference-root descendants, including symlink
 redirects. Never regenerate or rebaseline the shared inputs during a test run.
+
+## Mutation workflow contract
+
+The root-only candidate removes the old wrapper and generated expanded-case input.
+Go compiles the official Gherkin and derives stable scenario/Examples keys and typed
+step arguments locally. The compact contract points to canonical asset IDs and
+readback facts. Exact part membership is required; preserved hashes are the
+complement of `allowedChangedPartsForSuccess`. Native semantic assertions and the
+direct cache-invalidation outcome are unchanged. Contract inventory validation
+grants no workflow execution credit.
+
+Compatibility with released v0.2 is selected only by the pinned schema, never by
+checking which files happen to exist. Candidate results and temporary field-mapping
+failures are recorded separately in `../reports/batches/095.md`.
 
 ## Batched verification
 

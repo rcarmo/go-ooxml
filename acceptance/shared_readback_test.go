@@ -1,8 +1,11 @@
 package acceptance
 
 import (
+	"bytes"
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/rcarmo/go-ooxml/internal/losslessxml"
@@ -119,4 +122,91 @@ func sharedCell(data []byte, address string) (string, string, error) {
 		}
 	}
 	return value, formula, nil
+}
+
+// Contract readback facts are checked independently against the input payloads.
+// The bounded four-fixture family has no arbitrary path/query interpretation.
+func verifySharedFacts(f mutationFixture, readback map[string]any, members map[string][]byte) error {
+	count := func(part, space, local string) (int, error) {
+		d, err := losslessxml.Parse(members[part])
+		if err != nil {
+			return 0, err
+		}
+		n := 0
+		for _, e := range d.Elements() {
+			if e.Name() == (xml.Name{Space: space, Local: local}) {
+				n++
+			}
+		}
+		return n, nil
+	}
+	measured := map[string]any{}
+	switch f.ID {
+	case "title-and-subtitle.pptx":
+		n, err := count("ppt/presentation.xml", packaging.NSPresentationML, "sldId")
+		if err != nil {
+			return err
+		}
+		measured = map[string]any{"slideCount": n, "slide1": map[string]any{"title": readback["title"], "subtitle": readback["subtitle"]}}
+	case "present-placeholder.docx":
+		text, ok := readback["currentBodyText"].(string)
+		if !ok {
+			return fmt.Errorf("body readback absent")
+		}
+		absent, ok := f.Facts["absentText"].(string)
+		if !ok || absent == "" || strings.Contains(text, absent) {
+			return fmt.Errorf("absent text fact differs")
+		}
+		measured = map[string]any{"bodyText": text, "absentText": absent}
+	case "default-style.xlsx":
+		d, err := losslessxml.Parse(members["xl/styles.xml"])
+		if err != nil {
+			return err
+		}
+		n := 0
+		for _, e := range d.Elements() {
+			if e.Name() == (xml.Name{Space: packaging.NSSpreadsheetML, Local: "xf"}) {
+				if p, ok := e.Parent(); ok && p.Name() == (xml.Name{Space: packaging.NSSpreadsheetML, Local: "cellXfs"}) {
+					n++
+				}
+			}
+		}
+		absent, ok := f.Facts["absentSheet"].(string)
+		if !ok || absent == "" {
+			return fmt.Errorf("absent sheet fact missing")
+		}
+		wb, err := losslessxml.Parse(members["xl/workbook.xml"])
+		if err != nil {
+			return err
+		}
+		for _, e := range wb.Elements() {
+			if e.Name() == (xml.Name{Space: packaging.NSSpreadsheetML, Local: "sheet"}) {
+				for _, a := range e.Attributes() {
+					if a.Name == (xml.Name{Local: "name"}) && a.Value == absent {
+						return fmt.Errorf("absent sheet exists")
+					}
+				}
+			}
+		}
+		measured = map[string]any{"activeSheetCellA1": readback["A1"], "cellXfsCount": n, "absentSheet": absent}
+	case "cross-sheet-cache.xlsx":
+		input, err := strconv.ParseFloat(fmt.Sprint(readback["Input!A1"]), 64)
+		if err != nil {
+			return err
+		}
+		cached, err := strconv.ParseFloat(fmt.Sprint(readback["Calc!A1.cached"]), 64)
+		if err != nil {
+			return err
+		}
+		_, chain := members["xl/calcChain.xml"]
+		measured = map[string]any{"Input!A1": input, "Calc!A1": map[string]any{"formula": "=" + fmt.Sprint(readback["Calc!A1.formula"]), "cachedValue": cached}, "calcChainPresent": chain}
+	default:
+		return fmt.Errorf("unknown fact fixture %s", f.ID)
+	}
+	a, _ := json.Marshal(measured)
+	b, _ := json.Marshal(f.Facts)
+	if !bytes.Equal(a, b) {
+		return fmt.Errorf("fixture readback facts differ for %s: got %s want %s", f.ID, a, b)
+	}
+	return nil
 }

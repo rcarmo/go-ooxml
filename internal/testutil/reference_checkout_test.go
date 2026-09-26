@@ -68,7 +68,7 @@ func privateReference(t *testing.T) (string, ReferenceIdentity) {
 	checkoutGit(t, root, "tag", "-a", "v1.0.0", "-m", "Native reference release")
 	sum := sha256.Sum256([]byte("{}\n"))
 	seal := hex.EncodeToString(sum[:])
-	return root, ReferenceIdentity{Commit: checkoutGit(t, root, "rev-parse", "HEAD"), Tag: "v1.0.0", TagObject: checkoutGit(t, root, "rev-parse", "refs/tags/v1.0.0"), Manifest: seal, Pack: seal}
+	return root, ReferenceIdentity{Schema: 1, Commit: checkoutGit(t, root, "rev-parse", "HEAD"), Tag: "v1.0.0", TagObject: checkoutGit(t, root, "rev-parse", "refs/tags/v1.0.0"), Manifest: seal, Pack: seal}
 }
 
 func TestReferenceCheckoutIntegrityBatch(t *testing.T) {
@@ -84,6 +84,9 @@ func TestReferenceCheckoutIntegrityBatch(t *testing.T) {
 		candidate, refuse bool
 	}{
 		{"clean annotated release", nil, false, false},
+		{"root-only release", func(t *testing.T, r string, p *ReferenceIdentity) { p.Schema = 2; p.Pack = "" }, false, false},
+		{"root-only rejects obsolete pack pin", func(t *testing.T, r string, p *ReferenceIdentity) { p.Schema = 2 }, false, true},
+		{"unknown pin schema", func(t *testing.T, r string, p *ReferenceIdentity) { p.Schema = 3 }, false, true},
 		{"dirty constants outside asset manifest", func(t *testing.T, r string, p *ReferenceIdentity) { write(t, r, "facts/constants.json") }, false, true},
 		{"staged workflow outside asset manifest", func(t *testing.T, r string, p *ReferenceIdentity) {
 			write(t, r, "ledgers/workflows.json")

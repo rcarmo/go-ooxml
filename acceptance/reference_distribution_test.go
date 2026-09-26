@@ -42,14 +42,14 @@ func loadReferencePin(t *testing.T) referencePin {
 	if err = json.Unmarshal(b, &p); err != nil {
 		t.Fatal(err)
 	}
-	if p.Schema != 1 || len(p.Commit) != 40 || p.Assets <= 0 || p.Workflows <= 0 || p.Cases <= 0 {
+	if (p.Schema != 1 && p.Schema != 2) || len(p.Commit) != 40 || p.Assets <= 0 || p.Workflows <= 0 || p.Cases <= 0 {
 		t.Fatal("invalid reference pin")
 	}
 	candidate := os.Getenv("OOXML_REFERENCE_PIN") != "" && p.TagObject == "" && strings.HasPrefix(p.Tag, "candidate-")
 	if candidate && os.Getenv("OOXML_FIXTURES_ROOT") == "" {
 		t.Fatal("candidate reference pin requires explicit candidate root")
 	}
-	if err := testutil.VerifyReferenceCheckout(testutil.ReferenceRoot(), testutil.ReferenceIdentity{Commit: p.Commit, Tag: p.Tag, TagObject: p.TagObject, Manifest: p.Manifest, Pack: p.Pack}, candidate); err != nil {
+	if err := testutil.VerifyReferenceCheckout(testutil.ReferenceRoot(), testutil.ReferenceIdentity{Schema: p.Schema, Commit: p.Commit, Tag: p.Tag, TagObject: p.TagObject, Manifest: p.Manifest, Pack: p.Pack}, candidate); err != nil {
 		t.Fatal(err)
 	}
 	return p
@@ -120,7 +120,20 @@ func TestPinnedReferenceDistribution(t *testing.T) {
 			t.Fatal("reference asset hash/size mismatch", f.Path)
 		}
 	}
-	for _, area := range []string{"fixtures", "notices", "shared/v2/pack"} {
+	areas := []string{"fixtures", "notices"}
+	if pin.Schema == 1 {
+		areas = append(areas, "shared/v2/pack")
+	} else {
+		for _, path := range []string{"workflows/mutation-safety.feature", "contracts/mutation-safety.json"} {
+			if !seen[path] {
+				t.Fatal("unsealed contract artifact", path)
+			}
+		}
+		if _, err := os.Lstat(testutil.ReferencePath("shared")); !os.IsNotExist(err) {
+			t.Fatal("root-only distribution retains shared wrapper", err)
+		}
+	}
+	for _, area := range areas {
 		if err := filepath.WalkDir(testutil.ReferencePath(area), func(path string, d os.DirEntry, err error) error {
 			if err != nil {
 				return err
@@ -133,7 +146,7 @@ func TestPinnedReferenceDistribution(t *testing.T) {
 				return err
 			}
 			rel = filepath.ToSlash(rel)
-			if rel == "shared/v2/pack/pack-manifest.json" {
+			if pin.Schema == 1 && rel == "shared/v2/pack/pack-manifest.json" {
 				return nil
 			}
 			if !seen[rel] {
@@ -144,8 +157,10 @@ func TestPinnedReferenceDistribution(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if _, err := pinnedFile(testutil.ReferencePath("shared", "v2", "pack"), "pack-manifest.json", pin.Pack); err != nil {
-		t.Fatal(err)
+	if pin.Schema == 1 {
+		if _, err := pinnedFile(testutil.ReferencePath("shared", "v2", "pack"), "pack-manifest.json", pin.Pack); err != nil {
+			t.Fatal(err)
+		}
 	}
 	t.Logf("%d distribution assets independently verified", len(seen))
 }

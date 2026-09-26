@@ -1,0 +1,27 @@
+go test -p 2 ./...
+ok  	github.com/rcarmo/go-ooxml/e2e	0.970s
+ok  	github.com/rcarmo/go-ooxml/internal/formula	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/losslessxml	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	0.355s
+ok  	github.com/rcarmo/go-ooxml/pkg/document	1.017s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/chart	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/common	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/diagram	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/dml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/pml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/sml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/theme	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/wml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	0.363s
+ok  	github.com/rcarmo/go-ooxml/pkg/presentation	0.740s
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	0.253s
+ok  	github.com/rcarmo/go-ooxml/pkg/utils	(cached)
+?   	github.com/rcarmo/go-ooxml/tools/casefold	[no test files]
+ok  	github.com/rcarmo/go-ooxml/tools/nativeinventory	(cached)
+cd acceptance && go test -p 2 ./...
+--- FAIL: TestPinnedReferenceDistribution (0.03s)
+    reference_distribution_test.go:153: unmanifested reference asset workflows/native/docx-redline.feature
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/acceptance	1.939s
+FAIL
+make: *** [Makefile:52: acceptance] Error 1

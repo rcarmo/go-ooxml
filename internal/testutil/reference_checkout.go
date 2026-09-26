@@ -19,6 +19,7 @@ import (
 // ReferenceIdentity pins the shared distribution. Candidate checks are separate
 // from release validation and never grant annotated-release status.
 type ReferenceIdentity struct {
+	Schema    int    `json:"schema"`
 	Commit    string `json:"commit"`
 	Tag       string `json:"tag"`
 	TagObject string `json:"tag_object"`
@@ -29,7 +30,7 @@ type ReferenceIdentity struct {
 // VerifyReferenceCheckout checks the fixture distribution before native suites
 // use it. It never changes the checkout, tags, index, or Git configuration.
 func VerifyReferenceCheckout(root string, pin ReferenceIdentity, candidate bool) error {
-	if !referenceHex(pin.Commit, 40) || !referenceHex(pin.Manifest, 64) || !referenceHex(pin.Pack, 64) {
+	if !referenceHex(pin.Commit, 40) || !referenceHex(pin.Manifest, 64) || (pin.Schema == 1 && !referenceHex(pin.Pack, 64)) || (pin.Schema == 2 && pin.Pack != "") || (pin.Schema != 1 && pin.Schema != 2) {
 		return fmt.Errorf("invalid reference commit or seals")
 	}
 	if candidate {
@@ -98,7 +99,11 @@ func VerifyReferenceCheckout(root string, pin ReferenceIdentity, candidate bool)
 	if err = referenceTrackedBytes(root); err != nil {
 		return err
 	}
-	for _, f := range []struct{ path, hash string }{{"manifest.json", pin.Manifest}, {"shared/v2/pack/pack-manifest.json", pin.Pack}} {
+	seals := []struct{ path, hash string }{{"manifest.json", pin.Manifest}}
+	if pin.Schema == 1 {
+		seals = append(seals, struct{ path, hash string }{"shared/v2/pack/pack-manifest.json", pin.Pack})
+	}
+	for _, f := range seals {
 		b, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(f.path)))
 		if err != nil {
 			return err

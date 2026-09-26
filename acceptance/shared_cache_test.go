@@ -18,13 +18,25 @@ import (
 // from Godog inventory and not a schema2 cross-runtime outcome until that adapter
 // is implemented. Every observable assertion is checked against actual output.
 func TestSharedCacheInvalidation(t *testing.T) {
-	root := testutil.ReferencePath("shared", "v2", "pack")
-	sharedPackHash := loadReferencePin(t).Pack
-	if _, err := pinnedFile(root, "pack-manifest.json", sharedPackHash); err != nil {
+	pin := loadReferencePin(t)
+	contract, _, err := loadMutationContract(pin)
+	if err != nil {
 		t.Fatal(err)
 	}
+	var inputFixture mutationFixture
+	for _, f := range contract.Fixtures {
+		if f.ID == "cross-sheet-cache.xlsx" {
+			inputFixture = f
+		}
+	}
+	if inputFixture.AssetID == "" {
+		t.Fatal("shared cache fixture absent")
+	}
 	const inputHash = "8ba5708d5030adf93a4f7e4ae466563a1b66341067a200a6cb9b782484dcb5b1"
-	path, err := testutil.LookupFixture("fixture-" + inputHash)
+	if inputFixture.AssetID != "fixture-"+inputHash {
+		t.Fatal("cache fixture identity changed")
+	}
+	path, err := testutil.LookupFixture(inputFixture.AssetID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -113,8 +125,22 @@ func TestSharedCacheInvalidation(t *testing.T) {
 		t.Fatal("recalculation flags missing")
 	}
 	allowed := map[string]bool{"xl/worksheets/sheet1.xml": true, "xl/worksheets/sheet2.xml": true, "xl/workbook.xml": true}
-	if len(original) != len(members) {
+	if len(original) != len(members) || len(original) != len(inputFixture.Members) {
 		t.Fatal("part set changed")
+	}
+	for name, hash := range inputFixture.Members {
+		if sha256hex(original[name]) != hash {
+			t.Fatal("input member identity differs", name)
+		}
+	}
+	preserved, err := preservedMembers(inputFixture)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for name, hash := range preserved {
+		if sha256hex(members[name]) != hash {
+			t.Fatal("contract-preserved payload changed", name)
+		}
 	}
 	changed := []string{}
 	for name, before := range original {
@@ -174,7 +200,7 @@ func TestSharedCacheInvalidation(t *testing.T) {
 	if err = os.WriteFile(artifact, actual, 0600); err != nil {
 		t.Fatal(err)
 	}
-	writeJSON(t, filepath.Join(reportDir, "shared-cache-execution.json"), map[string]any{"schema": 1, "contractRevision": "ooxml-shared-contracts-v2", "scenarioId": "@id-xlsx-cross-sheet-cache-invalidation", "stableCaseKey": "@id-xlsx-cross-sheet-cache-invalidation:{}", "binding": "native Go direct contract test; shared Godog/schema2 adapter pending", "subject": map[string]string{"kind": "native-library", "transport": "none"}, "fixtureSHA256": inputHash, "packManifestSHA256": sharedPackHash, "committedChanges": committed, "sourceUnchanged": true, "input": input, "formula": formula, "cachedValue": cached, "calculationState": effect.State, "calculationPerformed": false, "invalidated": effect.Invalidated, "receipt": receipt, "allReferencesResolve": true, "unrelatedMembersIdentical": true, "outputSHA256": sha256hex(actual)})
+	writeJSON(t, filepath.Join(reportDir, "shared-cache-execution.json"), map[string]any{"schema": 1, "contractRevision": "ooxml-shared-contracts-v2", "scenarioId": "@id-xlsx-cross-sheet-cache-invalidation", "stableCaseKey": "@id-xlsx-cross-sheet-cache-invalidation:{}", "binding": "native Go direct contract test; shared Godog/schema2 adapter pending", "subject": map[string]string{"kind": "native-library", "transport": "none"}, "fixtureSHA256": inputHash, "referenceManifestSHA256": pin.Manifest, "referenceCommit": pin.Commit, "committedChanges": committed, "sourceUnchanged": true, "input": input, "formula": formula, "cachedValue": cached, "calculationState": effect.State, "calculationPerformed": false, "invalidated": effect.Invalidated, "receipt": receipt, "allReferencesResolve": true, "unrelatedMembersIdentical": true, "outputSHA256": sha256hex(actual)})
 	// Ensure persisted report remains ordinary strict JSON rather than NaN/null coercion.
 	b, err := os.ReadFile(filepath.Join(reportDir, "shared-cache-execution.json"))
 	if err != nil || !json.Valid(b) {

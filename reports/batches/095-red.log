@@ -1,0 +1,25 @@
+go test -p 2 ./...
+ok  	github.com/rcarmo/go-ooxml/e2e	0.973s
+ok  	github.com/rcarmo/go-ooxml/internal/formula	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/losslessxml	(cached)
+--- FAIL: TestPinnedReferenceCheckout (0.00s)
+    reference_checkout_test.go:39: invalid reference commit or seals
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/internal/testutil	0.389s
+ok  	github.com/rcarmo/go-ooxml/pkg/document	0.984s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/chart	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/common	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/diagram	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/dml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/pml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/sml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/theme	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/wml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	0.353s
+ok  	github.com/rcarmo/go-ooxml/pkg/presentation	0.673s
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	0.244s
+ok  	github.com/rcarmo/go-ooxml/pkg/utils	(cached)
+?   	github.com/rcarmo/go-ooxml/tools/casefold	[no test files]
+ok  	github.com/rcarmo/go-ooxml/tools/nativeinventory	(cached)
+FAIL
+make: *** [Makefile:48: test] Error 1
