@@ -1,0 +1,427 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "graph-candidates.feature",
+  "native_prefix": "pkg/packaging/",
+  "native_files": [
+    "pkg/packaging/graph_delete_lifecycle_test.go",
+    "pkg/packaging/graph_edit_properties_test.go",
+    "pkg/packaging/graph_edit_test.go",
+    "pkg/packaging/graph_test.go"
+  ],
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/packaging/graph_delete_lifecycle_test.go::TestGraphDeletionLifecycleBatch",
+      "source_sha256": "735b40e7df1fc466ce4388c95d52e7638798e35ea05724ae8a662615e30b6453",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-graph-007",
+        "@candidate-go-graph-008",
+        "@candidate-go-graph-009",
+        "@candidate-go-graph-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 22,
+          "name": "add replace delete cancels transient payload",
+          "dynamic": false
+        },
+        {
+          "line": 37,
+          "name": "failed mixed plan leaves prior edits and held plan",
+          "dynamic": false
+        },
+        {
+          "line": 60,
+          "name": "deletion stales existing plans and reserves names",
+          "dynamic": false
+        },
+        {
+          "line": 82,
+          "name": "retarget removal and deletion compose without leaking data",
+          "dynamic": false
+        },
+        {
+          "line": 118,
+          "name": "registry replacement and nonleaf deletion refuse",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 25,
+          "expression": "[]PartAddition",
+          "rows": 1,
+          "names": [
+            "temp.bin"
+          ]
+        },
+        {
+          "line": 27,
+          "expression": "[]Replacement",
+          "rows": 1,
+          "names": [
+            "temp.bin"
+          ]
+        },
+        {
+          "line": 29,
+          "expression": "[]PartDeletion",
+          "rows": 1,
+          "names": [
+            "temp.bin"
+          ]
+        },
+        {
+          "line": 40,
+          "expression": "[]Replacement",
+          "rows": 1,
+          "names": [
+            "opaque.bin"
+          ]
+        },
+        {
+          "line": 44,
+          "expression": "[]PartDeletion",
+          "rows": 1,
+          "names": [
+            "opaque.bin"
+          ]
+        },
+        {
+          "line": 49,
+          "expression": "[]PartDeletion",
+          "rows": 1,
+          "names": [
+            "opaque.bin"
+          ]
+        },
+        {
+          "line": 49,
+          "expression": "[]Replacement",
+          "rows": 1,
+          "names": [
+            "word/document.xml"
+          ]
+        },
+        {
+          "line": 67,
+          "expression": "[]PartDeletion",
+          "rows": 1,
+          "names": [
+            "opaque.bin"
+          ]
+        },
+        {
+          "line": 73,
+          "expression": "[]string",
+          "rows": 2
+        },
+        {
+          "line": 74,
+          "expression": "[]PartAddition",
+          "rows": 1,
+          "names": [
+            "application/octet-stream"
+          ]
+        },
+        {
+          "line": 78,
+          "expression": "[]Replacement",
+          "rows": 1,
+          "names": [
+            "opaque.bin"
+          ]
+        },
+        {
+          "line": 85,
+          "expression": "[]PartAddition",
+          "rows": 1,
+          "names": [
+            "word/media/new.bin"
+          ]
+        },
+        {
+          "line": 85,
+          "expression": "[]RelationshipRetarget",
+          "rows": 1,
+          "names": [
+            "word/document.xml"
+          ]
+        },
+        {
+          "line": 85,
+          "expression": "[]RelationshipRemoval",
+          "rows": 1,
+          "names": [
+            "word/document.xml"
+          ]
+        },
+        {
+          "line": 85,
+          "expression": "[]PartDeletion",
+          "rows": 1,
+          "names": [
+            "word/media/shared.bin"
+          ]
+        },
+        {
+          "line": 121,
+          "expression": "[]PartDeletion",
+          "rows": 1,
+          "names": [
+            "word/document.xml"
+          ]
+        },
+        {
+          "line": 121,
+          "expression": "[]RelationshipRemoval",
+          "rows": 3,
+          "names": [
+            "",
+            "word/document.xml",
+            "word/document.xml"
+          ]
+        },
+        {
+          "line": 126,
+          "expression": "[]RelationshipRetarget",
+          "rows": 1,
+          "names": [
+            "word/document.xml"
+          ]
+        },
+        {
+          "line": 126,
+          "expression": "[]Replacement",
+          "rows": 1
+        }
+      ],
+      "remaining": "Format-level imports/clones and broader graph policy are not established by these package primitives."
+    },
+    {
+      "native_id": "pkg/packaging/graph_edit_properties_test.go::TestRetargetURIAndChainedPlans",
+      "source_sha256": "e63c6307b3ba9ff78e3d09d27ed786f936dcdeb94e62d5ae95881f73bf06b64b",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-graph-001",
+        "@candidate-go-graph-005",
+        "@candidate-go-graph-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 20,
+          "name": "multiple additions and patches accumulate",
+          "dynamic": false
+        },
+        {
+          "line": 48,
+          "name": "existing target retarget-only and exact restore",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 9,
+          "expression": "[]string",
+          "rows": 4
+        },
+        {
+          "line": 10,
+          "expression": "[]string",
+          "rows": 4
+        },
+        {
+          "line": 11,
+          "expression": "[]string",
+          "rows": 3
+        },
+        {
+          "line": 22,
+          "expression": "[]string",
+          "rows": 2
+        },
+        {
+          "line": 23,
+          "expression": "[]PartAddition",
+          "rows": 1
+        },
+        {
+          "line": 23,
+          "expression": "[]RelationshipRetarget",
+          "rows": 1
+        },
+        {
+          "line": 39,
+          "expression": "[]string",
+          "rows": 3
+        },
+        {
+          "line": 51,
+          "expression": "[]RelationshipRetarget",
+          "rows": 1,
+          "names": [
+            "word/document.xml"
+          ]
+        },
+        {
+          "line": 61,
+          "expression": "[]RelationshipRetarget",
+          "rows": 1,
+          "names": [
+            "word/document.xml"
+          ]
+        }
+      ],
+      "remaining": "Format-level imports/clones and broader graph policy are not established by these package primitives."
+    },
+    {
+      "native_id": "pkg/packaging/graph_edit_test.go::TestGraphPlanContracts",
+      "source_sha256": "3fb4fda1664a6b2e11efc267faab2d8c1478c5438e0d3883cd993e060243ac02",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-graph-002",
+        "@candidate-go-graph-003",
+        "@candidate-go-graph-004",
+        "@candidate-go-graph-005",
+        "@candidate-go-graph-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 43,
+          "name": "private plan and payload snapshots",
+          "dynamic": false
+        },
+        {
+          "line": 80,
+          "name": "foreign consumed and ABA stale plans",
+          "dynamic": false
+        },
+        {
+          "line": 112,
+          "name": "no-op keeps exact source and plan",
+          "dynamic": false
+        },
+        {
+          "line": 128,
+          "name": "raw unchanged members",
+          "dynamic": false
+        },
+        {
+          "line": 162,
+          "name": "all additions preflighted and empty added data remains present",
+          "dynamic": false
+        },
+        {
+          "line": 185,
+          "name": "signature and URI-policy refusals",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 60,
+          "expression": "[]Replacement",
+          "rows": 1,
+          "names": [
+            "word/media/new.bin"
+          ]
+        },
+        {
+          "line": 91,
+          "expression": "[]Replacement",
+          "rows": 1,
+          "names": [
+            "opaque.bin"
+          ]
+        },
+        {
+          "line": 95,
+          "expression": "[]Replacement",
+          "rows": 1,
+          "names": [
+            "opaque.bin"
+          ]
+        },
+        {
+          "line": 115,
+          "expression": "[]RelationshipRetarget",
+          "rows": 1,
+          "names": [
+            "word/document.xml"
+          ]
+        },
+        {
+          "line": 173,
+          "expression": "[]PartAddition",
+          "rows": 1,
+          "names": [
+            "empty.bin"
+          ]
+        },
+        {
+          "line": 186,
+          "expression": "[]string",
+          "rows": 6
+        }
+      ],
+      "remaining": "Format-level imports/clones and broader graph policy are not established by these package primitives."
+    },
+    {
+      "native_id": "pkg/packaging/graph_test.go::TestGraphURIResolutionBatch",
+      "source_sha256": "a7e99fa69a76c222ee4c64e0bc0a4dae2570e6450feddc12fa5e5c9ec63f4526",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-graph-001"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 8,
+          "expression": "tc.target",
+          "dynamic": true
+        },
+        {
+          "line": 16,
+          "expression": "target",
+          "dynamic": true
+        },
+        {
+          "line": 23,
+          "expression": "name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 6,
+          "expression": "[]struct{ source, target, want string }",
+          "rows": 5,
+          "names": [
+            "word/document.xml",
+            "word/document.xml",
+            "word/document.xml",
+            "",
+            "word/document.xml"
+          ]
+        },
+        {
+          "line": 15,
+          "expression": "[]string",
+          "rows": 7
+        },
+        {
+          "line": 22,
+          "expression": "[]string",
+          "rows": 3
+        }
+      ],
+      "remaining": "Format-level imports/clones and broader graph policy are not established by these package primitives."
+    }
+  ]
+}
