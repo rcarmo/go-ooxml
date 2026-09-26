@@ -94,6 +94,7 @@ func TestAcceptance(t *testing.T) {
 	suite.ScenarioInitializer = func(sc *godog.ScenarioContext) {
 		safetySteps(sc)
 		limitSteps(sc)
+		preservedSteps(sc)
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil

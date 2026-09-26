@@ -222,3 +222,13 @@ ZIP64 central offsets are recognised; local ZIP64 sentinel sizes without data
 descriptors refuse until their extras can be verified. This is intentionally
 conservative and does not establish full ZIP64 parity. Independent overlap/ZIP64
 adversarial tests and URI-escape policy remain pending. See batch 005.
+
+### Increment 006: retained-source payload adapter
+
+The additive `packaging.Preserved` API owns cloned source bytes, exposes cloned
+payload/fingerprint reads and atomically applies guarded existing-part replacement
+batches. A no-op writes exact source archive bytes; edited output raw-copies
+untouched members. This low-level API checks XML syntax, not OOXML semantics.
+Registry/add/delete/import operations and signed edits refuse. Run-safe editing,
+reference/cache updates, graph validation and path delivery integration remain
+pending. Read `SPEC.md` and `reports/batches/006.md` for the implemented subset.

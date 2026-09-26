@@ -1706,3 +1706,15 @@ Before declaring the library complete, ALL items must pass:
 - [ ] README with quick start examples
 - [ ] Benchmarks establish baseline performance
 - [ ] Can be imported and used in MCP Server codebase
+
+## Retained-source package adapter (initial subset)
+
+The additive `packaging.Preserved` concrete type owns immutable source/member
+bytes independently of the legacy `Package` models. `OpenPreserved([]byte, Limits)`
+validates intake; `Part(name)` returns a cloned payload and SHA-256; `Replace` takes
+an atomic batch of existing-member `Replacement{Part, ExpectedSHA256, Data}` values;
+`WriteTo` copies exact source bytes on no-op and raw-copies untouched ZIP members
+on edits. XML replacements must have one well-formed root. Registry replacements,
+duplicate/stale/missing targets and signed-package edits refuse. This is a low-level
+payload API; format semantics, reference rewriting, graph edits and native Office
+validation are separate contracts. No existing exported interface is extended.

@@ -1,0 +1,5 @@
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	0.021s
+ok  	github.com/rcarmo/go-ooxml/pkg/document	0.771s
+ok  	github.com/rcarmo/go-ooxml/pkg/presentation	0.509s
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	0.149s
+ok  	github.com/rcarmo/go-ooxml/acceptance	0.025s
