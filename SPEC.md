@@ -8,6 +8,22 @@
 
 ---
 
+## extended enhancement work (2026-09-26)
+
+The historical completion table below covers the original implementation scope.
+extended enhancement parity is a separate, unfinished track defined in
+[the design and source mapping](docs/design/native-enhancements.md).
+
+Library runtime packages retain standard-library-only dependencies. Gherkin/Godog
+live in the separate acceptance module; make test-batch runs both modules with
+bounded concurrency. Features are tagged planned, implemented or external.
+Implemented native cases require strict execution and exact result reconciliation;
+planned cases remain visible in the inventory and do not count as passes.
+
+New safe-edit APIs will be additive adapters/concrete types. Existing exported
+interfaces must not gain methods without a versioned compatibility decision.
+No preservation, transaction or full extended-parity guarantee exists yet.
+
 ## Document Purpose
 
 This specification provides a detailed blueprint for implementing a Go library capable of reading, writing, and manipulating Office Open XML (OOXML) documents. The library must support Word (.docx), Excel (.xlsx), and PowerPoint (.pptx) formats with specific focus on the features required by the MCP Office Server.

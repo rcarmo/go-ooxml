@@ -1,0 +1,282 @@
+[
+  {
+    "case": {
+      "file": "../features/external/oracle.feature",
+      "id": "@ORACLE-001",
+      "line": 6
+    },
+    "lifecycle": "@external",
+    "name": "Recalculation delivers only eligible caches in the preserved package",
+    "runner": "@office"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 17
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 18
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 19
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/document.feature",
+      "id": "@DOCX-001",
+      "line": 6
+    },
+    "lifecycle": "@planned",
+    "name": "Replacement spans several runs with one formatting region",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/document.feature",
+      "id": "@DOCX-002",
+      "line": 17
+    },
+    "lifecycle": "@planned",
+    "name": "A historical target cannot authorise a current edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/document.feature",
+      "id": "@DOCX-003",
+      "line": 25
+    },
+    "lifecycle": "@planned",
+    "name": "A redline reproduces both documents through review resolution",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/document.feature",
+      "id": "@DOCX-004",
+      "line": 33
+    },
+    "lifecycle": "@planned",
+    "name": "Comments-only protection permits comments but refuses body edits",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/oracle-contract.feature",
+      "id": "@ORACLE-002",
+      "line": 6
+    },
+    "lifecycle": "@planned",
+    "name": "An unavailable configured oracle returns a typed refusal",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/package.feature",
+      "id": "@PKG-001",
+      "line": 16
+    },
+    "lifecycle": "@planned",
+    "name": "Untouched package members retain their payload bytes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/package.feature",
+      "id": "@PKG-001",
+      "line": 17
+    },
+    "lifecycle": "@planned",
+    "name": "Untouched package members retain their payload bytes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/package.feature",
+      "id": "@PKG-001",
+      "line": 18
+    },
+    "lifecycle": "@planned",
+    "name": "Untouched package members retain their payload bytes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/package.feature",
+      "id": "@PKG-002",
+      "line": 21
+    },
+    "lifecycle": "@planned",
+    "name": "Unknown content inside an edited XML part survives",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/package.feature",
+      "id": "@PKG-003",
+      "line": 28
+    },
+    "lifecycle": "@planned",
+    "name": "An unsafe archive is refused before editing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/package.feature",
+      "id": "@PKG-004",
+      "line": 36
+    },
+    "lifecycle": "@planned",
+    "name": "A failed delivery leaves an existing destination untouched",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/presentation.feature",
+      "id": "@PPTX-001",
+      "line": 6
+    },
+    "lifecycle": "@planned",
+    "name": "A cloned chart has an independent embedded workbook",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/presentation.feature",
+      "id": "@PPTX-002",
+      "line": 15
+    },
+    "lifecycle": "@planned",
+    "name": "Reordering cannot redirect an anchored text edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/presentation.feature",
+      "id": "@PPTX-003",
+      "line": 22
+    },
+    "lifecycle": "@planned",
+    "name": "An ambiguous destination layout refuses the whole import",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/presentation.feature",
+      "id": "@PPTX-004",
+      "line": 30
+    },
+    "lifecycle": "@planned",
+    "name": "Replacing a shared image changes only its selected occurrence",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/spreadsheet.feature",
+      "id": "@XLSX-001",
+      "line": 6
+    },
+    "lifecycle": "@planned",
+    "name": "Row insertion updates every supported dependent reference",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/spreadsheet.feature",
+      "id": "@XLSX-002",
+      "line": 15
+    },
+    "lifecycle": "@planned",
+    "name": "An unresolved dependent reference refuses a structural edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/spreadsheet.feature",
+      "id": "@XLSX-003",
+      "line": 24
+    },
+    "lifecycle": "@planned",
+    "name": "A purely cosmetic style change leaves formula caches intact",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/spreadsheet.feature",
+      "id": "@XLSX-004",
+      "line": 31
+    },
+    "lifecycle": "@planned",
+    "name": "Table append does not infer a calculated column from a neighbouring cell",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/spreadsheet.feature",
+      "id": "@XLSX-005",
+      "line": 39
+    },
+    "lifecycle": "@planned",
+    "name": "Pivot refresh permission reports the remaining stale cache",
+    "runner": "@go"
+  }
+]

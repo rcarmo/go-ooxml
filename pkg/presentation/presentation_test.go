@@ -76,7 +76,7 @@ func TestPresentation_CoreProperties(t *testing.T) {
 }
 
 func TestPresentation_MastersAndLayouts(t *testing.T) {
-	p, err := Open("/workspace/testdata/pptx/comments.pptx")
+	p, err := Open(filepath.Join("..", "..", "testdata", "pptx", "comments.pptx"))
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}

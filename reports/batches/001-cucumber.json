@@ -1,0 +1,474 @@
+[
+    {
+        "uri": "../features/implemented/package/baseline.feature",
+        "id": "existing-office-fixture-intake",
+        "keyword": "Feature",
+        "name": "Existing Office fixture intake",
+        "description": "  Repository fixtures can be inspected without a fixed workspace mount.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@package",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;2",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 13,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"word/minimal.docx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:106"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 52085
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:107"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 2889036
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"word/document.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 25111
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;3",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 14,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"pptx/minimal.pptx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:106"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 55570
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:107"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 823328
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"ppt/presentation.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16370
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;4",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 15,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"excel/minimal.xlsx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:106"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 24624
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:107"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 152680
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 10995
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;5",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 16,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"pptx/comments.pptx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:106"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 38576
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:107"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 706958
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"ppt/presentation.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 14716
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;6",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 17,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"excel/formatting.xlsx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:106"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 163742
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:107"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 203165
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 15584
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;7",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 18,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"excel/formulas.xlsx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:106"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 21226
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:107"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 172955
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 13319
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;8",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 19,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"excel/conditional_format.xlsx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:106"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 27671
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:107"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 140751
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:108"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 10948
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]
