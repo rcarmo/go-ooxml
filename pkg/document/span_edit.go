@@ -1,8 +1,11 @@
 package document
 
 import (
+	"bytes"
+	"encoding/xml"
 	"github.com/rcarmo/go-ooxml/internal/losslessxml"
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
+	"reflect"
 )
 
 // changedInterval considers all maximal non-overlapping prefix/suffix splits.
@@ -49,10 +52,19 @@ func (s *EditSession) planText(target *TextTarget, replacement string) ([]lossle
 		lo, hi := max(start, position), min(end, position+count)
 		insertion := start == end && start >= position && start <= position+count
 		if insertion {
-			// Pure insertion at an interior run boundary needs full run/owner equality.
-			// Until that proof is implemented, refuse rather than picking an arbitrary run.
-			if start == position && i > 0 || start == position+count && i < len(target.segments)-1 {
-				return nil, editRefusal("unsupported_structure", "insertion at run boundary needs formatting/owner proof")
+			if inserted {
+				position += count
+				continue
+			}
+			if start == position+count && i < len(target.segments)-1 {
+				if !sameRunFormat(target.doc, seg.element, target.segments[i+1].element) {
+					return nil, editRefusal("unsupported_structure", "run boundary formatting or ownership differs")
+				}
+				probe := *target
+				probe.element = target.segments[i+1].element
+				if err = s.guard(&probe, target.segments[i+1].text); err != nil {
+					return nil, err
+				}
 			}
 			lo = start
 			hi = start
@@ -82,4 +94,37 @@ func (s *EditSession) planText(target *TextTarget, replacement string) ([]lossle
 		return nil, editRefusal("unsupported_structure", "no concrete changed text owner")
 	}
 	return edits, nil
+}
+
+// sameRunFormat is conservative: raw property markup and expanded run/text
+// attributes must agree. Equivalent differently serialised properties may refuse.
+func sameRunFormat(d *losslessxml.Document, a, b losslessxml.Element) bool {
+	ra, oka := a.Parent()
+	rb, okb := b.Parent()
+	if !oka || !okb || ra.Name() != (xml.Name{Space: packaging.NSWordprocessingML, Local: "r"}) || rb.Name() != ra.Name() {
+		return false
+	}
+	pa, oka := ra.Parent()
+	pb, okb := rb.Parent()
+	if !oka || !okb || pa != pb {
+		return false
+	}
+	if !reflect.DeepEqual(ra.Attributes(), rb.Attributes()) || !reflect.DeepEqual(a.Attributes(), b.Attributes()) {
+		return false
+	}
+	property := func(run losslessxml.Element) ([]byte, bool) {
+		var raw []byte
+		count := 0
+		for _, e := range d.Elements() {
+			p, ok := e.Parent()
+			if ok && p == run && e.Name() == (xml.Name{Space: packaging.NSWordprocessingML, Local: "rPr"}) {
+				raw = e.Raw()
+				count++
+			}
+		}
+		return raw, count <= 1
+	}
+	x, okx := property(ra)
+	y, oky := property(rb)
+	return okx && oky && bytes.Equal(x, y)
 }

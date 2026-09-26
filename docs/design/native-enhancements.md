@@ -373,3 +373,10 @@ inspection-only; main-body editors retain conservative ownership gates. Batch026
 Invalid partial casefold candidates no longer hide later source-aligned matches.
 Any synthetic paragraph-separator coverage makes a target inspection-only, including
 a match that ends at the separator. Both defects have red/green batches. Batch027.
+
+### Increment 028: proved run-boundary insertion
+
+Boundary insertion succeeds only with equal direct properties/attributes and shared
+paragraph ownership, then uses the left run deterministically. Different/interrupting
+structures refuse atomically; serialization-equivalent formatting remains conservative.
+Batch028.

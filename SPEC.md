@@ -1831,3 +1831,9 @@ remain read-only, and related-story mutation is still unsupported. Source maps
 preserve paragraph ownership; ordinary edits still require current body targets.
 FindText/FindOne remain their documented main-story paragraph-local convenience
 subset until their complete cross-story contracts are unified.
+
+Pure insertion at an interior Word run boundary is now allowed when both sides
+prove the same paragraph owner, equal expanded run/text attributes and byte-equal
+complete rPr markup. Both structural guards must pass. The left run is selected
+deterministically only after equivalence proof. Semantically equal but differently
+serialized properties still conservatively refuse. Raw XML remains copied evidence.

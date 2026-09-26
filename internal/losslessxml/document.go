@@ -238,6 +238,17 @@ func (e Element) Parent() (Element, bool) {
 	}
 	return Element{e.doc, p}, true
 }
+
+// Raw returns a private copy of the complete original element markup.
+// It is evidence for conservative equality, never authority to splice elsewhere.
+func (e Element) Raw() []byte {
+	if !e.valid() {
+		return nil
+	}
+	n := e.doc.nodes[e.index]
+	return bytes.Clone(e.doc.source[n.start:n.end])
+}
+
 func (e Element) Text() (string, bool) {
 	if !e.valid() {
 		return "", false
