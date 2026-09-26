@@ -2,12 +2,12 @@
   "schema": 2,
   "repository": "https://github.com/rcarmo/fixtures-ooxml.git",
   "path": "references/fixtures-ooxml",
-  "tag": "v0.8.0",
-  "tag_object": "1e6395665b2292c98b5c7bed14816154dd006b90",
-  "commit": "b5729fc0c0fd59a98bfdfa5e4906143c3c6ce56a",
-  "manifest_sha256": "c9a3500c9a9ed7d85b7c26eb0d187ea75388ea35a1e4a4593c0eb5e8ab77330e",
-  "assets": 140,
+  "tag": "v0.9.0",
+  "tag_object": "ccd5113234c2a7d4fa30580f8fffb79adb9225f4",
+  "commit": "23a3fa7281be869f217bcc472629de6eecac8650",
+  "manifest_sha256": "36c5a86a8a43ec42cf3a854bd9eef462ac3f60a5e938240f15ebce80207f6e9b",
+  "assets": 141,
   "facts": 149,
-  "workflows": 101,
-  "workflow_cases": 184
+  "workflows": 103,
+  "workflow_cases": 203
 }
