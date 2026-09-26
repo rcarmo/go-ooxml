@@ -18,9 +18,10 @@ not exploratory-fuzz or performance results. Helpers and acceptance binding-only
 files remain visible, even when they declare no executable test entry point.
 
 The current inventory contains 155 native test files and 404 declarations.
-Reviewed family mappings cover 130 declarations in 115 candidate outcomes across
+Reviewed family mappings cover 133 declarations in 125 candidate outcomes across
 formula, XML, archive, mutable package-model, delivery, graph, test-custody,
-utility, OOXML-model and WML-model families; 274 declarations remain unreviewed. This denominator is the static
+utility, OOXML-model, WML-model and spreadsheet-cache families; 271 declarations
+remain unreviewed. This denominator is the static
 inventory snapshot, not the number of executed leaf cases. Checkout guard tests
 are now included. The executable native Gherkin result is separate at 291 cases.
 See [testing.md](../testing.md) for released/candidate reference setup and limits.
@@ -39,6 +40,10 @@ The final packaging declaration in this snapshot has two mutable-package fuzz
 seeds. Its save/reopen assertions do not compare payloads or MIME values, and a
 missing lookup returns silently. Reviewing all packaging declarations does not
 complete package-behaviour coverage.
+The spreadsheet-cache family captures three unit declarations and ten outcomes.
+Selected byte checks, effect counts, typed stale-target errors and helper-owned
+intake refusal assertions stay separate. Ignored serialization errors and unnamed
+array/nonfinite rows are explicit gaps; no calculation or allocation-bound claim.
 The [graph/ZIP64 handoff](graph-archive-handoff.md) compares selected assertions
 with the exact v0.4 released IDs, retaining operation, fixture, error-code and
 output-encoding gaps. It adds no reviewed declaration or execution credit.
