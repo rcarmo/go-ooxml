@@ -69,6 +69,9 @@ func openReader(r io.ReaderAt, size int64, limits Limits) (*Package, error) {
 	if err := validateBudgets(zr.File, limits); err != nil {
 		return nil, err
 	}
+	if err := validateZIPStructure(r, size, zr.File); err != nil {
+		return nil, err
+	}
 
 	// Validate names before inflating or inserting members into a map. Never
 	// silently let the last duplicate win.

@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"bytes"
 	"context"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"os"
@@ -128,6 +129,28 @@ func safetySteps(sc *godog.ScenarioContext) {
 		return ctx, nil
 	})
 	sc.Step(`^a synthetic archive with "([^"]+)" member names$`, s.archive)
+	sc.Step(`^a synthetic archive with a mismatched local "([^"]+)"$`, func(field string) error {
+		if err := s.small(); err != nil {
+			return err
+		}
+		var b bytes.Buffer
+		if err := s.pkg.WriteTo(&b); err != nil {
+			return err
+		}
+		s.source = bytes.Clone(b.Bytes())
+		switch field {
+		case "name":
+			s.source[30] ^= 1
+		case "method":
+			binary.LittleEndian.PutUint16(s.source[8:10], zip.Store)
+		case "flags":
+			s.source[6] ^= 1
+		default:
+			return fmt.Errorf("unknown field %s", field)
+		}
+		s.original = bytes.Clone(s.source)
+		return nil
+	})
 	sc.Step(`^I attempt to open the synthetic archive$`, s.attemptOpen)
 	sc.Step(`^archive intake fails without changing the source bytes$`, s.refused)
 	sc.Step(`^a small new Office package$`, s.small)

@@ -212,3 +212,13 @@ Payload allocation is bounded by the declared size plus one. Invalid arguments,
 resource-limit refusals and invalid-package refusals remain distinct. Central
 metadata parsing still requires a finite source budget to bound its input.
 Header/overlap validation is pending. See `reports/batches/003.md`.
+
+### Increment 005: physical ZIP validation
+
+Local and central member names, flags, compression, ordinary sizes and CRC must
+agree. Payload/descriptor ranges cannot overlap another entry or the central
+directory. Ordinary data descriptors are checked against directory metadata.
+ZIP64 central offsets are recognised; local ZIP64 sentinel sizes without data
+descriptors refuse until their extras can be verified. This is intentionally
+conservative and does not establish full ZIP64 parity. Independent overlap/ZIP64
+adversarial tests and URI-escape policy remain pending. See batch 005.
