@@ -13,7 +13,7 @@ import (
 // Validate reviewed staging candidates without executing or awarding canonical
 // coverage. The shared registry owns the reconciled behaviour specification.
 func TestBehaviourCatalogueCandidates(t *testing.T) {
-	for _, name := range []string{"formula", "xml", "archive", "package-model", "delivery", "graph", "test-custody", "utilities", "ooxml-model", "wml-model", "spreadsheet-cache", "spreadsheet-targets", "spreadsheet-fuzz", "presentation-notes", "presentation-fuzz", "presentation-fixtures"} {
+	for _, name := range []string{"formula", "xml", "archive", "package-model", "delivery", "graph", "test-custody", "utilities", "ooxml-model", "wml-model", "spreadsheet-cache", "spreadsheet-targets", "spreadsheet-fuzz", "presentation-notes", "presentation-fuzz", "presentation-fixtures", "presentation-parameters"} {
 		t.Run(name, func(t *testing.T) { validateCatalogueFamily(t, name) })
 	}
 }
