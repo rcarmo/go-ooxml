@@ -17,13 +17,14 @@ var notesPropertyAttrs = map[string]string{
 	"rPr":        "lang altLang sz b i u strike kern cap spc normalizeH baseline noProof dirty err smtClean",
 	"defRPr":     "lang altLang sz b i u strike kern cap spc normalizeH baseline noProof dirty err smtClean",
 	"endParaRPr": "lang altLang sz b i u strike kern cap spc normalizeH baseline noProof dirty err smtClean",
-	"lnSpc":      "", "spcBef": "", "spcAft": "", "spcPct": "val", "spcPts": "val", "solidFill": "", "noFill": "",
+	"effectLst":  "", "uFillTx": "",
+	"lnSpc": "", "spcBef": "", "spcAft": "", "spcPct": "val", "spcPts": "val", "solidFill": "", "noFill": "",
 	"srgbClr": "val", "schemeClr": "val", "latin": "typeface pitchFamily charset", "ea": "typeface pitchFamily charset", "cs": "typeface pitchFamily charset",
 	"buNone": "", "buChar": "char", "buAutoNum": "type startAt", "buFont": "typeface pitchFamily charset", "buSzPct": "val", "buSzPts": "val", "buClr": "", "buClrTx": "", "buSzTx": "", "buFontTx": "",
 }
 var notesPropertyChildren = map[string]string{
 	"pPr": "lnSpc spcBef spcAft buClrTx buClr buSzTx buSzPct buSzPts buFontTx buFont buNone buAutoNum buChar defRPr",
-	"rPr": "noFill solidFill latin ea cs", "defRPr": "noFill solidFill latin ea cs", "endParaRPr": "noFill solidFill latin ea cs",
+	"rPr": "noFill solidFill effectLst uFillTx latin ea cs", "defRPr": "noFill solidFill effectLst uFillTx latin ea cs", "endParaRPr": "noFill solidFill effectLst uFillTx latin ea cs",
 	"lnSpc": "spcPct spcPts", "spcBef": "spcPct spcPts", "spcAft": "spcPct spcPts", "solidFill": "srgbClr schemeClr", "buClr": "srgbClr schemeClr",
 }
 

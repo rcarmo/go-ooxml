@@ -1,0 +1,46 @@
+{
+  "observations": [
+    {
+      "changedParts": [
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "before_sha256": "c688d0a0a8f3469ecaa1655e2f43820e1e9718eacb09d567123fe05fedd52a79",
+          "after_sha256": "aa803b9278a869480367bc45d6b9ece0b9a69f4edc9b7bea6f095c2f58d08030"
+        }
+      ],
+      "emptyReadback": "",
+      "initialText": "Speaker notes for the clone fixture.",
+      "multilineReadback": "First line\nSecond line\n\nFourth line",
+      "noOpByteIdentical": true,
+      "otherPayloadsExact": true,
+      "outputSHA256": "9016f0c2b96dee3cc579d99aa016d0499c09b389322df5c007b8556762692f7a",
+      "path": "[retired external test identity]",
+      "sha256": "72f375efdbecdb8b95adf37c8fc753ec5416b4353b48bad8f6b89c0dedb74abf",
+      "sourceUnchanged": true
+    },
+    {
+      "changedParts": [
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "before_sha256": "05b4e7896805db3633a78fa16c9e0e98190c83391d07152d4c208f73c8b9aff0",
+          "after_sha256": "e89596339027befb3518b21864e5986838bdbcd2eca5924520551ada3c340df9"
+        }
+      ],
+      "emptyReadback": "",
+      "initialText": "Speaker notes for the clone fixture.",
+      "multilineReadback": "First line\nSecond line\n\nFourth line",
+      "noOpByteIdentical": true,
+      "otherPayloadsExact": true,
+      "outputSHA256": "f372c910371e2c39d1151aec312ca3a406974b6c95b92e8bdf630bfe541e9336",
+      "path": "[retired external test identity]",
+      "sha256": "a4ce1dae2558ced03ea5df2a415c32b57c9a10a0eedc8a1bfd60e588ee7cbf98",
+      "sourceUnchanged": true
+    }
+  ],
+  "officeExecuted": false,
+  "pythonExecuted": false,
+  "schema": 1,
+  "sourceRevision": "[retired implementation revision]",
+  "subject": "native-library",
+  "transport": "none"
+}

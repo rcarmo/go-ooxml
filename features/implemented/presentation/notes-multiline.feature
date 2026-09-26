@@ -16,6 +16,7 @@ Feature: Multiline notes preserve the first paragraph and run formatting templat
       | multiple runs and paragraphs |
       | empty existing paragraph |
       | prefixed template namespaces |
+      | empty effects and inherited underline fill |
 
   @NOTELINES-002
   Scenario: Clearing multiline notes creates one empty paragraph then permits refill
@@ -33,4 +34,5 @@ Feature: Multiline notes preserve the first paragraph and run formatting templat
       | condition |
       | hyperlink in later run |
       | unknown paragraph property |
+      | nonempty effect list |
       | invalid character after newline |

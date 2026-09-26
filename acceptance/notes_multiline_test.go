@@ -87,6 +87,10 @@ func notesMultilineSteps(sc *godog.ScenarioContext) {
 			paragraphs = strings.ReplaceAll(paragraphs, "a:srgbClr", "z:srgbClr")
 		case "hyperlink in later run":
 			paragraphs = strings.Replace(paragraphs, `<a:rPr i="1"/>`, `<a:rPr i="1"><a:hlinkClick xmlns:r="`+r+`" r:id="rId2"/></a:rPr>`, 1)
+		case "empty effects and inherited underline fill":
+			paragraphs = strings.Replace(paragraphs, `<a:latin typeface="Source Sans"/>`, `<a:effectLst/><a:uFillTx/><a:latin typeface="Source Sans"/>`, 1)
+		case "nonempty effect list":
+			paragraphs = strings.Replace(paragraphs, `<a:latin typeface="Source Sans"/>`, `<a:effectLst><a:blur rad="5"/></a:effectLst><a:latin typeface="Source Sans"/>`, 1)
 		case "unknown paragraph property":
 			paragraphs = strings.Replace(paragraphs, `<a:lnSpc>`, `<a:unproved/><a:lnSpc>`, 1)
 		default:

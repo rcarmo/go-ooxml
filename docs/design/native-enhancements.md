@@ -605,3 +605,10 @@ before package edits. Single-leaf nonempty corrections keep byte splices.234 cas
 Self-closing empty notes leaves use structural replacement. Leading/trailing spaces
 on ordinary leaf updates set xml:space=preserve atomically. Template-value and
 blank-line/no-op invariants pass;235 native cases in068. Review delegate timed out.
+
+### Increment069: frozen extended notes inputs
+
+Opt-in native checks read self-generated and LibreOffice-exported extended notes fixtures
+from the pinned read-only checkout. Both pass exact no-op, multiline/clear/reopen and
+one-part budgets. Empty effects/inherited underline fill are supported; nonempty
+effects refuse.237 native cases pass. No fixture redistribution or live Office run.
