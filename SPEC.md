@@ -1856,3 +1856,13 @@ caches/calculation metadata remain exact; numeric no-ops do not consume targets.
 Dynamic/UDF/shared/array/structured/unknown references, unlisted sheets, manual or
 iterative/precision-as-displayed modes, existing calcChain and previously blocked
 chart/pivot/protected structures refuse. This is not full X06/X07/extended parity.
+
+## Unresolved extended-comment content-type discrepancy
+
+Pinned Go emits `application/vnd.ms-word.commentsExtended+xml`; pinned extended/Python
+sources emit `application/vnd.openxmlformats-officedocument.wordprocessingml.commentsExtended+xml`.
+No authoring constant is changed on source agreement alone. Retained-source unrelated
+edits preserve either input registry spelling and related bytes. This is preservation
+characterisation, not schema/native Office/comment-thread certification. Decision
+record: `spec/source-discrepancies.json`; details and required checks:
+`docs/design/comments-extended-content-type.md`.

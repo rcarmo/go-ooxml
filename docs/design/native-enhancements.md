@@ -484,3 +484,12 @@ Static formula coordinates can be remapped for row/column insertion on one sheet
 with absolute flags, quoted sheet spelling and non-reference tokens preserved.
 Grid overflow or unproved syntax refuses without partial text. This is internal
 reference machinery, not worksheet structural mutation. Batch045.
+
+### Increment047: unresolved extended-comment MIME policy
+
+Pinned Go and extended/Python sources disagree on commentsExtended content type.
+`spec/source-discrepancies.json` records exact source pins/values and validation needs.
+Retained-source body edits preserve either registry spelling and related bytes;
+no emitted constant changed or schema/native Office certification inferred. Details:
+`docs/design/comments-extended-content-type.md`, batch047. Broader revision/cache
+consumer limitations remain explicit; sharedV2 contracts unchanged.

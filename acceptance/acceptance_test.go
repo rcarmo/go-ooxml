@@ -119,6 +119,7 @@ func TestAcceptance(t *testing.T) {
 		formulaSteps(sc)
 		cacheSteps(sc)
 		remapSteps(sc)
+		commentMIMESteps(sc)
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil
