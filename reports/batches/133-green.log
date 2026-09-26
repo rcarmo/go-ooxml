@@ -1,0 +1,4 @@
+$ env -u ENABLE_MEMPROFILE -u OOXML_FIXTURES_ROOT -u OOXML_REFERENCE_PIN GOMAXPROCS=2 go test -p 2 ./pkg/presentation
+ok  	github.com/rcarmo/go-ooxml/pkg/presentation	(cached)
+$ cd acceptance && env -u ENABLE_MEMPROFILE -u OOXML_FIXTURES_ROOT -u OOXML_REFERENCE_PIN GOMAXPROCS=2 go test -p 2 ./...
+ok  	github.com/rcarmo/go-ooxml/acceptance	1.671s
