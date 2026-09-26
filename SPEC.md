@@ -1809,3 +1809,10 @@ distance; stable ties and missing contexts retain order. Nth is one-based and
 mutually exclusive with Near. Original raw text remains target evidence. Search
 is still paragraph-local/current-main-story; cross-paragraph/all-story policy
 coverage remains pending. Unicode data licence is retained under tools/casefold.
+
+Word ordinary single/batch replacements now set `xml:space="preserve"` on changed
+text leaves when leading/trailing/repeated spaces require it. The attribute is
+inserted/updated via the lossless start-tag primitive, alongside the text in one
+transaction. Unknown xml:space policies still refuse; tabs/newlines still require
+structural Word elements. No-op does not rewrite whitespace attributes. This
+supersedes the initial missing-preserve refusal documented in the first subset.

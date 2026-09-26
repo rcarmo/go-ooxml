@@ -24,5 +24,4 @@ Feature: Bounded preservation-safe Word text correction
       | active document protection |
       | tracked revisions |
       | field boundary |
-      | significant whitespace without preserve |
       | unknown settings extension |

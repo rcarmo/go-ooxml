@@ -349,3 +349,9 @@ Still paragraph-local/current main story. Batch022.
 Internal XML Edit stages text plus non-namespace attribute updates against original
 offsets, preserving unrelated start-tag bytes and existing quote style. New namespaced
 attributes require existing bindings; namespace mutation refuses. Batch023.
+
+### Increment 024: Word whitespace attributes
+
+Ordinary and selected-batch text changes atomically insert/update xml:space preserve
+when required; opaque attribute bytes and no-op markup remain untouched. This
+supersedes the initial conservative missing-preserve refusal. Batch024.

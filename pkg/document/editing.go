@@ -3,7 +3,6 @@ package document
 import (
 	"encoding/xml"
 	"strings"
-	"unicode"
 
 	"github.com/rcarmo/go-ooxml/internal/losslessxml"
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
@@ -203,10 +202,6 @@ func (s *EditSession) guard(target *TextTarget, replacement string) error {
 	if strings.ContainsAny(replacement, "\t\r\n") {
 		return editRefusal("unsupported_structure", "tabs and line breaks require Word elements")
 	}
-	significant := strings.TrimFunc(replacement, unicode.IsSpace) != replacement || strings.Contains(replacement, "  ")
-	if significant && space != "preserve" {
-		return editRefusal("unsupported_structure", "significant whitespace requires existing xml:space preserve")
-	}
 	return nil
 }
 
@@ -228,7 +223,7 @@ func (s *EditSession) Replace(target *TextTarget, text string) error {
 	if err != nil {
 		return err
 	}
-	data, err := target.doc.ReplaceText(edits)
+	data, err := target.doc.Edit(edits, whitespaceAttributes(edits))
 	if err != nil {
 		return editRefusal("unsupported_structure", err.Error())
 	}

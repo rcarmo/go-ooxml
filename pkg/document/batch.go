@@ -120,7 +120,7 @@ func (s *EditSession) ReplaceBatch(changes []TextReplacement) error {
 		}
 		edits = append(edits, losslessxml.TextEdit{Target: elements[index], Text: string(result)})
 	}
-	data, err := d.ReplaceText(edits)
+	data, err := d.Edit(edits, whitespaceAttributes(edits))
 	if err != nil {
 		return editRefusal("unsupported_structure", err.Error())
 	}
