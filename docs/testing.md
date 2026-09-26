@@ -101,8 +101,8 @@ Historical reports retain the commands and outcomes from their original runs.
 The central registry owns canonical behaviour IDs and expected outcomes. Local
 `docs/behaviors` files stage native findings for reconciliation; they do not form
 a second canonical suite. The current inventory has 404 native declarations,
-including the checkout guards: 129 have reviewed family/parameter mappings in
-114 candidates, and 275 remain unreviewed. This is the frozen inventory snapshot;
+including the checkout guards: 130 have reviewed family/parameter mappings in
+115 candidates, and 274 remain unreviewed. This is the frozen inventory snapshot;
 later test declarations remain outside its denominator until a deliberate refresh. Importing Gherkin never earns execution
 credit, and sibling results do not become Go passes.
 

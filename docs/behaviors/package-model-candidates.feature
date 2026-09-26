@@ -78,3 +78,11 @@ Feature: Mutable OPC package parts and registries
     And adding an explicit existing ID updates its type and target without duplication
     And type selection returns all matching edges or the first match, with no match returning nil
     And removing an existing ID returns true once and false after removal
+
+  @candidate-go-package-model-011
+  Scenario: Bounded mutable-package fuzz seeds save and reopen without payload comparison
+    Given a nonempty name at most 64 bytes and a nonempty content type at most 128 bytes and payload at most 4096 bytes
+    When AddPart succeeds on a new mutable Package
+    Then saving to a temporary archive and reopening must succeed
+    And if GetPart for the original name succeeds its Content call must not error
+    And AddPart or reopened lookup errors return without a failure assertion and no content bytes or MIME equality are compared

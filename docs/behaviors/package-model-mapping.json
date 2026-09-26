@@ -6,7 +6,8 @@
   "native_files": [
     "pkg/packaging/content_types_test.go",
     "pkg/packaging/package_test.go",
-    "pkg/packaging/relationship_test.go"
+    "pkg/packaging/relationship_test.go",
+    "pkg/packaging/fuzz_test.go"
   ],
   "canonical_ids_assigned": false,
   "execution_credit": false,
@@ -391,6 +392,19 @@
       "subtests": [],
       "parameter_groups": [],
       "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/fuzz_test.go::FuzzPackageAddPartRoundTrip",
+      "source_sha256": "c4d045cdab33dfa20330589db3ed3b51f9d7fafcc52229f8bbfdf3fbc692f34a",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-package-model-011"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "source_revision": "ba3bdadab42116142a4d3d1756a2d6e9c1fdfe5a",
+      "notes": "Two literal seed tuples custom.xml/applicationxml/root and data.bin/octetstream/payload. Name1..64bytes,type1..128bytes,payload<=4096bytes. AddPart error and GetPart error return without assertion; SaveAs/Open failure fatal; Content only checked for error, not byte/MIME equality. New mutable Package, not Preserved. No exploratory fuzz or unknown-member preservation credit."
     }
   ]
 }
