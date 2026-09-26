@@ -24,6 +24,9 @@ families; 313 declarations remain unreviewed. This denominator is the static
 inventory snapshot, not the number of executed leaf cases. Checkout guard tests
 are now included. The executable native Gherkin result is separate at 291 cases.
 See [testing.md](../testing.md) for released/candidate reference setup and limits.
+The [graph/ZIP64 handoff](graph-archive-handoff.md) compares selected assertions
+with the exact v0.4 released IDs, retaining operation, fixture, error-code and
+output-encoding gaps. It adds no reviewed declaration or execution credit.
 
 Next review each remaining outcome group into Given/When/Then preconditions, native operation
 and independently observable results. Include malformed/refusal/rollback and
