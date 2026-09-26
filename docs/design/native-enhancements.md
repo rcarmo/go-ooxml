@@ -567,3 +567,10 @@ private plans preserve prior edits and valid held plans; deleted originals remai
 reserved. Nonstandard calc-chain deletion, repeated edits and signed refusal pass.
 Bounded judge findings were checked against public boundaries and rejected with tests.
 Batch060 passes202 native cases; full/race checkpoint follows.
+
+### Increment062: existing notes body editing
+
+FindNotes/ReplaceNotes inspect and edit a uniquely owned existing single-run notes
+body without creating missing parts. Other placeholders/registries remain exact;
+fields/locks/ambiguous owners/multiline content refuse. Batch062 passes211 native
+cases. P09 multiline and broad fixture parity are unfinished.

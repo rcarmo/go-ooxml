@@ -1922,3 +1922,13 @@ GraphPlan as input/cache/calcPr changes. The effect reports its removed part nam
 Unrelated and same-value edits preserve the chain exactly. The legacy rebuild
 writer still has its historical synthetic-chain behaviour; this safe API does not
 route through it or infer dependencies from chain ordering.
+
+`presentation.EditSession.FindNotes(slidePart)` returns a session-bound NotesTarget
+for one existing, uniquely owned notes body placeholder with a single ordinary
+paragraph/run/text leaf. `NotesTarget.Text()` is read-only evidence.
+`ReplaceNotes(target, text)` patches that leaf only, retaining all other notes
+placeholders and all package registries byte-for-byte. Neither API creates absent
+notes. Fields, shared/ambiguous owners, locks/protection, unknown namespaces and
+multiline/multi-run structures refuse; malformed replacement text refuses atomically.
+No-op targets remain reusable; changes stale all session handles. P09 multiline
+and broader source fixture/readback coverage are not provided by this bounded API.

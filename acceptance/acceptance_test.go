@@ -104,6 +104,7 @@ func TestAcceptance(t *testing.T) {
 		graphTargetFormSteps(sc)
 		wordSteps(sc)
 		slideSteps(sc)
+		notesEditSteps(sc)
 		cellSteps(sc)
 		storySteps(sc)
 		spanSteps(sc)
