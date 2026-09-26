@@ -361,3 +361,9 @@ supersedes the initial conservative missing-preserve refusal. Batch024.
 ReplaceAll records independent expected refusals, skips no-ops and commits supported
 private matches together. Unexpected/stale/batch conflicts abort. Schema1 counts and
 refusals are not full extended formatting/revision result parity. Batch025.
+
+### Increment 026: scoped story/view search
+
+Explicit Search scopes a related story and revision view, preserving literal paragraph
+newlines and raw text identity. Historical/cross-paragraph/related-story targets are
+inspection-only; main-body editors retain conservative ownership gates. Batch026.

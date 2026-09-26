@@ -20,16 +20,19 @@ type EditSession struct {
 
 // TextTarget authorises a single snapshot-bound leaf edit; fields are private.
 type TextTarget struct {
-	session    *EditSession
-	generation uint64
-	doc        *losslessxml.Document
-	element    losslessxml.Element
-	hash       string
-	text       string
-	consumed   bool
-	segments   []textSegment
-	paragraph  losslessxml.Element
-	start, end int
+	session        *EditSession
+	generation     uint64
+	doc            *losslessxml.Document
+	element        losslessxml.Element
+	hash           string
+	text           string
+	consumed       bool
+	segments       []textSegment
+	paragraph      losslessxml.Element
+	start, end     int
+	story          string
+	view           View
+	crossParagraph bool
 }
 
 func editRefusal(kind, detail string) error {

@@ -1823,3 +1823,11 @@ supported changes together via ReplaceBatch. Unexpected/stale/batch conflicts ab
 without commit. Schema1 reports matched/changed/skipped counts and refusal evidence;
 it does not yet reproduce extended schema3 formatting/revision result fields. No
 private targets escape. Tracked/revision-preserving options remain pending.
+
+Word Search now accepts an exact related story part and current/original/all view.
+It joins visible paragraph streams with one literal newline for inspection; a
+separator-only match has no target. Cross-paragraph and historical-view matches
+remain read-only, and related-story mutation is still unsupported. Source maps
+preserve paragraph ownership; ordinary edits still require current body targets.
+FindText/FindOne remain their documented main-story paragraph-local convenience
+subset until their complete cross-story contracts are unified.

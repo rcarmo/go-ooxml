@@ -26,6 +26,15 @@ func changedInterval(old, new []rune) (start, end, newEnd int, err error) {
 }
 
 func (s *EditSession) planText(target *TextTarget, replacement string) ([]losslessxml.TextEdit, error) {
+	if target.view != "" && target.view != CurrentView {
+		return nil, editRefusal("unsupported_structure", "historical search targets are inspection-only")
+	}
+	if target.crossParagraph {
+		return nil, editRefusal("boundary_violation", "span crosses paragraph ownership")
+	}
+	if target.story != "" && target.story != s.part {
+		return nil, editRefusal("unsupported_structure", "related-story editing is not implemented")
+	}
 	old, next := []rune(target.text), []rune(replacement)
 	start, end, newEnd, err := changedInterval(old, next)
 	if err != nil {

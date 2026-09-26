@@ -16,6 +16,8 @@ type SearchOptions struct {
 	Normalized bool
 	Near       string
 	Nth        int
+	Story      string
+	View       View
 }
 
 func (s *EditSession) Search(text string, options SearchOptions) ([]*TextTarget, error) {
@@ -25,7 +27,33 @@ func (s *EditSession) Search(text string, options SearchOptions) ([]*TextTarget,
 	if !utf8.ValidString(text) || !utf8.ValidString(options.Near) {
 		return nil, fmt.Errorf("search strings must be UTF-8")
 	}
-	data, hash, err := s.pkg.Part(s.part)
+	view := options.View
+	if view == "" {
+		view = CurrentView
+	}
+	if view != CurrentView && view != OriginalView && view != AllView {
+		return nil, fmt.Errorf("invalid search view %q", view)
+	}
+	story := options.Story
+	if story == "" {
+		story = s.part
+	}
+	if story != s.part {
+		parts, err := s.storyParts()
+		if err != nil {
+			return nil, err
+		}
+		found := false
+		for _, part := range parts {
+			if part == story {
+				found = true
+			}
+		}
+		if !found {
+			return nil, editRefusal("missing_target", "requested story is not related to document")
+		}
+	}
+	data, hash, err := s.pkg.Part(story)
 	if err != nil {
 		return nil, err
 	}
@@ -43,31 +71,64 @@ func (s *EditSession) Search(text string, options SearchOptions) ([]*TextTarget,
 	}
 	var candidates []ranked
 	var contexts []int
-	offset := 0
 	contextNeedle, _ := matchSpace([]rune(options.Near), options.Normalized)
-	for _, p := range paragraphStreams(d) {
-		value, mapping := matchSpace(p.text, options.Normalized)
-		for _, interval := range matchIntervals(value, needle, mapping) {
-			start, end := interval[0], interval[1]
-			segments := []textSegment{}
-			for _, a := range p.atoms {
-				if a.end <= start || a.start >= end {
-					continue
-				}
-				segments = append(segments, textSegment{a.element, a.text, max(start, a.start) - a.start, min(end, a.end) - a.start})
-			}
-			if len(segments) == 0 {
+	paragraphs := paragraphStreamsView(d, view)
+	raw := []rune{}
+	atoms := []textAtom{}
+	owners := []losslessxml.Element{}
+	for _, p := range paragraphs {
+		if len(p.atoms) == 0 {
+			continue
+		}
+		if len(raw) > 0 {
+			raw = append(raw, '\n')
+		}
+		offset := len(raw)
+		raw = append(raw, p.text...)
+		for _, a := range p.atoms {
+			a.start += offset
+			a.end += offset
+			atoms = append(atoms, a)
+			owners = append(owners, p.paragraph)
+		}
+	}
+	value, mapping := matchSpace(raw, options.Normalized)
+	for _, interval := range matchIntervals(value, needle, mapping) {
+		start, end := interval[0], interval[1]
+		segments := []textSegment{}
+		var owner losslessxml.Element
+		cross := false
+		ownerOffset := 0
+		for i, a := range atoms {
+			if a.end <= start || a.start >= end {
 				continue
 			}
-			target := &TextTarget{session: s, generation: s.generation, doc: d, element: segments[0].element, hash: hash, text: string(p.text[start:end]), segments: segments, paragraph: p.paragraph, start: start, end: end}
-			candidates = append(candidates, ranked{target, offset + start})
-		}
-		if len(contextNeedle) > 0 {
-			for _, interval := range matchIntervals(value, contextNeedle, mapping) {
-				contexts = append(contexts, offset+interval[0])
+			if len(segments) == 0 {
+				owner = owners[i]
+				for j := 0; j <= i; j++ {
+					if owners[j] == owner {
+						ownerOffset = atoms[j].start
+						break
+					}
+				}
+			} else if owners[i] != owner {
+				cross = true
 			}
+			segments = append(segments, textSegment{a.element, a.text, max(start, a.start) - a.start, min(end, a.end) - a.start})
 		}
-		offset += len(p.text) + 1
+		if len(segments) == 0 {
+			continue
+		}
+		if first := segments[0]; first.start == first.end {
+			continue
+		}
+		target := &TextTarget{session: s, generation: s.generation, doc: d, element: segments[0].element, hash: hash, text: string(raw[start:end]), segments: segments, paragraph: owner, start: start - ownerOffset, end: end - ownerOffset, story: story, view: view, crossParagraph: cross}
+		candidates = append(candidates, ranked{target, start})
+	}
+	if len(contextNeedle) > 0 {
+		for _, interval := range matchIntervals(value, contextNeedle, mapping) {
+			contexts = append(contexts, interval[0])
+		}
 	}
 	if options.Near != "" && len(contexts) > 0 {
 		distance := func(position int) int {

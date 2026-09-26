@@ -9,6 +9,14 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
 )
 
+// Story is the exact package part containing the selected text.
+func (t *TextTarget) Story() string {
+	if t == nil {
+		return ""
+	}
+	return t.story
+}
+
 type textSegment struct {
 	element    losslessxml.Element
 	text       string
@@ -56,16 +64,19 @@ func (t *TextTarget) Text() string {
 }
 
 func paragraphStreams(d *losslessxml.Document) []paragraphText {
+	return paragraphStreamsView(d, CurrentView)
+}
+func paragraphStreamsView(d *losslessxml.Document, view View) []paragraphText {
 	streams := []paragraphText{}
 	indices := map[losslessxml.Element]int{}
 	for _, e := range d.Elements() {
-		if e.Name() == (xml.Name{Space: packaging.NSWordprocessingML, Local: "p"}) && visible(e, CurrentView) {
+		if e.Name() == (xml.Name{Space: packaging.NSWordprocessingML, Local: "p"}) && visible(e, view) {
 			indices[e] = len(streams)
 			streams = append(streams, paragraphText{paragraph: e})
 		}
 	}
 	for _, e := range d.Elements() {
-		if !visible(e, CurrentView) {
+		if !visible(e, view) {
 			continue
 		}
 		if _, ok := ancestor(e, "http://schemas.openxmlformats.org/markup-compatibility/2006", "AlternateContent"); ok {
@@ -77,7 +88,10 @@ func paragraphStreams(d *losslessxml.Document) []paragraphText {
 		}
 		text := ""
 		switch n.Local {
-		case "t":
+		case "t", "delText":
+			if n.Local == "delText" && view == CurrentView {
+				continue
+			}
 			got, leaf := e.Text()
 			if !leaf {
 				continue
@@ -135,7 +149,7 @@ func (s *EditSession) findExact(d *losslessxml.Document, hash, text string) []*T
 				segments = append(segments, textSegment{a.element, a.text, lo, hi})
 			}
 			if len(segments) > 0 {
-				out = append(out, &TextTarget{session: s, generation: s.generation, doc: d, element: segments[0].element, hash: hash, text: text, segments: segments, paragraph: p.paragraph, start: start, end: end})
+				out = append(out, &TextTarget{session: s, generation: s.generation, doc: d, element: segments[0].element, hash: hash, text: text, story: s.part, view: CurrentView, segments: segments, paragraph: p.paragraph, start: start, end: end})
 			}
 			byteOffset = at + len(text)
 		}
