@@ -618,3 +618,10 @@ effects refuse.237 native cases pass. No fixture redistribution or live Office r
 Notes property cloning now rejects conflicting/out-of-order schema slots, empty
 colour/spacing choices and absent required values.245 native cases plus the two
 pinned extended notes inputs pass; full attribute-value/schema validation is unverified.
+
+### Increment072: validation vocabulary inspection
+
+AllowedValues reads literal lists and finite static1D ranges without mutation,
+returning tagged stored values and explicit blank positions. Ambiguous/dynamic/
+formula/error/merged sources refuse.264 native cases pass; whole-row/column and
+shared-string support follow separately. No calculation or display formatting.

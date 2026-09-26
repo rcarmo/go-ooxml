@@ -1933,3 +1933,14 @@ created. Fields, shared/ambiguous owners, text locks/protection, unproved format
 and malformed text refuse atomically; grouping-only noGrp locks are allowed.
 Tabs/CR are unsupported. No-op targets remain reusable; changes stale session
 handles. Broader source/format/rendering coverage is unfinished.
+
+`spreadsheet.EditSession.AllowedValues(sheet,cell)` inspects list validation
+without creating a cell. Nil means no covering list; malformed/overlapping or
+unproved vocabulary sources return a typed refusal and no partial values.
+ValidationValue tags distinguish string, number, boolean and blank. Text retains
+literal/string contents or scalar source spelling; numeric formatting/date serials
+are not interpreted. Literal lists and finite static1D ranges are supported,
+including reversed/quoted-sheet references and blank slots, up to100000 positions.
+Formulas are never evaluated and cached formula/error values refuse. Worksheet
+extensions, merged interiors, dynamic/named/external/2D sources and ambiguous
+cell ownership refuse. Shared strings and whole-row/column support are unfinished.
