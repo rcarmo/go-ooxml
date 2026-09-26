@@ -1837,3 +1837,11 @@ prove the same paragraph owner, equal expanded run/text attributes and byte-equa
 complete rPr markup. Both structural guards must pass. The left run is selected
 deterministically only after equivalence proof. Semantically equal but differently
 serialized properties still conservatively refuse. Raw XML remains copied evidence.
+
+`spreadsheet.EditSession.ValidateStyles()` checks cell, row and column style
+indices across worksheet parts before guarded numeric writes. An omitted cell `s`
+selects zero; when a styles relationship exists, zero must resolve to an actual
+cellXfs entry. Empty/duplicate tables, mismatched counts, malformed/overflowing and
+out-of-range indices refuse without mutation. With no style part, only default
+zero is accepted. This is index integrity, not font/fill dependency closure or
+style-authoring parity. Shared-contract pack V2 motivated the regression.

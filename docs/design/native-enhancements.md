@@ -396,3 +396,10 @@ retired-native-links links seven pinned DOCX cases to implemented Go scenarios,
 all explicitly partial with limits. Acceptance validates exact collected/source IDs
 and implemented scenario membership; regeneration cannot erase manual links. No
 source equivalence or completed parity is inferred. Batch030.
+
+### Increment 032: shared style-zero regression
+
+Numeric edits now validate cell/row/column style indices. Omitted s means zero,
+which must resolve when cellXfs exists; empty tables and invalid indices refuse.
+This independently reproduces/fixes the Bun-discovered V2 contract regression,
+without claiming shared style-authoring or workflow parity. Batch032.

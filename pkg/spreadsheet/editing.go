@@ -188,6 +188,9 @@ func (s *EditSession) FindNumber(sheet, cell string) (*NumberTarget, error) {
 	return &NumberTarget{session: s, generation: s.generation, doc: d, element: values[0], part: part, hash: hash, text: text}, nil
 }
 func (s *EditSession) guard() error {
+	if err := s.ValidateStyles(); err != nil {
+		return err
+	}
 	g, err := s.pkg.Graph()
 	if err != nil {
 		return err
