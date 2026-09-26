@@ -1718,3 +1718,11 @@ on edits. XML replacements must have one well-formed root. Registry replacements
 duplicate/stale/missing targets and signed-package edits refuse. This is a low-level
 payload API; format semantics, reference rewriting, graph edits and native Office
 validation are separate contracts. No existing exported interface is extended.
+
+`Preserved.Receipt()` returns schema-1 byte-level changed-member hashes against
+the immutable session input. It describes staged changes, not proof of delivery.
+`Preserved.SaveAs(path)` stages output, reopens it and checks all expected member
+payloads before replacing a regular destination; only then does it return a receipt.
+Failed delivery retains staged changes. Symlink/nonregular targets refuse rather
+than silently choosing follow-link versus replace-link semantics. Filesystem crash
+durability after rename remains outside this initial contract.

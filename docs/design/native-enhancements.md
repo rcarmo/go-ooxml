@@ -232,3 +232,12 @@ untouched members. This low-level API checks XML syntax, not OOXML semantics.
 Registry/add/delete/import operations and signed edits refuse. Run-safe editing,
 reference/cache updates, graph validation and path delivery integration remain
 pending. Read `SPEC.md` and `reports/batches/006.md` for the implemented subset.
+
+### Increment 007: verified path delivery and payload receipts
+
+Retained sessions can deliver through `SaveAs`, which reopens the temporary archive
+and compares every member payload before atomic replacement. Schema-1 receipts
+contain sorted original/current payload hashes; staged receipts do not claim that
+anything was delivered. Failure retains edits for retry. Legacy and preserved
+paths share failure-safe delivery; symlink/nonregular targets refuse explicitly.
+No semantic diff or directory-sync crash guarantee is implied. See batch 007.

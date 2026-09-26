@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"io"
+	"sort"
 	"strings"
 )
 
@@ -200,4 +201,60 @@ func (p *Preserved) WriteTo(w io.Writer) error {
 	}
 	return zw.Close()
 }
+
+// PartChange reports a byte-level member payload change, not a semantic edit.
+type PartChange struct {
+	Part         string `json:"part"`
+	BeforeSHA256 string `json:"before_sha256"`
+	AfterSHA256  string `json:"after_sha256"`
+}
+
+// Receipt is relative to the immutable input of a retained-source session.
+type Receipt struct {
+	Schema  int          `json:"schema"`
+	Changes []PartChange `json:"changes"`
+}
+
+// Receipt reports staged payload deltas against the original source; it does
+// not imply delivery. SaveAs returns it only after verified delivery succeeds.
+func (p *Preserved) Receipt() Receipt {
+	r := Receipt{Schema: 1, Changes: []PartChange{}}
+	for name, data := range p.changed {
+		r.Changes = append(r.Changes, PartChange{name, fingerprint(p.parts[name]), fingerprint(data)})
+	}
+	sort.Slice(r.Changes, func(i, j int) bool { return r.Changes[i].Part < r.Changes[j].Part })
+	return r
+}
+
+// SaveAs verifies the completed temporary archive before replacing a regular
+// destination. Failure does not consume staged changes. The receipt remains
+// relative to the session's original source across successive saves.
+func (p *Preserved) SaveAs(path string) (Receipt, error) {
+	verify := func(temporary string) error {
+		q, err := Open(temporary)
+		if err != nil {
+			return err
+		}
+		defer q.Close()
+		if len(q.parts) != len(p.parts) {
+			return invalidPart("save", "", "member inventory changed")
+		}
+		for name, original := range p.parts {
+			expected := original
+			if b, ok := p.changed[name]; ok {
+				expected = b
+			}
+			part, ok := q.parts[name]
+			if !ok || !bytes.Equal(part.content, expected) {
+				return invalidPart("save", name, "delivered payload mismatch")
+			}
+		}
+		return nil
+	}
+	if err := atomicDeliver(path, p.WriteTo, verify); err != nil {
+		return Receipt{}, err
+	}
+	return p.Receipt(), nil
+}
+
 func fingerprint(data []byte) string { s := sha256.Sum256(data); return hex.EncodeToString(s[:]) }

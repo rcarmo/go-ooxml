@@ -4,7 +4,6 @@ import (
 	"archive/zip"
 	"bytes"
 	"encoding/xml"
-	"fmt"
 	"io"
 	"os"
 	"path"
@@ -159,36 +158,7 @@ func (p *Package) SaveAs(filePath string) error {
 		return utils.ErrPathNotSet
 	}
 	cleanPath := filepath.Clean(filePath)
-	// A sibling temporary file keeps a serialization failure from truncating
-	// an existing destination. New files are private; replacements retain mode.
-	mode := os.FileMode(0600)
-	if info, err := os.Stat(cleanPath); err == nil {
-		if !info.Mode().IsRegular() {
-			return fmt.Errorf("destination is not a regular file: %s", cleanPath)
-		}
-		mode = info.Mode().Perm()
-	} else if !os.IsNotExist(err) {
-		return err
-	}
-	f, err := os.CreateTemp(filepath.Dir(cleanPath), ".ooxml-*")
-	if err != nil {
-		return err
-	}
-	temporary := f.Name()
-	defer func() { _ = f.Close(); _ = os.Remove(temporary) }()
-	if err := f.Chmod(mode); err != nil {
-		return err
-	}
-	if err := p.WriteTo(f); err != nil {
-		return err
-	}
-	if err := f.Sync(); err != nil {
-		return err
-	}
-	if err := f.Close(); err != nil {
-		return err
-	}
-	if err := os.Rename(temporary, cleanPath); err != nil {
+	if err := atomicDeliver(cleanPath, p.WriteTo, nil); err != nil {
 		return err
 	}
 

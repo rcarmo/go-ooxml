@@ -95,6 +95,7 @@ func TestAcceptance(t *testing.T) {
 		safetySteps(sc)
 		limitSteps(sc)
 		preservedSteps(sc)
+		receiptSteps(sc)
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil
