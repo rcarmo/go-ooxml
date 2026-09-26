@@ -30,7 +30,7 @@ regression IDs. It contains explicit limits, not a completeness score.
 
 ## Shared references
 
-Every consumer uses the annotated `v0.1.0` tag of `rcarmo/fixtures-ooxml` at
+Every consumer uses the annotated `v0.1.1` tag of `rcarmo/fixtures-ooxml` at
 `references/fixtures-ooxml`. `spec/reference-distribution.json` pins the commit,
 tag object, manifests and inventory counts. Native tests verify all pinned
 assets and shared fact/workflow links. Only locally executed assertions earn

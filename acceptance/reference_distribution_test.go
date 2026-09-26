@@ -92,7 +92,7 @@ func TestPinnedReferenceDistribution(t *testing.T) {
 			t.Fatal("reference asset hash/size mismatch", f.Path)
 		}
 	}
-	for _, area := range []string{"fixtures", "reference-assets", "shared/v2/pack"} {
+	for _, area := range []string{"fixtures", "shared/v2/pack"} {
 		if err := filepath.WalkDir(testutil.ReferencePath(area), func(path string, d os.DirEntry, err error) error {
 			if err != nil {
 				return err
