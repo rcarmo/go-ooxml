@@ -1913,3 +1913,12 @@ Required extra fields are read only within their TLV length; duplicate/truncated
 ZIP64 extras and classic/ZIP64 disagreement refuse. Empty deflated members are
 verified through archive/zip payload CRC/size checks. Caller resource limits still
 apply; tests use bounded synthetic archives, not multi-gigabyte payloads.
+
+Explicit numeric invalidation can remove one ordinary calculation-chain part when
+an input change affects formulas. Chain ownership, MIME, root and direct entry
+structure are preflighted; shared/external/unowned/extended/outward-linked chains
+refuse. The chain relationship, override and payload are removed in the same
+GraphPlan as input/cache/calcPr changes. The effect reports its removed part name.
+Unrelated and same-value edits preserve the chain exactly. The legacy rebuild
+writer still has its historical synthetic-chain behaviour; this safe API does not
+route through it or infer dependencies from chain ordering.

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/cucumber/godog"
 	"github.com/rcarmo/go-ooxml/internal/losslessxml"
@@ -64,6 +65,24 @@ func cacheSteps(sc *godog.ScenarioContext) {
 		q.AddRelationship("xl/workbook.xml", "worksheets/sheet2.xml", packaging.RelTypeWorksheet)
 		if condition == "existing calculation chain" {
 			_, _ = q.AddPart("xl/calcChain.xml", packaging.ContentTypeXML, []byte(`<calcChain xmlns="`+packaging.NSSpreadsheetML+`"/>`))
+		}
+		if condition != "existing calculation chain" && strings.Contains(condition, "calculation chain") || condition == "chain with outgoing relationships" {
+			chain := `<calcChain xmlns="` + packaging.NSSpreadsheetML + `"><c r="A1" i="2"/><c r="B1"/></calcChain>`
+			if condition == "extended calculation chain" {
+				chain = `<calcChain xmlns="` + packaging.NSSpreadsheetML + `"><extLst/></calcChain>`
+			}
+			if condition == "external calculation chain" {
+				q.AddRelationshipWithTargetMode("xl/workbook.xml", "https://example.invalid/chain.xml", packaging.RelTypeCalcChain, packaging.TargetModeExternal)
+			} else {
+				_, _ = q.AddPart("xl/chains/order.xml", packaging.ContentTypeCalcChain, []byte(chain))
+				q.AddRelationship("xl/workbook.xml", "chains/order.xml", packaging.RelTypeCalcChain)
+				if condition == "shared calculation chain" {
+					q.AddRelationship("xl/worksheets/sheet1.xml", "../chains/order.xml", packaging.RelTypeCalcChain)
+				}
+				if condition == "chain with outgoing relationships" {
+					q.AddRelationship("xl/chains/order.xml", "../../custom/opaque.bin", packaging.RelTypeImage)
+				}
+			}
 		}
 		var b bytes.Buffer
 		if err := q.WriteTo(&b); err != nil {
@@ -192,6 +211,66 @@ func cacheSteps(sc *godog.ScenarioContext) {
 		}
 		result, failure = s.SetNumberWithInvalidation(target, 10)
 		return nil
+	})
+	sc.Step(`^the calculation chain part and its registrations are removed$`, func() error {
+		parts, err := zipPayloads(output)
+		if err != nil {
+			return err
+		}
+		if _, ok := parts["xl/chains/order.xml"]; ok {
+			return fmt.Errorf("chain retained")
+		}
+		q, err := packaging.OpenPreserved(output, packaging.Limits{})
+		if err != nil {
+			return err
+		}
+		g, err := q.Graph()
+		if err != nil {
+			return err
+		}
+		for _, e := range g.Edges {
+			if e.Type == packaging.RelTypeCalcChain {
+				return fmt.Errorf("chain edge retained")
+			}
+		}
+		if bytes.Contains(parts["[Content_Types].xml"], []byte("/xl/chains/order.xml")) {
+			return fmt.Errorf("chain override retained")
+		}
+		return nil
+	})
+	sc.Step(`^the calculation chain and registry payloads remain byte-identical$`, func() error {
+		before, _ := zipPayloads(source)
+		after, err := zipPayloads(output)
+		if err != nil {
+			return err
+		}
+		for _, name := range []string{"xl/chains/order.xml", "[Content_Types].xml", "xl/_rels/workbook.xml.rels"} {
+			if !bytes.Equal(before[name], after[name]) {
+				return fmt.Errorf("unrelated chain part changed %s", name)
+			}
+		}
+		return nil
+	})
+	sc.Step(`^I apply a same-value edit then reuse its numeric target$`, func() error {
+		target, err := s.FindNumber("Input", "A1")
+		if err != nil {
+			return err
+		}
+		result, err = s.SetNumberWithInvalidation(target, 1)
+		if err != nil {
+			return err
+		}
+		if err = save(); err != nil {
+			return err
+		}
+		if !bytes.Equal(source, output) {
+			return fmt.Errorf("no-op changed chain")
+		}
+		result, err = s.SetNumberWithInvalidation(target, 10)
+		if err != nil {
+			return err
+		}
+		return save()
 	})
 	sc.Step(`^invalidation returns a typed refusal without any package mutation$`, func() error {
 		var r *packaging.Refusal

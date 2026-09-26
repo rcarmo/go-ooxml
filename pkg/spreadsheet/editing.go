@@ -197,13 +197,19 @@ func (s *EditSession) guardMode(allowStaticFormulas bool) error {
 		return err
 	}
 	allowedRels := map[string]bool{packaging.RelTypeOfficeDocument: true, packaging.RelTypeWorksheet: true, packaging.RelTypeStyles: true, packaging.RelTypeSharedStrings: true, packaging.RelTypeTheme: true}
+	if allowStaticFormulas {
+		if _, err := s.calculationChain(g); err != nil {
+			return err
+		}
+		allowedRels[packaging.RelTypeCalcChain] = true
+	}
 	for _, e := range g.Edges {
 		if e.Source != "" && !allowedRels[e.Type] {
 			return editRefusal("unsupported_structure", "unproved workbook relationship dependency")
 		}
 	}
 	for _, p := range g.Parts {
-		if strings.HasPrefix(p.Name, "xl/") && (strings.Contains(p.Name, "/charts/") || strings.Contains(p.Name, "/pivot") || strings.Contains(p.Name, "/external") || strings.Contains(p.Name, "/tables/") || strings.Contains(p.Name, "/connections") || strings.EqualFold(p.Name, "xl/calcChain.xml")) {
+		if strings.HasPrefix(p.Name, "xl/") && (strings.Contains(p.Name, "/charts/") || strings.Contains(p.Name, "/pivot") || strings.Contains(p.Name, "/external") || strings.Contains(p.Name, "/tables/") || strings.Contains(p.Name, "/connections") || (!allowStaticFormulas && strings.EqualFold(p.Name, "xl/calcChain.xml"))) {
 			return editRefusal("unsupported_structure", "unproved chart/pivot/table/external dependency")
 		}
 		isSheet := p.ContentType == packaging.ContentTypeWorksheet

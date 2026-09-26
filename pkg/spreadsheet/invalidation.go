@@ -15,9 +15,10 @@ import (
 // CalculationEffect reports an applied numeric edit and its cache effects.
 // It is not proof of filesystem delivery or numeric calculation.
 type CalculationEffect struct {
-	State        string   `json:"state"`
-	Invalidated  []string `json:"invalidated"`
-	ValueChanged bool     `json:"value_changed"`
+	State                   string   `json:"state"`
+	Invalidated             []string `json:"invalidated"`
+	ValueChanged            bool     `json:"value_changed"`
+	RemovedCalculationChain string   `json:"removed_calculation_chain,omitempty"`
 }
 type dependencyRange struct {
 	part                       string
@@ -385,7 +386,20 @@ func (s *EditSession) SetNumberWithInvalidation(target *NumberTarget, value floa
 	} else {
 		result.State = "caches-unchanged"
 	}
-	if err = s.pkg.Replace(replacements); err != nil {
+	chain, err := s.calculationChain(graph)
+	if err != nil {
+		return CalculationEffect{}, err
+	}
+	if len(affected) > 0 && chain.part != "" {
+		plan, err := s.pkg.PlanGraphMutation(packaging.GraphMutation{Replacements: replacements, Removals: []packaging.RelationshipRemoval{{Source: s.main, ID: chain.id}}, Deletions: []packaging.PartDeletion{{Name: chain.part, ExpectedSHA256: chain.hash}}})
+		if err != nil {
+			return CalculationEffect{}, err
+		}
+		if err = s.pkg.ApplyGraphPlan(plan); err != nil {
+			return CalculationEffect{}, err
+		}
+		result.RemovedCalculationChain = chain.part
+	} else if err = s.pkg.Replace(replacements); err != nil {
 		return CalculationEffect{}, err
 	}
 	s.generation++

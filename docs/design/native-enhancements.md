@@ -546,3 +546,10 @@ GraphPlan now combines selected edge removal, detached-leaf deletion and guarded
 payload replacement. Dangling edges, stale hashes and conflicting selections refuse.
 Whole-element XML removal preserves all bytes outside selected non-root subtrees.
 Batch057 passes191 native cases; format owners must authorise edge removal.
+
+### Increment058: calculation-chain cleanup
+
+Affected static numeric edits now remove a uniquely workbook-owned ordinary
+calculation chain and registrations atomically with caches/calcPr/input changes.
+Unrelated/no-op edits retain chain bytes; ambiguous/extended chains refuse.
+Batch058 passes198 native cases. Legacy synthetic-chain authoring is unchanged.
