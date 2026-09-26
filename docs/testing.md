@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.15.0`, commit
-`977ebe92522325a8bbc14999fed17e0a5e9626da`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.16.0`, commit
+`641146c020e1011b8f3e930f5fb4fd0b76c27b3d`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -39,20 +39,22 @@ There is no separate pack seal. The root manifest seals the explicit
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.15.0` contains 147 manifest assets, including 115 unique fixtures in
-32 format/scenario groups, plus 149 facts and 115 workflows/345 expanded cases.
-The added effective-formatting feature leaves all prior 146 asset records unchanged.
-Its 25 cases add no Go bindings or formatting-cascade execution credit. The owner's
-LibreOffice result includes a known font mismatch; it is separate from Go verification. Keep this shared
-pin until the coordinator approves a replacement; local catalogue work continues
-independently. Go's package ledger has four partial mappings and eight unmapped
+Release `v0.16.0` contains 163 manifest assets, including 115 unique fixtures in
+32 format/scenario groups, plus 149 facts and 122 workflows/352 expanded cases.
+All 147 prior asset records are unchanged. The added font and comment/VML workflow
+cases are planned; importing them adds no Go binding or execution credit. Shared
+ECMA specifications, extracts and derived notes are indexed under
+[`specs/ecma-376/`](../references/fixtures-ooxml/specs/ecma-376/README.md).
+The full PDFs are the specification sources; local copies have been removed.
+Keep this shared pin until the coordinator approves a replacement; local catalogue
+work continues independently. Go's package ledger has four partial mappings and eight unmapped
 declarations; its XML ledger has three partial mappings and one unmapped.
 Neither ledger grants canonical execution credit. The semantic-diff assertion
 `removed: []` exercises no removal case.
 
 Once a release is approved, update the gitlink and
 `spec/reference-distribution.json` together within the coordinator-approved scope.
-For v0.15 adoption, only this enhancement branch advances; legacy tips and prepared
+For v0.16 adoption, only this enhancement branch advances; legacy tips and prepared
 publication refs/mirror remain at the v0.9 checkpoint by explicit instruction.
 Do not use `git submodule update --remote` or move an existing release tag to
 follow changing content.
@@ -93,10 +95,10 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The enhanced-only v0.15 default released-reference batch is recorded in
-`../reports/batches/136.md`: 291 implemented native Gherkin cases; 20 planned and
+The enhanced-only v0.16 default released-reference batch is recorded in
+`../reports/batches/139.md`: 291 implemented native Gherkin cases; 20 planned and
 one external case unrun. The prior v0.3 bounded race checkpoint remains
-`../reports/batches/096.md`; the pin-only v0.15 update does not rerun races.
+`../reports/batches/096.md`; this reference/documentation update does not rerun races.
 Package/unit/subtest counts are separate metrics. No live Office
 rendering/calculation or exploratory fuzz campaign ran in these batches.
 Historical reports retain the commands and outcomes from their original runs.

@@ -8,29 +8,29 @@ with the single central behaviour registry.
 
 ## Standards material
 
-The ECMA-376 documents and extracts below are specification references, not a
-statement that this implementation conforms to every listed rule. Keep normative
-citations and required notices intact when editing project documentation.
+The pinned [ECMA-376 specification index](../references/fixtures-ooxml/specs/ecma-376/README.md)
+links all four complete Parts, their exact editions, verbatim extracts, derived
+notes, provenance and notices. The PDFs are the specification sources. Check the
+edition, part and clause in a complete PDF before treating an extract or note as
+a requirement. The presence of a document does not certify this implementation.
+Deprecated VML remains relevant to existing packages; Transitional conformance
+alone does not mark markup deprecated.
 
 | File | Material |
 | --- | --- |
-| `ECMA-376-Part1-Fundamentals.pdf` | Fundamentals and markup-language reference, fifth edition |
-| `ECMA-376-Part2-OpenPackagingConventions.pdf` | OPC, fifth edition |
-| [ECMA-376-Phase3-Reference.md](ECMA-376-Phase3-Reference.md) | Extracts covering revisions, comments, styles, headers and footers |
-| [ECMA-376-WML-Phase3.md](ECMA-376-WML-Phase3.md) | WordprocessingML extracts |
-| [ECMA-376-Part2-OPC.md](ECMA-376-Part2-OPC.md) | OPC relationships, content types and properties extracts |
-| [FIT-GAP-ANALYSIS.md](FIT-GAP-ANALYSIS.md) | Historical January 2026 feature assessment; percentages are not current measured coverage |
+| [Part 1 PDF](../references/fixtures-ooxml/specs/ecma-376/part-1/ECMA-376-Part1-Fundamentals.pdf) | Fundamentals and markup-language reference, October 2016 fifth edition |
+| [Part 2 PDF](../references/fixtures-ooxml/specs/ecma-376/part-2/ECMA-376-Part2-OpenPackagingConventions.pdf) | Open Packaging Conventions, December 2021 fifth edition |
+| [Part 3 PDF](../references/fixtures-ooxml/specs/ecma-376/part-3/ECMA-376-Part3-MarkupCompatibility.pdf) | Markup Compatibility and Extensibility, December 2015 fifth edition |
+| [Part 4 PDF](../references/fixtures-ooxml/specs/ecma-376/part-4/ECMA-376-Part4-TransitionalMigration.pdf) | Transitional Migration Features, October 2016 fifth edition |
+| [WordprocessingML notes](../references/fixtures-ooxml/specs/ecma-376/notes/ECMA-376-Phase3-Reference.md) | Project-authored explanations; not normative |
+| [WordprocessingML extract](../references/fixtures-ooxml/specs/ecma-376/extracts/ECMA-376-WML-Phase3.md) | Verbatim selected text; check clauses in the full PDF |
+| [Part 2 extract](../references/fixtures-ooxml/specs/ecma-376/extracts/ECMA-376-Part2-OPC.md) | Verbatim selected OPC text; check clauses in the full PDF |
+| [FIT-GAP-ANALYSIS.md](FIT-GAP-ANALYSIS.md) | Historical January 2026 assessment; percentages are not measured current coverage |
 | [ROUNDTRIP-TESTS.md](ROUNDTRIP-TESTS.md) | Native fixture round-trip assertion catalogue |
 
-The standard also includes Part 3, Markup Compatibility and Extensibility, and
-Part 4, Transitional Migration Features. Neither is bundled here. Legacy markup
-can still occur in real files; absence from these documents is not permission to
-discard it during retained-source edits.
-
-Specification sources: [Ecma International](https://ecma-international.org/publications-and-standards/standards/ecma-376/)
-and the [ECMA-376 fifth-edition mirror](https://github.com/QtExcel/ecma-376-5th).
-The specification documents are © Ecma International. Vendor reference material
-is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
+Specification material is © Ecma International and retains its own terms. See the
+[shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
+material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
 Batch reports under `../reports/batches/` record past commands and outcomes.
 They are historical evidence, not current release status. Shared fixtures,
