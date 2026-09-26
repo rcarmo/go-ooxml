@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "observation_revision": "af7016f403f31e6fae27ec025408febe69f4b7f1",
+  "observation_revision": "c34f01b224bbe2543d1d80631575e3af805b540d",
   "files": [
     {
       "path": "acceptance/acceptance_test.go",
@@ -18,6 +18,11 @@
       "helpers_only": true
     },
     {
+      "path": "acceptance/behavior_catalogue_test.go",
+      "sha256": "b3adb54c3f01738d9cf1b25ebf5cf9fb8b8371e32d3b7040a8302d2eddd43503",
+      "helpers_only": false
+    },
+    {
       "path": "acceptance/cache_invalidation_test.go",
       "sha256": "fac5631fde0112f56522ca05f9e8c3788e84dd1a742a180df2a5b15951045b5b",
       "helpers_only": true
@@ -29,7 +34,7 @@
     },
     {
       "path": "acceptance/comment_mime_test.go",
-      "sha256": "194bf03d9eee085ce92d04b8cabe9b89c673b0863e292920aa0191528b0a2a6d",
+      "sha256": "8b01c2877e0285cc5d309aabadd9bdfde1c2355097b156939b623e9851d2ad66",
       "helpers_only": true
     },
     {
@@ -114,7 +119,7 @@
     },
     {
       "path": "acceptance/reference_distribution_test.go",
-      "sha256": "d9cecf255edc0d825a4965cf8dbda818dab4eb915907e2a23ecc82833071edfc",
+      "sha256": "eeef874bbb9c725ee29d4a7e11bc2a4cce3d0b54d21517b473b14495bbcd10b6",
       "helpers_only": false
     },
     {
@@ -841,6 +846,32 @@
       "coverage": "unreviewed"
     },
     {
+      "id": "acceptance/behavior_catalogue_test.go::TestBehaviourCatalogueCandidates",
+      "file": "acceptance/behavior_catalogue_test.go",
+      "line": 15,
+      "function": "TestBehaviourCatalogueCandidates",
+      "kind": "test",
+      "subtests": [],
+      "parameter_groups": [],
+      "calls": [
+        "Close",
+        "Contains",
+        "Fatal",
+        "Fatalf",
+        "HasPrefix",
+        "Open",
+        "ParseGherkinDocument",
+        "Pickles",
+        "ReadFile",
+        "Sprint",
+        "ToLower",
+        "Unmarshal",
+        "len"
+      ],
+      "scenario_ids": [],
+      "coverage": "unreviewed"
+    },
+    {
       "id": "acceptance/inventory_test.go::TestResultReconciliation",
       "file": "acceptance/inventory_test.go",
       "line": 133,
@@ -934,7 +965,7 @@
         {
           "line": 95,
           "expression": "[]string",
-          "rows": 3
+          "rows": 2
         }
       ],
       "calls": [
