@@ -2,11 +2,11 @@
 
 Date: 2026-09-26. Status: implementation underway on `native-enhancements` in `/workspace/worktrees/go-ooxml-native`; reference checkout unchanged.
 
-Completed increments: portable test baseline/Godog (`0966ba4`), archive naming and staged saves (`9fb3736`), opt-in budgets (`17f8444`), source/fixture inventory (`b379a80`), physical ZIP checks (`1e4db26`), retained-source payload editing (`774ef64`), and verified delivery/receipts (`9216c33`). Batch 008 passes race checks for packaging, all three format packages, inventory tooling and acceptance.
+Checkpoint after batches 009-018: immutable namespace-aware XML/leaf edits (`a7d3477`), read-only OPC graph (`93cb432`), bounded Word/PPTX/numeric XLSX editing (`fb94bb5`, `c79e906`, `145446d`), refusal hardening (`4766fbb`), descriptor/prefix fixes and corpus checks (`bc6074b`), expanded source collection (`d785bb5`), and Word story views (`5abdec0`). Earlier package foundations are recorded in batches001-008.
 
-Measured current state: 27 implemented expanded Gherkin cases pass; 20 planned cases and one external case are not run. The ledger has 1,436 lexical definitions, with parameter expansion and API/scenario mapping unresolved. Reports are in `reports/batches/001.md` through `008.md`. Source-preserving format edits, graph/refusal parity and Office/oracle checks remain unfinished. This is not full extended parity.
+Measured state: 66 implemented expanded Gherkin cases pass; 20 planned plus one external case remain unrun. All 74 Go fixture archives pass bounded retained-source no-op tests. Ledger schema2 records 3,451 actually collected Python cases (not executed), with API/refusal/fixture/Go/scenario mapping still unresolved. Batch018 passes full native tests and race checks for XML, packaging, all format adapters, tooling and acceptance.
 
-Next: finish archive adversarial/ZIP64 policy, namespace-aware lossless XML editing (B03), relationship graph validation (B04), and the first bounded format adapters before the B10 gate. Continue the pending per-case ledger in parallel without counting lexical inventory as coverage.
+Next: finish B01 ZIP64/overlap/URI policy, B03 structural XML operations, B04 graph surgery and B10 adversarial/corpus gate; expand D01 story coverage, D02-D03 multi-run spans, P01-P03 complete text/inheritance and X06-X07 reference/cache semantics. The three editing adapters implement deliberately narrow subsets, not family completion. Source-parity ledger and native Office/LibreOffice checks remain unfinished. Reports: `reports/batches/001.md` through `018.md`.
 
 `go-ooxml` already provides the Go object models, OPC packaging and Office fixtures needed to start. extended parity requires a preservation-safe editing path, stronger relationship handling and format-specific mutation engines. Reuse the existing authoring APIs where their contracts fit; add guarded editing without silently changing the behaviour of existing callers.
 
