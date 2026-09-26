@@ -442,3 +442,9 @@ targets refuse. This advances B03, not Office schema/graph authoring parity. Bat
 Explicit NCName components reject digit/combining-mark-first local names and invalid
 prefix declarations; root-external whitespace is XML whitespace only. Fresh insertion
 bindings/default resets are checked across sibling boundaries. Batch038.
+
+### Increment040: static formula references
+
+A native lexer/parser recognises bounded A1/range dependencies, quoted sheets and a
+closed nonvolatile expression subset. Unknown syntax refuses without partial analysis;
+strings never become references. No formula calculation or remapping yet. Batch040.
