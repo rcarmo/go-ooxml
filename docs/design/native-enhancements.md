@@ -646,3 +646,10 @@ finite signed decimal/exponent spelling is retained. Six behavioural red cases
 precede the fix;291 native cases pass in the bounded formula/spreadsheet/complete
 acceptance batch. Full/race integration follows separately. Shared fixture/fact
 migration awaits a coordinated tag; no history or provenance notices changed.
+
+### Integration076: validation and migration baseline
+
+Full library/acceptance and formula/XML/package/all-format/acceptance races pass
+with the existing opt-in reference inputs after072-075.291 native cases pass;
+20 planned plus one external remain unrun. Central shared-reference migration
+awaits a common manifest/tag. No history rewrite or publication has occurred.
