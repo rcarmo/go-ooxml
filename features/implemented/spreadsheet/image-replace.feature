@@ -20,6 +20,7 @@ Feature: Replace one loaded worksheet picture without rewriting drawing XML
       | condition |
       | shared relationship ID |
       | shared drawing part |
+      | shared worksheet part |
       | protected worksheet |
       | malformed image data |
       | external picture |

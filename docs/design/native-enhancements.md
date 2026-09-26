@@ -514,3 +514,9 @@ and unsupported complex drawings refuse. Batch049 passes166 native cases; X10 is
 Graph retargets now retain relative/absolute path form, including escaped Unicode,
 space and quote characters. Pinned extended image tests motivated the regression.
 Batch050 passes168 native cases plus chained-plan and exact-restore checks.
+
+### Increment052: worksheet owner isolation
+
+FindImage now requires one inbound worksheet edge, closing an alias outside the
+workbook sheet list. Duplicate sheet identities already refused at intake.
+Batch052 passes169 native cases; prior full/race checkpoint is051.

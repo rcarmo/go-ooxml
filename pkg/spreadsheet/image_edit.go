@@ -81,6 +81,9 @@ func (s *EditSession) FindImage(sheet string, shapeID uint32) (*ImageTarget, err
 	for _, p := range graph.Parts {
 		parts[p.Name] = p
 	}
+	if parts[sheetPart].Inbound != 1 {
+		return nil, editRefusal("ambiguous_target", "worksheet part has shared package ownership")
+	}
 	main, _, err := s.pkg.Part(s.main)
 	if err != nil {
 		return nil, err

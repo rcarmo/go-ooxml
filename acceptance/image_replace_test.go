@@ -79,6 +79,10 @@ func imageReplaceSteps(sc *godog.ScenarioContext) {
 			q.AddRelationship("xl/drawings/drawing.xml", "../media/shared.png", packaging.RelTypeImage)
 		}
 		q.AddRelationship("xl/drawings/drawing.xml", "../media/shared.png", packaging.RelTypeImage)
+		if condition == "shared worksheet part" {
+			_, _ = q.AddPart("custom/alias.xml", packaging.ContentTypeXML, []byte(`<r/>`))
+			q.AddRelationship("custom/alias.xml", "../xl/sheet.xml", packaging.RelTypeWorksheet)
+		}
 		if condition == "shared drawing part" {
 			_, _ = q.AddPart("custom/owner.xml", packaging.ContentTypeXML, []byte(`<r/>`))
 			q.AddRelationship("custom/owner.xml", "../xl/drawings/drawing.xml", packaging.RelTypeDrawing)
