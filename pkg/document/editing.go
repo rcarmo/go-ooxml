@@ -221,16 +221,14 @@ func (s *EditSession) Replace(target *TextTarget, text string) error {
 	if current != target.hash {
 		return editRefusal("stale_target", "part fingerprint changed")
 	}
-	if len(target.segments) != 1 || target.segments[0].start != 0 || target.segments[0].end != len([]rune(target.segments[0].text)) {
-		return editRefusal("unsupported_structure", "substring and multi-run replacement require span planner")
-	}
-	if err = s.guard(target, text); err != nil {
-		return err
-	}
 	if text == target.text {
 		return nil
 	}
-	data, err := target.doc.ReplaceText([]losslessxml.TextEdit{{Target: target.element, Text: text}})
+	edits, err := s.planText(target, text)
+	if err != nil {
+		return err
+	}
+	data, err := target.doc.ReplaceText(edits)
 	if err != nil {
 		return editRefusal("unsupported_structure", err.Error())
 	}

@@ -1785,3 +1785,11 @@ and refuses zero/multiple matches. Internal offsets are Unicode rune offsets;
 original text is returned by `TextTarget.Text()`. Paragraph boundaries are not
 implicitly joined. In this increment replacement still requires one whole leaf;
 substring/multi-run targets refuse until the planner is implemented.
+
+Word ordinary Replace now plans substring/multi-run edits using the unique maximal
+exact prefix/suffix split. Ambiguous repeated affixes refuse. Unchanged fragments
+remain in original runs; the residual is inserted into its starting run while
+later changed fragments become empty text leaves. Each affected leaf retains its
+run properties/markup. Pure insertions at interior run boundaries still refuse
+until complete formatting/owner equality is proved. Wrappers/fields/protection
+retain conservative gates; no tracked edit or revision preservation is implied.

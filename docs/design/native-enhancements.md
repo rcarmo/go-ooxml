@@ -323,3 +323,10 @@ per-story fixtures and complete source-case mapping. See batch 017.
 FindText/FindOne share exact current-view main-story paragraph run maps with Unicode
 rune offsets and explicit repeated candidates. Span text is immutable evidence;
 substring/cross-run writes still refuse until the mutation planner. Batch019.
+
+### Increment 020: ordinary multi-run replacement
+
+Unique maximal affix localisation preserves unchanged run fragments and puts changed
+text into its starting run. Repeated-affix ambiguity, wrappers and interior run-boundary
+insertions without owner/format proof refuse. Staged leaves commit once; tracked/bulk
+and full result-report parity are not implied. Batch020.
