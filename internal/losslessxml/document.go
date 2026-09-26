@@ -22,6 +22,7 @@ type node struct {
 	parent                               int
 	leaf, selfClosing                    bool
 	text                                 string
+	ns                                   map[string]string
 }
 type Document struct {
 	source []byte
@@ -128,7 +129,7 @@ func Parse(source []byte) (*Document, error) {
 			}
 			self := after-before >= 2 && bytes.HasSuffix(d.source[before:after], []byte("/>"))
 			i := len(d.nodes)
-			d.nodes = append(d.nodes, node{name: name, attrs: attrs, start: before, contentStart: after, parent: parent, leaf: true, selfClosing: self})
+			d.nodes = append(d.nodes, node{name: name, attrs: attrs, start: before, contentStart: after, parent: parent, leaf: true, selfClosing: self, ns: ns})
 			stack = append(stack, &frame{index: i, raw: t.Name, ns: ns})
 		case xml.EndElement:
 			if len(stack) == 0 {

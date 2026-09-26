@@ -343,3 +343,9 @@ Unicode-15 full casefold/punctuation/space matching maps back to whole original
 characters. Search Near ranks all candidates with stable ties; Nth is explicit and
 mutually exclusive. Runtime remains dependency-free; data/generator/licence retained.
 Still paragraph-local/current main story. Batch022.
+
+### Increment 023: lossless attribute updates
+
+Internal XML Edit stages text plus non-namespace attribute updates against original
+offsets, preserving unrelated start-tag bytes and existing quote style. New namespaced
+attributes require existing bindings; namespace mutation refuses. Batch023.
