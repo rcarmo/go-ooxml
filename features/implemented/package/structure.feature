@@ -13,3 +13,9 @@ Feature: Local and central ZIP structures agree
       | name |
       | method |
       | flags |
+
+  @ZIP-002
+  Scenario: An adjusted archive prefix refuses standalone package intake
+    Given a synthetic archive with an adjusted prepended prefix
+    When I attempt to open the synthetic archive
+    Then archive intake fails without changing the source bytes

@@ -191,36 +191,43 @@ func validateZIPStructure(r io.ReaderAt, size int64, files []*zip.File) error {
 				return fail(f.Name, "local ZIP64 sizes require unsupported verification")
 			}
 		} else {
-			descriptor, err := read(end, 4)
-			if err != nil {
-				return fail(f.Name, "missing data descriptor")
-			}
-			if little.Uint32(descriptor) == 0x08074b50 {
-				end += 4
-			}
 			width := int64(12)
 			if f.CompressedSize64 >= math.MaxUint32 || f.UncompressedSize64 >= math.MaxUint32 {
 				width = 20
 			}
-			descriptor, err = read(end, width)
-			if err != nil {
-				return fail(f.Name, "truncated data descriptor")
+			// CRC may itself equal the optional signature. Validate both layouts
+			// against the complete directory tuple rather than guessing from CRC.
+			ends := []int64{}
+			for _, skip := range []int64{0, 4} {
+				if skip == 4 {
+					signature, err := read(end, 4)
+					if err != nil || little.Uint32(signature) != 0x08074b50 {
+						continue
+					}
+				}
+				if end+skip+width > int64(directoryOffset) {
+					continue
+				}
+				descriptor, err := read(end+skip, width)
+				if err != nil || little.Uint32(descriptor[:4]) != f.CRC32 {
+					continue
+				}
+				var c, u uint64
+				if width == 12 {
+					c = uint64(little.Uint32(descriptor[4:8]))
+					u = uint64(little.Uint32(descriptor[8:12]))
+				} else {
+					c = little.Uint64(descriptor[4:12])
+					u = little.Uint64(descriptor[12:20])
+				}
+				if c == f.CompressedSize64 && u == f.UncompressedSize64 {
+					ends = append(ends, end+skip+width)
+				}
 			}
-			if little.Uint32(descriptor[:4]) != f.CRC32 {
-				return fail(f.Name, "descriptor CRC disagrees")
+			if len(ends) != 1 {
+				return fail(f.Name, "missing, inconsistent or ambiguous data descriptor")
 			}
-			var c, u uint64
-			if width == 12 {
-				c = uint64(little.Uint32(descriptor[4:8]))
-				u = uint64(little.Uint32(descriptor[8:12]))
-			} else {
-				c = little.Uint64(descriptor[4:12])
-				u = little.Uint64(descriptor[12:20])
-			}
-			if c != f.CompressedSize64 || u != f.UncompressedSize64 {
-				return fail(f.Name, "descriptor sizes disagree")
-			}
-			end += width
+			end = ends[0]
 		}
 		if end > int64(directoryOffset) {
 			return fail(f.Name, "descriptor overlaps central directory")
@@ -232,6 +239,9 @@ func validateZIPStructure(r io.ReaderAt, size int64, files []*zip.File) error {
 		return fail("", "unexpected directory bytes")
 	}
 	sort.Slice(ranges, func(i, j int) bool { return ranges[i].start < ranges[j].start })
+	if len(ranges) > 0 && ranges[0].start != 0 {
+		return fail(ranges[0].name, "prepended bytes are not a standalone OPC archive")
+	}
 	for i := 1; i < len(ranges); i++ {
 		if ranges[i].start < ranges[i-1].end {
 			return fail(ranges[i].name, "overlapping archive entries")

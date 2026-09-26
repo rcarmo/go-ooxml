@@ -295,3 +295,10 @@ editing rejects unclassified worksheet/workbook elements and attribute namespace
 Word checks settings namespace policy before protection. These conservative guards
 close three proved acceptance gaps without claiming schema-complete validation.
 See batch 014; 61 native expanded cases pass.
+
+### Increment 015: reviewed archive defects and corpus intake
+
+Adjusted prefixed archives now refuse standalone OPC intake. Data-descriptor
+signature/CRC ambiguity resolves against the whole central tuple. All 74 checked-in
+Office fixtures pass bounded intake and byte-exact no-op delivery in one corpus
+batch; this does not establish edit/graph/render parity. See batch 015.

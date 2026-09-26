@@ -129,6 +129,32 @@ func safetySteps(sc *godog.ScenarioContext) {
 		return ctx, nil
 	})
 	sc.Step(`^a synthetic archive with "([^"]+)" member names$`, s.archive)
+	sc.Step(`^a synthetic archive with an adjusted prepended prefix$`, func() error {
+		if err := s.small(); err != nil {
+			return err
+		}
+		var b bytes.Buffer
+		if err := s.pkg.WriteTo(&b); err != nil {
+			return err
+		}
+		prefix := []byte("PREFIX")
+		s.source = append(bytes.Clone(prefix), b.Bytes()...)
+		for at := len(prefix); ; {
+			i := bytes.Index(s.source[at:], []byte{'P', 'K', 1, 2})
+			if i < 0 {
+				break
+			}
+			i += at
+			old := binary.LittleEndian.Uint32(s.source[i+42 : i+46])
+			binary.LittleEndian.PutUint32(s.source[i+42:i+46], old+uint32(len(prefix)))
+			at = i + 46
+		}
+		end := bytes.LastIndex(s.source, []byte{'P', 'K', 5, 6})
+		old := binary.LittleEndian.Uint32(s.source[end+16 : end+20])
+		binary.LittleEndian.PutUint32(s.source[end+16:end+20], old+uint32(len(prefix)))
+		s.original = bytes.Clone(s.source)
+		return nil
+	})
 	sc.Step(`^a synthetic archive with a mismatched local "([^"]+)"$`, func(field string) error {
 		if err := s.small(); err != nil {
 			return err
