@@ -18,12 +18,13 @@ not exploratory-fuzz or performance results. Helpers and acceptance binding-only
 files remain visible, even when they declare no executable test entry point.
 
 The current inventory contains 155 native test files and 404 declarations.
-Reviewed family mappings cover 192 declarations in 202 candidate outcomes across
+Reviewed family mappings cover 197 declarations in 207 candidate outcomes across
 formula, XML, archive, mutable package-model, delivery, graph, test-custody,
 utility, OOXML-model, WML-model, spreadsheet-cache, spreadsheet-targets and
 spreadsheet-fuzz, presentation-notes, presentation-fuzz, presentation-fixtures and
 presentation-parameters, presentation-api, presentation-measurement and
-spreadsheet-parameters families; 212 declarations remain unreviewed. This denominator is the static
+spreadsheet-parameters and spreadsheet-measurement families; 207 declarations
+remain unreviewed. This denominator is the static
 inventory snapshot, not the number of executed leaf cases. Checkout guard tests
 are now included. The executable native Gherkin result is separate at 291 cases.
 See [testing.md](../testing.md) for released/candidate reference setup and limits.
@@ -87,6 +88,11 @@ the reviewed source. Fixture round trips compare sheet count only; string round
 trips compare exact text while ignoring Open errors. Formula getters do not evaluate
 expressions, and date checks compare only Year, Month and Day. These source counts
 add no measured runtime-leaf, canonical workflow or calculation coverage.
+Four spreadsheet benchmarks and one opt-in memory smoke add five reviewed
+conditional error-check outcomes. Save setup ignores cell/table mutation errors,
+uses the same workbook across iterations and performs no reopened-content check.
+The package batch selects no benchmarks and leaves the enabled memory body unrun;
+no performance or memory measurement is credited.
 The [graph/ZIP64 handoff](graph-archive-handoff.md) compares selected assertions
 with the exact v0.4 released IDs, retaining operation, fixture, error-code and
 output-encoding gaps. It adds no reviewed declaration or execution credit.

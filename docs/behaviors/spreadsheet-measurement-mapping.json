@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "spreadsheet-measurement-candidates.feature",
+  "native_prefix": "pkg/spreadsheet/",
+  "native_files": [
+    "pkg/spreadsheet/benchmark_test.go",
+    "pkg/spreadsheet/mem_test.go"
+  ],
+  "source_revision": "1a9be784d9375e8662850dd6ec632dfae142b7bd",
+  "inventory_observation_revision": "ec71b6cf4c6ac8bebec49ee195ac64520b104be9",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/spreadsheet/benchmark_test.go::BenchmarkWorkbookOpenReader",
+      "source_sha256": "60c95f9b2cb8c9a099101fbf46a707fe4594163cc8756c59d40cb0dc27f05546",
+      "kind": "benchmark",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-measurement-001"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Benchmark only: minimal.xlsx resolves before read; read error skips, resolver failure is separate. SetBytes records input length; ResetTimer precedes b.N OpenReader/Close checks. No workbook content or performance assertion."
+    },
+    {
+      "native_id": "pkg/spreadsheet/benchmark_test.go::BenchmarkWorkbookOpenReaderLarge",
+      "source_sha256": "60c95f9b2cb8c9a099101fbf46a707fe4594163cc8756c59d40cb0dc27f05546",
+      "kind": "benchmark",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-measurement-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Benchmark only: tables.xlsx read error skips after successful resolution. b.N OpenReader/Close must succeed; no table, source-size or resource-bound assertion. Standard package tests do not select this benchmark."
+    },
+    {
+      "native_id": "pkg/spreadsheet/benchmark_test.go::BenchmarkWorkbookSaveAs",
+      "source_sha256": "60c95f9b2cb8c9a099101fbf46a707fe4594163cc8756c59d40cb0dc27f05546",
+      "kind": "benchmark",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-measurement-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Benchmark only: New checked, A1/B2 SetValue errors ignored. One mutable workbook and temporary directory prepared before ResetTimer; b.N saves to indexed paths checked. Deferred Close ignored; no reopen or content/performance assertions."
+    },
+    {
+      "native_id": "pkg/spreadsheet/benchmark_test.go::BenchmarkWorkbookSaveAsLarge",
+      "source_sha256": "60c95f9b2cb8c9a099101fbf46a707fe4594163cc8756c59d40cb0dc27f05546",
+      "kind": "benchmark",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-measurement-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Benchmark only: five hundred setup rows with three SetValue calls each (1500 unchecked calls), AddTable A1:C501/BenchmarkTable, one explicitly ignored UpdateRow for header names, all before ResetTimer. New/SaveAs checked; deferred Close ignored. No data/table readback or time/allocation threshold; setup and b.N counts are not independent outcomes."
+    },
+    {
+      "native_id": "pkg/spreadsheet/mem_test.go::TestWorkbookOpenReader_MemProfile",
+      "source_sha256": "a21f3d304420be948e5347fa2efdc6de1c583d23a2338f1db57d01b494d3f8e0",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-measurement-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Empty ENABLE_MEMPROFILE (unset or explicitly empty) skips before resolving minimal.xlsx. Any nonempty value enables read/OpenReader/Close error assertions. Body creates no profile and asserts no memory or contents. Capture batch explicitly unsets variable; enabled body unrun."
+    }
+  ],
+  "notes": "Five source-reviewed declarations, four benchmarks and one opt-in smoke. No benchmark, enabled memory-body, performance or canonical execution credit. Package batch selects no benchmarks and explicitly unsets ENABLE_MEMPROFILE. Neither benchmark iteration counts nor setup setter counts expand the frozen 404-declaration denominator. Other spreadsheet API and fixture declarations remain unreviewed. Enhanced v0.15 and protected v0.9 publication state unchanged."
+}
