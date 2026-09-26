@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "observation_revision": "e6bdc904ddc4b4727947d9488b2df61aef773c87",
+  "observation_revision": "3bfb2a9567b8c07741a470a140418bc1086e017c",
   "files": [
     {
       "path": "acceptance/acceptance_test.go",
@@ -19,7 +19,7 @@
     },
     {
       "path": "acceptance/behavior_catalogue_test.go",
-      "sha256": "77a78690ca27afe2d7a20aeb288474a83f1c1fbc90894f1b5b61ea6b8e37f4ea",
+      "sha256": "90e641607c40413610ae22a65f6fca17cfc23650fcd7693b46b945dd8e95b960",
       "helpers_only": false
     },
     {
@@ -867,7 +867,7 @@
         {
           "line": 16,
           "expression": "[]string",
-          "rows": 3
+          "rows": 4
         }
       ],
       "calls": [

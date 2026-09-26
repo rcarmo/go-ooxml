@@ -1,0 +1,396 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "package-model-candidates.feature",
+  "native_prefix": "pkg/packaging/",
+  "native_files": [
+    "pkg/packaging/content_types_test.go",
+    "pkg/packaging/package_test.go",
+    "pkg/packaging/relationship_test.go"
+  ],
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/packaging/content_types_test.go::TestContentTypesGetContentType",
+      "source_sha256": "07af100a8e3c2e771934ca1b15b0ad2e8125b889a048dd96f457c37dc63c22f5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 10,
+          "expression": "[]struct {\n\turi\tstring\n\texpect\tstring\n}",
+          "rows": 7,
+          "names": [
+            "/word/document.xml",
+            "word/document.xml",
+            "/word/styles.xml",
+            "/word/unknown.xml",
+            "/image.png",
+            "/image.jpeg",
+            "/unknown.xyz"
+          ]
+        }
+      ],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/content_types_test.go::TestContentTypesAddOverride",
+      "source_sha256": "07af100a8e3c2e771934ca1b15b0ad2e8125b889a048dd96f457c37dc63c22f5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-008"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/content_types_test.go::TestContentTypesAddDefault",
+      "source_sha256": "07af100a8e3c2e771934ca1b15b0ad2e8125b889a048dd96f457c37dc63c22f5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-008"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/content_types_test.go::TestContentTypesRemoveOverride",
+      "source_sha256": "07af100a8e3c2e771934ca1b15b0ad2e8125b889a048dd96f457c37dc63c22f5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-008"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/content_types_test.go::TestContentTypesEnsureContentType",
+      "source_sha256": "07af100a8e3c2e771934ca1b15b0ad2e8125b889a048dd96f457c37dc63c22f5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-008"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestNewPackage",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-001"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestPackage_AddAndGetPart",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 55,
+          "expression": "tt.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 28,
+          "expression": "[]struct {\n\tname\t\tstring\n\turi\t\tstring\n\tcontentType\tstring\n\tcontent\t\t[]byte\n}",
+          "rows": 3,
+          "names": [
+            "XML part",
+            "with leading slash",
+            "binary content"
+          ]
+        },
+        {
+          "line": 50,
+          "expression": "[]byte",
+          "rows": 4
+        }
+      ],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestPackage_DeletePart",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestPackage_Relationships",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestPackage_Parts",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestPackage_SaveAndOpen",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestPackage_OpenBytes",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestPackage_ClosedOperations",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 236,
+          "expression": "[]byte",
+          "rows": 0
+        }
+      ],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestPackage_WriteTo",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestPart_Stream",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestPart_SetContent",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestPart_Size",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestPackage_CorePropertiesRoundTrip",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/package_test.go::TestPackage_CoreProperties_Default",
+      "source_sha256": "198225c34c1159c255d51de6a4871ea8819fddbcf33f49d22a4796480707fc57",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/relationship_test.go::TestRelationshipsPathForPart",
+      "source_sha256": "e01850a054aaedec313c76f41b479244da540cf32c30e42b0e9c3e5fb310b43c",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-009"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 6,
+          "expression": "[]struct {\n\tpartURI\tstring\n\texpect\tstring\n}",
+          "rows": 5,
+          "names": [
+            "word/document.xml",
+            "xl/workbook.xml",
+            "ppt/presentation.xml",
+            "document.xml",
+            "word/header1.xml"
+          ]
+        }
+      ],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/relationship_test.go::TestResolveRelationshipTarget",
+      "source_sha256": "e01850a054aaedec313c76f41b479244da540cf32c30e42b0e9c3e5fb310b43c",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-009"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 26,
+          "expression": "[]struct {\n\tsource\tstring\n\ttarget\tstring\n\texpect\tstring\n}",
+          "rows": 5,
+          "names": [
+            "word/document.xml",
+            "word/document.xml",
+            "word/document.xml",
+            "xl/workbook.xml",
+            "document.xml"
+          ]
+        }
+      ],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/relationship_test.go::TestRelationshipsAdd",
+      "source_sha256": "e01850a054aaedec313c76f41b479244da540cf32c30e42b0e9c3e5fb310b43c",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/relationship_test.go::TestRelationshipsAddWithID_UpdatesExisting",
+      "source_sha256": "e01850a054aaedec313c76f41b479244da540cf32c30e42b0e9c3e5fb310b43c",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/relationship_test.go::TestRelationshipsByType",
+      "source_sha256": "e01850a054aaedec313c76f41b479244da540cf32c30e42b0e9c3e5fb310b43c",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/relationship_test.go::TestRelationshipsFirstByType",
+      "source_sha256": "e01850a054aaedec313c76f41b479244da540cf32c30e42b0e9c3e5fb310b43c",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    },
+    {
+      "native_id": "pkg/packaging/relationship_test.go::TestRelationshipsRemove",
+      "source_sha256": "e01850a054aaedec313c76f41b479244da540cf32c30e42b0e9c3e5fb310b43c",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-package-model-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Mutable model assertions do not establish retained-source custody or full schema conformance."
+    }
+  ]
+}
