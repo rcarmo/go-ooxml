@@ -102,6 +102,9 @@ func Parse(source []byte) (*Document, error) {
 				if !isDecl {
 					continue
 				}
+				if prefix != "" && !localName(prefix) {
+					return fail("invalid namespace prefix")
+				}
 				if declared[prefix] {
 					return fail("duplicate namespace declaration")
 				}
@@ -154,7 +157,7 @@ func Parse(source []byte) (*Document, error) {
 			stack = stack[:len(stack)-1]
 		case xml.CharData:
 			if len(stack) == 0 {
-				if len(bytes.TrimSpace(t)) != 0 {
+				if !xmlWhitespace(t) {
 					return fail("text outside root")
 				}
 			} else {
@@ -184,7 +187,7 @@ func Parse(source []byte) (*Document, error) {
 }
 
 func expanded(raw xml.Name, ns map[string]string, attribute bool) (xml.Name, error) {
-	if strings.Contains(raw.Local, ":") || strings.Contains(raw.Space, ":") || raw.Local == "" {
+	if !localName(raw.Local) || raw.Space != "" && !localName(raw.Space) {
 		return xml.Name{}, fmt.Errorf("invalid QName")
 	}
 	if raw.Space == "xmlns" {
@@ -335,6 +338,15 @@ func validText(s string) bool {
 			continue
 		}
 		return false
+	}
+	return true
+}
+
+func xmlWhitespace(data []byte) bool {
+	for _, b := range data {
+		if b != ' ' && b != '\t' && b != '\r' && b != '\n' {
+			return false
+		}
 	}
 	return true
 }

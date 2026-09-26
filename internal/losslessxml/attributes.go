@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
-	"unicode"
+	"unicode/utf8"
 )
 
 // AttributeEdit changes or adds one non-namespace attribute by expanded name.
@@ -138,20 +138,24 @@ func (d *Document) Edit(texts []TextEdit, attributes []AttributeEdit) ([]byte, e
 	}
 	return out.Bytes(), nil
 }
+
+// XML 1.0 fifth-edition NCName productions (Name without colon).
 func localName(s string) bool {
-	if s == "" {
+	if s == "" || !utf8.ValidString(s) {
 		return false
 	}
 	for i, r := range s {
-		if i == 0 {
-			if r != '_' && !unicode.IsLetter(r) {
-				return false
-			}
-		} else if r != '_' && r != '-' && r != '.' && !unicode.IsLetter(r) && !unicode.IsDigit(r) && !unicode.IsMark(r) {
+		if nameStart(r) {
+			continue
+		}
+		if i == 0 || !(r == '-' || r == '.' || r >= '0' && r <= '9' || r == 0xb7 || r >= 0x300 && r <= 0x36f || r >= 0x203f && r <= 0x2040) {
 			return false
 		}
 	}
 	return true
+}
+func nameStart(r rune) bool {
+	return r == '_' || r >= 'A' && r <= 'Z' || r >= 'a' && r <= 'z' || r >= 0xc0 && r <= 0xd6 || r >= 0xd8 && r <= 0xf6 || r >= 0xf8 && r <= 0x2ff || r >= 0x370 && r <= 0x37d || r >= 0x37f && r <= 0x1fff || r >= 0x200c && r <= 0x200d || r >= 0x2070 && r <= 0x218f || r >= 0x2c00 && r <= 0x2fef || r >= 0x3001 && r <= 0xd7ff || r >= 0xf900 && r <= 0xfdcf || r >= 0xfdf0 && r <= 0xfffd || r >= 0x10000 && r <= 0xeffff
 }
 func (d *Document) attributeRanges(n node) ([]attrRange, error) {
 	src := d.source

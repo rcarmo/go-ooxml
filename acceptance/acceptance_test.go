@@ -115,6 +115,7 @@ func TestAcceptance(t *testing.T) {
 		styleIndexSteps(sc)
 		xmlNormalizationSteps(sc)
 		xmlInsertSteps(sc)
+		xmlConformanceSteps(sc)
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil

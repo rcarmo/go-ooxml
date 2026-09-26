@@ -434,3 +434,9 @@ Internal InsertChildren authors expanded-name nodes with existing or fresh scope
 prefixes, resets default namespaces for unqualified children and expands self-closing
 parents without rewriting their attributes. Raw XML/namespace mutations and overlapping
 targets refuse. This advances B03, not Office schema/graph authoring parity. Batch037.
+
+### Increment 038: QName and root-boundary conformance
+
+Explicit NCName components reject digit/combining-mark-first local names and invalid
+prefix declarations; root-external whitespace is XML whitespace only. Fresh insertion
+bindings/default resets are checked across sibling boundaries. Batch038.
