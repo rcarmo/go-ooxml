@@ -34,7 +34,7 @@ The target layout is one shared schema2 manifest and grouped
 `fixtures/<format>/<scenarioGroup>/` inputs. Native labels resolve fixture IDs;
 physical files are deduplicated by SHA-256. `spec/reference-distribution.json`
 records the commit, annotated release tag and seals. This enhancement branch uses
-released `v0.14.0`, commit `083023c10bd8635f905a7ec614e47409d466dd50`; default
+released `v0.15.0`, commit `977ebe92522325a8bbc14999fed17e0a5e9626da`; default
 checks need no override. Legacy tips and prepared publication refs/mirror remain
 at their v0.9 checkpoint under the coordinator's enhanced-only adoption scope. Candidate checking is separate, as described in
 `../testing.md`.
@@ -53,9 +53,9 @@ required without claiming an annotated release. Missing inputs fail.
 
 The default released-reference library/acceptance batch passes with 291 native
 Gherkin cases; 20 planned and one external case remain unrun. See
-`../../reports/batches/131.md` for the enhanced-only v0.14 default commands and
+`../../reports/batches/136.md` for the enhanced-only v0.15 default commands and
 checkout custody. The bounded race checkpoint is the earlier v0.3 batch096;
-v0.14 changes only
+v0.15 changes only
 reference pins/counts and documentation.
 Historical reports retain original measured results, with sanitised implementation
 citations marked as historical. No removed inventory row becomes completed work.
