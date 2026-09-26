@@ -1,0 +1,13 @@
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	(cached)
+--- FAIL: TestSharedFactRegistry (0.00s)
+    reference_facts_test.go:110: native fact ContentTypeWordFooter missing or differs: Go="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml" registry=""
+    reference_facts_test.go:110: native fact ContentTypeWordHeader missing or differs: Go="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml" registry=""
+    reference_facts_test.go:110: native fact ContentTypeWordStyles missing or differs: Go="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml" registry=""
+    reference_facts_test.go:110: native fact PPTXPresentationPath missing or differs: Go="ppt/presentation.xml" registry=""
+    reference_facts_test.go:121: 140 native string constants checked against 145 evidence-linked shared facts; no execution credit
+--- FAIL: TestSharedWorkflowRegistry (0.00s)
+    reference_facts_test.go:183: missing Go accounting @id-docx-story-parts
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/acceptance	2.326s
+FAIL

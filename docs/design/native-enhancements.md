@@ -662,3 +662,11 @@ shared/notes checks are mandatory. Both modules pass against the draft,291 nativ
 cases; a missing-root batch fails. No tag/gitlink or history rewrite yet. Native
 Go-only Gherkin remains local; shared workflows and future fact ingestion use the
 central distribution. reports/batches/077.md records partial-run and byte audits.
+
+### Increment078: shared facts and workflow accounting
+
+Native acceptance compares140 exported string declarations to shared facts,
+including four explicit alias mappings; IDs, evidence and workflow references are
+validated. Specified and disputed MIME values stay distinct. No runtime constant
+changes or shared workflow execution credit. Packaging/testutil/complete acceptance
+pass against the draft;291 native Gherkin cases unchanged. Final tag remains open.
