@@ -455,3 +455,11 @@ An explicit numeric edit traces static A1/range dependencies across sheets and c
 clears affected cached values, and requests recalculation atomically with the input.
 No calculation; unrelated caches/metadata and no-op bytes remain untouched. Conservative
 unknown/volatile/shared/array/graph/protection refusals remain. Batch041; not X06/X07 completion.
+
+### Increment042: native shared cache contract
+
+The exact V2 cross-sheet fixture now executes through the invalidation API and passes
+independent source/formula/cache/flags/preservation/graph/style/commit-count checks.
+Only empty inactive protection/name containers were unblocked; active structures refuse.
+One shared contract has direct-native evidence, not yet schema2/Gherkin binding parity.
+Batch042;18 others unexecuted, external calculation not performed.

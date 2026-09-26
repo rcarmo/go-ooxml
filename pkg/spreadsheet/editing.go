@@ -235,6 +235,12 @@ func (s *EditSession) guardMode(allowStaticFormulas bool) error {
 			if n.Space != packaging.NSSpreadsheetML {
 				return editRefusal("unsupported_structure", "unknown workbook/worksheet extension")
 			}
+			if (n.Local == "workbookProtection" || n.Local == "definedNames") && len(e.Attributes()) == 0 {
+				text, leaf := e.Text()
+				if leaf && strings.TrimSpace(text) == "" {
+					continue
+				}
+			}
 			if n.Local == "f" && !allowStaticFormulas {
 				return editRefusal("unsupported_structure", "formulas require explicit cache invalidation")
 			}

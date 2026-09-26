@@ -23,10 +23,17 @@ func cacheSteps(sc *godog.ScenarioContext) {
 	setup := func(condition string) error {
 		q := packaging.New()
 		calcPr := `<calcPr calcId="123"/>`
+		protection := ""
+		if condition == "inactive workbook protection" {
+			protection = `<workbookProtection/><definedNames/>`
+		}
+		if condition == "locked workbook" {
+			protection = `<workbookProtection lockStructure="1"/>`
+		}
 		if condition == "manual calculation mode" {
 			calcPr = `<calcPr calcMode="manual"/>`
 		}
-		_, _ = q.AddPart("xl/workbook.xml", packaging.ContentTypeWorkbook, []byte(`<workbook xmlns="`+packaging.NSSpreadsheetML+`" xmlns:r="`+packaging.NSDocumentRelationships+`"><sheets><sheet name="Input" sheetId="1" r:id="rId1"/><sheet name="Calc" sheetId="2" r:id="rId2"/></sheets>`+calcPr+`</workbook>`))
+		_, _ = q.AddPart("xl/workbook.xml", packaging.ContentTypeWorkbook, []byte(`<workbook xmlns="`+packaging.NSSpreadsheetML+`" xmlns:r="`+packaging.NSDocumentRelationships+`">`+protection+`<sheets><sheet name="Input" sheetId="1" r:id="rId1"/><sheet name="Calc" sheetId="2" r:id="rId2"/></sheets>`+calcPr+`</workbook>`))
 		f := "Input!A1*2"
 		fAttrs := ""
 		if condition == "dynamic formula" {

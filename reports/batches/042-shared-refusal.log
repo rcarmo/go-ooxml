@@ -1,0 +1,8 @@
+ok  	github.com/rcarmo/go-ooxml/internal/formula	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	(cached)
+--- FAIL: TestSharedCacheInvalidation (0.00s)
+    shared_cache_test.go:49: spreadsheet_edit: protected_operation (): dependent/protected structure requires reference-aware editor: workbookProtection
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/acceptance	0.951s
+FAIL

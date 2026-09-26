@@ -29,3 +29,11 @@ Feature: Static dependency cache invalidation without calculation
       | unknown sheet |
       | existing calculation chain |
       | manual calculation mode |
+      | locked workbook |
+
+  @CACHE-004
+  Scenario: An empty inactive workbook protection marker permits invalidation
+    Given a formula workbook containing "inactive workbook protection"
+    When I set the input to ten with explicit invalidation
+    Then direct and transitive cached results are absent or empty
+    And the workbook requests full recalculation without computing an answer
