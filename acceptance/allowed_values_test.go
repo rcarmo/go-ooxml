@@ -138,6 +138,36 @@ func vocabularySteps(sc *godog.ScenarioContext) {
 		case "excessive whole-column result":
 			expr = "A:A"
 			cells += `<row r="100001"><c r="B100001"><v>1</v></c></row>`
+		case "omitted validation type", "explicit none validation type":
+			kind = "none"
+			want = nil
+		case "unknown validation type":
+			kind = "lst"
+		case "empty validation type":
+			kind = ""
+		case "uppercase validation type":
+			kind = "LIST"
+		case "decimal scalar spellings":
+			expr = "A1:C1"
+			cells = `<row r="1"><c r="A1"><v>+.5</v></c><c r="B1"><v>-1.</v></c><c r="C1"><v>2.50E-03</v></c></row>`
+			want = []spreadsheet.ValidationValue{{Kind: "number", Text: "+.5"}, {Kind: "number", Text: "-1."}, {Kind: "number", Text: "2.50E-03"}}
+		case "hexadecimal stored number", "underscored stored number":
+			expr = "A1"
+			number := "0x1p2"
+			if condition == "underscored stored number" {
+				number = "1_000"
+			}
+			cells = `<row r="1"><c r="A1"><v>` + number + `</v></c></row>`
+		case "literal at vocabulary limit", "literal exceeds vocabulary limit":
+			n := 100000
+			if condition == "literal exceeds vocabulary limit" {
+				n++
+			}
+			expr = `"` + strings.Repeat(",", n-1) + `"`
+			want = make([]spreadsheet.ValidationValue, n)
+			for i := range want {
+				want[i] = str("")
+			}
 		case "two matching lists":
 			extraValidation = `<dataValidation type="list" sqref="D1"><formula1>&quot;X,Y&quot;</formula1></dataValidation>`
 		case "invalid literal quote":
@@ -174,6 +204,9 @@ func vocabularySteps(sc *godog.ScenarioContext) {
 			count = "2"
 		}
 		validation := `<dataValidations count="` + count + `"><dataValidation type="` + kind + `" allowBlank="1" sqref="` + sqref + `"><formula1>` + escape(expr) + `</formula1></dataValidation>` + extraValidation + `</dataValidations>`
+		if condition == "omitted validation type" {
+			validation = strings.Replace(validation, ` type="none"`, "", 1)
+		}
 		q := packaging.New()
 		ns := packaging.NSSpreadsheetML
 		_, _ = q.AddPart("xl/workbook.xml", packaging.ContentTypeWorkbook, []byte(`<workbook xmlns="`+ns+`" xmlns:r="`+packaging.NSDocumentRelationships+`"><sheets><sheet name="Main" sheetId="1" r:id="rId1"/><sheet name="Owner's Inputs" sheetId="2" r:id="rId2"/></sheets></workbook>`))

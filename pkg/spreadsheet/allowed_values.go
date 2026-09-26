@@ -3,6 +3,7 @@ package spreadsheet
 import (
 	"encoding/xml"
 	"math"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -18,6 +19,12 @@ type ValidationValue struct {
 	Kind string `json:"kind"`
 	Text string `json:"text"`
 }
+
+const maxValidationValues = 100000
+
+// ParseFloat also accepts Go hexadecimal and underscore spellings. Stored
+// SpreadsheetML numbers in this API must use finite decimal/exponent syntax.
+var validationNumber = regexp.MustCompile(`^[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?$`)
 
 type validationRect struct{ loRow, hiRow, loCol, hiCol int }
 
@@ -174,8 +181,9 @@ func validationInterior(merges []validationRect, c formula.Cell) bool {
 
 // AllowedValues inspects one worksheet cell without creating it. A nil slice
 // means no list validation covers it; unproved sources return errors, never a
-// partial vocabulary. This bounded subset accepts literal lists and finite 1D
-// A1 ranges up to 100000 positions, reading plain inline strings/numbers/booleans.
+// partial vocabulary. This bounded subset accepts literal lists and static 1D
+// ranges (including stored-cell-bounded whole axes) up to 100000 positions,
+// reading plain/rich inline or shared strings, finite numbers and booleans.
 // Returned values retain source order, duplicates, whitespace and blank slots.
 func (s *EditSession) AllowedValues(sheet, cell string) ([]ValidationValue, error) {
 	coord, err := formula.ParseCell(cell)
@@ -220,8 +228,16 @@ func (s *EditSession) AllowedValues(sheet, cell string) ([]ValidationValue, erro
 				if dv.Name() != expanded("dataValidation") {
 					return nil, editRefusal("unsupported_structure", "unknown validation entry")
 				}
-				if attr(dv, "type") != "list" {
+				kind, present := attributeValue(dv, "type")
+				if !present { // The schema default is none.
 					continue
+				}
+				switch kind {
+				case "none", "whole", "decimal", "date", "time", "textLength", "custom":
+					continue
+				case "list":
+				default:
+					return nil, editRefusal("unsupported_structure", "unknown validation type")
 				}
 				sqref := strings.Fields(attr(dv, "sqref"))
 				if len(sqref) == 0 {
@@ -332,7 +348,7 @@ func (s *EditSession) AllowedValues(sheet, cell string) ([]ValidationValue, erro
 		return nil, editRefusal("unsupported_structure", "two-dimensional validation range")
 	}
 	count := max(bounds.hiRow-bounds.loRow, bounds.hiCol-bounds.loCol) + 1
-	if count > 100000 {
+	if count > maxValidationValues {
 		return nil, editRefusal("resource_limit", "validation vocabulary exceeds 100000 positions")
 	}
 	out := make([]ValidationValue, 0, count)
@@ -364,6 +380,9 @@ func literalValidationValues(source string) ([]ValidationValue, error) {
 		return nil, editRefusal("unsupported_structure", "unterminated validation literal")
 	}
 	inside := source[1 : len(source)-1]
+	if strings.Count(inside, ",") >= maxValidationValues {
+		return nil, editRefusal("resource_limit", "validation vocabulary exceeds 100000 positions")
+	}
 	items := []string{""}
 	var b strings.Builder
 	for i := 0; i < len(inside); i++ {
@@ -502,6 +521,9 @@ func (v validationXML) storedValue(session *EditSession, cell losslessxml.Elemen
 		}
 		return ValidationValue{Kind: "string", Text: shared.values[index]}, nil
 	case "", "n":
+		if !validationNumber.MatchString(text) {
+			return fail("non-decimal stored numeric value")
+		}
 		n, err := strconv.ParseFloat(text, 64)
 		if err != nil || math.IsNaN(n) || math.IsInf(n, 0) {
 			return fail("nonfinite/malformed stored numeric value")

@@ -637,3 +637,12 @@ indices, absent/ambiguous tables and mixed rich/plain structures refuse unchange
 Whole-row/column list sources use stored-cell extents and preserve blanks/order;
 misleading dimension hints cannot expand results. A separate lexer-backed direct
 range parser refuses unknown syntax;281 native cases pass. Expression analysis unchanged.
+
+### Increment075: validation lexical guards
+
+Unknown declared validation types, Go hexadecimal/underscore scalar spellings and
+literal lists above100000 positions now refuse. Omitted type defaults to none;
+finite signed decimal/exponent spelling is retained. Six behavioural red cases
+precede the fix;291 native cases pass in the bounded formula/spreadsheet/complete
+acceptance batch. Full/race integration follows separately. Shared fixture/fact
+migration awaits a coordinated tag; no history or provenance notices changed.

@@ -1950,3 +1950,8 @@ AllowedValues also resolves shared-string indices against the retained si sequen
 without deduplication and reads supported rich inline/shared runs. Missing/external/
 ambiguous tables, bad indices and mixed/extended text structures refuse. Values are
 raw XML-decoded stored text, not Excel display or _xHHHH_ escape interpretation.
+
+AllowedValues caps literal lists at the same 100000 positions as static ranges.
+Unknown declared validation types refuse; an omitted type defaults to none.
+Stored numbers require finite decimal/exponent spelling; Go hexadecimal and
+underscore numeric spellings refuse. Signed decimals retain their stored text.
