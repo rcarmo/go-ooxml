@@ -272,3 +272,10 @@ checks. Protection, fields, revisions, wrappers and unsupported whitespace refus
 Successful changes consume targets; no-op/refusal do not. Other prior targets
 become stale conservatively. This implements one bounded adapter toward B10,
 not full Word/extended search or review parity. See SPEC.md and batch 011.
+
+### Increment 012: first bounded presentation editor
+
+`presentation.OpenEditing` supplies exact slide-part/shape-ID complete-leaf
+corrections for plain ungrouped shapes. Fields, locks and mixed content refuse;
+source splicing retains formatting/geometry and unrelated parts. This is an
+initial adapter, not P01/P03 or B10 completion. See SPEC.md and batch 012.

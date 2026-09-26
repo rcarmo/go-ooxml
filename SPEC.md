@@ -1745,3 +1745,15 @@ targets reusable; any successful text change invalidates other old targets
 conservatively. `SaveAs` returns the preserved package receipt. Cross-run search,
 all-story editing, tracked edits and full extended revision/protection semantics are
 not implemented by this subset. Existing Document interfaces are unchanged.
+
+## Initial presentation safe-edit subset
+
+`presentation.OpenEditing` validates the retained graph and ordinary transitional
+presentation/slide inventory. `EditSession.FindText(slidePart, shapeID, text)`
+selects one exact complete text leaf in a plain ungrouped shape; duplicate IDs or
+text refuse. `Replace` retains geometry/direct formatting and unrelated XML bytes,
+refusing fields, breaks, mixed content, shape locks and unsupported characters.
+Targets bind the session, generation and full part fingerprint. No-op/refusal keep
+targets reusable; successful change consumes and conservatively invalidates prior
+targets. This is not full deck search, inherited formatting or field/group/table
+editing. Existing presentation interfaces remain unchanged.

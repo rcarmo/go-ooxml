@@ -99,6 +99,7 @@ func TestAcceptance(t *testing.T) {
 		xmlSteps(sc)
 		graphSteps(sc)
 		wordSteps(sc)
+		slideSteps(sc)
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil
