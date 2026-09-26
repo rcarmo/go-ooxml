@@ -15,12 +15,16 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The tracked gitlink/pin currently names release `v0.1.1`, which predates schema2
-lookup. This intermediate migration cannot run against that older layout.
-The tested grouped-layout candidate is commit
-`9ab4a029d6dc4207a48592050795d599df21c19a`; it is not yet a released tag.
+The gitlink and pin name annotated release `v0.2.0`, commit
+`631b1136c9d65451d21746db2ae2635866902cb4`. Initialise the recorded submodule and
+run the default batch without overrides:
 
-A candidate run requires both explicit overrides:
+```sh
+git submodule update --init --recursive
+GOMAXPROCS=2 make test-batch
+```
+
+A future candidate run requires both explicit overrides:
 
 ```sh
 OOXML_FIXTURES_ROOT=/path/to/clean/candidate-checkout \
@@ -33,8 +37,8 @@ The pin uses schema1 with `commit`, `tag`, `tag_object`, `manifest_sha256`,
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-The current candidate contains 123 manifest assets, including 115 unique
-fixtures, plus 149 facts and 39 workflows/55 expanded cases.
+Release `v0.2.0` contains 123 manifest assets, including 115 unique fixtures in
+32 format/scenario groups, plus 149 facts and 39 workflows/55 expanded cases.
 
 Once a release is approved, update the gitlink and
 `spec/reference-distribution.json` together. All consumer branches/version tips
@@ -62,8 +66,8 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The latest full candidate integration and helper race results are in
-`../reports/batches/089.md`: 291 implemented native Gherkin cases; 20 planned and
+The default released-reference batch and bounded race results are in
+`../reports/batches/091.md`: 291 implemented native Gherkin cases; 20 planned and
 one external case unrun. Package/unit/subtest counts are separate metrics.
 No live Office rendering/calculation or exploratory fuzz campaign ran in that batch.
 Historical reports retain the commands and outcomes from their original runs.
@@ -80,6 +84,7 @@ credit, and sibling results do not become Go passes.
 
 The rewritten history and main/version-tip migrations are local preparations.
 The configured GitHub credential has no write permission for this repository.
-Publication has not occurred; it requires the common release pin, renewed tests
-and audits, and explicit leases against unchanged remote refs. See the batch
+Go publication has not occurred. The shared release is available, but publishing
+the rewritten Go refs still requires write access, final ref audits and explicit
+leases against unchanged remote refs. See the batch
 reports for historical results, not current release certification.

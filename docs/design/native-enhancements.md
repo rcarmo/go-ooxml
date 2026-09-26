@@ -33,9 +33,10 @@ regression IDs. It contains explicit limits, not a completeness score.
 The target layout is one shared schema2 manifest and grouped
 `fixtures/<format>/<scenarioGroup>/` inputs. Native labels resolve fixture IDs;
 physical files are deduplicated by SHA-256. `spec/reference-distribution.json`
-records the commit, annotated release tag and seals once the coordinated release
-is installed. The tracked `v0.1.1` pin predates this layout; current checks require
-the explicit grouped candidate pin/root described in `../testing.md`.
+records the commit, annotated release tag and seals. All prepared consumers use
+released `v0.2.0`, commit `631b1136c9d65451d21746db2ae2635866902cb4`; default
+checks need no override. Candidate checking is separate, as described in
+`../testing.md`.
 
 Tests verify the pinned full tracked tree, checkout identity, seals and shared
 fact/workflow links. Only locally executed assertions earn execution credit;
@@ -49,10 +50,9 @@ required without claiming an annotated release. Missing inputs fail.
 
 ## Verification and limits
 
-The full grouped-candidate library/acceptance batch and helper race checks pass
-with 291 native Gherkin cases; 20 planned and one external case remain unrun.
-See `../../reports/batches/089.md` for commands and scope. Final default-release
-repinning and recursive-clone verification still await the common release.
+The default released-reference library/acceptance batch passes with 291 native
+Gherkin cases; 20 planned and one external case remain unrun. See
+`../../reports/batches/091.md` for commands, race scope and checkout custody.
 Historical reports retain original measured results, with sanitised implementation
 citations marked as historical. No removed inventory row becomes completed work.
 

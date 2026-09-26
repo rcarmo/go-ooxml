@@ -1888,4 +1888,6 @@ Native tests read shared assets from `references/fixtures-ooxml`; the explicit
 Missing inputs fail; tests do not fall back to local testdata or opt out. Outputs
 remain consumer-local, with generated-output guards against shared-root writes.
 The code-free V2 distribution seal is separate from its retained workflow IDs and
-fixture hashes. The schema2 migration currently requires an explicit candidate root and pin; the tracked older release does not satisfy the new helper. See docs/testing.md for the exact status.
+fixture hashes. The schema2 shared checkout is pinned to annotated v0.2.0; default
+batches require no override. Exact commit/tag/seals and full tracked-tree custody
+are checked. See docs/testing.md for candidate policy and current verification.
