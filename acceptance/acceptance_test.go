@@ -104,6 +104,7 @@ func TestAcceptance(t *testing.T) {
 		storySteps(sc)
 		spanSteps(sc)
 		replaceSpanSteps(sc)
+		spanBatchSteps(sc)
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil

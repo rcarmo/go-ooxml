@@ -330,3 +330,9 @@ Unique maximal affix localisation preserves unchanged run fragments and puts cha
 text into its starting run. Repeated-affix ambiguity, wrappers and interior run-boundary
 insertions without owner/format proof refuse. Staged leaves commit once; tracked/bulk
 and full result-report parity are not implied. Batch020.
+
+### Increment 021: explicit atomic span batches
+
+ReplaceBatch preflights selected targets, merges disjoint changes within shared
+leaves and commits once. Any selected refusal aborts the batch; targets survive
+rollback/no-op. This is not extended replace_all's per-match continuation API. Batch021.

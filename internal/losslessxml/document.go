@@ -206,6 +206,15 @@ func (d *Document) Elements() []Element {
 	return out
 }
 func (e Element) valid() bool { return e.doc != nil && e.index >= 0 && e.index < len(e.doc.nodes) }
+
+// Ordinal is source-order identity within a fingerprint-verified snapshot only.
+func (e Element) Ordinal() int {
+	if !e.valid() {
+		return -1
+	}
+	return e.index
+}
+
 func (e Element) Name() xml.Name {
 	if !e.valid() {
 		return xml.Name{}

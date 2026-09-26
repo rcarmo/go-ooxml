@@ -1793,3 +1793,10 @@ later changed fragments become empty text leaves. Each affected leaf retains its
 run properties/markup. Pure insertions at interior run boundaries still refuse
 until complete formatting/owner equality is proved. Wrappers/fields/protection
 retain conservative gates; no tracked edit or revision preservation is implied.
+
+`EditSession.ReplaceBatch([]TextReplacement)` is an explicitly selected atomic
+batch: any invalid/stale/overlapping/unsupported target aborts every selected edit.
+It merges disjoint rune deltas for targets sharing a text leaf, commits once, and
+consumes changing targets only after success. All-no-op batches keep targets live.
+This API is deliberately distinct from extended replace_all's per-match refusal
+reporting/continue policy; that convenience API remains pending.
