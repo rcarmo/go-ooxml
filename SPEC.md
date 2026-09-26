@@ -1757,3 +1757,16 @@ Targets bind the session, generation and full part fingerprint. No-op/refusal ke
 targets reusable; successful change consumes and conservatively invalidates prior
 targets. This is not full deck search, inherited formatting or field/group/table
 editing. Existing presentation interfaces remain unchanged.
+
+## Initial spreadsheet safe-edit subset
+
+`spreadsheet.OpenEditing` validates the retained OPC graph and exact workbook/sheet
+identity. `FindNumber(sheet, cell)` requires one existing numeric value leaf at an
+exact uppercase bounded A1 address. `SetNumber` accepts finite values only and
+refuses formulas anywhere in the workbook, names, charts/pivots/tables/external
+dependencies, validation/conditional formatting, protection, merges and extensions
+that it cannot prove independent. It preserves the cell's style and all unrelated
+bytes. Targets use session/generation/part fingerprints; no-op/refusal remain
+reusable. `SaveAs` delivers through the retained-source verifier. This conservative
+formula-free subset performs no dependency rewriting or cache recalculation and is
+not the general extended spreadsheet editing contract. Existing interfaces unchanged.

@@ -279,3 +279,11 @@ not full Word/extended search or review parity. See SPEC.md and batch 011.
 corrections for plain ungrouped shapes. Fields, locks and mixed content refuse;
 source splicing retains formatting/geometry and unrelated parts. This is an
 initial adapter, not P01/P03 or B10 completion. See SPEC.md and batch 012.
+
+### Increment 013: first bounded numeric cell editor
+
+The spreadsheet adapter changes existing numeric value leaves only after refusing
+formula/dependent/protected structures in its conservative initial subset. It
+preserves style and unrelated bytes and delivers through retained-source checks.
+All three formats now have one bounded adapter; B10 still needs wider integration
+and adversarial/corpus coverage. This is not X01/X02/X07 parity. See batch 013.
