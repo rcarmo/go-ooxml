@@ -247,3 +247,12 @@ contain sorted original/current payload hashes; staged receipts do not claim tha
 anything was delivered. Failure retains edits for retry. Legacy and preserved
 paths share failure-safe delivery; symlink/nonregular targets refuse explicitly.
 No semantic diff or directory-sync crash guarantee is implied. See batch 007.
+
+### Increment 009: immutable namespace-aware XML snapshots
+
+`internal/losslessxml` retains source offsets, expanded names and parent ownership.
+Atomic plain-text leaf replacements preserve unrelated bytes and existing QName
+namespace context; foreign/duplicate/mixed/self-closing insertion targets refuse.
+Namespace errors, directives and invalid XML text refuse. This UTF-8-only internal
+primitive does not yet apply Office-specific revision/protection/field rules.
+Read `reports/batches/009.md`; B03 integration remains partial.

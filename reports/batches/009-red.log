@@ -1,0 +1,2464 @@
+--- FAIL: TestNamespaceAndLeafContracts (0.00s)
+    --- FAIL: TestNamespaceAndLeafContracts/<x:r/> (0.00s)
+        document_test.go:13: invalid accepted
+    --- FAIL: TestNamespaceAndLeafContracts/<r_x:a="1"/> (0.00s)
+        document_test.go:13: invalid accepted
+    --- FAIL: TestNamespaceAndLeafContracts/<r_a="1"_a="2"/> (0.00s)
+        document_test.go:13: invalid accepted
+    --- FAIL: TestNamespaceAndLeafContracts/<r_xmlns:p="u"_xmlns:q="u"_p:a="1"_q:a="2"/> (0.00s)
+        document_test.go:13: invalid accepted
+    --- FAIL: TestNamespaceAndLeafContracts/<r_xmlns:xml="wrong"/> (0.00s)
+        document_test.go:13: invalid accepted
+    --- FAIL: TestNamespaceAndLeafContracts/<r_xmlns:xmlns="u"/> (0.00s)
+        document_test.go:13: invalid accepted
+    --- FAIL: TestNamespaceAndLeafContracts/<r_xmlns:p=""/> (0.00s)
+        document_test.go:13: invalid accepted
+    --- FAIL: TestNamespaceAndLeafContracts/<p:r_xmlns:p="u"_xmlns:q="u"></q:r> (0.00s)
+        document_test.go:13: invalid accepted
+    --- FAIL: TestNamespaceAndLeafContracts/<r/><s/> (0.00s)
+        document_test.go:13: invalid accepted
+    --- FAIL: TestNamespaceAndLeafContracts/<!DOCTYPE_r><r/> (0.00s)
+        document_test.go:13: invalid accepted
+    --- FAIL: TestNamespaceAndLeafContracts/<r_xmlns="http://www.w3.org/XML/1998/namespace"/> (0.00s)
+        document_test.go:13: invalid accepted
+    --- FAIL: TestNamespaceAndLeafContracts/namespace_scope_and_attribute_copies (0.00s)
+        document_test.go:24: elements []
+    --- FAIL: TestNamespaceAndLeafContracts/self_closing_remains_no_op_but_refuses_insertion (0.00s)
+        document_test.go:43: missing elements
+    --- FAIL: TestNamespaceAndLeafContracts/mixed_content_and_comments_refuse (0.00s)
+        document_test.go:61: missing elements
+    --- FAIL: TestNamespaceAndLeafContracts/CDATA_entity_unicode_and_no_op (0.00s)
+        document_test.go:76: missing elements
+    --- FAIL: TestNamespaceAndLeafContracts/duplicate_targets_and_invalid_characters_refuse (0.00s)
+        document_test.go:98: missing elements
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/internal/losslessxml	0.001s
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	(cached)
+FAIL
+--- FAIL: TestAcceptance (0.04s)
+    acceptance_test.go:136: Godog failed (1): [
+            {
+                "uri": "../features/implemented/package/io-safety.feature",
+                "id": "archive-intake-and-failure-safe-package-delivery",
+                "keyword": "Feature",
+                "name": "Archive intake and failure-safe package delivery",
+                "description": "  Ambiguous archive names and failed writes must not produce a successful edit.",
+                "line": 2,
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    }
+                ],
+                "elements": [
+                    {
+                        "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;2",
+                        "keyword": "Scenario Outline",
+                        "name": "Unsafe archive names refuse before package parsing",
+                        "description": "",
+                        "line": 13,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@IO-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "a synthetic archive with \"duplicate\" member names",
+                                "line": 7,
+                                "match": {
+                                    "location": "io_test.go:131"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 330530
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I attempt to open the synthetic archive",
+                                "line": 8,
+                                "match": {
+                                    "location": "io_test.go:154"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 34793
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "archive intake fails without changing the source bytes",
+                                "line": 9,
+                                "match": {
+                                    "location": "io_test.go:155"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 23089
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;3",
+                        "keyword": "Scenario Outline",
+                        "name": "Unsafe archive names refuse before package parsing",
+                        "description": "",
+                        "line": 14,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@IO-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "a synthetic archive with \"collision\" member names",
+                                "line": 7,
+                                "match": {
+                                    "location": "io_test.go:131"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 557367
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I attempt to open the synthetic archive",
+                                "line": 8,
+                                "match": {
+                                    "location": "io_test.go:154"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 26511
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "archive intake fails without changing the source bytes",
+                                "line": 9,
+                                "match": {
+                                    "location": "io_test.go:155"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 13597
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;4",
+                        "keyword": "Scenario Outline",
+                        "name": "Unsafe archive names refuse before package parsing",
+                        "description": "",
+                        "line": 15,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@IO-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "a synthetic archive with \"traversal\" member names",
+                                "line": 7,
+                                "match": {
+                                    "location": "io_test.go:131"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 53714
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I attempt to open the synthetic archive",
+                                "line": 8,
+                                "match": {
+                                    "location": "io_test.go:154"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 15460
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "archive intake fails without changing the source bytes",
+                                "line": 9,
+                                "match": {
+                                    "location": "io_test.go:155"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 12666
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;5",
+                        "keyword": "Scenario Outline",
+                        "name": "Unsafe archive names refuse before package parsing",
+                        "description": "",
+                        "line": 16,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@IO-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "a synthetic archive with \"absolute\" member names",
+                                "line": 7,
+                                "match": {
+                                    "location": "io_test.go:131"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 46061
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I attempt to open the synthetic archive",
+                                "line": 8,
+                                "match": {
+                                    "location": "io_test.go:154"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 13467
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "archive intake fails without changing the source bytes",
+                                "line": 9,
+                                "match": {
+                                    "location": "io_test.go:155"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 11371
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;6",
+                        "keyword": "Scenario Outline",
+                        "name": "Unsafe archive names refuse before package parsing",
+                        "description": "",
+                        "line": 17,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@IO-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "a synthetic archive with \"backslash\" member names",
+                                "line": 7,
+                                "match": {
+                                    "location": "io_test.go:131"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 54506
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I attempt to open the synthetic archive",
+                                "line": 8,
+                                "match": {
+                                    "location": "io_test.go:154"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 17247
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "archive intake fails without changing the source bytes",
+                                "line": 9,
+                                "match": {
+                                    "location": "io_test.go:155"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 15375
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "archive-intake-and-failure-safe-package-delivery;stream-finalisation-failure-is-returned-to-the-caller",
+                        "keyword": "Scenario",
+                        "name": "Stream finalisation failure is returned to the caller",
+                        "description": "",
+                        "line": 20,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@IO-002",
+                                "line": 19
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "a small new Office package",
+                                "line": 21,
+                                "match": {
+                                    "location": "io_test.go:156"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 9374
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I write it to a stream that fails during finalisation",
+                                "line": 22,
+                                "match": {
+                                    "location": "io_test.go:157"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 68326
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "the write reports the injected failure",
+                                "line": 23,
+                                "match": {
+                                    "location": "io_test.go:158"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 10828
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "archive-intake-and-failure-safe-package-delivery;a-serialisation-failure-preserves-an-existing-destination",
+                        "keyword": "Scenario",
+                        "name": "A serialisation failure preserves an existing destination",
+                        "description": "",
+                        "line": 26,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@IO-003",
+                                "line": 25
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "an existing destination and an unserialisable package",
+                                "line": 27,
+                                "match": {
+                                    "location": "io_test.go:164"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 92778
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I attempt to save over the destination",
+                                "line": 28,
+                                "match": {
+                                    "location": "io_test.go:165"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 37725
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "saving fails and the destination and package state remain unchanged",
+                                "line": 29,
+                                "match": {
+                                    "location": "io_test.go:166"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 19527
+                                }
+                            },
+                            {
+                                "keyword": "And ",
+                                "name": "no temporary files remain in the destination directory",
+                                "line": 30,
+                                "match": {
+                                    "location": "io_test.go:167"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 50527
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "uri": "../features/implemented/package/limits.feature",
+                "id": "caller-defined-package-intake-budgets",
+                "keyword": "Feature",
+                "name": "Caller-defined package intake budgets",
+                "description": "  Budget violations are refused before payload allocation or decompression.",
+                "line": 2,
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    }
+                ],
+                "elements": [
+                    {
+                        "id": "caller-defined-package-intake-budgets;intake-enforces-a-configured-resource-ceiling;;2",
+                        "keyword": "Scenario Outline",
+                        "name": "Intake enforces a configured resource ceiling",
+                        "description": "",
+                        "line": 13,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@LIMIT-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "an archive exceeding its \"source\" budget",
+                                "line": 7,
+                                "match": {
+                                    "location": "limits_test.go:43"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 221642
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I open it with the configured resource limits",
+                                "line": 8,
+                                "match": {
+                                    "location": "limits_test.go:62"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 30687
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "I receive a typed resource-limit refusal",
+                                "line": 9,
+                                "match": {
+                                    "location": "limits_test.go:66"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 24161
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "caller-defined-package-intake-budgets;intake-enforces-a-configured-resource-ceiling;;3",
+                        "keyword": "Scenario Outline",
+                        "name": "Intake enforces a configured resource ceiling",
+                        "description": "",
+                        "line": 14,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@LIMIT-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "an archive exceeding its \"entries\" budget",
+                                "line": 7,
+                                "match": {
+                                    "location": "limits_test.go:43"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 107798
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I open it with the configured resource limits",
+                                "line": 8,
+                                "match": {
+                                    "location": "limits_test.go:62"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 20004
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "I receive a typed resource-limit refusal",
+                                "line": 9,
+                                "match": {
+                                    "location": "limits_test.go:66"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 12686
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "caller-defined-package-intake-budgets;intake-enforces-a-configured-resource-ceiling;;4",
+                        "keyword": "Scenario Outline",
+                        "name": "Intake enforces a configured resource ceiling",
+                        "description": "",
+                        "line": 15,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@LIMIT-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "an archive exceeding its \"part\" budget",
+                                "line": 7,
+                                "match": {
+                                    "location": "limits_test.go:43"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 70351
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I open it with the configured resource limits",
+                                "line": 8,
+                                "match": {
+                                    "location": "limits_test.go:62"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 16958
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "I receive a typed resource-limit refusal",
+                                "line": 9,
+                                "match": {
+                                    "location": "limits_test.go:66"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 12768
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "caller-defined-package-intake-budgets;intake-enforces-a-configured-resource-ceiling;;5",
+                        "keyword": "Scenario Outline",
+                        "name": "Intake enforces a configured resource ceiling",
+                        "description": "",
+                        "line": 16,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@LIMIT-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "an archive exceeding its \"total\" budget",
+                                "line": 7,
+                                "match": {
+                                    "location": "limits_test.go:43"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 76799
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I open it with the configured resource limits",
+                                "line": 8,
+                                "match": {
+                                    "location": "limits_test.go:62"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 23067
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "I receive a typed resource-limit refusal",
+                                "line": 9,
+                                "match": {
+                                    "location": "limits_test.go:66"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 18774
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "caller-defined-package-intake-budgets;finite-sufficient-budgets-permit-normal-intake",
+                        "keyword": "Scenario",
+                        "name": "Finite sufficient budgets permit normal intake",
+                        "description": "",
+                        "line": 19,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@LIMIT-002",
+                                "line": 18
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "an archive within all configured budgets",
+                                "line": 20,
+                                "match": {
+                                    "location": "limits_test.go:61"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 56871
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I open it with the configured resource limits",
+                                "line": 21,
+                                "match": {
+                                    "location": "limits_test.go:62"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 57341
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "its XML payload is available without changes",
+                                "line": 22,
+                                "match": {
+                                    "location": "limits_test.go:76"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 11403
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "uri": "../features/implemented/package/baseline.feature",
+                "id": "existing-office-fixture-intake",
+                "keyword": "Feature",
+                "name": "Existing Office fixture intake",
+                "description": "  Repository fixtures can be inspected without a fixed workspace mount.",
+                "line": 2,
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    }
+                ],
+                "elements": [
+                    {
+                        "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;2",
+                        "keyword": "Scenario Outline",
+                        "name": "Open the principal part from a repository fixture",
+                        "description": "",
+                        "line": 13,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@BASE-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "the repository fixture \"word/minimal.docx\"",
+                                "line": 7,
+                                "match": {
+                                    "location": "acceptance_test.go:111"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 78319
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I open its Office package",
+                                "line": 8,
+                                "match": {
+                                    "location": "acceptance_test.go:112"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 1262809
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "the package contains a nonempty part \"word/document.xml\"",
+                                "line": 9,
+                                "match": {
+                                    "location": "acceptance_test.go:113"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 23781
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;3",
+                        "keyword": "Scenario Outline",
+                        "name": "Open the principal part from a repository fixture",
+                        "description": "",
+                        "line": 14,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@BASE-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "the repository fixture \"pptx/minimal.pptx\"",
+                                "line": 7,
+                                "match": {
+                                    "location": "acceptance_test.go:111"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 51857
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I open its Office package",
+                                "line": 8,
+                                "match": {
+                                    "location": "acceptance_test.go:112"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 728419
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "the package contains a nonempty part \"ppt/presentation.xml\"",
+                                "line": 9,
+                                "match": {
+                                    "location": "acceptance_test.go:113"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 22242
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;4",
+                        "keyword": "Scenario Outline",
+                        "name": "Open the principal part from a repository fixture",
+                        "description": "",
+                        "line": 15,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@BASE-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "the repository fixture \"excel/minimal.xlsx\"",
+                                "line": 7,
+                                "match": {
+                                    "location": "acceptance_test.go:111"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 25183
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I open its Office package",
+                                "line": 8,
+                                "match": {
+                                    "location": "acceptance_test.go:112"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 159274
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                                "line": 9,
+                                "match": {
+                                    "location": "acceptance_test.go:113"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 15019
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;5",
+                        "keyword": "Scenario Outline",
+                        "name": "Open the principal part from a repository fixture",
+                        "description": "",
+                        "line": 16,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@BASE-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "the repository fixture \"pptx/comments.pptx\"",
+                                "line": 7,
+                                "match": {
+                                    "location": "acceptance_test.go:111"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 86631
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I open its Office package",
+                                "line": 8,
+                                "match": {
+                                    "location": "acceptance_test.go:112"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 853830
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "the package contains a nonempty part \"ppt/presentation.xml\"",
+                                "line": 9,
+                                "match": {
+                                    "location": "acceptance_test.go:113"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 21882
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;6",
+                        "keyword": "Scenario Outline",
+                        "name": "Open the principal part from a repository fixture",
+                        "description": "",
+                        "line": 17,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@BASE-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "the repository fixture \"excel/formatting.xlsx\"",
+                                "line": 7,
+                                "match": {
+                                    "location": "acceptance_test.go:111"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 28880
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I open its Office package",
+                                "line": 8,
+                                "match": {
+                                    "location": "acceptance_test.go:112"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 160033
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                                "line": 9,
+                                "match": {
+                                    "location": "acceptance_test.go:113"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 13439
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;7",
+                        "keyword": "Scenario Outline",
+                        "name": "Open the principal part from a repository fixture",
+                        "description": "",
+                        "line": 18,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@BASE-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "the repository fixture \"excel/formulas.xlsx\"",
+                                "line": 7,
+                                "match": {
+                                    "location": "acceptance_test.go:111"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 27105
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I open its Office package",
+                                "line": 8,
+                                "match": {
+                                    "location": "acceptance_test.go:112"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 410662
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                                "line": 9,
+                                "match": {
+                                    "location": "acceptance_test.go:113"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 53177
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;8",
+                        "keyword": "Scenario Outline",
+                        "name": "Open the principal part from a repository fixture",
+                        "description": "",
+                        "line": 19,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@BASE-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "the repository fixture \"excel/conditional_format.xlsx\"",
+                                "line": 7,
+                                "match": {
+                                    "location": "acceptance_test.go:111"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 34394
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I open its Office package",
+                                "line": 8,
+                                "match": {
+                                    "location": "acceptance_test.go:112"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 188092
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                                "line": 9,
+                                "match": {
+                                    "location": "acceptance_test.go:113"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 16758
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "uri": "../features/implemented/package/structure.feature",
+                "id": "local-and-central-zip-structures-agree",
+                "keyword": "Feature",
+                "name": "Local and central ZIP structures agree",
+                "description": "  Member identity cannot change between directory lookup and payload reading.",
+                "line": 2,
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    }
+                ],
+                "elements": [
+                    {
+                        "id": "local-and-central-zip-structures-agree;disagreeing-local-headers-refuse-before-reading-xml;;2",
+                        "keyword": "Scenario Outline",
+                        "name": "Disagreeing local headers refuse before reading XML",
+                        "description": "",
+                        "line": 13,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@ZIP-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "a synthetic archive with a mismatched local \"name\"",
+                                "line": 7,
+                                "match": {
+                                    "location": "io_test.go:132"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 88494
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I attempt to open the synthetic archive",
+                                "line": 8,
+                                "match": {
+                                    "location": "io_test.go:154"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 19912
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "archive intake fails without changing the source bytes",
+                                "line": 9,
+                                "match": {
+                                    "location": "io_test.go:155"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 15000
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "local-and-central-zip-structures-agree;disagreeing-local-headers-refuse-before-reading-xml;;3",
+                        "keyword": "Scenario Outline",
+                        "name": "Disagreeing local headers refuse before reading XML",
+                        "description": "",
+                        "line": 14,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@ZIP-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "a synthetic archive with a mismatched local \"method\"",
+                                "line": 7,
+                                "match": {
+                                    "location": "io_test.go:132"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 67711
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I attempt to open the synthetic archive",
+                                "line": 8,
+                                "match": {
+                                    "location": "io_test.go:154"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 14855
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "archive intake fails without changing the source bytes",
+                                "line": 9,
+                                "match": {
+                                    "location": "io_test.go:155"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 14392
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "local-and-central-zip-structures-agree;disagreeing-local-headers-refuse-before-reading-xml;;4",
+                        "keyword": "Scenario Outline",
+                        "name": "Disagreeing local headers refuse before reading XML",
+                        "description": "",
+                        "line": 15,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@ZIP-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "a synthetic archive with a mismatched local \"flags\"",
+                                "line": 7,
+                                "match": {
+                                    "location": "io_test.go:132"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 93048
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I attempt to open the synthetic archive",
+                                "line": 8,
+                                "match": {
+                                    "location": "io_test.go:154"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 40880
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "archive intake fails without changing the source bytes",
+                                "line": 9,
+                                "match": {
+                                    "location": "io_test.go:155"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 27388
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "uri": "../features/implemented/package/xml.feature",
+                "id": "lossless-namespace-aware-xml-leaf-edits",
+                "keyword": "Feature",
+                "name": "Lossless namespace-aware XML leaf edits",
+                "description": "  XML inspection identifies expanded names while edits retain unrelated source bytes.",
+                "line": 2,
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    }
+                ],
+                "elements": [
+                    {
+                        "id": "lossless-namespace-aware-xml-leaf-edits;editing-a-text-leaf-preserves-unknown-markup-and-namespace-context",
+                        "keyword": "Scenario",
+                        "name": "Editing a text leaf preserves unknown markup and namespace context",
+                        "description": "",
+                        "line": 6,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@XML-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "XML with prefixed text and an opaque extension",
+                                "line": 7,
+                                "match": {
+                                    "location": "xml_test.go:36"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 26499
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I replace the selected text leaf with \"A\u0026B \u003cnew\u003e\"",
+                                "line": 8,
+                                "match": {
+                                    "location": "xml_test.go:43"
+                                },
+                                "result": {
+                                    "status": "failed",
+                                    "error_message": "missing expanded-name leaf",
+                                    "duration": 25798
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "only the leaf character-data bytes change",
+                                "line": 9,
+                                "match": {
+                                    "location": "xml_test.go:51"
+                                },
+                                "result": {
+                                    "status": "skipped"
+                                }
+                            },
+                            {
+                                "keyword": "And ",
+                                "name": "the replacement decodes to \"A\u0026B \u003cnew\u003e\"",
+                                "line": 10,
+                                "match": {
+                                    "location": "xml_test.go:61"
+                                },
+                                "result": {
+                                    "status": "skipped"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "lossless-namespace-aware-xml-leaf-edits;namespace-invalid-xml-is-rejected;;2",
+                        "keyword": "Scenario Outline",
+                        "name": "Namespace-invalid XML is rejected",
+                        "description": "",
+                        "line": 20,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@XML-002",
+                                "line": 12
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "XML with \"undeclared element prefix\"",
+                                "line": 14,
+                                "match": {
+                                    "location": "xml_test.go:76"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 23822
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I parse the XML for lossless editing",
+                                "line": 15,
+                                "match": {
+                                    "location": "xml_test.go:86"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 45305
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "parsing refuses without changing the source",
+                                "line": 16,
+                                "match": {
+                                    "location": "xml_test.go:87"
+                                },
+                                "result": {
+                                    "status": "failed",
+                                    "error_message": "invalid namespaces accepted",
+                                    "duration": 22115
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "lossless-namespace-aware-xml-leaf-edits;namespace-invalid-xml-is-rejected;;3",
+                        "keyword": "Scenario Outline",
+                        "name": "Namespace-invalid XML is rejected",
+                        "description": "",
+                        "line": 21,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@XML-002",
+                                "line": 12
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "XML with \"undeclared attribute prefix\"",
+                                "line": 14,
+                                "match": {
+                                    "location": "xml_test.go:76"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 25191
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I parse the XML for lossless editing",
+                                "line": 15,
+                                "match": {
+                                    "location": "xml_test.go:86"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 19461
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "parsing refuses without changing the source",
+                                "line": 16,
+                                "match": {
+                                    "location": "xml_test.go:87"
+                                },
+                                "result": {
+                                    "status": "failed",
+                                    "error_message": "invalid namespaces accepted",
+                                    "duration": 36412
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "lossless-namespace-aware-xml-leaf-edits;namespace-invalid-xml-is-rejected;;4",
+                        "keyword": "Scenario Outline",
+                        "name": "Namespace-invalid XML is rejected",
+                        "description": "",
+                        "line": 22,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@XML-002",
+                                "line": 12
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "XML with \"duplicate expanded attribute\"",
+                                "line": 14,
+                                "match": {
+                                    "location": "xml_test.go:76"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 28515
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I parse the XML for lossless editing",
+                                "line": 15,
+                                "match": {
+                                    "location": "xml_test.go:86"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 21288
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "parsing refuses without changing the source",
+                                "line": 16,
+                                "match": {
+                                    "location": "xml_test.go:87"
+                                },
+                                "result": {
+                                    "status": "failed",
+                                    "error_message": "invalid namespaces accepted",
+                                    "duration": 19578
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "lossless-namespace-aware-xml-leaf-edits;namespace-invalid-xml-is-rejected;;5",
+                        "keyword": "Scenario Outline",
+                        "name": "Namespace-invalid XML is rejected",
+                        "description": "",
+                        "line": 23,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@XML-002",
+                                "line": 12
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "XML with \"invalid xml binding\"",
+                                "line": 14,
+                                "match": {
+                                    "location": "xml_test.go:76"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 29218
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I parse the XML for lossless editing",
+                                "line": 15,
+                                "match": {
+                                    "location": "xml_test.go:86"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 12942
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "parsing refuses without changing the source",
+                                "line": 16,
+                                "match": {
+                                    "location": "xml_test.go:87"
+                                },
+                                "result": {
+                                    "status": "failed",
+                                    "error_message": "invalid namespaces accepted",
+                                    "duration": 14387
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "lossless-namespace-aware-xml-leaf-edits;namespace-invalid-xml-is-rejected;;6",
+                        "keyword": "Scenario Outline",
+                        "name": "Namespace-invalid XML is rejected",
+                        "description": "",
+                        "line": 24,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@XML-002",
+                                "line": 12
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "XML with \"mismatched end prefix\"",
+                                "line": 14,
+                                "match": {
+                                    "location": "xml_test.go:76"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 24007
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I parse the XML for lossless editing",
+                                "line": 15,
+                                "match": {
+                                    "location": "xml_test.go:86"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 24662
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "parsing refuses without changing the source",
+                                "line": 16,
+                                "match": {
+                                    "location": "xml_test.go:87"
+                                },
+                                "result": {
+                                    "status": "failed",
+                                    "error_message": "invalid namespaces accepted",
+                                    "duration": 25035
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "lossless-namespace-aware-xml-leaf-edits;a-foreign-target-refuses-the-entire-edit-batch",
+                        "keyword": "Scenario",
+                        "name": "A foreign target refuses the entire edit batch",
+                        "description": "",
+                        "line": 27,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@XML-003",
+                                "line": 26
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "XML with prefixed text and an opaque extension",
+                                "line": 28,
+                                "match": {
+                                    "location": "xml_test.go:36"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 18651
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "an edit batch contains a target from another parsed document",
+                                "line": 29,
+                                "match": {
+                                    "location": "xml_test.go:96"
+                                },
+                                "result": {
+                                    "status": "failed",
+                                    "error_message": "missing expanded-name leaf",
+                                    "duration": 17228
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "the batch refuses and a valid target remains reusable",
+                                "line": 30,
+                                "match": {
+                                    "location": "xml_test.go:112"
+                                },
+                                "result": {
+                                    "status": "skipped"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "uri": "../features/implemented/package/receipts.feature",
+                "id": "retained-source-delivery-receipts",
+                "keyword": "Feature",
+                "name": "Retained-source delivery receipts",
+                "description": "  Receipts describe observed payload changes and failed delivery preserves prior output.",
+                "line": 2,
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    }
+                ],
+                "elements": [
+                    {
+                        "id": "retained-source-delivery-receipts;a-saved-receipt-agrees-with-independent-package-hashes",
+                        "keyword": "Scenario",
+                        "name": "A saved receipt agrees with independent package hashes",
+                        "description": "",
+                        "line": 6,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@RECEIPT-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "a staged main-part edit with an opaque custom part",
+                                "line": 7,
+                                "match": {
+                                    "location": "receipts_test.go:56"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 138725
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I save a main-part replacement with a delivery receipt",
+                                "line": 8,
+                                "match": {
+                                    "location": "receipts_test.go:57"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 4189831
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "the receipt identifies exactly the changed member and both hashes",
+                                "line": 9,
+                                "match": {
+                                    "location": "receipts_test.go:67"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 88452
+                                }
+                            },
+                            {
+                                "keyword": "And ",
+                                "name": "the delivered archive reopens with unchanged opaque bytes",
+                                "line": 10,
+                                "match": {
+                                    "location": "receipts_test.go:90"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 136646
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "retained-source-delivery-receipts;a-directory-destination-refuses-without-consuming-staged-changes",
+                        "keyword": "Scenario",
+                        "name": "A directory destination refuses without consuming staged changes",
+                        "description": "",
+                        "line": 13,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@RECEIPT-002",
+                                "line": 12
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "a staged main-part edit with an opaque custom part",
+                                "line": 14,
+                                "match": {
+                                    "location": "receipts_test.go:56"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 595407
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I deliver staged changes to a directory destination",
+                                "line": 15,
+                                "match": {
+                                    "location": "receipts_test.go:109"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 62644
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "delivery fails without changing the directory",
+                                "line": 16,
+                                "match": {
+                                    "location": "receipts_test.go:118"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 24758
+                                }
+                            },
+                            {
+                                "keyword": "And ",
+                                "name": "the staged change remains available for another save",
+                                "line": 17,
+                                "match": {
+                                    "location": "receipts_test.go:131"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 1272094
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "uri": "../features/implemented/package/preservation.feature",
+                "id": "retained-source-package-editing",
+                "keyword": "Feature",
+                "name": "Retained-source package editing",
+                "description": "  A bounded part replacement preserves every other source payload.",
+                "line": 2,
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    }
+                ],
+                "elements": [
+                    {
+                        "id": "retained-source-package-editing;a-no-op-save-preserves-the-exact-source-archive",
+                        "keyword": "Scenario",
+                        "name": "A no-op save preserves the exact source archive",
+                        "description": "",
+                        "line": 6,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@SOURCE-001",
+                                "line": 5
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "an Office source archive with an opaque custom part",
+                                "line": 7,
+                                "match": {
+                                    "location": "preserved_test.go:54"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 493859
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I open a retained-source editing session and save without edits",
+                                "line": 8,
+                                "match": {
+                                    "location": "preserved_test.go:55"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 66543
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "the output archive is byte-identical to the source",
+                                "line": 9,
+                                "match": {
+                                    "location": "preserved_test.go:56"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 29871
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "retained-source-package-editing;replacing-one-part-leaves-all-other-member-payloads-unchanged",
+                        "keyword": "Scenario",
+                        "name": "Replacing one part leaves all other member payloads unchanged",
+                        "description": "",
+                        "line": 12,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@SOURCE-002",
+                                "line": 11
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "an Office source archive with an opaque custom part",
+                                "line": 13,
+                                "match": {
+                                    "location": "preserved_test.go:54"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 199611
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I replace the main XML part using its current fingerprint",
+                                "line": 14,
+                                "match": {
+                                    "location": "preserved_test.go:62"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 49056
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "only that member payload changes after saving",
+                                "line": 15,
+                                "match": {
+                                    "location": "preserved_test.go:73"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 48784
+                                }
+                            },
+                            {
+                                "keyword": "And ",
+                                "name": "the retained source bytes remain unchanged",
+                                "line": 16,
+                                "match": {
+                                    "location": "preserved_test.go:100"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 12970
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "retained-source-package-editing;a-stale-replacement-batch-leaves-all-parts-unchanged",
+                        "keyword": "Scenario",
+                        "name": "A stale replacement batch leaves all parts unchanged",
+                        "description": "",
+                        "line": 19,
+                        "type": "scenario",
+                        "tags": [
+                            {
+                                "name": "@implemented",
+                                "line": 1
+                            },
+                            {
+                                "name": "@go",
+                                "line": 1
+                            },
+                            {
+                                "name": "@package",
+                                "line": 1
+                            },
+                            {
+                                "name": "@SOURCE-003",
+                                "line": 18
+                            }
+                        ],
+                        "steps": [
+                            {
+                                "keyword": "Given ",
+                                "name": "an Office source archive with an opaque custom part",
+                                "line": 20,
+                                "match": {
+                                    "location": "preserved_test.go:54"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 150824
+                                }
+                            },
+                            {
+                                "keyword": "When ",
+                                "name": "I request two replacements with one stale fingerprint",
+                                "line": 21,
+                                "match": {
+                                    "location": "preserved_test.go:106"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 20369
+                                }
+                            },
+                            {
+                                "keyword": "Then ",
+                                "name": "the batch returns a stale-target refusal",
+                                "line": 22,
+                                "match": {
+                                    "location": "preserved_test.go:114"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 14393
+                                }
+                            },
+                            {
+                                "keyword": "And ",
+                                "name": "the session still saves the exact original archive",
+                                "line": 23,
+                                "match": {
+                                    "location": "preserved_test.go:121"
+                                },
+                                "result": {
+                                    "status": "passed",
+                                    "duration": 13326
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    acceptance_test.go:139: {File:../features/implemented/package/xml.feature ID:@XML-001 Line:6} step "I replace the selected text leaf with \"A&B <new>\"": failed
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/acceptance	0.045s
+FAIL
