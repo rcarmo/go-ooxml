@@ -1889,3 +1889,15 @@ order with fixed metadata. Reopen validation checks payloads and the graph.
 Receipts without additions retain schema1. Receipts containing additions use
 schema2: each change has operation `add` or `replace`; an added part has an empty
 `before_sha256` (absence, not the SHA256 of an empty payload).
+
+`spreadsheet.EditSession.FindImage(sheet, shapeID)` selects a loaded directly
+anchored picture by cNvPr ID. `ReplaceImage(target, data)` accepts fully decoded
+PNG/JPEG only (32 MiB compressed bytes, 16 million pixels maximum), creates fresh
+case-collision-free media and retargets its existing relationship. Drawing XML,
+geometry, crop, old media, other relationships and all other payloads remain exact.
+The drawing must have one inbound edge and the selected relationship exactly one
+XML use. Shared drawing/relationship identities, linked/external images, groups,
+charts, extensions and protection refuse. Identical image bytes are a no-op;
+changed images consume the target and stale other session handles. Existing legacy
+drawing APIs are unchanged. This bounded adapter does not complete X10's broader
+format/source-policy coverage or establish native Office/rendering compatibility.

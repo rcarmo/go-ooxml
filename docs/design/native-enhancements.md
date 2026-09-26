@@ -501,3 +501,10 @@ retargets with private plans, generation guards and complete candidate graph che
 Registry patches preserve unrelated bytes; shared old payloads remain. Delivery
 verifies new inventory/payloads/graph; schema2 receipts distinguish additions.
 Batch048 passes160 native cases. Format ownership, deletion and import are unfinished.
+
+### Increment049: loaded worksheet picture replacement
+
+FindImage/ReplaceImage isolate a directly anchored PNG/JPEG occurrence by retargeting
+one existing drawing relationship to fresh media. Original drawing XML/crop/geometry,
+old shared image and other parts remain exact. Shared drawing/edge ownership, protection
+and unsupported complex drawings refuse. Batch049 passes166 native cases; X10 is partial.
