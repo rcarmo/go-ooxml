@@ -19,11 +19,19 @@ import (
 // is implemented. Every observable assertion is checked against actual output.
 func TestSharedCacheInvalidation(t *testing.T) {
 	root := testutil.ReferencePath("shared", "v2", "pack")
+	sharedPackHash := loadReferencePin(t).Pack
 	if _, err := pinnedFile(root, "pack-manifest.json", sharedPackHash); err != nil {
 		t.Fatal(err)
 	}
 	const inputHash = "8ba5708d5030adf93a4f7e4ae466563a1b66341067a200a6cb9b782484dcb5b1"
-	data, err := pinnedFile(root, "fixtures/cross-sheet-cache.xlsx", inputHash)
+	path, err := testutil.LookupFixture("fixture-" + inputHash)
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile(path)
+	if err == nil && sha256hex(data) != inputHash {
+		t.Fatal("shared cache input hash differs")
+	}
 	if err != nil {
 		t.Fatal(err)
 	}

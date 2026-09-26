@@ -18,7 +18,6 @@ import (
 // Owned notes inputs and a native synthetic paragraph variant retain the same
 // no-op, edit, clear, reopen, payload-budget and placeholder assertions.
 func TestOwnedNotesFixtures(t *testing.T) {
-	root := testutil.FixturePath()
 	observations := []map[string]any{}
 	for _, f := range []struct {
 		name, path, sha string
@@ -28,9 +27,13 @@ func TestOwnedNotesFixtures(t *testing.T) {
 		{"native blank paragraph variant", "pptx/notes.pptx", "04faba67841dda25dc3ff9e3e6e345e6feeeef1cf25a6b9065bf5fbdc83163dc", true},
 	} {
 		t.Run(f.name, func(t *testing.T) {
-			source, err := pinnedFile(root, f.path, f.sha)
+			path := testutil.FixturePath(f.path)
+			source, err := os.ReadFile(path)
 			if err != nil {
 				t.Fatal(err)
+			}
+			if sha256hex(source) != f.sha {
+				t.Fatal("owned input hash differs")
 			}
 			original := bytes.Clone(source)
 			wantInitial := "Remember to emphasize the Gothic elements"
@@ -151,7 +154,7 @@ func TestOwnedNotesFixtures(t *testing.T) {
 			if err != nil || emptyNotes.Text() != "" {
 				t.Fatal("empty reopen", err)
 			}
-			sourceNow, err := os.ReadFile(filepath.Join(root, f.path))
+			sourceNow, err := os.ReadFile(path)
 			if err != nil || !bytes.Equal(original, sourceNow) {
 				t.Fatal("source fixture changed", err)
 			}

@@ -1,0 +1,127 @@
+go test -p 2 ./...
+--- FAIL: TestAdvancedCorporateFrankensteinArtifacts (0.00s)
+    --- FAIL: TestAdvancedCorporateFrankensteinArtifacts/word (0.00s)
+panic: symlink or escaping fixture path: fixture-21e40e91bf948fd8b179c59915b5b840c0f8438ea7f2f144b4287cfd9b158e7f [recovered, repanicked]
+
+goroutine 9 [running]:
+testing.tRunner.func1.2({0x6ab300, 0x3d8c1c6bfc60})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:1974 +0x232
+testing.tRunner.func1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:1977 +0x349
+panic({0x6ab300?, 0x3d8c1c6bfc60?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/runtime/panic.go:860 +0x13a
+github.com/rcarmo/go-ooxml/internal/testutil.FixturePath({0x3d8c1c779ec8?, 0x53b740?, 0x29dba0?})
+	/workspace/worktrees/go-ooxml-native/internal/testutil/references.go:136 +0x7c
+github.com/rcarmo/go-ooxml/e2e.buildCorporateFrankensteinDoc({0x3d8c1c6b45d0, 0x2e})
+	/workspace/worktrees/go-ooxml-native/e2e/advanced_corporate_frankenstein_test.go:178 +0xf85
+github.com/rcarmo/go-ooxml/e2e.TestAdvancedCorporateFrankensteinArtifacts.func1(0x3d8c1c75a908)
+	/workspace/worktrees/go-ooxml-native/e2e/advanced_corporate_frankenstein_test.go:22 +0x55
+testing.tRunner(0x3d8c1c75a908, 0x3d8c1c6a21b0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:2036 +0xea
+created by testing.(*T).Run in goroutine 8
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:2101 +0x4c5
+FAIL	github.com/rcarmo/go-ooxml/e2e	0.005s
+ok  	github.com/rcarmo/go-ooxml/internal/formula	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/losslessxml	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	0.005s
+--- FAIL: TestFixtureRoundTrip_Complex (0.00s)
+    --- FAIL: TestFixtureRoundTrip_Complex/minimal.docx (0.00s)
+panic: symlink or escaping fixture path: fixture-9726b477472ddb7595875c9f30493df2577e587416b18418d0dc7221046690fe [recovered, repanicked]
+
+goroutine 190 [running]:
+testing.tRunner.func1.2({0x6aa8e0, 0xcfb434244b0})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:1974 +0x232
+testing.tRunner.func1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:1977 +0x349
+panic({0x6aa8e0?, 0xcfb434244b0?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/runtime/panic.go:860 +0x13a
+github.com/rcarmo/go-ooxml/internal/testutil.FixturePath({0xcfb43475e58?, 0xcfb43475e78?, 0x65ccfb?})
+	/workspace/worktrees/go-ooxml-native/internal/testutil/references.go:136 +0x7c
+github.com/rcarmo/go-ooxml/pkg/document.fixturePath(...)
+	/workspace/worktrees/go-ooxml-native/pkg/document/test_utils_test.go:223
+github.com/rcarmo/go-ooxml/pkg/document.(*TestHelper).OpenFixture(0xcfb433a0de0, {0x70671a, 0xc})
+	/workspace/worktrees/go-ooxml-native/pkg/document/test_utils_test.go:220 +0x65
+github.com/rcarmo/go-ooxml/pkg/document.TestFixtureRoundTrip_Complex.func27(0xcfb432b2fc8)
+	/workspace/worktrees/go-ooxml-native/pkg/document/fixture_roundtrip_test.go:356 +0x6c
+testing.tRunner(0xcfb432b2fc8, 0xcfb43502900)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:2036 +0xea
+created by testing.(*T).Run in goroutine 189
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:2101 +0x4c5
+FAIL	github.com/rcarmo/go-ooxml/pkg/document	0.113s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/chart	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/common	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/diagram	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/dml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/pml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/sml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/theme	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/wml	(cached)
+--- FAIL: TestRetainedNoOpFixtureCorpus (0.00s)
+    --- FAIL: TestRetainedNoOpFixtureCorpus/default.docx (0.00s)
+panic: symlink or escaping fixture path: fixture-d9d6a313182a71a73d75a26a0ff3b7826dbd2e300e1d202114ec9f8fb018fda5 [recovered, repanicked]
+
+goroutine 30 [running]:
+testing.tRunner.func1.2({0x660820, 0x3c74e8e98680})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:1974 +0x232
+testing.tRunner.func1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:1977 +0x349
+panic({0x660820?, 0x3c74e8e98680?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/runtime/panic.go:860 +0x13a
+github.com/rcarmo/go-ooxml/internal/testutil.FixturePath({0x3c74e8e0bf48?, 0xf?, 0x719a7f?})
+	/workspace/worktrees/go-ooxml-native/internal/testutil/references.go:136 +0x7c
+github.com/rcarmo/go-ooxml/pkg/packaging.TestRetainedNoOpFixtureCorpus.func1(0x3c74e8f01b08)
+	/workspace/worktrees/go-ooxml-native/pkg/packaging/fixture_corpus_test.go:23 +0x45
+testing.tRunner(0x3c74e8f01b08, 0x3c74e8e94330)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:2036 +0xea
+created by testing.(*T).Run in goroutine 29
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:2101 +0x4c5
+FAIL	github.com/rcarmo/go-ooxml/pkg/packaging	0.007s
+--- FAIL: TestFixtureRoundTrip_Complex (0.00s)
+    --- FAIL: TestFixtureRoundTrip_Complex/minimal.pptx (0.00s)
+panic: symlink or escaping fixture path: fixture-6a28461a00850a9297690a0a53ad8c109aea9e6f279df309639e73be0cc4c762 [recovered, repanicked]
+
+goroutine 9 [running]:
+testing.tRunner.func1.2({0x676600, 0x75d97bbe460})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:1974 +0x232
+testing.tRunner.func1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:1977 +0x349
+panic({0x676600?, 0x75d97bbe460?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/runtime/panic.go:860 +0x13a
+github.com/rcarmo/go-ooxml/internal/testutil.FixturePath({0x75d97bd7738?, 0x5198ad?, 0x83e1d8?})
+	/workspace/worktrees/go-ooxml-native/internal/testutil/references.go:136 +0x7c
+github.com/rcarmo/go-ooxml/pkg/presentation.fixtureRoundTripPath(...)
+	/workspace/worktrees/go-ooxml-native/pkg/presentation/fixture_roundtrip_test.go:379
+github.com/rcarmo/go-ooxml/pkg/presentation.TestFixtureRoundTrip_Complex.func23(0x75d97c5a908)
+	/workspace/worktrees/go-ooxml-native/pkg/presentation/fixture_roundtrip_test.go:340 +0x98
+testing.tRunner(0x75d97c5a908, 0x75d97c0cb10)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:2036 +0xea
+created by testing.(*T).Run in goroutine 8
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:2101 +0x4c5
+FAIL	github.com/rcarmo/go-ooxml/pkg/presentation	0.005s
+--- FAIL: TestFixtureRoundTrip_Complex (0.00s)
+    --- FAIL: TestFixtureRoundTrip_Complex/minimal.xlsx (0.00s)
+panic: symlink or escaping fixture path: fixture-5140bb7ea22875bc86e3a9790b3dce686a8adc518f7c8597fbddd5d83264b59d [recovered, repanicked]
+
+goroutine 26 [running]:
+testing.tRunner.func1.2({0x6aeb40, 0x233d54d9ad90})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:1974 +0x232
+testing.tRunner.func1()
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:1977 +0x349
+panic({0x6aeb40?, 0x233d54d9ad90?})
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/runtime/panic.go:860 +0x13a
+github.com/rcarmo/go-ooxml/internal/testutil.FixturePath({0x233d54d39738?, 0x51e3ed?, 0x8a1e28?})
+	/workspace/worktrees/go-ooxml-native/internal/testutil/references.go:136 +0x7c
+github.com/rcarmo/go-ooxml/pkg/spreadsheet.fixtureRoundTripPath(...)
+	/workspace/worktrees/go-ooxml-native/pkg/spreadsheet/fixture_roundtrip_test.go:391
+github.com/rcarmo/go-ooxml/pkg/spreadsheet.TestFixtureRoundTrip_Complex.func23(0x233d54e03448)
+	/workspace/worktrees/go-ooxml-native/pkg/spreadsheet/fixture_roundtrip_test.go:312 +0x98
+testing.tRunner(0x233d54e03448, 0x233d55017cb0)
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:2036 +0xea
+created by testing.(*T).Run in goroutine 25
+	/home/linuxbrew/.linuxbrew/Cellar/go/1.26.3/libexec/src/testing/testing.go:2101 +0x4c5
+FAIL	github.com/rcarmo/go-ooxml/pkg/spreadsheet	0.008s
+ok  	github.com/rcarmo/go-ooxml/pkg/utils	(cached)
+?   	github.com/rcarmo/go-ooxml/tools/casefold	[no test files]
+ok  	github.com/rcarmo/go-ooxml/tools/nativeinventory	(cached)
+FAIL
+make: *** [Makefile:48: test] Error 1

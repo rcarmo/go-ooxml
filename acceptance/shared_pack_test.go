@@ -16,8 +16,6 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/spreadsheet"
 )
 
-const sharedPackHash = "cf359dea9df753592b9b8ecfd0d25feafa74a4a57a6033a25ca97764816a2032"
-
 func sha256hex(data []byte) string { s := sha256.Sum256(data); return hex.EncodeToString(s[:]) }
 func pinnedFile(root, name, hash string) ([]byte, error) {
 	if !filepath.IsLocal(name) {
@@ -57,6 +55,7 @@ func caseKey(id string, values map[string]string) string {
 type sharedFixture struct {
 	ID           string            `json:"id"`
 	Path         string            `json:"path"`
+	AssetID      string            `json:"assetId"`
 	SHA256       string            `json:"sha256"`
 	MemberSHA256 map[string]string `json:"memberSha256"`
 	Preserve     map[string]string `json:"mustPreservePayloads"`
@@ -66,6 +65,7 @@ type sharedFixture struct {
 // checks. Integrity verification does not count as workflow execution.
 func TestSharedPackV2(t *testing.T) {
 	root := testutil.ReferencePath("shared", "v2", "pack")
+	sharedPackHash := loadReferencePin(t).Pack
 	b, err := pinnedFile(root, "pack-manifest.json", sharedPackHash)
 	if err != nil {
 		t.Fatal(err)
@@ -80,7 +80,7 @@ func TestSharedPackV2(t *testing.T) {
 	if err = json.Unmarshal(b, &pack); err != nil {
 		t.Fatal(err)
 	}
-	if pack.Revision != "ooxml-shared-contracts-v2" || pack.Distribution != "fixtures-ooxml-v0.1.0" || pack.ScenarioCount != 8 || pack.CaseCount != 19 {
+	if pack.Revision != "ooxml-shared-contracts-v2" || pack.Distribution != "fixtures-ooxml-v0.2.0" || pack.ScenarioCount != 8 || pack.CaseCount != 19 {
 		t.Fatal("wrong shared revision/inventory")
 	}
 	for name, hash := range pack.Files {
@@ -93,19 +93,28 @@ func TestSharedPackV2(t *testing.T) {
 		t.Fatal(err)
 	}
 	var fixtures struct {
+		Schema   int             `json:"schemaVersion"`
+		PathBase string          `json:"pathBase"`
 		Fixtures []sharedFixture `json:"fixtures"`
 	}
 	if err = json.Unmarshal(b, &fixtures); err != nil {
 		t.Fatal(err)
 	}
-	if len(fixtures.Fixtures) != 4 {
+	if fixtures.Schema != 2 || fixtures.PathBase != "repository-root" || len(fixtures.Fixtures) != 4 {
 		t.Fatal("wrong fixture inventory")
 	}
 	fixtureHashes := map[string]string{}
 	readbacks := map[string]any{}
 	for _, f := range fixtures.Fixtures {
 		t.Run(f.ID, func(t *testing.T) {
-			data, err := pinnedFile(root, f.Path, f.SHA256)
+			path, err := testutil.LookupFixture(f.AssetID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if path != testutil.ReferencePath(f.Path) {
+				t.Fatal("shared path and fixture ID differ")
+			}
+			data, err := pinnedFile(testutil.ReferenceRoot(), f.Path, f.SHA256)
 			if err != nil {
 				t.Fatal(err)
 			}

@@ -13,9 +13,6 @@ func TestReferencePathsAndOutputGuards(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Setenv("OOXML_FIXTURES_ROOT", root)
-	if got, want := FixturePath("word", "minimal.docx"), filepath.Join(root, "fixtures", "go-current", "testdata", "word", "minimal.docx"); got != want {
-		t.Fatalf("%s != %s", got, want)
-	}
 	alias := filepath.Join(base, "redirect")
 	if err := os.Symlink(root, alias); err != nil {
 		t.Fatal(err)

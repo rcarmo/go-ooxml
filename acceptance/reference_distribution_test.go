@@ -28,7 +28,11 @@ type referencePin struct {
 
 func loadReferencePin(t *testing.T) referencePin {
 	t.Helper()
-	b, err := os.ReadFile("../spec/reference-distribution.json")
+	path := os.Getenv("OOXML_REFERENCE_PIN")
+	if path == "" {
+		path = "../spec/reference-distribution.json"
+	}
+	b, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,23 +55,38 @@ func TestPinnedReferenceDistribution(t *testing.T) {
 	var manifest struct {
 		Schema int `json:"schemaVersion"`
 		Files  []struct {
+			ID     string          `json:"id"`
+			Format string          `json:"format"`
+			Group  string          `json:"scenarioGroup"`
 			Path   string          `json:"path"`
 			Bytes  int64           `json:"bytes"`
 			Hash   string          `json:"sha256"`
 			Role   string          `json:"role"`
-			Origin json.RawMessage `json:"origin"`
+			Origin json.RawMessage `json:"origins"`
 		} `json:"files"`
 	}
 	if err = json.Unmarshal(b, &manifest); err != nil {
 		t.Fatal(err)
 	}
-	if manifest.Schema != 1 || len(manifest.Files) != pin.Assets {
+	if manifest.Schema != 2 || len(manifest.Files) != pin.Assets {
 		t.Fatal("distribution inventory differs")
 	}
 	seen := map[string]bool{}
+	ids := map[string]bool{}
+	fixtureHashes := map[string]bool{}
 	for _, f := range manifest.Files {
 		if !filepath.IsLocal(f.Path) || filepath.ToSlash(filepath.Clean(f.Path)) != f.Path || strings.Contains(f.Path, "\\") || seen[f.Path] || f.Bytes < 0 || len(f.Hash) != 64 || f.Role == "" || len(f.Origin) < 3 {
 			t.Fatalf("invalid manifest entry %s", f.Path)
+		}
+		if f.ID == "" || ids[f.ID] {
+			t.Fatal("invalid/duplicate asset ID", f.ID)
+		}
+		ids[f.ID] = true
+		if f.Role == "fixture" {
+			if fixtureHashes[f.Hash] || f.ID != "fixture-"+f.Hash || !strings.HasPrefix(f.Path, "fixtures/") || f.Format == "" || f.Group == "" {
+				t.Fatal("duplicate or invalid fixture", f.ID)
+			}
+			fixtureHashes[f.Hash] = true
 		}
 		seen[f.Path] = true
 		path := testutil.ReferencePath(f.Path)
@@ -92,7 +111,7 @@ func TestPinnedReferenceDistribution(t *testing.T) {
 			t.Fatal("reference asset hash/size mismatch", f.Path)
 		}
 	}
-	for _, area := range []string{"fixtures", "shared/v2/pack"} {
+	for _, area := range []string{"fixtures", "notices", "shared/v2/pack"} {
 		if err := filepath.WalkDir(testutil.ReferencePath(area), func(path string, d os.DirEntry, err error) error {
 			if err != nil {
 				return err
@@ -116,8 +135,8 @@ func TestPinnedReferenceDistribution(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if pin.Pack != sharedPackHash {
-		t.Fatal("pack constant and pin differ")
+	if _, err := pinnedFile(testutil.ReferencePath("shared", "v2", "pack"), "pack-manifest.json", pin.Pack); err != nil {
+		t.Fatal(err)
 	}
 	t.Logf("%d distribution assets independently verified", len(seen))
 }

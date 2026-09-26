@@ -9,24 +9,18 @@ import (
 	"testing"
 )
 
-// This is one corpus batch: all checked-in Office fixtures, including duplicate
-// content with different provenance paths. No graph/format-edit parity is implied.
+// One logical corpus batch; duplicate labels resolve to one canonical file.
+// These checks establish no-op custody, not graph/format-edit coverage.
 func TestRetainedNoOpFixtureCorpus(t *testing.T) {
-	root := testutil.FixturePath()
 	count := 0
-	err := filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		if d.IsDir() {
-			return nil
-		}
-		ext := strings.ToLower(filepath.Ext(path))
+	for _, label := range testutil.FixtureLabels("") {
+		ext := strings.ToLower(filepath.Ext(label))
 		if ext != ".docx" && ext != ".xlsx" && ext != ".pptx" {
-			return nil
+			continue
 		}
 		count++
-		t.Run(filepath.ToSlash(path), func(t *testing.T) {
+		t.Run(label, func(t *testing.T) {
+			path := testutil.FixturePath(label)
 			source, err := os.ReadFile(path)
 			if err != nil {
 				t.Fatal(err)
@@ -43,10 +37,6 @@ func TestRetainedNoOpFixtureCorpus(t *testing.T) {
 				t.Fatal("no-op changed fixture bytes")
 			}
 		})
-		return nil
-	})
-	if err != nil {
-		t.Fatal(err)
 	}
 	if count == 0 {
 		t.Fatal("empty corpus")

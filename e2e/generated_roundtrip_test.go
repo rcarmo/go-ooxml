@@ -31,71 +31,65 @@ func TestGeneratedRoundTripArtifacts(t *testing.T) {
 		}
 	}
 
-	roundTripWordDir(t, testutil.FixturePath("word"), wordOut)
-	roundTripExcelDir(t, testutil.FixturePath("excel"), excelOut)
-	roundTripPptxDir(t, testutil.FixturePath("pptx"), pptxOut)
+	roundTripWordDir(t, "word", wordOut)
+	roundTripExcelDir(t, "excel", excelOut)
+	roundTripPptxDir(t, "pptx", pptxOut)
 
 	roundTripWordFile(t, testutil.FixturePath("default.docx"), filepath.Join(wordOut, "default.docx"))
 	roundTripPptxFile(t, testutil.FixturePath("default.pptx"), filepath.Join(pptxOut, "default.pptx"))
 }
 
-func roundTripWordDir(t *testing.T, srcDir, dstDir string) {
+func roundTripWordDir(t *testing.T, prefix, dstDir string) {
 	t.Helper()
-	entries, err := os.ReadDir(srcDir)
-	if err != nil {
-		t.Fatalf("ReadDir(%s) error = %v", srcDir, err)
+	labels := testutil.FixtureLabels(prefix + "/")
+	if len(labels) == 0 {
+		t.Fatal("empty fixture family", prefix)
 	}
-	for _, entry := range entries {
-		if entry.IsDir() {
+	for _, label := range labels {
+		name := strings.TrimPrefix(label, prefix+"/")
+		if strings.Contains(name, "/") {
 			continue
 		}
-		name := entry.Name()
-		if !strings.HasSuffix(strings.ToLower(name), ".docx") {
+		if !strings.HasSuffix(name, ".docx") {
 			continue
 		}
-		t.Run("word/"+name, func(t *testing.T) {
-			roundTripWordFile(t, filepath.Join(srcDir, name), filepath.Join(dstDir, name))
-		})
+		t.Run(label, func(t *testing.T) { roundTripWordFile(t, testutil.FixturePath(label), filepath.Join(dstDir, name)) })
 	}
 }
 
-func roundTripExcelDir(t *testing.T, srcDir, dstDir string) {
+func roundTripExcelDir(t *testing.T, prefix, dstDir string) {
 	t.Helper()
-	entries, err := os.ReadDir(srcDir)
-	if err != nil {
-		t.Fatalf("ReadDir(%s) error = %v", srcDir, err)
+	labels := testutil.FixtureLabels(prefix + "/")
+	if len(labels) == 0 {
+		t.Fatal("empty fixture family", prefix)
 	}
-	for _, entry := range entries {
-		if entry.IsDir() {
+	for _, label := range labels {
+		name := strings.TrimPrefix(label, prefix+"/")
+		if strings.Contains(name, "/") {
 			continue
 		}
-		name := entry.Name()
-		if !strings.HasSuffix(strings.ToLower(name), ".xlsx") {
+		if !strings.HasSuffix(name, ".xlsx") {
 			continue
 		}
-		t.Run("excel/"+name, func(t *testing.T) {
-			roundTripExcelFile(t, filepath.Join(srcDir, name), filepath.Join(dstDir, name))
-		})
+		t.Run(label, func(t *testing.T) { roundTripExcelFile(t, testutil.FixturePath(label), filepath.Join(dstDir, name)) })
 	}
 }
 
-func roundTripPptxDir(t *testing.T, srcDir, dstDir string) {
+func roundTripPptxDir(t *testing.T, prefix, dstDir string) {
 	t.Helper()
-	entries, err := os.ReadDir(srcDir)
-	if err != nil {
-		t.Fatalf("ReadDir(%s) error = %v", srcDir, err)
+	labels := testutil.FixtureLabels(prefix + "/")
+	if len(labels) == 0 {
+		t.Fatal("empty fixture family", prefix)
 	}
-	for _, entry := range entries {
-		if entry.IsDir() {
+	for _, label := range labels {
+		name := strings.TrimPrefix(label, prefix+"/")
+		if strings.Contains(name, "/") {
 			continue
 		}
-		name := entry.Name()
-		if !strings.HasSuffix(strings.ToLower(name), ".pptx") {
+		if !strings.HasSuffix(name, ".pptx") {
 			continue
 		}
-		t.Run("pptx/"+name, func(t *testing.T) {
-			roundTripPptxFile(t, filepath.Join(srcDir, name), filepath.Join(dstDir, name))
-		})
+		t.Run(label, func(t *testing.T) { roundTripPptxFile(t, testutil.FixturePath(label), filepath.Join(dstDir, name)) })
 	}
 }
 
