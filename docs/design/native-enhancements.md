@@ -586,3 +586,9 @@ text editing; unknown/text locks still refuse. Batch063 passes213 native cases.
 Twelve XLSX/PPTX intake cases verify expanded attribute names under alias/local
 namespace bindings, plain-id exclusion and exact relationship Type URIs. Current
 readers pass without runtime changes. Batch064 passes225 native cases.
+
+### Increment066: structured subtree replacement
+
+Immutable replacement of disjoint non-root XML subtrees uses the surviving parent's
+namespace context and preserves all surrounding source bytes. Raw XML, overlapping
+selections and invalid later nodes refuse atomically. Batch066 passes227 native cases.

@@ -120,6 +120,7 @@ func TestAcceptance(t *testing.T) {
 		styleIndexSteps(sc)
 		xmlNormalizationSteps(sc)
 		xmlInsertSteps(sc)
+		subtreeSteps(sc)
 		xmlConformanceSteps(sc)
 		officeLinkSteps(sc)
 		formulaSteps(sc)
