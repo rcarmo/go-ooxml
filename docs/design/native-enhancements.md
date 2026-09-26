@@ -427,3 +427,10 @@ Literal attribute whitespace now follows XML1.0 normalization before reference
 decoding, while numeric whitespace references retain their characters. Source
 bytes/offsets remain immutable; text/CDATA CRLF/CR no-op/edits are characterized.
 Sibling Bun regression suggestions reproduced the attribute defect. Batch036.
+
+### Increment 037: structured child insertion
+
+Internal InsertChildren authors expanded-name nodes with existing or fresh scoped
+prefixes, resets default namespaces for unqualified children and expands self-closing
+parents without rewriting their attributes. Raw XML/namespace mutations and overlapping
+targets refuse. This advances B03, not Office schema/graph authoring parity. Batch037.
