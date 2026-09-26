@@ -559,3 +559,11 @@ Batch058 passes198 native cases. Legacy synthetic-chain authoring is unchanged.
 Resumed fromde006f4 after the post-reboot goal update. Prolog/epilog whitespace is
 checked lexically; references and empty/whitespace CDATA outside the root refuse.
 Batch059 passes202 native cases; internal content and literal boundary bytes remain intact.
+
+### Increment060: graph and chain lifecycle coverage
+
+Transient graph additions can be replaced/deleted back to the exact source. Failed
+private plans preserve prior edits and valid held plans; deleted originals remain
+reserved. Nonstandard calc-chain deletion, repeated edits and signed refusal pass.
+Bounded judge findings were checked against public boundaries and rejected with tests.
+Batch060 passes202 native cases; full/race checkpoint follows.
