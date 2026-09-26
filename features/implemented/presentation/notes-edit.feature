@@ -42,4 +42,4 @@ Feature: Guarded edits to an existing notes body
       | locked body |
       | malformed grouping lock |
       | bad replacement character |
-      | multiline replacement |
+      | tab replacement |

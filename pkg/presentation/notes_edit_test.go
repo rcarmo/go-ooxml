@@ -101,7 +101,7 @@ func TestExistingNotesFixtureBatch(t *testing.T) {
 		if err = other.ReplaceNotes(target, "foreign"); err == nil {
 			t.Fatal("foreign target accepted")
 		}
-		for _, text := range []string{"bad\x00", string([]byte{0xff}), "two\nlines"} {
+		for _, text := range []string{"bad\x00", string([]byte{0xff}), "two\tcolumns"} {
 			if err = s.ReplaceNotes(target, text); err == nil {
 				t.Fatal("invalid accepted")
 			}

@@ -105,6 +105,7 @@ func TestAcceptance(t *testing.T) {
 		wordSteps(sc)
 		slideSteps(sc)
 		notesEditSteps(sc)
+		notesMultilineSteps(sc)
 		cellSteps(sc)
 		storySteps(sc)
 		spanSteps(sc)

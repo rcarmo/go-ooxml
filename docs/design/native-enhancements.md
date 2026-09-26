@@ -592,3 +592,10 @@ readers pass without runtime changes. Batch064 passes225 native cases.
 Immutable replacement of disjoint non-root XML subtrees uses the surviving parent's
 namespace context and preserves all surrounding source bytes. Raw XML, overlapping
 selections and invalid later nodes refuse atomically. Batch066 passes227 native cases.
+
+### Increment067: multiline notes templates
+
+Ordinary notes paragraphs/runs now read and replace as LF-separated text. First
+paragraph/run formatting templates are copied within an explicit supported subset;
+empty lines become empty paragraphs. Unproved properties/fields and bad text refuse
+before package edits. Single-leaf nonempty corrections keep byte splices.234 cases pass.

@@ -154,8 +154,8 @@ func notesEditSteps(sc *godog.ScenarioContext) {
 		if condition == "bad replacement character" {
 			newText = "bad\x00"
 		}
-		if condition == "multiline replacement" {
-			newText = "two\nlines"
+		if condition == "tab replacement" {
+			newText = "two\tcolumns"
 		}
 		failure = s.ReplaceNotes(target, newText)
 		return nil

@@ -17,6 +17,9 @@ type NotesTarget struct {
 	doc              *losslessxml.Document
 	leaf             losslessxml.Element
 	consumed         bool
+	paragraphs       []losslessxml.Element
+	pPr, rPr, endPr  *losslessxml.NewElement
+	singleLeaf       bool
 }
 
 func (t *NotesTarget) Text() string {
@@ -51,8 +54,8 @@ func notesWithin(e, parent losslessxml.Element) bool {
 	return false
 }
 
-// FindNotes supports one ordinary body placeholder with a single paragraph/run/
-// text leaf. Multiple runs/paragraphs, fields, locks and extended structures
+// FindNotes supports an existing ordinary body placeholder with plain paragraphs
+// and runs, including empty paragraphs. Fields, text locks and extended structures
 // refuse. Other placeholders are retained untouched, including slide-number fields.
 func (s *EditSession) FindNotes(slidePart string) (*NotesTarget, error) {
 	if !s.slides[slidePart] {
@@ -153,21 +156,6 @@ func (s *EditSession) FindNotes(slidePart string) (*NotesTarget, error) {
 		return nil, editRefusal("unsupported_structure", "one notes text body required")
 	}
 	body := bodies[0]
-	paragraphs := notesChildren(doc, body, name(packaging.NSDrawingML, "p"))
-	if len(paragraphs) != 1 {
-		return nil, editRefusal("unsupported_structure", "multi-paragraph notes require structural authoring")
-	}
-	paragraph := paragraphs[0]
-	runs := notesChildren(doc, paragraph, name(packaging.NSDrawingML, "r"))
-	if len(runs) != 1 {
-		return nil, editRefusal("unsupported_structure", "one ordinary notes run required")
-	}
-	run := runs[0]
-	leaves := notesChildren(doc, run, name(packaging.NSDrawingML, "t"))
-	if len(leaves) != 1 {
-		return nil, editRefusal("unsupported_structure", "one notes text leaf required")
-	}
-	leaf := leaves[0]
 	for _, e := range es {
 		if !notesWithin(e, shape) && e != shape {
 			continue
@@ -194,29 +182,17 @@ func (s *EditSession) FindNotes(slidePart string) (*NotesTarget, error) {
 				return nil, editRefusal("unsupported_structure", "unknown notes body attribute namespace")
 			}
 		}
-		parent, ok := e.Parent()
-		if !ok {
-			continue
-		}
-		if parent == body && e != paragraph && n != name(packaging.NSDrawingML, "bodyPr") && n != name(packaging.NSDrawingML, "lstStyle") {
-			return nil, editRefusal("unsupported_structure", "unknown notes text body content")
-		}
-		if parent == paragraph && e != run && n != name(packaging.NSDrawingML, "pPr") && n != name(packaging.NSDrawingML, "endParaRPr") {
-			return nil, editRefusal("unsupported_structure", "field/break/mixed notes paragraph")
-		}
-		if parent == run && e != leaf && n != name(packaging.NSDrawingML, "rPr") {
-			return nil, editRefusal("unsupported_structure", "mixed notes run")
-		}
 	}
-	text, isLeaf := leaf.Text()
-	if !isLeaf {
-		return nil, editRefusal("unsupported_structure", "mixed notes text leaf")
+	target := &NotesTarget{session: s, generation: s.generation, part: part, hash: hash, doc: doc}
+	if err = readNotesParagraphs(doc, body, target); err != nil {
+		return nil, err
 	}
-	return &NotesTarget{session: s, generation: s.generation, part: part, hash: hash, text: text, doc: doc, leaf: leaf}, nil
+	return target, nil
 }
 
-// ReplaceNotes patches only the selected ordinary text leaf; it never creates a
-// notes graph or invokes the legacy notes_slide accessor. Changed targets stale
+// ReplaceNotes uses the first paragraph/run formatting for newline-separated
+// paragraphs, retaining body metadata and other placeholders. It never creates
+// a notes graph or invokes the legacy notes_slide accessor. Changed targets stale
 // all held session handles, while identical text keeps its target reusable.
 func (s *EditSession) ReplaceNotes(target *NotesTarget, text string) error {
 	if target == nil || target.session != s || target.generation != s.generation || target.consumed {
@@ -229,13 +205,26 @@ func (s *EditSession) ReplaceNotes(target *NotesTarget, text string) error {
 	if hash != target.hash {
 		return editRefusal("stale_target", "notes source fingerprint changed")
 	}
-	if strings.ContainsAny(text, "\r\n\t") {
-		return editRefusal("unsupported_structure", "multiline notes need structural authoring")
+	if strings.ContainsAny(text, "\r\t") {
+		return editRefusal("unsupported_structure", "notes tabs/carriage returns require explicit structure")
 	}
 	if text == target.text {
 		return nil
 	}
-	b, err := target.doc.ReplaceText([]losslessxml.TextEdit{{Target: target.leaf, Text: text}})
+	var b []byte
+	if target.singleLeaf && text != "" && !strings.Contains(text, "\n") {
+		b, err = target.doc.ReplaceText([]losslessxml.TextEdit{{Target: target.leaf, Text: text}})
+	} else {
+		nodes := []losslessxml.NewElement{}
+		for _, line := range strings.Split(text, "\n") {
+			nodes = append(nodes, notesNewParagraph(target, line))
+		}
+		edits := []losslessxml.ElementReplacement{{Target: target.paragraphs[0], Nodes: nodes}}
+		for _, p := range target.paragraphs[1:] {
+			edits = append(edits, losslessxml.ElementReplacement{Target: p})
+		}
+		b, err = target.doc.ReplaceElements(edits)
+	}
 	if err != nil {
 		return editRefusal("unsupported_structure", err.Error())
 	}
