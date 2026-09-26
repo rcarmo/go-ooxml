@@ -631,3 +631,9 @@ shared-string support follow separately. No calculation or display formatting.
 Validation reads preserve duplicate si positions and rich-run text order. Invalid
 indices, absent/ambiguous tables and mixed rich/plain structures refuse unchanged.
 272 native cases pass; strings remain raw stored XML-decoded values.
+
+### Increment074: whole-axis validation
+
+Whole-row/column list sources use stored-cell extents and preserve blanks/order;
+misleading dimension hints cannot expand results. A separate lexer-backed direct
+range parser refuses unknown syntax;281 native cases pass. Expression analysis unchanged.

@@ -61,6 +61,7 @@ func vocabularySteps(sc *godog.ScenarioContext) {
 		extraValidation, merge, extension := "", "", ""
 		cells := `<row r="1"><c r="A1" t="inlineStr"><is><t>Yes</t></is></c></row><row r="3"><c r="A3" t="inlineStr"><is><t xml:space="preserve"> No </t></is></c></row>`
 		want = []spreadsheet.ValidationValue{str(" Yes"), str("No "), str(`A"B`), str("")}
+		dimension := ""
 		shared := ""
 		sharedRels := 1
 		switch condition {
@@ -111,6 +112,32 @@ func vocabularySteps(sc *godog.ScenarioContext) {
 			if condition == "missing rich run text" {
 				cells = strings.Replace(cells, `<r><t>text</t></r>`, `<r><rPr><i/></rPr></r>`, 1)
 			}
+		case "whole column", "whole column ignores dimension hint":
+			expr = "=$A:$A"
+			want = []spreadsheet.ValidationValue{str("Yes"), blank, str(" No ")}
+			if condition == "whole column ignores dimension hint" {
+				dimension = `<dimension ref="A1:XFD1048576"/>`
+			}
+		case "whole row reversed columns":
+			expr = "=$1:$1"
+			cells = `<row r="1"><c r="C1" t="inlineStr"><is><t>Last</t></is></c><c r="A1" t="inlineStr"><is><t>First</t></is></c></row>`
+			want = []spreadsheet.ValidationValue{str("First"), blank, str("Last")}
+		case "quoted cross-sheet whole column":
+			expr = "='Owner''s Inputs'!$B:$B"
+			want = []spreadsheet.ValidationValue{str("Low"), str("High")}
+		case "whole column empty sheet":
+			expr = "A:A"
+			cells = ""
+			want = []spreadsheet.ValidationValue{blank}
+		case "whole multiple columns":
+			expr = "A:B"
+		case "bare column name":
+			expr = "IN"
+		case "mixed range endpoint types":
+			expr = "A1:A"
+		case "excessive whole-column result":
+			expr = "A:A"
+			cells += `<row r="100001"><c r="B100001"><v>1</v></c></row>`
 		case "two matching lists":
 			extraValidation = `<dataValidation type="list" sqref="D1"><formula1>&quot;X,Y&quot;</formula1></dataValidation>`
 		case "invalid literal quote":
@@ -150,7 +177,7 @@ func vocabularySteps(sc *godog.ScenarioContext) {
 		q := packaging.New()
 		ns := packaging.NSSpreadsheetML
 		_, _ = q.AddPart("xl/workbook.xml", packaging.ContentTypeWorkbook, []byte(`<workbook xmlns="`+ns+`" xmlns:r="`+packaging.NSDocumentRelationships+`"><sheets><sheet name="Main" sheetId="1" r:id="rId1"/><sheet name="Owner's Inputs" sheetId="2" r:id="rId2"/></sheets></workbook>`))
-		_, _ = q.AddPart("xl/sheet1.xml", packaging.ContentTypeWorksheet, []byte(`<worksheet xmlns="`+ns+`"><sheetData>`+cells+`</sheetData>`+merge+validation+extension+`</worksheet>`))
+		_, _ = q.AddPart("xl/sheet1.xml", packaging.ContentTypeWorksheet, []byte(`<worksheet xmlns="`+ns+`">`+dimension+`<sheetData>`+cells+`</sheetData>`+merge+validation+extension+`</worksheet>`))
 		_, _ = q.AddPart("xl/sheet2.xml", packaging.ContentTypeWorksheet, []byte(`<worksheet xmlns="`+ns+`"><sheetData><row r="1"><c r="B1" t="inlineStr"><is><t>Low</t></is></c></row><row r="2"><c r="B2" t="inlineStr"><is><t>High</t></is></c></row></sheetData></worksheet>`))
 		_, _ = q.AddPart("opaque.bin", "application/octet-stream", []byte("sentinel"))
 		q.AddRelationship("", "xl/workbook.xml", packaging.RelTypeOfficeDocument)

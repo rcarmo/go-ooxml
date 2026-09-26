@@ -1943,7 +1943,8 @@ are not interpreted. Literal lists and finite static1D ranges are supported,
 including reversed/quoted-sheet references and blank slots, up to100000 positions.
 Formulas are never evaluated and cached formula/error values refuse. Worksheet
 extensions, merged interiors, dynamic/named/external/2D sources and ambiguous
-cell ownership refuse. Shared strings and whole-row/column support are unfinished.
+cell ownership refuse. Whole-row/column sources use the retained stored-cell extent
+(minimum1), never the worksheet dimension hint; result size remains capped.
 
 AllowedValues also resolves shared-string indices against the retained si sequence
 without deduplication and reads supported rich inline/shared runs. Missing/external/

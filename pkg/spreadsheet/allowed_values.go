@@ -284,17 +284,9 @@ func (s *EditSession) AllowedValues(sheet, cell string) ([]ValidationValue, erro
 	if strings.HasPrefix(source, `"`) {
 		return literalValidationValues(source)
 	}
-	ref, err := validationRange(source)
+	ref, err := formula.ParseRange(source)
 	if err != nil {
-		return nil, err
-	}
-	bounds := validationBounds(ref)
-	if bounds.loRow != bounds.hiRow && bounds.loCol != bounds.hiCol {
-		return nil, editRefusal("unsupported_structure", "two-dimensional validation range")
-	}
-	count := max(bounds.hiRow-bounds.loRow, bounds.hiCol-bounds.loCol) + 1
-	if count > 100000 {
-		return nil, editRefusal("resource_limit", "validation vocabulary exceeds 100000 positions")
+		return nil, editRefusal("unsupported_structure", err.Error())
 	}
 	if ref.Sheet != "" {
 		found := 0
@@ -322,6 +314,26 @@ func (s *EditSession) AllowedValues(sheet, cell string) ([]ValidationValue, erro
 	cells, err := v.storedCells()
 	if err != nil {
 		return nil, err
+	}
+	maxRow, maxCol := 1, 1
+	for c := range cells {
+		maxRow = max(maxRow, c[0])
+		maxCol = max(maxCol, c[1])
+	}
+	first, last := ref.First, ref.Last
+	if ref.WholeColumns {
+		first.Row, last.Row = 1, maxRow
+	}
+	if ref.WholeRows {
+		first.Column, last.Column = 1, maxCol
+	}
+	bounds := validationBounds(formula.Reference{First: first, Last: last})
+	if bounds.loRow != bounds.hiRow && bounds.loCol != bounds.hiCol {
+		return nil, editRefusal("unsupported_structure", "two-dimensional validation range")
+	}
+	count := max(bounds.hiRow-bounds.loRow, bounds.hiCol-bounds.loCol) + 1
+	if count > 100000 {
+		return nil, editRefusal("resource_limit", "validation vocabulary exceeds 100000 positions")
 	}
 	out := make([]ValidationValue, 0, count)
 	shared := &validationStringTable{}
