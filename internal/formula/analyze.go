@@ -42,7 +42,7 @@ func Analyze(source string) ([]Reference, error) {
 		return nil, err
 	}
 	p := parser{tokens: tokens, refs: []Reference{}}
-	if p.peek().text == "=" {
+	if p.peek().kind == "punct" && p.peek().text == "=" {
 		p.at++
 	}
 	if err = p.expression(0); err != nil {
@@ -143,7 +143,7 @@ func lex(s string) ([]token, error) {
 }
 func (p *parser) peek() token { return p.tokens[p.at] }
 func (p *parser) take(text string) bool {
-	if p.peek().text == text {
+	if p.peek().kind == "punct" && p.peek().text == text {
 		p.at++
 		return true
 	}
@@ -176,6 +176,9 @@ func (p *parser) expression(min int) error {
 	for {
 		if p.take("%") {
 			continue
+		}
+		if p.peek().kind != "punct" {
+			return nil
 		}
 		prec := precedence(p.peek().text)
 		if prec < min {

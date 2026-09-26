@@ -463,3 +463,9 @@ independent source/formula/cache/flags/preservation/graph/style/commit-count che
 Only empty inactive protection/name containers were unblocked; active structures refuse.
 One shared contract has direct-native evidence, not yet schema2/Gherkin binding parity.
 Batch042;18 others unexecuted, external calculation not performed.
+
+### Increment043: formula lexical-kind guard
+
+Operators/delimiters must be punctuation tokens, never identical text inside quoted
+literals. This closes false acceptance and false rejection cases in the static parser.
+Batch043; full expression support remains conservative.

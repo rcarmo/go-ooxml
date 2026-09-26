@@ -18,6 +18,14 @@ func formulaSteps(sc *godog.ScenarioContext) {
 		return ctx, nil
 	})
 	sc.Step(`^the formula expression "([^"]+)"$`, func(text string) error { source = text; return nil })
+	sc.Step(`^a static formula with a quoted closing-parenthesis argument$`, func() error { source = `IF(A1=1,")",B1)`; return nil })
+	sc.Step(`^a formula with two references separated only by a quoted plus sign$`, func() error { source = `A1 "+" B1`; return nil })
+	sc.Step(`^literal punctuation is accepted without hiding cell references$`, func() error {
+		if failure != nil || len(references) != 2 {
+			return fmt.Errorf("references %+v error %v", references, failure)
+		}
+		return nil
+	})
 	sc.Step(`^I analyse its static references$`, func() error { references, failure = formula.Analyze(source); return nil })
 	sc.Step(`^exactly (\d+) reference ranges are reported$`, func(count int) error {
 		if failure != nil {
