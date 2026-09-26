@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.7.0`, commit
-`111740069babc6648325dd9d62ada585ecbd3553`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.8.0`, commit
+`b5729fc0c0fd59a98bfdfa5e4906143c3c6ce56a`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -39,12 +39,12 @@ There is no separate pack seal. The root manifest seals the explicit
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.7.0` contains 139 manifest assets, including 115 unique fixtures in
-32 format/scenario groups, plus 149 facts and 99 workflows/169 expanded cases.
-The added tracked-workflow feature leaves all prior 138 asset records unchanged.
-Its 17 cases add no Go bindings or tracked-workflow execution credit. Keep this
-shared pin stable during the coordinator's release pause; local catalogue work
-continues independently. Go's package ledger has four partial mappings and eight unmapped
+Release `v0.8.0` contains 140 manifest assets, including 115 unique fixtures in
+32 format/scenario groups, plus 149 facts and 101 workflows/184 expanded cases.
+The added run-formatting feature leaves all prior 139 asset records unchanged.
+Its 15 cases add no Go bindings or formatting execution credit. Keep this shared
+pin until the coordinator approves a replacement; local catalogue work continues
+independently. Go's package ledger has four partial mappings and eight unmapped
 declarations; its XML ledger has three partial mappings and one unmapped.
 Neither ledger grants canonical execution credit. The semantic-diff assertion
 `removed: []` exercises no removal case.
@@ -90,10 +90,10 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The v0.7 default released-reference batch is recorded in
-`../reports/batches/110.md`: 291 implemented native Gherkin cases; 20 planned and
+The v0.8 default released-reference batch is recorded in
+`../reports/batches/113.md`: 291 implemented native Gherkin cases; 20 planned and
 one external case unrun. The prior v0.3 bounded race checkpoint remains
-`../reports/batches/096.md`; the pin-only v0.7 update does not rerun races.
+`../reports/batches/096.md`; the pin-only v0.8 update does not rerun races.
 Package/unit/subtest counts are separate metrics. No live Office
 rendering/calculation or exploratory fuzz campaign ran in these batches.
 Historical reports retain the commands and outcomes from their original runs.
