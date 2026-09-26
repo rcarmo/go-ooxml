@@ -18,6 +18,8 @@ import (
 type referencePin struct {
 	Schema    int    `json:"schema"`
 	Commit    string `json:"commit"`
+	Tag       string `json:"tag"`
+	TagObject string `json:"tag_object"`
 	Manifest  string `json:"manifest_sha256"`
 	Pack      string `json:"shared_pack_sha256"`
 	Assets    int    `json:"assets"`
@@ -42,6 +44,13 @@ func loadReferencePin(t *testing.T) referencePin {
 	}
 	if p.Schema != 1 || len(p.Commit) != 40 || p.Assets <= 0 || p.Workflows <= 0 || p.Cases <= 0 {
 		t.Fatal("invalid reference pin")
+	}
+	candidate := os.Getenv("OOXML_REFERENCE_PIN") != "" && p.TagObject == "" && strings.HasPrefix(p.Tag, "candidate-")
+	if candidate && os.Getenv("OOXML_FIXTURES_ROOT") == "" {
+		t.Fatal("candidate reference pin requires explicit candidate root")
+	}
+	if err := testutil.VerifyReferenceCheckout(testutil.ReferenceRoot(), testutil.ReferenceIdentity{Commit: p.Commit, Tag: p.Tag, TagObject: p.TagObject, Manifest: p.Manifest, Pack: p.Pack}, candidate); err != nil {
+		t.Fatal(err)
 	}
 	return p
 }
