@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.5.0`, commit
-`db913c65bb652c11c05eb40793be37b56761cb53`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.6.0`, commit
+`dc8fdccd5a7e14c9154bb71e68e10c7404fe4fa0`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -39,10 +39,10 @@ There is no separate pack seal. The root manifest seals the explicit
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.5.0` contains 128 manifest assets, including 115 unique fixtures in
-32 format/scenario groups, plus 149 facts and 57 workflows/90 expanded cases.
-The three added package feature assets leave all prior 125 asset hashes and sizes
-unchanged. Go's package ledger has four partial mappings and eight unmapped
+Release `v0.6.0` contains 138 manifest assets, including 115 unique fixtures in
+32 format/scenario groups, plus 149 facts and 97 workflows/152 expanded cases.
+The ten added feature assets leave all prior 128 asset records unchanged.
+These imported Bun profiles add no Go bindings or execution credit. Go's package ledger has four partial mappings and eight unmapped
 declarations; its XML ledger has three partial mappings and one unmapped.
 Neither ledger grants canonical execution credit. The semantic-diff assertion
 `removed: []` exercises no removal case.
@@ -88,10 +88,10 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The v0.5 default released-reference batch is recorded in
-`../reports/batches/103.md`: 291 implemented native Gherkin cases; 20 planned and
+The v0.6 default released-reference batch is recorded in
+`../reports/batches/107.md`: 291 implemented native Gherkin cases; 20 planned and
 one external case unrun. The prior v0.3 bounded race checkpoint remains
-`../reports/batches/096.md`; the pin-only v0.5 update does not rerun races.
+`../reports/batches/096.md`; the pin-only v0.6 update does not rerun races.
 Package/unit/subtest counts are separate metrics. No live Office
 rendering/calculation or exploratory fuzz campaign ran in these batches.
 Historical reports retain the commands and outcomes from their original runs.
