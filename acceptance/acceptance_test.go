@@ -111,6 +111,7 @@ func TestAcceptance(t *testing.T) {
 		replaceAllSteps(sc)
 		searchScopeSteps(sc)
 		runBoundarySteps(sc)
+		spanGuardSteps(sc)
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil

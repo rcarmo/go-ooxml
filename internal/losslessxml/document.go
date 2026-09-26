@@ -241,6 +241,18 @@ func (e Element) Parent() (Element, bool) {
 
 // Raw returns a private copy of the complete original element markup.
 // It is evidence for conservative equality, never authority to splice elsewhere.
+// Namespaces returns copied in-scope bindings for conservative QName equality.
+func (e Element) Namespaces() map[string]string {
+	out := map[string]string{}
+	if !e.valid() {
+		return out
+	}
+	for k, v := range e.doc.nodes[e.index].ns {
+		out[k] = v
+	}
+	return out
+}
+
 func (e Element) Raw() []byte {
 	if !e.valid() {
 		return nil

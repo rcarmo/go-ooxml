@@ -109,6 +109,9 @@ func sameRunFormat(d *losslessxml.Document, a, b losslessxml.Element) bool {
 	if !oka || !okb || pa != pb {
 		return false
 	}
+	if !reflect.DeepEqual(ra.Namespaces(), rb.Namespaces()) || !reflect.DeepEqual(a.Namespaces(), b.Namespaces()) {
+		return false
+	}
 	if !reflect.DeepEqual(ra.Attributes(), rb.Attributes()) || !reflect.DeepEqual(a.Attributes(), b.Attributes()) {
 		return false
 	}

@@ -182,6 +182,24 @@ func (s *EditSession) guard(target *TextTarget, replacement string) error {
 			return editRefusal("unsupported_structure", "paragraph has wrappers or markers")
 		}
 	}
+	// A text stream omits drawings and other zero-text runs. Refuse them in
+	// this paragraph rather than silently crossing invisible ownership boundaries.
+	for _, candidate := range target.doc.Elements() {
+		owner, ok := candidate.Parent()
+		if !ok || owner != paragraph || candidate.Name() != (xml.Name{Space: packaging.NSWordprocessingML, Local: "r"}) {
+			continue
+		}
+		for _, child := range target.doc.Elements() {
+			p, ok := child.Parent()
+			if !ok || p != candidate {
+				continue
+			}
+			n := child.Name()
+			if n != (xml.Name{Space: packaging.NSWordprocessingML, Local: "t"}) && n != (xml.Name{Space: packaging.NSWordprocessingML, Local: "rPr"}) {
+				return editRefusal("unsupported_structure", "paragraph contains non-text run content")
+			}
+		}
+	}
 	space := ""
 	for e := target.element; ; {
 		for _, a := range e.Attributes() {

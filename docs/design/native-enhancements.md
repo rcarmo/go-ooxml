@@ -380,3 +380,10 @@ Boundary insertion succeeds only with equal direct properties/attributes and sha
 paragraph ownership, then uses the left run deterministically. Different/interrupting
 structures refuse atomically; serialization-equivalent formatting remains conservative.
 Batch028.
+
+### Increment 029: invisible content and namespace equality
+
+Run-spanning mutation refuses non-text runs in its paragraph; boundary-format proof
+also compares in-scope namespaces, preventing equal lexical rPr under different
+bindings from authorising insertion. Two false successes now have red/green regressions.
+Batch029; interval-only relaxed guards remain pending.
