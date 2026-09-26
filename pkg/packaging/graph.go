@@ -176,7 +176,7 @@ func (p *Preserved) Graph() (Graph, error) {
 			if _, ok := overrides[name]; ok {
 				return Graph{}, graphError(ContentTypesPath, "duplicate override")
 			}
-			if _, ok := p.parts[name]; !ok {
+			if !p.hasPart(name) {
 				return Graph{}, graphError(ContentTypesPath, "override targets absent part")
 			}
 			overrides[name] = a["ContentType"]
@@ -184,11 +184,7 @@ func (p *Preserved) Graph() (Graph, error) {
 			return Graph{}, graphError(ContentTypesPath, "unknown content-type entry")
 		}
 	}
-	names := make([]string, 0, len(p.parts))
-	for name := range p.parts {
-		names = append(names, name)
-	}
-	sort.Strings(names)
+	names := p.partNames()
 	inbound := map[string]int{}
 	for _, name := range names {
 		if name == ContentTypesPath {
@@ -210,7 +206,7 @@ func (p *Preserved) Graph() (Graph, error) {
 			return Graph{}, graphError(name, err.Error())
 		}
 		if source != "" {
-			if _, ok := p.parts[source]; !ok {
+			if !p.hasPart(source) {
 				return Graph{}, graphError(name, "relationship source missing")
 			}
 		}
@@ -244,7 +240,7 @@ func (p *Preserved) Graph() (Graph, error) {
 				if err != nil {
 					return Graph{}, graphError(name, err.Error())
 				}
-				if _, ok := p.parts[edge.ResolvedPart]; !ok {
+				if !p.hasPart(edge.ResolvedPart) {
 					return Graph{}, graphError(name, "target missing: "+edge.ResolvedPart)
 				}
 				inbound[edge.ResolvedPart]++

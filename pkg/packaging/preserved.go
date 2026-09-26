@@ -9,6 +9,7 @@ import (
 	"io"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/rcarmo/go-ooxml/internal/losslessxml"
 )
@@ -23,14 +24,17 @@ type Replacement struct {
 }
 
 // Preserved retains a source package independently of legacy mutable models.
-// This low-level API replaces existing payloads only; it does not establish
-// format-level semantic validity, resolve references or infer affected parts.
+// Replace changes existing payloads; GraphPlan can add payloads and retarget
+// internal edges. Neither establishes format-level dependency semantics.
 // Mutable sessions are single-owner and are not safe for concurrent mutation.
 type Preserved struct {
-	source  []byte
-	parts   map[string][]byte
-	changed map[string][]byte
-	signed  bool
+	source      []byte
+	parts       map[string][]byte
+	changed     map[string][]byte
+	signed      bool
+	added       map[string][]byte
+	generation  uint64
+	graphEdited bool
 }
 
 // OpenPreserved takes an immutable copy of source after enforcing intake limits.
@@ -59,6 +63,9 @@ func (p *Preserved) Part(name string) ([]byte, string, error) {
 	b, ok := p.changed[name]
 	if !ok {
 		b, ok = p.parts[name]
+	}
+	if !ok {
+		b, ok = p.added[name]
 	}
 	if !ok {
 		return nil, "", &Refusal{Kind: "missing_target", Operation: "read", Part: name}
@@ -102,12 +109,25 @@ func (p *Preserved) Replace(changes []Replacement) error {
 		}
 		staged[change.Part] = data
 	}
+	mutated := false
 	for name, data := range staged {
+		current, _, _ := p.Part(name)
+		if bytes.Equal(current, data) {
+			continue
+		}
+		mutated = true
+		if _, added := p.added[name]; added {
+			p.added[name] = data
+			continue
+		}
 		if bytes.Equal(data, p.parts[name]) {
 			delete(p.changed, name)
 		} else {
 			p.changed[name] = data
 		}
+	}
+	if mutated {
+		p.generation++
 	}
 	return nil
 }
@@ -153,7 +173,7 @@ func validateXMLPayload(data []byte) error {
 // members; only changed payloads are recompressed. Whole-archive identity after
 // an edit is not guaranteed. Stream failures may leave partial caller output.
 func (p *Preserved) WriteTo(w io.Writer) error {
-	if len(p.changed) == 0 {
+	if len(p.changed) == 0 && len(p.added) == 0 {
 		n, err := w.Write(p.source)
 		if err == nil && n != len(p.source) {
 			return io.ErrShortWrite
@@ -204,6 +224,24 @@ func (p *Preserved) WriteTo(w io.Writer) error {
 			return err
 		}
 	}
+	// Additions follow the retained member order in stable name order.
+	names := make([]string, 0, len(p.added))
+	for name := range p.added {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	for _, name := range names {
+		h := &zip.FileHeader{Name: name, Method: zip.Deflate}
+		h.SetModTime(time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC))
+		h.SetMode(0644)
+		entry, err := zw.CreateHeader(h)
+		if err != nil {
+			return err
+		}
+		if _, err = entry.Write(p.added[name]); err != nil {
+			return err
+		}
+	}
 	return zw.Close()
 }
 
@@ -212,6 +250,7 @@ type PartChange struct {
 	Part         string `json:"part"`
 	BeforeSHA256 string `json:"before_sha256"`
 	AfterSHA256  string `json:"after_sha256"`
+	Operation    string `json:"operation,omitempty"`
 }
 
 // Receipt is relative to the immutable input of a retained-source session.
@@ -225,7 +264,16 @@ type Receipt struct {
 func (p *Preserved) Receipt() Receipt {
 	r := Receipt{Schema: 1, Changes: []PartChange{}}
 	for name, data := range p.changed {
-		r.Changes = append(r.Changes, PartChange{name, fingerprint(p.parts[name]), fingerprint(data)})
+		r.Changes = append(r.Changes, PartChange{Part: name, BeforeSHA256: fingerprint(p.parts[name]), AfterSHA256: fingerprint(data)})
+	}
+	if len(p.added) > 0 {
+		r.Schema = 2
+		for i := range r.Changes {
+			r.Changes[i].Operation = "replace"
+		}
+		for name, data := range p.added {
+			r.Changes = append(r.Changes, PartChange{Part: name, BeforeSHA256: "", AfterSHA256: fingerprint(data), Operation: "add"})
+		}
 	}
 	sort.Slice(r.Changes, func(i, j int) bool { return r.Changes[i].Part < r.Changes[j].Part })
 	return r
@@ -241,10 +289,11 @@ func (p *Preserved) SaveAs(path string) (Receipt, error) {
 			return err
 		}
 		defer q.Close()
-		if len(q.parts) != len(p.parts) {
+		expectedParts := p.currentParts()
+		if len(q.parts) != len(expectedParts) {
 			return invalidPart("save", "", "member inventory changed")
 		}
-		for name, original := range p.parts {
+		for name, original := range expectedParts {
 			expected := original
 			if b, ok := p.changed[name]; ok {
 				expected = b
@@ -252,6 +301,15 @@ func (p *Preserved) SaveAs(path string) (Receipt, error) {
 			part, ok := q.parts[name]
 			if !ok || !bytes.Equal(part.content, expected) {
 				return invalidPart("save", name, "delivered payload mismatch")
+			}
+		}
+		if p.graphEdited {
+			candidate := &Preserved{parts: map[string][]byte{}}
+			for name, part := range q.parts {
+				candidate.parts[name] = part.content
+			}
+			if _, err := candidate.Graph(); err != nil {
+				return err
 			}
 		}
 		return nil

@@ -98,6 +98,7 @@ func TestAcceptance(t *testing.T) {
 		receiptSteps(sc)
 		xmlSteps(sc)
 		graphSteps(sc)
+		graphEditSteps(sc)
 		wordSteps(sc)
 		slideSteps(sc)
 		cellSteps(sc)

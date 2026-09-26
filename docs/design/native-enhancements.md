@@ -493,3 +493,11 @@ Retained-source body edits preserve either registry spelling and related bytes;
 no emitted constant changed or schema/native Office certification inferred. Details:
 `docs/design/comments-extended-content-type.md`, batch047. Broader revision/cache
 consumer limitations remain explicit; sharedV2 contracts unchanged.
+
+### Increment048: planned graph additions and retargets
+
+Retained sessions now preflight explicit part additions and existing internal-edge
+retargets with private plans, generation guards and complete candidate graph checks.
+Registry patches preserve unrelated bytes; shared old payloads remain. Delivery
+verifies new inventory/payloads/graph; schema2 receipts distinguish additions.
+Batch048 passes160 native cases. Format ownership, deletion and import are unfinished.

@@ -1866,3 +1866,26 @@ edits preserve either input registry spelling and related bytes. This is preserv
 characterisation, not schema/native Office/comment-thread certification. Decision
 record: `spec/source-discrepancies.json`; details and required checks:
 `docs/design/comments-extended-content-type.md`.
+
+## Planned package-graph additions and retargets
+
+`Preserved.PlanGraphMutation(GraphMutation)` creates a private session-bound plan
+for explicit `PartAddition` payloads/content types and existing internal
+`RelationshipRetarget` edges. Planning patches only required registry elements,
+validates the complete candidate OPC graph, and leaves all state unchanged.
+`ApplyGraphPlan` commits once; intervening payload changes, foreign sessions and
+consumed plans refuse. A semantic no-op preserves the original archive and plan.
+
+New parts receive explicit content-type overrides. Retargets use escaped absolute
+package paths, preserve relationship IDs/types and keep old payloads, including
+shared or newly unreferenced parts. External/fragment edges, signatures, reserved
+registry additions, case collisions, invalid XML and missing targets refuse.
+This API does not prove format-specific occurrence ownership, cache policy or
+import closure; those checks belong to the format adapter. Deletion, relationship
+creation and dependency import are unsupported by this initial operation.
+
+Saves raw-copy untouched original ZIP members and append new members in sorted
+order with fixed metadata. Reopen validation checks payloads and the graph.
+Receipts without additions retain schema1. Receipts containing additions use
+schema2: each change has operation `add` or `replace`; an added part has an empty
+`before_sha256` (absence, not the SHA256 of an empty payload).
