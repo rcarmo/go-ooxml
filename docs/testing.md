@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.13.0`, commit
-`aaf87902d2c381e72d75878dad4e49b137feafc6`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.14.0`, commit
+`083023c10bd8635f905a7ec614e47409d466dd50`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -39,10 +39,10 @@ There is no separate pack seal. The root manifest seals the explicit
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.13.0` contains 145 manifest assets, including 115 unique fixtures in
-32 format/scenario groups, plus 149 facts and 111 workflows/299 expanded cases.
-The added page-layout feature leaves all prior 144 asset records unchanged.
-Its 22 cases add no Go bindings or page-layout execution credit. Keep this shared
+Release `v0.14.0` contains 146 manifest assets, including 115 unique fixtures in
+32 format/scenario groups, plus 149 facts and 113 workflows/320 expanded cases.
+The added slide-order feature leaves all prior 145 asset records unchanged.
+Its 21 cases add no Go bindings or slide-order execution credit. Keep this shared
 pin until the coordinator approves a replacement; local catalogue work continues
 independently. Go's package ledger has four partial mappings and eight unmapped
 declarations; its XML ledger has three partial mappings and one unmapped.
@@ -51,7 +51,7 @@ Neither ledger grants canonical execution credit. The semantic-diff assertion
 
 Once a release is approved, update the gitlink and
 `spec/reference-distribution.json` together within the coordinator-approved scope.
-For v0.13 adoption, only this enhancement branch advances; legacy tips and prepared
+For v0.14 adoption, only this enhancement branch advances; legacy tips and prepared
 publication refs/mirror remain at the v0.9 checkpoint by explicit instruction.
 Do not use `git submodule update --remote` or move an existing release tag to
 follow changing content.
@@ -92,10 +92,10 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The enhanced-only v0.13 default released-reference batch is recorded in
-`../reports/batches/128.md`: 291 implemented native Gherkin cases; 20 planned and
+The enhanced-only v0.14 default released-reference batch is recorded in
+`../reports/batches/131.md`: 291 implemented native Gherkin cases; 20 planned and
 one external case unrun. The prior v0.3 bounded race checkpoint remains
-`../reports/batches/096.md`; the pin-only v0.13 update does not rerun races.
+`../reports/batches/096.md`; the pin-only v0.14 update does not rerun races.
 Package/unit/subtest counts are separate metrics. No live Office
 rendering/calculation or exploratory fuzz campaign ran in these batches.
 Historical reports retain the commands and outcomes from their original runs.
