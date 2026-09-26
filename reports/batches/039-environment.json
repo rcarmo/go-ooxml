@@ -1,0 +1,14 @@
+{
+  "external_executed": false,
+  "fixture_sha256": {
+    "excel/conditional_format.xlsx": "7124469770b5368c036f9dcc13d0c09c382797827d1b58934d9b2a0b61efee28",
+    "excel/formatting.xlsx": "dab1d6dbdfa594680115bc87fc1707fbd06adea87b45ef0a1115d7cf4c4f72b5",
+    "excel/formulas.xlsx": "61d8806a5fd3ff6c9eb62d716a6d929d0947e35ac6d9ac56626704690ecd3877",
+    "excel/minimal.xlsx": "5140bb7ea22875bc86e3a9790b3dce686a8adc518f7c8597fbddd5d83264b59d",
+    "pptx/comments.pptx": "ababb5bed8eeed4511f25e23da8e9039642ed3020b1517622d3ed71f5d5ef319",
+    "pptx/minimal.pptx": "6a28461a00850a9297690a0a53ad8c109aea9e6f279df309639e73be0cc4c762",
+    "word/minimal.docx": "9726b477472ddb7595875c9f30493df2577e587416b18418d0dc7221046690fe"
+  },
+  "go": "go1.26.3",
+  "scope": "implemented native contracts only"
+}
