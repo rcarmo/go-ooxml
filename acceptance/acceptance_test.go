@@ -92,6 +92,7 @@ func TestAcceptance(t *testing.T) {
 	w := &world{fixtures: map[string]string{}}
 	suite := godog.TestSuite{Name: "go-ooxml", Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{"../features"}, Tags: "@implemented && @go", Strict: true, Concurrency: 1}}
 	suite.ScenarioInitializer = func(sc *godog.ScenarioContext) {
+		safetySteps(sc)
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil

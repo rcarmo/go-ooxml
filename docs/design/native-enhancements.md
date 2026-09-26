@@ -184,3 +184,20 @@ The three format tracks can proceed in parallel after Stage B, using its stable 
 * [extended PPTX enhancement contracts]([retired implementation citation])
 * [extended XLSX enhancement contracts]([retired implementation citation])
 * Workflow references: `rcarmo/minicore/features/README.md`, `docs/development/methodology.md`; `rcarmo/gi/scripts/test-tui-gherkin.sh`.
+
+### Increment 002: existing package I/O hardening
+
+The existing package API now rejects unsafe, duplicate and case-colliding ZIP
+member names before reading their payloads, along with encrypted/unsupported
+compression members. `packaging.Refusal` exposes a typed invalid-package result.
+This increment does not yet implement header/overlap checks or configurable
+resource budgets, so B01 remains partial.
+
+`Package.SaveAs` stages a sibling temporary file, checks serialization, file sync
+and close, then renames it over the destination. Existing regular-file permission
+bits are retained; new outputs use mode 0600. A failed pre-replacement operation
+leaves destination bytes and package path/modified state unchanged. Stream output
+returns archive-finalisation errors and rejects closed packages. Member groups
+serialize in sorted order. Directory fsync/crash durability and platform-specific
+replacement semantics are not certified by this increment. Source preservation,
+relationship closure validation and guarded format transactions are still pending.
