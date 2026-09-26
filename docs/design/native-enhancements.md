@@ -475,3 +475,10 @@ Batch043; full expression support remains conservative.
 The invalidation planner validates all cell value/metadata structures and unique
 sheetData/row ownership before analysis, including unrelated input cells. Malformed
 structures refuse before commit. Batch044; shared cache input still executes.
+
+### Increment045: parsed insertion reference remapping
+
+Static formula coordinates can be remapped for row/column insertion on one sheet,
+with absolute flags, quoted sheet spelling and non-reference tokens preserved.
+Grid overflow or unproved syntax refuses without partial text. This is internal
+reference machinery, not worksheet structural mutation. Batch045.

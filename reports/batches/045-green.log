@@ -1,0 +1,3 @@
+ok  	github.com/rcarmo/go-ooxml/internal/formula	0.005s
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	0.204s
+ok  	github.com/rcarmo/go-ooxml/acceptance	0.691s

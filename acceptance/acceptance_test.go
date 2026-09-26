@@ -118,6 +118,7 @@ func TestAcceptance(t *testing.T) {
 		xmlConformanceSteps(sc)
 		formulaSteps(sc)
 		cacheSteps(sc)
+		remapSteps(sc)
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil
