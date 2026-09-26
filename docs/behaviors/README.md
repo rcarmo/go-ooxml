@@ -18,11 +18,11 @@ not exploratory-fuzz or performance results. Helpers and acceptance binding-only
 files remain visible, even when they declare no executable test entry point.
 
 The current inventory contains 155 native test files and 404 declarations.
-Reviewed family mappings cover 154 declarations in 164 candidate outcomes across
+Reviewed family mappings cover 175 declarations in 185 candidate outcomes across
 formula, XML, archive, mutable package-model, delivery, graph, test-custody,
 utility, OOXML-model, WML-model, spreadsheet-cache, spreadsheet-targets and
 spreadsheet-fuzz, presentation-notes, presentation-fuzz, presentation-fixtures and
-presentation-parameters families; 250 declarations remain unreviewed. This denominator is the static
+presentation-parameters and presentation-api families; 229 declarations remain unreviewed. This denominator is the static
 inventory snapshot, not the number of executed leaf cases. Checkout guard tests
 are now included. The executable native Gherkin result is separate at 291 cases.
 See [testing.md](../testing.md) for released/candidate reference setup and limits.
@@ -69,6 +69,10 @@ helper-owned strings/formats. Duplicate generated labels, skipped no-shape check
 empty-substring success and unasserted underline getters are explicit. Helper
 source hashes and reviewed row counts supplement the frozen inventory; they add
 no exhaustive matrix or measured runtime-leaf count.
+The presentation API family adds 21 declarations, separating constructor values,
+in-memory reverse-order IDs, comment disk readback and notes-master relationship
+checks from count-only round trips, entry presence and a no-panic fill smoke test.
+These checks add no canonical safe slide-order, layout or text-box binding credit.
 The [graph/ZIP64 handoff](graph-archive-handoff.md) compares selected assertions
 with the exact v0.4 released IDs, retaining operation, fixture, error-code and
 output-encoding gaps. It adds no reviewed declaration or execution credit.
