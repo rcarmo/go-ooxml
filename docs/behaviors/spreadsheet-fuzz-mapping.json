@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "spreadsheet-fuzz-candidates.feature",
+  "native_prefix": "pkg/spreadsheet/",
+  "native_files": [
+    "pkg/spreadsheet/fuzz_test.go",
+    "pkg/spreadsheet/workbook_fuzz_test.go",
+    "pkg/spreadsheet/table_fuzz_test.go",
+    "pkg/spreadsheet/fixture_fuzz_test.go"
+  ],
+  "source_revision": "169f2832b0e1f38baecf96ff2a7aec1ea3832a1c",
+  "inventory_observation_revision": "ec71b6cf4c6ac8bebec49ee195ac64520b104be9",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/spreadsheet/fixture_fuzz_test.go::FuzzSpreadsheetFixtureMutation",
+      "source_sha256": "215a430cc2d3bff9a2548567defdbea032d1be13005eba6348f5846ac7366c7d",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-fuzz-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 13,
+          "expression": "[]string",
+          "rows": 11
+        }
+      ],
+      "notes": "Eleven label candidates; file-read errors silently omit seeds (resolver behavior is separate). Seeds offset0/xor0 cause no byte mutation. len1..8MiB; OpenReader/SaveAs/Open errors earlyreturn; no equality/receipt/count asserts, only panic/smoke path. Dynamic seed count not measured in this review."
+    },
+    {
+      "native_id": "pkg/spreadsheet/fuzz_test.go::FuzzWorksheetCellAccess",
+      "source_sha256": "fbfc0d43aa8f882eed3fde13e4c281f69c166f20e5ac9ef7f536b96566b4d0a3",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-fuzz-001"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 10,
+          "expression": "[]string",
+          "rows": 4
+        }
+      ],
+      "notes": "Four literal refs; conditional nonnilCell compared to utils.ParseCellRef, sharedhelperagreement not independent oracle. NilCell earlyreturn; no input length cap in this target."
+    },
+    {
+      "native_id": "pkg/spreadsheet/fuzz_test.go::FuzzWorksheetRangeAccess",
+      "source_sha256": "fbfc0d43aa8f882eed3fde13e4c281f69c166f20e5ac9ef7f536b96566b4d0a3",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-fuzz-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 39,
+          "expression": "[]string",
+          "rows": 3
+        }
+      ],
+      "notes": "Three literal ranges; conditional nonnilRange compared to utils.ParseRangeRef dimensions only, not endpoints/values. NilRange earlyreturn; no target length cap."
+    },
+    {
+      "native_id": "pkg/spreadsheet/table_fuzz_test.go::FuzzSpreadsheetTableRoundTrip",
+      "source_sha256": "e2124c2104e50cd4f670eb5a9fbe1ee61106437e71c1ad841712123c60362519",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-fuzz-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Two seedtuples;ref1..32bytes,name<=64 (empty name allowed by prefilter). NilAddTable earlyreturn; AddRow errorignored; only reopenedTables nonempty."
+    },
+    {
+      "native_id": "pkg/spreadsheet/workbook_fuzz_test.go::FuzzWorkbookSaveOpen",
+      "source_sha256": "7fb73a0901c61e4fa4785af6bdb46c4f18babe26dd505a0f8ed123e1a8a2c310",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-fuzz-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Two seedtuples;sheetName1..64bytes,cellRef<=16,value<=256. SetValue errorignored, nilCell permits save; only reopenedSheetCount>=1, no requestedname/value assertion."
+    }
+  ],
+  "notes": "Five fuzz declarations,11 literal nonfixture seed tuples plus11 fixture-label seed candidates subject to successful reads. No new leafcount measured; ordinary cached package tests are not an exploratoryfuzz campaign. Silent skips/helper comparisons/ignorederrors explicitly retained. No canonicalIDs/executioncredit/runtime change, no blanket spreadsheet persistence or custody claim. Frozen404 denominator unchanged; latercontrols outside."
+}

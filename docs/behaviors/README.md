@@ -18,10 +18,10 @@ not exploratory-fuzz or performance results. Helpers and acceptance binding-only
 files remain visible, even when they declare no executable test entry point.
 
 The current inventory contains 155 native test files and 404 declarations.
-Reviewed family mappings cover 135 declarations in 130 candidate outcomes across
+Reviewed family mappings cover 140 declarations in 135 candidate outcomes across
 formula, XML, archive, mutable package-model, delivery, graph, test-custody,
-utility, OOXML-model, WML-model, spreadsheet-cache and spreadsheet-targets
-families; 269 declarations remain unreviewed. This denominator is the static
+utility, OOXML-model, WML-model, spreadsheet-cache, spreadsheet-targets and
+spreadsheet-fuzz families; 264 declarations remain unreviewed. This denominator is the static
 inventory snapshot, not the number of executed leaf cases. Checkout guard tests
 are now included. The executable native Gherkin result is separate at 291 cases.
 See [testing.md](../testing.md) for released/candidate reference setup and limits.
@@ -47,6 +47,10 @@ array/nonfinite rows are explicit gaps; no calculation or allocation-bound claim
 The spreadsheet-targets family adds two declarations: eight named style rows and
 three image lifecycle subtests. Graph part/MIME and receipt/handle predicates
 remain separate from payload equality, geometry, reopened archives and rendering.
+The spreadsheet-fuzz family reviews five targets: 11 literal nonfixture seed tuples
+and 11 fixture-label seed candidates subject to successful file reads. Nil returns,
+ignored write errors and fixture-path early returns remain visible; the zero-XOR
+fixture seeds do not mutate their input bytes. No new runtime leaf count is measured.
 The [graph/ZIP64 handoff](graph-archive-handoff.md) compares selected assertions
 with the exact v0.4 released IDs, retaining operation, fixture, error-code and
 output-encoding gaps. It adds no reviewed declaration or execution credit.
