@@ -13,7 +13,7 @@ import (
 // Validate reviewed staging candidates without executing or awarding canonical
 // coverage. The shared registry owns the reconciled behaviour specification.
 func TestBehaviourCatalogueCandidates(t *testing.T) {
-	for _, name := range []string{"formula", "xml"} {
+	for _, name := range []string{"formula", "xml", "archive"} {
 		t.Run(name, func(t *testing.T) { validateCatalogueFamily(t, name) })
 	}
 }
@@ -22,11 +22,12 @@ func validateCatalogueFamily(t *testing.T, name string) {
 	t.Helper()
 	const base = "../docs/behaviors/"
 	var mapping struct {
-		Status    string `json:"status"`
-		Feature   string `json:"feature"`
-		Prefix    string `json:"native_prefix"`
-		Canonical bool   `json:"canonical_ids_assigned"`
-		Execution bool   `json:"execution_credit"`
+		Status    string   `json:"status"`
+		Feature   string   `json:"feature"`
+		Prefix    string   `json:"native_prefix"`
+		Files     []string `json:"native_files"`
+		Canonical bool     `json:"canonical_ids_assigned"`
+		Execution bool     `json:"execution_credit"`
 		Mappings  []struct {
 			Native   string   `json:"native_id"`
 			Hash     string   `json:"source_sha256"`
@@ -67,9 +68,13 @@ func validateCatalogueFamily(t *testing.T, name string) {
 	}
 	decls := map[string]string{}
 	required := map[string]bool{}
+	selected := map[string]bool{}
+	for _, file := range mapping.Files {
+		selected[file] = true
+	}
 	for _, d := range inv.Declarations {
 		decls[d.ID] = d.File
-		if strings.HasPrefix(d.File, mapping.Prefix) {
+		if (len(selected) == 0 && strings.HasPrefix(d.File, mapping.Prefix)) || selected[d.File] {
 			required[d.ID] = true
 		}
 	}

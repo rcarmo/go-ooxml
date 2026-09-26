@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "observation_revision": "bd6f04b8370704fe0d4564f5d712c569d81208af",
+  "observation_revision": "e6bdc904ddc4b4727947d9488b2df61aef773c87",
   "files": [
     {
       "path": "acceptance/acceptance_test.go",
@@ -19,7 +19,7 @@
     },
     {
       "path": "acceptance/behavior_catalogue_test.go",
-      "sha256": "1f024fa85126b6ce2db2ddb979435445a6e20380cd72bce264a210328cbf79cc",
+      "sha256": "77a78690ca27afe2d7a20aeb288474a83f1c1fbc90894f1b5b61ea6b8e37f4ea",
       "helpers_only": false
     },
     {
@@ -119,7 +119,7 @@
     },
     {
       "path": "acceptance/reference_distribution_test.go",
-      "sha256": "eeef874bbb9c725ee29d4a7e11bc2a4cce3d0b54d21517b473b14495bbcd10b6",
+      "sha256": "e008170f31b285459f481b2f8e1a3bdae937282ef6fd4af757e88552055b46e5",
       "helpers_only": false
     },
     {
@@ -129,7 +129,7 @@
     },
     {
       "path": "acceptance/reference_notes_test.go",
-      "sha256": "b91bd3993ba6e1e30ddb096b827f36553fb9511a426c3801130f705803d8cf24",
+      "sha256": "59981cc169ca1bd20f38c41302e47da232058889f67c2266f3478b9bf8a2ce48",
       "helpers_only": false
     },
     {
@@ -154,12 +154,12 @@
     },
     {
       "path": "acceptance/shared_cache_test.go",
-      "sha256": "ac9a5e78203289d25776d3a6eacf7dc560509a1a5b2fa729a9e70b182a5d8969",
+      "sha256": "62098a8f35b1095f65b3bd1191a70f3d1bf36ea4eb8e922b38299253cc4c08ec",
       "helpers_only": false
     },
     {
       "path": "acceptance/shared_pack_test.go",
-      "sha256": "079d3630a31ee705d05d2dbb49dbfe6d2251317603c993b03c4aa5d1332997c3",
+      "sha256": "97faa1a371064effc862412ed9e1e2d9434ce6665eba61d6267eb63a5565c699",
       "helpers_only": false
     },
     {
@@ -254,7 +254,7 @@
     },
     {
       "path": "e2e/generated_roundtrip_test.go",
-      "sha256": "31b022f584c0a7d43efce26655b5a787d84c0ccfdbfe2dd759a3fbf24d1fee76",
+      "sha256": "642c0a4ea4e29590ec2622cf1620379e95bdebf1993b57b0ede013e81378a99c",
       "helpers_only": false
     },
     {
@@ -338,8 +338,13 @@
       "helpers_only": false
     },
     {
+      "path": "internal/testutil/fixture_lookup_test.go",
+      "sha256": "88dd5e13248d2f925d185b20e03d0c8f74f83eec7305bee59b9b1bed9d315c49",
+      "helpers_only": false
+    },
+    {
       "path": "internal/testutil/references_test.go",
-      "sha256": "dc52acb5728e36d3a9c51be7c3ac4118215ed610fbf19d702a8534b1bcabec63",
+      "sha256": "aff3031545cb491b7befd7ec64ea5300a0b41703cf55dc440132f12a07c8f802",
       "helpers_only": false
     },
     {
@@ -534,7 +539,7 @@
     },
     {
       "path": "pkg/packaging/fixture_corpus_test.go",
-      "sha256": "93ac43a7a5f02380da648b545c3b56aad1b53bd4fcd5a7304605f80876d1e79a",
+      "sha256": "4049233ac8b30bf0086947360bc756a98db6457bf79bede4ac2c7045eb99f6dc",
       "helpers_only": false
     },
     {
@@ -862,7 +867,7 @@
         {
           "line": 16,
           "expression": "[]string",
-          "rows": 2
+          "rows": 3
         }
       ],
       "calls": [
@@ -958,15 +963,15 @@
     {
       "id": "acceptance/reference_distribution_test.go::TestPinnedReferenceDistribution",
       "file": "acceptance/reference_distribution_test.go",
-      "line": 45,
+      "line": 49,
       "function": "TestPinnedReferenceDistribution",
       "kind": "test",
       "subtests": [],
       "parameter_groups": [
         {
-          "line": 95,
+          "line": 114,
           "expression": "[]string",
-          "rows": 2
+          "rows": 3
         }
       ],
       "calls": [
@@ -978,6 +983,7 @@
         "Errorf",
         "Fatal",
         "Fatalf",
+        "HasPrefix",
         "IsDir",
         "IsLocal",
         "IsRegular",
@@ -1003,13 +1009,13 @@
     {
       "id": "acceptance/reference_distribution_test.go::TestSharedWorkflowCaseInventory",
       "file": "acceptance/reference_distribution_test.go",
-      "line": 127,
+      "line": 146,
       "function": "TestSharedWorkflowCaseInventory",
       "kind": "test",
       "subtests": [],
       "parameter_groups": [
         {
-          "line": 193,
+          "line": 212,
           "expression": "[]string",
           "rows": 4
         }
@@ -1106,19 +1112,19 @@
       "kind": "test",
       "subtests": [
         {
-          "line": 30,
+          "line": 29,
           "expression": "f.name",
           "dynamic": true
         }
       ],
       "parameter_groups": [
         {
-          "line": 22,
+          "line": 21,
           "expression": "[]map[string]any",
           "rows": 0
         },
         {
-          "line": 23,
+          "line": 22,
           "expression": "[]struct {\n\tname, path, sha\tstring\n\tvariant\t\tbool\n}",
           "rows": 2,
           "names": [
@@ -1156,7 +1162,6 @@
         "loadReferencePin",
         "make",
         "otherNotesShapes",
-        "pinnedFile",
         "sha256hex",
         "writeJSON",
         "zipPayloads"
@@ -1173,7 +1178,7 @@
       "subtests": [],
       "parameter_groups": [
         {
-          "line": 111,
+          "line": 119,
           "expression": "[]string",
           "rows": 0
         }
@@ -1188,6 +1193,7 @@
         "Getenv",
         "Graph",
         "Join",
+        "LookupFixture",
         "MkdirAll",
         "Name",
         "OpenEditing",
@@ -1204,6 +1210,7 @@
         "WriteFile",
         "append",
         "len",
+        "loadReferencePin",
         "pinnedFile",
         "sha256hex",
         "sharedCell",
@@ -1216,12 +1223,12 @@
     {
       "id": "acceptance/shared_pack_test.go::TestSharedPackV2",
       "file": "acceptance/shared_pack_test.go",
-      "line": 67,
+      "line": 66,
       "function": "TestSharedPackV2",
       "kind": "test",
       "subtests": [
         {
-          "line": 107,
+          "line": 109,
           "expression": "f.ID",
           "dynamic": true
         }
@@ -1236,16 +1243,19 @@
         "Getenv",
         "Graph",
         "Join",
+        "LookupFixture",
         "MkdirAll",
         "OpenEditing",
         "OpenPreserved",
         "ReferencePath",
+        "ReferenceRoot",
         "Run",
         "Unmarshal",
         "ValidateStyles",
         "WriteTo",
         "caseKey",
         "len",
+        "loadReferencePin",
         "pinnedFile",
         "sha256hex",
         "sharedReadback",
@@ -1259,13 +1269,13 @@
     {
       "id": "acceptance/shared_pack_test.go::TestSharedIdentityAndTypedCells",
       "file": "acceptance/shared_pack_test.go",
-      "line": 246,
+      "line": 255,
       "function": "TestSharedIdentityAndTypedCells",
       "kind": "test",
       "subtests": [],
       "parameter_groups": [
         {
-          "line": 250,
+          "line": 259,
           "expression": "[]struct {\n\tvalue\tstring\n\tbad\tbool\n}",
           "rows": 4,
           "names": [
@@ -1276,7 +1286,7 @@
           ]
         },
         {
-          "line": 254,
+          "line": 263,
           "expression": "[][]string",
           "rows": 2,
           "names": [
@@ -2551,6 +2561,78 @@
       "coverage": "unreviewed"
     },
     {
+      "id": "internal/testutil/fixture_lookup_test.go::TestFixtureIdentityLookupBatch",
+      "file": "internal/testutil/fixture_lookup_test.go",
+      "line": 12,
+      "function": "TestFixtureIdentityLookupBatch",
+      "kind": "test",
+      "subtests": [
+        {
+          "line": 44,
+          "expression": "tc.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 35,
+          "expression": "[]map[string]any",
+          "rows": 1
+        },
+        {
+          "line": 40,
+          "expression": "[]struct {\n\tname, key\tstring\n\tvalue\t\tany\n}",
+          "rows": 8,
+          "names": [
+            "traversal",
+            "nonfixtures",
+            "noncanonical",
+            "backslash",
+            "wrong identity",
+            "wrong size",
+            "missing format",
+            "missing group"
+          ]
+        },
+        {
+          "line": 50,
+          "expression": "[]map[string]any",
+          "rows": 1
+        },
+        {
+          "line": 56,
+          "expression": "[]map[string]any",
+          "rows": 2
+        },
+        {
+          "line": 60,
+          "expression": "[]map[string]any",
+          "rows": 1
+        }
+      ],
+      "calls": [
+        "Dir",
+        "EncodeToString",
+        "Fatal",
+        "Fatalf",
+        "FromSlash",
+        "Helper",
+        "Join",
+        "LookupFixture",
+        "Marshal",
+        "MkdirAll",
+        "Run",
+        "Setenv",
+        "Sum256",
+        "TempDir",
+        "WriteFile",
+        "len",
+        "write"
+      ],
+      "scenario_ids": [],
+      "coverage": "unreviewed"
+    },
+    {
       "id": "internal/testutil/references_test.go::TestReferencePathsAndOutputGuards",
       "file": "internal/testutil/references_test.go",
       "line": 9,
@@ -2558,14 +2640,14 @@
       "kind": "test",
       "subtests": [
         {
-          "line": 33,
+          "line": 30,
           "expression": "tc.name",
           "dynamic": true
         }
       ],
       "parameter_groups": [
         {
-          "line": 23,
+          "line": 20,
           "expression": "[]struct {\n\tname, path\tstring\n\trefuse\t\tbool\n}",
           "rows": 5,
           "names": [
@@ -2581,7 +2663,6 @@
         "CheckReferenceOutput",
         "Fatal",
         "Fatalf",
-        "FixturePath",
         "Join",
         "Mkdir",
         "Run",
@@ -8311,8 +8392,8 @@
       "kind": "test",
       "subtests": [
         {
-          "line": 29,
-          "expression": "filepath.ToSlash(path)",
+          "line": 22,
+          "expression": "label",
           "dynamic": true
         }
       ],
@@ -8322,15 +8403,13 @@
         "Equal",
         "Ext",
         "Fatal",
+        "FixtureLabels",
         "FixturePath",
-        "IsDir",
         "Logf",
         "OpenPreserved",
         "ReadFile",
         "Run",
         "ToLower",
-        "ToSlash",
-        "WalkDir",
         "WriteTo"
       ],
       "scenario_ids": [],
