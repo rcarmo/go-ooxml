@@ -99,6 +99,7 @@ func TestAcceptance(t *testing.T) {
 		xmlSteps(sc)
 		graphSteps(sc)
 		graphEditSteps(sc)
+		graphTargetFormSteps(sc)
 		wordSteps(sc)
 		slideSteps(sc)
 		cellSteps(sc)

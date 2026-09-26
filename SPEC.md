@@ -1876,8 +1876,8 @@ validates the complete candidate OPC graph, and leaves all state unchanged.
 `ApplyGraphPlan` commits once; intervening payload changes, foreign sessions and
 consumed plans refuse. A semantic no-op preserves the original archive and plan.
 
-New parts receive explicit content-type overrides. Retargets use escaped absolute
-package paths, preserve relationship IDs/types and keep old payloads, including
+New parts receive explicit content-type overrides. Retargets retain absolute or
+relative path form with URI escaping, preserve relationship IDs/types and keep old payloads, including
 shared or newly unreferenced parts. External/fragment edges, signatures, reserved
 registry additions, case collisions, invalid XML and missing targets refuse.
 This API does not prove format-specific occurrence ownership, cache policy or

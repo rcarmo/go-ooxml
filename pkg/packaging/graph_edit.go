@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"mime"
 	"net/url"
+	"path"
 	"sort"
 	"strings"
 	"unicode/utf8"
@@ -60,6 +61,29 @@ func graphPartName(name string) error {
 	return nil
 }
 func partURI(name string) string { return (&url.URL{Path: "/" + name}).EscapedPath() }
+
+// Keep the original absolute/relative form, with POSIX package paths on all OSes.
+func retargetURI(source, target, original string) string {
+	if strings.HasPrefix(original, "/") {
+		return partURI(target)
+	}
+	var from []string
+	dir := path.Dir(source)
+	if dir != "." {
+		from = strings.Split(dir, "/")
+	}
+	to := strings.Split(target, "/")
+	same := 0
+	for same < len(from) && same < len(to) && from[same] == to[same] {
+		same++
+	}
+	segments := make([]string, 0, len(from)-same+len(to)-same)
+	for i := same; i < len(from); i++ {
+		segments = append(segments, "..")
+	}
+	segments = append(segments, to[same:]...)
+	return (&url.URL{Path: strings.Join(segments, "/")}).EscapedPath()
+}
 
 // PlanGraphMutation prepares all new parts, type overrides and existing internal
 // edge retargets without modifying the session. Original shared targets remain.
@@ -185,7 +209,7 @@ func (p *Preserved) PlanGraphMutation(change GraphMutation) (*GraphPlan, error) 
 			if !ok {
 				return nil, graphEditError("missing_target", name, "relationship element absent")
 			}
-			attrs = append(attrs, losslessxml.AttributeEdit{Target: node, Name: xml.Name{Local: "Target"}, Value: partURI(edit.TargetPart)})
+			attrs = append(attrs, losslessxml.AttributeEdit{Target: node, Name: xml.Name{Local: "Target"}, Value: retargetURI(edit.Source, edit.TargetPart, edges[edgeKey{edit.Source, edit.ID}].Target)})
 		}
 		data, e = doc.Edit(nil, attrs)
 		if e != nil {

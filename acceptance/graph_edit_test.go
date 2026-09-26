@@ -111,7 +111,7 @@ func graphEditSteps(sc *godog.ScenarioContext) {
 		if err != nil {
 			return err
 		}
-		want := bytes.Replace(before["_rels/.rels"], []byte(`Target = 'media/shared.bin'`), []byte(`Target = '/media/private.bin'`), 1)
+		want := bytes.Replace(before["_rels/.rels"], []byte(`Target = 'media/shared.bin'`), []byte(`Target = 'media/private.bin'`), 1)
 		if !bytes.Equal(want, after["_rels/.rels"]) {
 			return fmt.Errorf("registry reserialized")
 		}

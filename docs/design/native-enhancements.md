@@ -508,3 +508,9 @@ FindImage/ReplaceImage isolate a directly anchored PNG/JPEG occurrence by retarg
 one existing drawing relationship to fresh media. Original drawing XML/crop/geometry,
 old shared image and other parts remain exact. Shared drawing/edge ownership, protection
 and unsupported complex drawings refuse. Batch049 passes166 native cases; X10 is partial.
+
+### Increment050: preserve target path form
+
+Graph retargets now retain relative/absolute path form, including escaped Unicode,
+space and quote characters. Pinned extended image tests motivated the regression.
+Batch050 passes168 native cases plus chained-plan and exact-restore checks.
