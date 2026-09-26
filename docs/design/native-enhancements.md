@@ -420,3 +420,10 @@ Shared binary redistribution remains unapproved; no fixtures copied into the rep
 Native Go reads the pinned Word body, PPTX title/subtitle, default-style XLSX string
 and cross-sheet formula/cache input facts. Input verification is distinct from the
 19 planned mutation scenarios and emits no workflow pass outcomes. Batch034.
+
+### Increment 036: XML value normalization with original offsets
+
+Literal attribute whitespace now follows XML1.0 normalization before reference
+decoding, while numeric whitespace references retain their characters. Source
+bytes/offsets remain immutable; text/CDATA CRLF/CR no-op/edits are characterized.
+Sibling Bun regression suggestions reproduced the attribute defect. Batch036.

@@ -68,6 +68,10 @@ func Parse(source []byte) (*Document, error) {
 		}
 		switch t := token.(type) {
 		case xml.StartElement:
+			t.Attr, err = normalizeAttributeValues(d.source[before:after], t.Attr)
+			if err != nil {
+				return nil, err
+			}
 			if len(stack) >= 512 {
 				return fail("nesting limit exceeded")
 			}
