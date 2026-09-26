@@ -302,3 +302,10 @@ Adjusted prefixed archives now refuse standalone OPC intake. Data-descriptor
 signature/CRC ambiguity resolves against the whole central tuple. All 74 checked-in
 Office fixtures pass bounded intake and byte-exact no-op delivery in one corpus
 batch; this does not establish edit/graph/render parity. See batch 015.
+
+### Increment 016: collected parameter identities
+
+The pinned source suites collect 3,451 cases (DOCX 1,441; PPTX 1,169; XLSX 841).
+Schema-2 spec/native-capability-history.json records exact node IDs and collection-log hashes;
+collection is not execution or parity. API/refusal/fixture/Go/scenario mapping
+remains pending. Raw collection uses Python only as development tooling. Batch 016.
