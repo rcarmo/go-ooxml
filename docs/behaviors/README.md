@@ -18,9 +18,9 @@ not exploratory-fuzz or performance results. Helpers and acceptance binding-only
 files remain visible, even when they declare no executable test entry point.
 
 The current inventory contains 155 native test files and 404 declarations.
-Reviewed family mappings cover 69 declarations in 65 candidate outcomes across
-formula, XML, archive, mutable package-model, delivery, graph and test-custody
-families; 335 declarations remain unreviewed. This denominator is the static
+Reviewed family mappings cover 91 declarations in 76 candidate outcomes across
+formula, XML, archive, mutable package-model, delivery, graph, test-custody and utility
+families; 313 declarations remain unreviewed. This denominator is the static
 inventory snapshot, not the number of executed leaf cases. Checkout guard tests
 are now included. The executable native Gherkin result is separate at 291 cases.
 See [testing.md](../testing.md) for released/candidate reference setup and limits.
