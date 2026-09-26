@@ -17,13 +17,13 @@ counted from source alone. Fuzz seeds and benchmark declarations are inventories
 not exploratory-fuzz or performance results. Helpers and acceptance binding-only
 files remain visible, even when they declare no executable test entry point.
 
-At the reviewed catalogue checkpoint, 59 of 402 declarations map to 54 candidate
-outcomes across formula, XML, archive, mutable package-model, delivery and graph
-families; 343 declarations remain unreviewed. The denominator is the committed
-inventory snapshot, not the number of executed leaf cases. New checkout-integrity
-guard tests added afterwards are additional unmapped work until regeneration.
-The executable native Gherkin result remains separate at 291 cases. See
-[testing.md](../testing.md) for candidate reference setup and current limits.
+The current inventory contains 155 native test files and 404 declarations.
+Reviewed family mappings cover 69 declarations in 65 candidate outcomes across
+formula, XML, archive, mutable package-model, delivery, graph and test-custody
+families; 335 declarations remain unreviewed. This denominator is the static
+inventory snapshot, not the number of executed leaf cases. Checkout guard tests
+are now included. The executable native Gherkin result is separate at 291 cases.
+See [testing.md](../testing.md) for released/candidate reference setup and limits.
 
 Next review each remaining outcome group into Given/When/Then preconditions, native operation
 and independently observable results. Include malformed/refusal/rollback and

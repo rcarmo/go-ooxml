@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "observation_revision": "81a9b2107a82146d2b4a2f143d72418b946c1236",
+  "observation_revision": "2e2ae0dc8d69a0cd003ae616dab8d85fac2c01bf",
   "files": [
     {
       "path": "acceptance/acceptance_test.go",
@@ -19,7 +19,7 @@
     },
     {
       "path": "acceptance/behavior_catalogue_test.go",
-      "sha256": "c6e891fac370d4a7f4c9f3f09316f773080cb6e56a71c2d1ee480c3f89add503",
+      "sha256": "d1c93a04b80d3302996dd485a664a3bd988decb03cea87175cd5ea3a57b7e1d8",
       "helpers_only": false
     },
     {
@@ -119,7 +119,7 @@
     },
     {
       "path": "acceptance/reference_distribution_test.go",
-      "sha256": "e008170f31b285459f481b2f8e1a3bdae937282ef6fd4af757e88552055b46e5",
+      "sha256": "7aa82c48589301647d3899fd42e0fab4f33514adb7b297ad08b1f04026426afa",
       "helpers_only": false
     },
     {
@@ -340,6 +340,11 @@
     {
       "path": "internal/testutil/fixture_lookup_test.go",
       "sha256": "88dd5e13248d2f925d185b20e03d0c8f74f83eec7305bee59b9b1bed9d315c49",
+      "helpers_only": false
+    },
+    {
+      "path": "internal/testutil/reference_checkout_test.go",
+      "sha256": "c24f0add7a30941d9617ee28fbf1d7810a800b850aebf974b64a814c4047221e",
       "helpers_only": false
     },
     {
@@ -867,7 +872,7 @@
         {
           "line": 16,
           "expression": "[]string",
-          "rows": 6
+          "rows": 7
         }
       ],
       "calls": [
@@ -963,13 +968,13 @@
     {
       "id": "acceptance/reference_distribution_test.go::TestPinnedReferenceDistribution",
       "file": "acceptance/reference_distribution_test.go",
-      "line": 49,
+      "line": 58,
       "function": "TestPinnedReferenceDistribution",
       "kind": "test",
       "subtests": [],
       "parameter_groups": [
         {
-          "line": 114,
+          "line": 123,
           "expression": "[]string",
           "rows": 3
         }
@@ -1009,13 +1014,13 @@
     {
       "id": "acceptance/reference_distribution_test.go::TestSharedWorkflowCaseInventory",
       "file": "acceptance/reference_distribution_test.go",
-      "line": 146,
+      "line": 155,
       "function": "TestSharedWorkflowCaseInventory",
       "kind": "test",
       "subtests": [],
       "parameter_groups": [
         {
-          "line": 212,
+          "line": 221,
           "expression": "[]string",
           "rows": 4
         }
@@ -2627,6 +2632,90 @@
         "TempDir",
         "WriteFile",
         "len",
+        "write"
+      ],
+      "scenario_ids": [],
+      "coverage": "unreviewed"
+    },
+    {
+      "id": "internal/testutil/reference_checkout_test.go::TestPinnedReferenceCheckout",
+      "file": "internal/testutil/reference_checkout_test.go",
+      "line": 17,
+      "function": "TestPinnedReferenceCheckout",
+      "kind": "test",
+      "subtests": [],
+      "parameter_groups": [],
+      "calls": [
+        "Caller",
+        "Dir",
+        "Fatal",
+        "Getenv",
+        "HasPrefix",
+        "Join",
+        "ReadFile",
+        "ReferenceRoot",
+        "Unmarshal",
+        "VerifyReferenceCheckout"
+      ],
+      "scenario_ids": [],
+      "coverage": "unreviewed"
+    },
+    {
+      "id": "internal/testutil/reference_checkout_test.go::TestReferenceCheckoutIntegrityBatch",
+      "file": "internal/testutil/reference_checkout_test.go",
+      "line": 74,
+      "function": "TestReferenceCheckoutIntegrityBatch",
+      "kind": "test",
+      "subtests": [
+        {
+          "line": 137,
+          "expression": "tc.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 81,
+          "expression": "[]struct {\n\tname\t\t\tstring\n\tchange\t\t\tfunc(*testing.T, string, *ReferenceIdentity)\n\tcandidate, refuse\tbool\n}",
+          "rows": 18,
+          "names": [
+            "clean annotated release",
+            "dirty constants outside asset manifest",
+            "staged workflow outside asset manifest",
+            "deleted tracked workflow",
+            "untracked fact",
+            "changed manifest seal",
+            "changed pack seal",
+            "wrong pinned commit",
+            "clean different checkout",
+            "lightweight release tag",
+            "wrong annotated tag object",
+            "annotated tag points elsewhere",
+            "missing release annotation",
+            "invalid commit syntax",
+            "clean candidate",
+            "dirty candidate",
+            "assume unchanged cannot hide edit",
+            "missing git metadata"
+          ]
+        }
+      ],
+      "calls": [
+        "Fatal",
+        "Fatalf",
+        "Helper",
+        "Join",
+        "Remove",
+        "Rename",
+        "Repeat",
+        "Run",
+        "TempDir",
+        "VerifyReferenceCheckout",
+        "WriteFile",
+        "change",
+        "checkoutGit",
+        "checkoutSnapshot",
+        "privateReference",
         "write"
       ],
       "scenario_ids": [],
