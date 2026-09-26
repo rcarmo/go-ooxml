@@ -355,3 +355,9 @@ attributes require existing bindings; namespace mutation refuses. Batch023.
 Ordinary and selected-batch text changes atomically insert/update xml:space preserve
 when required; opaque attribute bytes and no-op markup remain untouched. This
 supersedes the initial conservative missing-preserve refusal. Batch024.
+
+### Increment 025: replace-all refusal reporting
+
+ReplaceAll records independent expected refusals, skips no-ops and commits supported
+private matches together. Unexpected/stale/batch conflicts abort. Schema1 counts and
+refusals are not full extended formatting/revision result parity. Batch025.

@@ -1816,3 +1816,10 @@ inserted/updated via the lossless start-tag primitive, alongside the text in one
 transaction. Unknown xml:space policies still refuse; tabs/newlines still require
 structural Word elements. No-op does not rewrite whitespace attributes. This
 supersedes the initial missing-preserve refusal documented in the first subset.
+
+`EditSession.ReplaceAll(needle, replacement, normalized)` searches private targets,
+skips exact no-ops, records per-match safe refusals and commits all independently
+supported changes together via ReplaceBatch. Unexpected/stale/batch conflicts abort
+without commit. Schema1 reports matched/changed/skipped counts and refusal evidence;
+it does not yet reproduce extended schema3 formatting/revision result fields. No
+private targets escape. Tracked/revision-preserving options remain pending.

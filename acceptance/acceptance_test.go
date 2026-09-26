@@ -108,6 +108,7 @@ func TestAcceptance(t *testing.T) {
 		searchPolicySteps(sc)
 		attributeSteps(sc)
 		whitespaceSteps(sc)
+		replaceAllSteps(sc)
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil
