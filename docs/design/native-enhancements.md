@@ -387,3 +387,10 @@ Run-spanning mutation refuses non-text runs in its paragraph; boundary-format pr
 also compares in-scope namespaces, preventing equal lexical rPr under different
 bindings from authorising insertion. Two false successes now have red/green regressions.
 Batch029; interval-only relaxed guards remain pending.
+
+### Increment 030: qualified source-contract links
+
+retired-native-links links seven pinned DOCX cases to implemented Go scenarios,
+all explicitly partial with limits. Acceptance validates exact collected/source IDs
+and implemented scenario membership; regeneration cannot erase manual links. No
+source equivalence or completed parity is inferred. Batch030.
