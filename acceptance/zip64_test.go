@@ -78,6 +78,7 @@ func zip64Steps(sc *godog.ScenarioContext) {
 		original = bytes.Clone(source)
 		return nil
 	})
+	sc.Step(`^a ZIP whose distinct CRC-valid members overlap physically$`, func() error { source = testutil.OverlappingZIP(); original = bytes.Clone(source); return nil })
 	sc.Step(`^I validate the ZIP64 package for editing$`, func() error {
 		_, failure = packaging.OpenPreserved(source, packaging.Limits{MaxSourceBytes: 1 << 20, MaxEntries: 10, MaxPartBytes: 1 << 16, MaxTotalBytes: 1 << 18})
 		return nil
