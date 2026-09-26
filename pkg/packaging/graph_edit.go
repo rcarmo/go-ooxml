@@ -22,9 +22,18 @@ type PartAddition struct {
 // RelationshipRetarget changes one existing internal edge to a canonical part name.
 // Source is empty for the package root; TargetPart is never a URI or external URL.
 type RelationshipRetarget struct{ Source, ID, TargetPart string }
+
+// PartDeletion requires a current payload fingerprint; only detached leaf parts may be removed.
+type PartDeletion struct{ Name, ExpectedSHA256 string }
+
+// RelationshipRemoval removes a selected edge; format adapters must prove its owner has no live reference.
+type RelationshipRemoval struct{ Source, ID string }
 type GraphMutation struct {
-	Additions []PartAddition
-	Retargets []RelationshipRetarget
+	Deletions    []PartDeletion
+	Removals     []RelationshipRemoval
+	Replacements []Replacement
+	Additions    []PartAddition
+	Retargets    []RelationshipRetarget
 }
 
 // GraphPlan owns private payloads and is bound to a single session generation.
@@ -33,6 +42,7 @@ type GraphPlan struct {
 	owner              *Preserved
 	generation         uint64
 	additions, patches map[string][]byte
+	deletions          map[string]bool
 	consumed           bool
 }
 
@@ -90,8 +100,8 @@ func retargetURI(source, target, original string) string {
 // Unknown registries, collisions, signed input, external edges and fragments
 // refuse. Callers must prove format-specific ownership before applying the plan.
 func (p *Preserved) PlanGraphMutation(change GraphMutation) (*GraphPlan, error) {
-	plan := &GraphPlan{owner: p, generation: p.generation, additions: map[string][]byte{}, patches: map[string][]byte{}}
-	if len(change.Additions) == 0 && len(change.Retargets) == 0 {
+	plan := &GraphPlan{owner: p, generation: p.generation, additions: map[string][]byte{}, patches: map[string][]byte{}, deletions: map[string]bool{}}
+	if len(change.Additions) == 0 && len(change.Retargets) == 0 && len(change.Deletions) == 0 && len(change.Removals) == 0 && len(change.Replacements) == 0 {
 		return plan, nil
 	}
 	if p.signed {
@@ -103,6 +113,10 @@ func (p *Preserved) PlanGraphMutation(change GraphMutation) (*GraphPlan, error) 
 	}
 	names := map[string]bool{}
 	for _, name := range p.partNames() {
+		names[strings.ToLower(name)] = true
+	}
+	// Deleted original identities cannot be reused by additions in this API.
+	for name := range p.parts {
 		names[strings.ToLower(name)] = true
 	}
 	additions := append([]PartAddition(nil), change.Additions...)
@@ -217,6 +231,9 @@ func (p *Preserved) PlanGraphMutation(change GraphMutation) (*GraphPlan, error) 
 		}
 		plan.patches[name] = data
 	}
+	if err = p.planGraphRemovals(change, plan); err != nil {
+		return nil, err
+	}
 	// Validate the complete candidate registry graph before exposing a plan.
 	candidate := &Preserved{parts: p.currentParts()}
 	for name, data := range plan.additions {
@@ -224,6 +241,9 @@ func (p *Preserved) PlanGraphMutation(change GraphMutation) (*GraphPlan, error) 
 	}
 	for name, data := range plan.patches {
 		candidate.parts[name] = data
+	}
+	for name := range plan.deletions {
+		delete(candidate.parts, name)
 	}
 	if _, err = candidate.Graph(); err != nil {
 		return nil, err
@@ -238,7 +258,7 @@ func (p *Preserved) ApplyGraphPlan(plan *GraphPlan) error {
 	if plan == nil || plan.owner != p || plan.consumed || plan.generation != p.generation {
 		return graphEditError("stale_target", "", "foreign, consumed or stale graph plan")
 	}
-	if len(plan.additions) == 0 && len(plan.patches) == 0 {
+	if len(plan.additions) == 0 && len(plan.patches) == 0 && len(plan.deletions) == 0 {
 		return nil
 	}
 	if p.added == nil {
@@ -248,10 +268,24 @@ func (p *Preserved) ApplyGraphPlan(plan *GraphPlan) error {
 		p.added[name] = bytes.Clone(data)
 	}
 	for name, data := range plan.patches {
+		if _, ok := p.added[name]; ok {
+			p.added[name] = bytes.Clone(data)
+			continue
+		}
 		if bytes.Equal(data, p.parts[name]) {
 			delete(p.changed, name)
 		} else {
 			p.changed[name] = bytes.Clone(data)
+		}
+	}
+	if p.deleted == nil {
+		p.deleted = map[string]bool{}
+	}
+	for name := range plan.deletions {
+		delete(p.changed, name)
+		delete(p.added, name)
+		if _, original := p.parts[name]; original {
+			p.deleted[name] = true
 		}
 	}
 	p.generation++
@@ -263,12 +297,14 @@ func (p *Preserved) ApplyGraphPlan(plan *GraphPlan) error {
 func (p *Preserved) hasPart(name string) bool {
 	_, a := p.parts[name]
 	_, b := p.added[name]
-	return a || b
+	return (a || b) && !p.deleted[name]
 }
 func (p *Preserved) partNames() []string {
 	names := make([]string, 0, len(p.parts)+len(p.added))
 	for name := range p.parts {
-		names = append(names, name)
+		if !p.deleted[name] {
+			names = append(names, name)
+		}
 	}
 	for name := range p.added {
 		names = append(names, name)
@@ -286,6 +322,9 @@ func (p *Preserved) currentParts() map[string][]byte {
 	}
 	for name, data := range p.changed {
 		out[name] = data
+	}
+	for name := range p.deleted {
+		delete(out, name)
 	}
 	return out
 }

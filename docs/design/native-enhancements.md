@@ -539,3 +539,10 @@ entry cap refuses. Extra fields cannot borrow a following TLV's bytes. Batch054.
 A distinct-name, coherent-header, CRC-valid inner member embedded in an outer
 payload independently exercises physical-overlap refusal. Existing runtime checks
 pass; batch056 is test-only characterisation with184 native cases.
+
+### Increment057: explicit leaf deletion and mixed transactions
+
+GraphPlan now combines selected edge removal, detached-leaf deletion and guarded
+payload replacement. Dangling edges, stale hashes and conflicting selections refuse.
+Whole-element XML removal preserves all bytes outside selected non-root subtrees.
+Batch057 passes191 native cases; format owners must authorise edge removal.

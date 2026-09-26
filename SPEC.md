@@ -1881,14 +1881,18 @@ relative path form with URI escaping, preserve relationship IDs/types and keep o
 shared or newly unreferenced parts. External/fragment edges, signatures, reserved
 registry additions, case collisions, invalid XML and missing targets refuse.
 This API does not prove format-specific occurrence ownership, cache policy or
-import closure; those checks belong to the format adapter. Deletion, relationship
-creation and dependency import are unsupported by this initial operation.
+import closure; those checks belong to the format adapter. Explicit edge removals,
+detached-leaf deletions and fingerprint-guarded payload replacements can share one
+plan. Deleting a part with its own relationship registry refuses; every remaining
+inbound edge must resolve after the transaction. The caller proves that removed
+edges have no surviving format-level references. Relationship creation and general
+dependency import are unsupported.
 
 Saves raw-copy untouched original ZIP members and append new members in sorted
 order with fixed metadata. Reopen validation checks payloads and the graph.
-Receipts without additions retain schema1. Receipts containing additions use
-schema2: each change has operation `add` or `replace`; an added part has an empty
-`before_sha256` (absence, not the SHA256 of an empty payload).
+Receipts without additions/deletions retain schema1. Otherwise schema2 records
+`add`, `replace` or `delete`. Added parts have an empty `before_sha256`; deleted
+parts have an empty `after_sha256`. Empty hashes mean absence, not empty payloads.
 
 `spreadsheet.EditSession.FindImage(sheet, shapeID)` selects a loaded directly
 anchored picture by cNvPr ID. `ReplaceImage(target, data)` accepts fully decoded

@@ -32,6 +32,7 @@ type Preserved struct {
 	parts       map[string][]byte
 	changed     map[string][]byte
 	signed      bool
+	deleted     map[string]bool
 	added       map[string][]byte
 	generation  uint64
 	graphEdited bool
@@ -60,6 +61,9 @@ func OpenPreserved(source []byte, limits Limits) (*Preserved, error) {
 // Part returns a private copy and its current fingerprint. No mutable slice from
 // the session escapes, so held payload snapshots remain valid after refusals.
 func (p *Preserved) Part(name string) ([]byte, string, error) {
+	if p.deleted[name] {
+		return nil, "", &Refusal{Kind: "missing_target", Operation: "read", Part: name}
+	}
 	b, ok := p.changed[name]
 	if !ok {
 		b, ok = p.parts[name]
@@ -173,7 +177,7 @@ func validateXMLPayload(data []byte) error {
 // members; only changed payloads are recompressed. Whole-archive identity after
 // an edit is not guaranteed. Stream failures may leave partial caller output.
 func (p *Preserved) WriteTo(w io.Writer) error {
-	if len(p.changed) == 0 && len(p.added) == 0 {
+	if len(p.changed) == 0 && len(p.added) == 0 && len(p.deleted) == 0 {
 		n, err := w.Write(p.source)
 		if err == nil && n != len(p.source) {
 			return io.ErrShortWrite
@@ -189,6 +193,9 @@ func (p *Preserved) WriteTo(w io.Writer) error {
 		return err
 	}
 	for _, f := range zr.File {
+		if p.deleted[f.Name] {
+			continue
+		}
 		data, changed := p.changed[f.Name]
 		if !changed {
 			if err = zw.Copy(f); err != nil {
@@ -266,7 +273,7 @@ func (p *Preserved) Receipt() Receipt {
 	for name, data := range p.changed {
 		r.Changes = append(r.Changes, PartChange{Part: name, BeforeSHA256: fingerprint(p.parts[name]), AfterSHA256: fingerprint(data)})
 	}
-	if len(p.added) > 0 {
+	if len(p.added) > 0 || len(p.deleted) > 0 {
 		r.Schema = 2
 		for i := range r.Changes {
 			r.Changes[i].Operation = "replace"
@@ -274,6 +281,9 @@ func (p *Preserved) Receipt() Receipt {
 		for name, data := range p.added {
 			r.Changes = append(r.Changes, PartChange{Part: name, BeforeSHA256: "", AfterSHA256: fingerprint(data), Operation: "add"})
 		}
+	}
+	for name := range p.deleted {
+		r.Changes = append(r.Changes, PartChange{Part: name, BeforeSHA256: fingerprint(p.parts[name]), AfterSHA256: "", Operation: "delete"})
 	}
 	sort.Slice(r.Changes, func(i, j int) bool { return r.Changes[i].Part < r.Changes[j].Part })
 	return r
