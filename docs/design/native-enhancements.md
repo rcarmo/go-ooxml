@@ -553,3 +553,9 @@ Affected static numeric edits now remove a uniquely workbook-owned ordinary
 calculation chain and registrations atomically with caches/calcPr/input changes.
 Unrelated/no-op edits retain chain bytes; ambiguous/extended chains refuse.
 Batch058 passes198 native cases. Legacy synthetic-chain authoring is unchanged.
+
+### Increment059: lexical XML boundaries after maintenance
+
+Resumed fromde006f4 after the post-reboot goal update. Prolog/epilog whitespace is
+checked lexically; references and empty/whitespace CDATA outside the root refuse.
+Batch059 passes202 native cases; internal content and literal boundary bytes remain intact.

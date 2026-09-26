@@ -32,6 +32,16 @@ func xmlConformanceSteps(sc *godog.ScenarioContext) {
 		original = bytes.Clone(source)
 		return nil
 	})
+	sc.Step(`^XML with lexical boundary case "([^"]+)"$`, func(which string) error {
+		cases := map[string]string{"decimal space prolog": `&#32;<r/>`, "hexadecimal tab epilog": `<r/>&#x9;`, "whitespace CDATA prolog": "<![CDATA[ \n]]><r/>", "empty CDATA epilog": `<r/><![CDATA[]]>`}
+		text, ok := cases[which]
+		if !ok {
+			return fmt.Errorf("unknown boundary case")
+		}
+		source = []byte(text)
+		original = bytes.Clone(source)
+		return nil
+	})
 	sc.Step(`^I parse it as an editable XML snapshot$`, func() error { _, failure = losslessxml.Parse(source); return nil })
 	sc.Step(`^invalid XML structure is refused without changing the input$`, func() error {
 		if failure == nil {

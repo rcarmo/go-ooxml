@@ -157,8 +157,11 @@ func Parse(source []byte) (*Document, error) {
 			stack = stack[:len(stack)-1]
 		case xml.CharData:
 			if len(stack) == 0 {
-				if !xmlWhitespace(t) {
-					return fail("text outside root")
+				// XML prolog/epilog allow literal S only. RawToken decodes
+				// references and CDATA, which are not legal here even when
+				// their decoded content is empty or whitespace.
+				if !xmlWhitespace(d.source[before:after]) {
+					return fail("non-literal whitespace outside root")
 				}
 			} else {
 				stack[len(stack)-1].text.Write(t)
