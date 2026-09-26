@@ -599,3 +599,9 @@ Ordinary notes paragraphs/runs now read and replace as LF-separated text. First
 paragraph/run formatting templates are copied within an explicit supported subset;
 empty lines become empty paragraphs. Unproved properties/fields and bad text refuse
 before package edits. Single-leaf nonempty corrections keep byte splices.234 cases pass.
+
+### Increment068: empty leaf and whitespace authoring
+
+Self-closing empty notes leaves use structural replacement. Leading/trailing spaces
+on ordinary leaf updates set xml:space=preserve atomically. Template-value and
+blank-line/no-op invariants pass;235 native cases in068. Review delegate timed out.

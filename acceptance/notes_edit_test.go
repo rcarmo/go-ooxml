@@ -54,7 +54,7 @@ func notesEditSteps(sc *godog.ScenarioContext) {
 		q.AddRelationship("ppt/presentation.xml", "slides/slide1.xml", packaging.RelTypeSlide)
 		_, _ = q.AddPart("opaque.bin", "application/octet-stream", []byte("sentinel"))
 		if c != "absent notes" {
-			if c == "empty text leaf" {
+			if c == "empty text leaf" || c == "self-closing text leaf" {
 				oldText = ""
 			}
 			body := func(id string) string {
@@ -69,6 +69,9 @@ func notesEditSteps(sc *godog.ScenarioContext) {
 					nv = `<p:cNvSpPr><a:spLocks noTextEdit="1"/></p:cNvSpPr>`
 				}
 				run := `<a:r><a:rPr b="1"/><a:t>` + oldText + `</a:t></a:r>`
+				if c == "self-closing text leaf" {
+					run = `<a:r><a:rPr b="1"/><a:t/></a:r>`
+				}
 				if c == "field in body" {
 					run = `<a:fld id="field"><a:t>` + oldText + `</a:t></a:fld>`
 				}
@@ -122,7 +125,11 @@ func notesEditSteps(sc *godog.ScenarioContext) {
 		for p, b := range before {
 			want := b
 			if p == "ppt/notesSlides/notes1.xml" {
-				want = bytes.Replace(b, []byte(`<a:t>`+oldText+`</a:t>`), []byte(`<a:t>`+newText+`</a:t>`), 1)
+				from := []byte(`<a:t>` + oldText + `</a:t>`)
+				if condition == "self-closing text leaf" {
+					from = []byte(`<a:t/>`)
+				}
+				want = bytes.Replace(b, from, []byte(`<a:t>`+newText+`</a:t>`), 1)
 			}
 			if !bytes.Equal(want, after[p]) {
 				return fmt.Errorf("unexpected bytes %s", p)

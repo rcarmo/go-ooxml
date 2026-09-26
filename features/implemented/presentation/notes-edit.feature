@@ -19,6 +19,14 @@ Feature: Guarded edits to an existing notes body
     When I replace that notes body with "Updated notes"
     Then only the notes body text bytes change after delivery
 
+  @NOTES-005
+  Scenario: A self-closing text leaf can be filled through structural authoring
+    Given a presentation with notes condition "self-closing text leaf"
+    When I find the existing notes body
+    Then the notes text is ""
+    When I replace that notes body with "Updated notes"
+    Then only the notes body text bytes change after delivery
+
   @NOTES-004
   Scenario: Grouping-only notes shape lock does not prevent text correction
     Given a presentation with notes condition "grouping-only lock"

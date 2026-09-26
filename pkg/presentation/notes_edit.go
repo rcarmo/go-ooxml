@@ -1,6 +1,7 @@
 package presentation
 
 import (
+	"bytes"
 	"encoding/xml"
 	"strings"
 
@@ -212,8 +213,12 @@ func (s *EditSession) ReplaceNotes(target *NotesTarget, text string) error {
 		return nil
 	}
 	var b []byte
-	if target.singleLeaf && text != "" && !strings.Contains(text, "\n") {
-		b, err = target.doc.ReplaceText([]losslessxml.TextEdit{{Target: target.leaf, Text: text}})
+	if target.singleLeaf && text != "" && !strings.Contains(text, "\n") && !bytes.HasSuffix(target.leaf.Raw(), []byte("/>")) {
+		var attrs []losslessxml.AttributeEdit
+		if strings.Trim(text, " ") != text {
+			attrs = []losslessxml.AttributeEdit{{Target: target.leaf, Name: xml.Name{Space: "http://www.w3.org/XML/1998/namespace", Local: "space"}, Value: "preserve"}}
+		}
+		b, err = target.doc.Edit([]losslessxml.TextEdit{{Target: target.leaf, Text: text}}, attrs)
 	} else {
 		nodes := []losslessxml.NewElement{}
 		for _, line := range strings.Split(text, "\n") {
