@@ -1770,3 +1770,11 @@ bytes. Targets use session/generation/part fingerprints; no-op/refusal remain
 reusable. `SaveAs` delivers through the retained-source verifier. This conservative
 formula-free subset performs no dependency rewriting or cache recalculation and is
 not the general extended spreadsheet editing contract. Existing interfaces unchanged.
+
+`document.EditSession.Outline(CurrentView|OriginalView|AllView)` returns versioned,
+read-only paragraph evidence across the main part and transitively related header,
+footer, footnote, endnote and comment stories. It projects basic insertion/deletion/
+move wrappers, preserves literal tabs/breaks and assigns nested textbox text to its
+nearest paragraph only. AlternateContent branches are skipped with warnings; field
+instructions and property revisions are not evaluated. StoryBlock is not a live
+mutation target. Full extended outline/report/revision scope remains incomplete.

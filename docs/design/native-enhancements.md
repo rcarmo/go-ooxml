@@ -309,3 +309,11 @@ The pinned source suites collect 3,451 cases (DOCX 1,441; PPTX 1,169; XLSX 841).
 Schema-2 spec/native-capability-history.json records exact node IDs and collection-log hashes;
 collection is not execution or parity. API/refusal/fixture/Go/scenario mapping
 remains pending. Raw collection uses Python only as development tooling. Batch 016.
+
+### Increment 017: Word story projections
+
+Read-only current/original/all outlines traverse related story parts and nested
+paragraphs without double-counting text boxes. Basic revision wrappers project;
+alternate-content branches/field evaluation/property revisions expose limitations.
+StoryBlock is inert evidence, not an editing anchor. D01 remains partial pending
+per-story fixtures and complete source-case mapping. See batch 017.
