@@ -1,0 +1,6 @@
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	1.070s
+ok  	github.com/rcarmo/go-ooxml/pkg/document	7.929s
+ok  	github.com/rcarmo/go-ooxml/pkg/presentation	6.190s
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	1.983s
+ok  	github.com/rcarmo/go-ooxml/tools/retired-inventory	1.008s
+ok  	github.com/rcarmo/go-ooxml/acceptance	1.216s
