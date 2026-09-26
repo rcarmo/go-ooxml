@@ -1,5 +1,13 @@
 # Go OOXML Library - Copilot Instructions
 
+## Agent Coordination
+
+Read `AGENTS.md` for the priority communication contract. Scope changes, stop/hold,
+pin corrections, safety blockers and unblock decisions require `chat` with
+`target_agent_name: "@alias"` and explicit `mode: "steer"`. Include the current
+tag/commit, action/owner and superseded notice. Queue only routine progress;
+acknowledge latest state once and do not replay stale notices.
+
 ## Build and Test Commands
 
 Use the Makefile for all standard operations:
