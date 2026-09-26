@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.3.0`, commit
-`a3048639f5b9c521852b9d126b83639c08eae056`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.4.0`, commit
+`40eb26e684b12073956e4f24915444075a60c212`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -39,8 +39,11 @@ There is no separate pack seal. The root manifest seals the explicit
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.3.0` contains 122 manifest assets, including 115 unique fixtures in
-32 format/scenario groups, plus 149 facts and 39 workflows/55 expanded cases.
+Release `v0.4.0` contains 125 manifest assets, including 115 unique fixtures in
+32 format/scenario groups, plus 149 facts and 52 workflows/76 expanded cases.
+The three added XML feature assets leave all prior 122 assets unchanged. The
+Go XML ledger has three partial mappings and one unmapped declaration, with no
+canonical execution credit.
 
 Once a release is approved, update the gitlink and
 `spec/reference-distribution.json` together. All consumer branches/version tips
@@ -83,10 +86,12 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The default released-reference batch and bounded race results are in
-`../reports/batches/096.md`: 291 implemented native Gherkin cases; 20 planned and
-one external case unrun. Package/unit/subtest counts are separate metrics.
-No live Office rendering/calculation or exploratory fuzz campaign ran in that batch.
+The v0.4 default released-reference batch is recorded in
+`../reports/batches/098.md`: 291 implemented native Gherkin cases; 20 planned and
+one external case unrun. The prior v0.3 bounded race checkpoint remains
+`../reports/batches/096.md`; the pin-only v0.4 update does not rerun races.
+Package/unit/subtest counts are separate metrics. No live Office
+rendering/calculation or exploratory fuzz campaign ran in these batches.
 Historical reports retain the commands and outcomes from their original runs.
 
 ## Behaviour catalogue and publication
