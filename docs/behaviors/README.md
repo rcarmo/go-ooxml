@@ -18,11 +18,11 @@ not exploratory-fuzz or performance results. Helpers and acceptance binding-only
 files remain visible, even when they declare no executable test entry point.
 
 The current inventory contains 155 native test files and 404 declarations.
-Reviewed family mappings cover 145 declarations in 145 candidate outcomes across
+Reviewed family mappings cover 146 declarations in 156 candidate outcomes across
 formula, XML, archive, mutable package-model, delivery, graph, test-custody,
 utility, OOXML-model, WML-model, spreadsheet-cache, spreadsheet-targets and
-spreadsheet-fuzz, presentation-notes and presentation-fuzz families;
-259 declarations remain unreviewed. This denominator is the static
+spreadsheet-fuzz, presentation-notes, presentation-fuzz and presentation-fixtures
+families; 258 declarations remain unreviewed. This denominator is the static
 inventory snapshot, not the number of executed leaf cases. Checkout guard tests
 are now included. The executable native Gherkin result is separate at 291 cases.
 See [testing.md](../testing.md) for released/candidate reference setup and limits.
@@ -59,6 +59,11 @@ Three presentation fuzz targets add four literal tuples plus eleven conditional
 fixture-label candidates. Slide-count reopen and in-memory table dimensions do
 not verify text-box custody; fixture paths return on operation errors without
 asserting equality. No exploratory fuzz or new safe-text-box execution is credited.
+The complex presentation fixture declaration dispatches eleven named rows. Its
+exact minimal-deck geometry/font/notes checks remain distinct from any-shape text
+substrings, conditional selector checks and nonempty collections that source
+content can already satisfy. One declaration adds eleven outcomes, not eleven
+declarations or whole-deck preservation credit.
 The [graph/ZIP64 handoff](graph-archive-handoff.md) compares selected assertions
 with the exact v0.4 released IDs, retaining operation, fixture, error-code and
 output-encoding gaps. It adds no reviewed declaration or execution credit.
