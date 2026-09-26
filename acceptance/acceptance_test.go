@@ -93,6 +93,7 @@ func TestAcceptance(t *testing.T) {
 	suite := godog.TestSuite{Name: "go-ooxml", Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{"../features"}, Tags: "@implemented && @go", Strict: true, Concurrency: 1}}
 	suite.ScenarioInitializer = func(sc *godog.ScenarioContext) {
 		safetySteps(sc)
+		zip64Steps(sc)
 		limitSteps(sc)
 		preservedSteps(sc)
 		receiptSteps(sc)

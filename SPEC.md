@@ -1901,3 +1901,11 @@ charts, extensions and protection refuse. Identical image bytes are a no-op;
 changed images consume the target and stale other session handles. Existing legacy
 drawing APIs are unchanged. This bounded adapter does not complete X10's broader
 format/source-policy coverage or establish native Office/rendering compatibility.
+
+Retained intake now verifies local/central ZIP64 sizes and offsets, including tiny
+forced declarations and signed/unsigned 64-bit descriptors. ZIP64 end-record extent
+must end at its locator; the central directory must end at its declared boundary.
+Required extra fields are read only within their TLV length; duplicate/truncated
+ZIP64 extras and classic/ZIP64 disagreement refuse. Empty deflated members are
+verified through archive/zip payload CRC/size checks. Caller resource limits still
+apply; tests use bounded synthetic archives, not multi-gigabyte payloads.

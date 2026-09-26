@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"bytes"
 	"encoding/xml"
+	"errors"
 	"io"
 	"os"
 	"path"
@@ -57,6 +58,9 @@ func OpenReader(r io.ReaderAt, size int64) (*Package, error) {
 func openReader(r io.ReaderAt, size int64, limits Limits) (*Package, error) {
 	zr, err := zip.NewReader(r, size)
 	if err != nil {
+		if errors.Is(err, zip.ErrFormat) {
+			return nil, invalidPart("open", "", err.Error())
+		}
 		return nil, err
 	}
 

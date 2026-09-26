@@ -520,3 +520,10 @@ Batch050 passes168 native cases plus chained-plan and exact-restore checks.
 FindImage now requires one inbound worksheet edge, closing an alias outside the
 workbook sheet list. Duplicate sheet identities already refused at intake.
 Batch052 passes169 native cases; prior full/race checkpoint is051.
+
+### Increment053: local ZIP64 and terminal validation
+
+Local/central ZIP64 values and explicit64-bit descriptors now verify, including
+empty deflate payloads. Terminal record gaps/extents and malformed extras refuse.
+Batch053 passes183 native cases and the existing74-fixture no-op corpus. B01 remains
+partial; no multi-gigabyte or exploratory fuzz run.

@@ -76,8 +76,22 @@ func validateZIPStructure(r io.ReaderAt, size int64, files []*zip.File) error {
 		if little.Uint32(z[:4]) != 0x06064b50 || little.Uint64(z[4:12]) < 44 || little.Uint32(z[16:20]) != 0 || little.Uint32(z[20:24]) != 0 {
 			return fail("", "invalid ZIP64 directory")
 		}
+		// Record length includes any declared extensible data, but must end
+		// exactly at the locator. Subtraction avoids attacker-controlled overflow.
+		locatorAt := uint64(eoff - 20)
+		if at > locatorAt || locatorAt-at < 12 || little.Uint64(z[4:12]) != locatorAt-at-12 {
+			return fail("", "ZIP64 record does not end at locator")
+		}
 		if little.Uint64(z[24:32]) != little.Uint64(z[32:40]) {
 			return fail("", "split ZIP64 directory")
+		}
+		for _, v := range []uint16{little.Uint16(e[8:10]), little.Uint16(e[10:12])} {
+			if v != math.MaxUint16 && uint64(v) != little.Uint64(z[32:40]) {
+				return fail("", "classic/ZIP64 counts disagree")
+			}
+		}
+		if directorySize != math.MaxUint32 && directorySize != little.Uint64(z[40:48]) || directoryOffset != math.MaxUint32 && directoryOffset != little.Uint64(z[48:56]) {
+			return fail("", "classic/ZIP64 directory geometry disagrees")
 		}
 		count = little.Uint64(z[32:40])
 		directorySize = little.Uint64(z[40:48])
@@ -88,6 +102,9 @@ func validateZIPStructure(r io.ReaderAt, size int64, files []*zip.File) error {
 	}
 	if count != uint64(len(files)) || directoryOffset > uint64(boundary) || directorySize > uint64(boundary)-directoryOffset {
 		return fail("", "inconsistent directory bounds")
+	}
+	if directorySize != uint64(boundary)-directoryOffset {
+		return fail("", "undeclared bytes after central directory")
 	}
 	cursor := int64(directoryOffset)
 	limit := cursor + int64(directorySize)
@@ -115,38 +132,14 @@ func validateZIPStructure(r io.ReaderAt, size int64, files []*zip.File) error {
 		if little.Uint16(h[34:36]) != 0 {
 			return fail(f.Name, "multi-disk member unsupported")
 		}
-		offset := uint64(little.Uint32(h[42:46]))
-		if offset == math.MaxUint32 {
-			extra := variable[nameLen:]
-			found := false
-			for len(extra) >= 4 {
-				tag, n := little.Uint16(extra[:2]), int(little.Uint16(extra[2:4]))
-				extra = extra[4:]
-				if n > len(extra) {
-					return fail(f.Name, "truncated ZIP64 extra")
-				}
-				if tag == 1 {
-					data := extra[:n]
-					skip := 0
-					if little.Uint32(h[24:28]) == math.MaxUint32 {
-						skip += 8
-					}
-					if little.Uint32(h[20:24]) == math.MaxUint32 {
-						skip += 8
-					}
-					if len(data) < skip+8 {
-						return fail(f.Name, "missing ZIP64 local offset")
-					}
-					offset = little.Uint64(data[skip : skip+8])
-					found = true
-					break
-				}
-				extra = extra[n:]
-			}
-			if !found {
-				return fail(f.Name, "missing ZIP64 local offset")
-			}
+		central, err := zip64Values(variable[nameLen:], uint64(little.Uint32(h[24:28])), uint64(little.Uint32(h[20:24])), uint64(little.Uint32(h[42:46])))
+		if err != nil {
+			return fail(f.Name, err.Error())
 		}
+		if central[0] != f.UncompressedSize64 || central[1] != f.CompressedSize64 {
+			return fail(f.Name, "central ZIP64 sizes disagree")
+		}
+		offset := central[2]
 		if offset > directoryOffset {
 			return fail(f.Name, "local header inside directory")
 		}
@@ -165,6 +158,16 @@ func validateZIPStructure(r io.ReaderAt, size int64, files []*zip.File) error {
 		if err != nil || !bytes.Equal(name, []byte(f.Name)) {
 			return fail(f.Name, "local name disagrees with directory")
 		}
+		localExtra, err := read(int64(offset)+30+localNameLen, localExtraLen)
+		if err != nil {
+			return fail(f.Name, "truncated local extra")
+		}
+		localSizes, err := zip64Values(localExtra, uint64(little.Uint32(local[22:26])), uint64(little.Uint32(local[18:22])))
+		if err != nil {
+			return fail(f.Name, err.Error())
+		}
+		localZIP64 := little.Uint32(local[18:22]) == math.MaxUint32 || little.Uint32(local[22:26]) == math.MaxUint32
+		centralZIP64 := little.Uint32(h[20:24]) == math.MaxUint32 || little.Uint32(h[24:28]) == math.MaxUint32
 		dataStart := int64(offset) + 30 + localNameLen + localExtraLen
 		actualOffset, err := f.DataOffset()
 		if err != nil || dataStart != actualOffset {
@@ -178,21 +181,22 @@ func validateZIPStructure(r io.ReaderAt, size int64, files []*zip.File) error {
 			if little.Uint32(local[14:18]) != f.CRC32 {
 				return fail(f.Name, "local CRC disagrees with directory")
 			}
-			compressed, uncompressed := uint64(little.Uint32(local[18:22])), uint64(little.Uint32(local[22:26]))
-			if compressed != math.MaxUint32 && compressed != f.CompressedSize64 {
+			compressed, uncompressed := localSizes[1], localSizes[0]
+			if compressed != f.CompressedSize64 {
 				return fail(f.Name, "local compressed size disagrees")
 			}
-			if uncompressed != math.MaxUint32 && uncompressed != f.UncompressedSize64 {
+			if uncompressed != f.UncompressedSize64 {
 				return fail(f.Name, "local uncompressed size disagrees")
 			}
-			// ZIP64 sentinels need the local extra fields; archive/zip validates the
-			// central sizes and stream. Reject ambiguous local declarations for now.
-			if compressed == math.MaxUint32 || uncompressed == math.MaxUint32 {
-				return fail(f.Name, "local ZIP64 sizes require unsupported verification")
-			}
 		} else {
+			if crc := little.Uint32(local[14:18]); crc != 0 && crc != f.CRC32 {
+				return fail(f.Name, "descriptor local CRC conflicts")
+			}
+			if localSizes[0] != 0 && localSizes[0] != f.UncompressedSize64 || localSizes[1] != 0 && localSizes[1] != f.CompressedSize64 {
+				return fail(f.Name, "descriptor local sizes conflict")
+			}
 			width := int64(12)
-			if f.CompressedSize64 >= math.MaxUint32 || f.UncompressedSize64 >= math.MaxUint32 {
+			if localZIP64 || centralZIP64 || f.CompressedSize64 >= math.MaxUint32 || f.UncompressedSize64 >= math.MaxUint32 {
 				width = 20
 			}
 			// CRC may itself equal the optional signature. Validate both layouts
@@ -248,4 +252,51 @@ func validateZIPStructure(r io.ReaderAt, size int64, files []*zip.File) error {
 		}
 	}
 	return nil
+}
+
+// zip64Values expands sentinel fields in APPNOTE order (uncompressed, compressed,
+// then offset when present). Interpret bytes only inside the declared extra length.
+// Opaque extras remain opaque; duplicate ZIP64 fields and incomplete TLVs refuse.
+func zip64Values(extra []byte, fields ...uint64) ([]uint64, error) {
+	values := append([]uint64(nil), fields...)
+	required := 0
+	for _, v := range fields {
+		if v == math.MaxUint32 {
+			required += 8
+		}
+	}
+	found := false
+	for len(extra) > 0 {
+		if len(extra) < 4 {
+			return nil, fmt.Errorf("incomplete ZIP extra header")
+		}
+		tag, n := little.Uint16(extra[:2]), int(little.Uint16(extra[2:4]))
+		extra = extra[4:]
+		if n > len(extra) {
+			return nil, fmt.Errorf("truncated ZIP extra")
+		}
+		data := extra[:n]
+		extra = extra[n:]
+		if tag != 1 {
+			continue
+		}
+		if found {
+			return nil, fmt.Errorf("duplicate ZIP64 extra")
+		}
+		found = true
+		if len(data) < required {
+			return nil, fmt.Errorf("missing required ZIP64 value")
+		}
+		at := 0
+		for i, v := range fields {
+			if v == math.MaxUint32 {
+				values[i] = little.Uint64(data[at : at+8])
+				at += 8
+			}
+		}
+	}
+	if required > 0 && !found {
+		return nil, fmt.Errorf("missing ZIP64 extra")
+	}
+	return values, nil
 }

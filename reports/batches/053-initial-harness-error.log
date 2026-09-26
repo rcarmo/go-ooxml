@@ -1,0 +1,33 @@
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	0.002s
+--- FAIL: TestZIP64IntakeBatch (0.00s)
+    --- FAIL: TestZIP64IntakeBatch/deflate=false/descriptor= (0.00s)
+        zip64_test.go:36: open: invalid_package ([Content_Types].xml): local ZIP64 sizes require unsupported verification
+    --- FAIL: TestZIP64IntakeBatch/deflate=false/descriptor=signed (0.00s)
+        zip64_test.go:36: open: invalid_package ([Content_Types].xml): missing, inconsistent or ambiguous data descriptor
+    --- FAIL: TestZIP64IntakeBatch/deflate=false/descriptor=unsigned (0.00s)
+        zip64_test.go:36: open: invalid_package ([Content_Types].xml): missing, inconsistent or ambiguous data descriptor
+    --- FAIL: TestZIP64IntakeBatch/deflate=true/descriptor= (0.00s)
+        zip64_test.go:36: open: invalid_package ([Content_Types].xml): local ZIP64 sizes require unsupported verification
+    --- FAIL: TestZIP64IntakeBatch/deflate=true/descriptor=signed (0.00s)
+        zip64_test.go:36: open: invalid_package ([Content_Types].xml): missing, inconsistent or ambiguous data descriptor
+    --- FAIL: TestZIP64IntakeBatch/deflate=true/descriptor=unsigned (0.00s)
+        zip64_test.go:36: open: invalid_package ([Content_Types].xml): missing, inconsistent or ambiguous data descriptor
+--- FAIL: TestZIP64TerminalGeometryBatch (0.00s)
+    --- FAIL: TestZIP64TerminalGeometryBatch/gap_before_ZIP64_end (0.00s)
+        zip64_test.go:109: gap before ZIP64 end: <nil>
+    --- FAIL: TestZIP64TerminalGeometryBatch/gap_before_locator (0.00s)
+        zip64_test.go:109: gap before locator: <nil>
+    --- FAIL: TestZIP64TerminalGeometryBatch/bad_record_length (0.00s)
+        zip64_test.go:109: bad record length: <nil>
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/pkg/packaging	0.101s
+FAIL
+--- FAIL: TestAcceptance (0.00s)
+    acceptance_test.go:144: ../features/implemented/package/zip64.feature: unsupported scenario tag @ZIP64-001
+--- FAIL: TestPinnedContractLinks (0.01s)
+    contract_links_test.go:76: ../features/implemented/package/zip64.feature: unsupported scenario tag @ZIP64-001
+--- FAIL: TestSourceDiscrepancyRecord (0.00s)
+    source_discrepancies_test.go:83: ../features/implemented/package/zip64.feature: unsupported scenario tag @ZIP64-001
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/acceptance	0.021s
+FAIL
