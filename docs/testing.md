@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.16.0`, commit
-`641146c020e1011b8f3e930f5fb4fd0b76c27b3d`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.20.0`, commit
+`0ffd549e2fd8825b4cff5a84e704ac78d72717b9`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -39,22 +39,22 @@ There is no separate pack seal. The root manifest seals the explicit
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.16.0` contains 163 manifest assets, including 115 unique fixtures in
-32 format/scenario groups, plus 149 facts and 122 workflows/352 expanded cases.
-All 147 prior asset records are unchanged. The added font and comment/VML workflow
-cases are planned; importing them adds no Go binding or execution credit. Shared
+Release `v0.20.0` contains 200 manifest assets, including 115 unique fixtures in
+32 format/scenario groups, plus 149 facts and 227 workflows/560 expanded cases.
+The consolidated workflows preserve published scenario IDs; shared workflow
+inventory adds no Go binding or execution credit. Local native acceptance remains
+291 implemented cases, 20 planned cases and one external case. Shared
 ECMA specifications, extracts and derived notes are indexed under
 [`specs/ecma-376/`](../references/fixtures-ooxml/specs/ecma-376/README.md).
 The full PDFs are the specification sources; local copies have been removed.
-Keep this shared pin until the coordinator approves a replacement; local catalogue
-work continues independently. Go's package ledger has four partial mappings and eight unmapped
+Keep this shared pin until the coordinator approves a replacement. Go's package ledger has four partial mappings and eight unmapped
 declarations; its XML ledger has three partial mappings and one unmapped.
 Neither ledger grants canonical execution credit. The semantic-diff assertion
 `removed: []` exercises no removal case.
 
 Once a release is approved, update the gitlink and
 `spec/reference-distribution.json` together within the coordinator-approved scope.
-For v0.16 adoption, only this enhancement branch advances; legacy tips and prepared
+For v0.20 adoption, only this enhancement branch advances; legacy tips and prepared
 publication refs/mirror remain at the v0.9 checkpoint by explicit instruction.
 Do not use `git submodule update --remote` or move an existing release tag to
 follow changing content.
