@@ -91,6 +91,23 @@ func notesMultilineSteps(sc *godog.ScenarioContext) {
 			paragraphs = strings.Replace(paragraphs, `<a:latin typeface="Source Sans"/>`, `<a:effectLst/><a:uFillTx/><a:latin typeface="Source Sans"/>`, 1)
 		case "nonempty effect list":
 			paragraphs = strings.Replace(paragraphs, `<a:latin typeface="Source Sans"/>`, `<a:effectLst><a:blur rad="5"/></a:effectLst><a:latin typeface="Source Sans"/>`, 1)
+		case "conflicting run fill":
+			paragraphs = strings.Replace(paragraphs, `<a:solidFill>`, `<a:noFill/><a:solidFill>`, 1)
+		case "conflicting colour choice":
+			paragraphs = strings.Replace(paragraphs, `<a:srgbClr val="112233"/>`, `<a:srgbClr val="112233"/><a:schemeClr val="accent1"/>`, 1)
+		case "conflicting paragraph spacing":
+			paragraphs = strings.Replace(paragraphs, `<a:spcPct val="100000"/>`, `<a:spcPct val="100000"/><a:spcPts val="1200"/>`, 1)
+		case "conflicting bullet type":
+			paragraphs = strings.Replace(paragraphs, `</a:pPr>`, `<a:buNone/><a:buChar char="*"/></a:pPr>`, 1)
+		case "conflicting bullet size":
+			paragraphs = strings.Replace(paragraphs, `</a:pPr>`, `<a:buSzPct val="100000"/><a:buSzPts val="1200"/></a:pPr>`, 1)
+		case "empty solid fill":
+			paragraphs = strings.Replace(paragraphs, `<a:srgbClr val="112233"/>`, "", 1)
+		case "missing colour value":
+			paragraphs = strings.Replace(paragraphs, `<a:srgbClr val="112233"/>`, `<a:srgbClr/>`, 1)
+		case "reversed property order":
+			paragraphs = strings.Replace(paragraphs, `<a:solidFill>`, `<a:latin typeface="Source Sans"/><a:solidFill>`, 1)
+			paragraphs = strings.Replace(paragraphs, `</a:solidFill><a:latin typeface="Source Sans"/>`, `</a:solidFill>`, 1)
 		case "unknown paragraph property":
 			paragraphs = strings.Replace(paragraphs, `<a:lnSpc>`, `<a:unproved/><a:lnSpc>`, 1)
 		default:

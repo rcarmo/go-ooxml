@@ -22,11 +22,16 @@ var notesPropertyAttrs = map[string]string{
 	"srgbClr": "val", "schemeClr": "val", "latin": "typeface pitchFamily charset", "ea": "typeface pitchFamily charset", "cs": "typeface pitchFamily charset",
 	"buNone": "", "buChar": "char", "buAutoNum": "type startAt", "buFont": "typeface pitchFamily charset", "buSzPct": "val", "buSzPts": "val", "buClr": "", "buClrTx": "", "buSzTx": "", "buFontTx": "",
 }
-var notesPropertyChildren = map[string]string{
-	"pPr": "lnSpc spcBef spcAft buClrTx buClr buSzTx buSzPct buSzPts buFontTx buFont buNone buAutoNum buChar defRPr",
-	"rPr": "noFill solidFill effectLst uFillTx latin ea cs", "defRPr": "noFill solidFill effectLst uFillTx latin ea cs", "endParaRPr": "noFill solidFill effectLst uFillTx latin ea cs",
-	"lnSpc": "spcPct spcPts", "spcBef": "spcPct spcPts", "spcAft": "spcPct spcPts", "solidFill": "srgbClr schemeClr", "buClr": "srgbClr schemeClr",
+
+// Ordered schema slots; alternatives in a slot are mutually exclusive.
+var notesPropertySlots = map[string][]string{
+	"pPr":        {"lnSpc", "spcBef", "spcAft", "buClrTx buClr", "buSzTx buSzPct buSzPts", "buFontTx buFont", "buNone buAutoNum buChar", "defRPr"},
+	"rPr":        {"noFill solidFill", "effectLst", "uFillTx", "latin", "ea", "cs"},
+	"defRPr":     {"noFill solidFill", "effectLst", "uFillTx", "latin", "ea", "cs"},
+	"endParaRPr": {"noFill solidFill", "effectLst", "uFillTx", "latin", "ea", "cs"},
+	"lnSpc":      {"spcPct spcPts"}, "spcBef": {"spcPct spcPts"}, "spcAft": {"spcPct spcPts"}, "solidFill": {"srgbClr schemeClr"}, "buClr": {"srgbClr schemeClr"},
 }
+var notesPropertyRequired = map[string]string{"spcPct": "val", "spcPts": "val", "srgbClr": "val", "schemeClr": "val", "latin": "typeface", "ea": "typeface", "cs": "typeface", "buChar": "char", "buAutoNum": "type", "buFont": "typeface", "buSzPct": "val", "buSzPts": "val"}
 
 func notesTokenIn(list, value string) bool {
 	for _, v := range strings.Fields(list) {
@@ -52,20 +57,44 @@ func notesProperty(doc *losslessxml.Document, e losslessxml.Element) (losslessxm
 	if strings.TrimSpace(text) != "" {
 		return node, editRefusal("unsupported_structure", "mixed notes formatting text")
 	}
-	seen := map[string]bool{}
+	if required := notesPropertyRequired[n.Local]; required != "" {
+		found := false
+		for _, a := range node.Attributes {
+			if a.Name.Local == required && a.Value != "" {
+				found = true
+			}
+		}
+		if !found {
+			return node, editRefusal("unsupported_structure", "missing notes formatting value")
+		}
+	}
+	lastSlot := -1
 	for _, child := range doc.Elements() {
 		if p, ok := child.Parent(); !ok || p != e {
 			continue
 		}
-		if !notesTokenIn(notesPropertyChildren[n.Local], child.Name().Local) || seen[child.Name().Local] {
-			return node, editRefusal("unsupported_structure", "unproved/duplicate notes formatting child")
+		slot := -1
+		for i, names := range notesPropertySlots[n.Local] {
+			if notesTokenIn(names, child.Name().Local) {
+				slot = i
+				break
+			}
 		}
-		seen[child.Name().Local] = true
+		if slot < 0 || slot <= lastSlot {
+			return node, editRefusal("unsupported_structure", "unknown, conflicting or out-of-order notes formatting choice")
+		}
+		lastSlot = slot
 		c, err := notesProperty(doc, child)
 		if err != nil {
 			return node, err
 		}
 		node.Children = append(node.Children, c)
+	}
+	switch n.Local {
+	case "lnSpc", "spcBef", "spcAft", "solidFill", "buClr":
+		if len(node.Children) != 1 {
+			return node, editRefusal("unsupported_structure", "one notes formatting choice required")
+		}
 	}
 	return node, nil
 }

@@ -612,3 +612,9 @@ Opt-in native checks read self-generated and LibreOffice-exported extended notes
 from the pinned read-only checkout. Both pass exact no-op, multiline/clear/reopen and
 one-part budgets. Empty effects/inherited underline fill are supported; nonempty
 effects refuse.237 native cases pass. No fixture redistribution or live Office run.
+
+### Increment070: template choice validation
+
+Notes property cloning now rejects conflicting/out-of-order schema slots, empty
+colour/spacing choices and absent required values.245 native cases plus the two
+pinned extended notes inputs pass; full attribute-value/schema validation is unverified.
