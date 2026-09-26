@@ -1,0 +1,19 @@
+{
+  "contractRevision": "ooxml-shared-contracts-v2",
+  "executedWorkflowCases": 0,
+  "fixtures": {
+    "cross-sheet-cache.xlsx": "8ba5708d5030adf93a4f7e4ae466563a1b66341067a200a6cb9b782484dcb5b1",
+    "default-style.xlsx": "38c2ed936696179d3b2359e9107ad2b8d62d71d69296f8f60bdfe1fe8f7f2439",
+    "present-placeholder.docx": "535910216e3531e4f70959cccf83038f1c51febbf4a149f9f46abfbfa8667d90",
+    "title-and-subtitle.pptx": "2aec94471f93c300d56ca4789106a974411085d1588f3424155362a06dd043f3"
+  },
+  "inventoriedWorkflowCases": 19,
+  "packManifestSHA256": "4fb30e0d1a75e889985eceb0c6929dc59971089cc3bc692f18675f36dfeb81de",
+  "schema": 1,
+  "status": "fixture-and-contract-integrity-only",
+  "subject": {
+    "kind": "native-library",
+    "transport": "none"
+  },
+  "verifiedFixtureCount": 4
+}

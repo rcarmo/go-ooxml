@@ -1,0 +1,11 @@
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	(cached)
+--- FAIL: TestSharedPackV2 (0.01s)
+    --- FAIL: TestSharedPackV2/default-style.xlsx (0.00s)
+        shared_pack_test.go:159: spreadsheet_edit: ambiguous_target (): ambiguous sheet identity
+    --- FAIL: TestSharedPackV2/cross-sheet-cache.xlsx (0.00s)
+        shared_pack_test.go:159: spreadsheet_edit: ambiguous_target (): ambiguous sheet identity
+    shared_pack_test.go:184: json: cannot unmarshal number into Go struct field .cases of type []struct { ID string "json:\"id\""; ScenarioID string "json:\"scenarioId\""; ExampleValues map[string]string "json:\"exampleValues\""; Lifecycle string "json:\"lifecycle\""; Execution string "json:\"execution\""; Steps []struct { Argument json.RawMessage "json:\"argument\"" } "json:\"steps\"" }
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/acceptance	0.587s
+FAIL

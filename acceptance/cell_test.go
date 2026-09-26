@@ -44,7 +44,7 @@ func cellSteps(sc *godog.ScenarioContext) {
 			names = `<definedNames><definedName name="Input">Sheet1!$B$2</definedName></definedNames>`
 		}
 		q := packaging.New()
-		_, _ = q.AddPart("xl/workbook.xml", packaging.ContentTypeWorkbook, []byte(`<workbook xmlns="`+packaging.NSSpreadsheetML+`" xmlns:r="`+packaging.NSRelationships+`"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/><sheet name="Sheet2" sheetId="2" r:id="rId2"/></sheets>`+names+`</workbook>`))
+		_, _ = q.AddPart("xl/workbook.xml", packaging.ContentTypeWorkbook, []byte(`<workbook xmlns="`+packaging.NSSpreadsheetML+`" xmlns:r="`+packaging.NSDocumentRelationships+`"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/><sheet name="Sheet2" sheetId="2" r:id="rId2"/></sheets>`+names+`</workbook>`))
 		_, _ = q.AddPart("xl/worksheets/sheet1.xml", packaging.ContentTypeWorksheet, worksheet)
 		second := `<sheetData/>`
 		if condition == "formula on another sheet" {

@@ -35,7 +35,7 @@ func slideSteps(sc *godog.ScenarioContext) {
 		}
 		slide = []byte(`<p:sld xmlns:p="` + packaging.NSPresentationML + `" xmlns:a="` + packaging.NSDrawingML + `" xmlns:x="urn:opaque"><p:cSld><p:spTree>` + shape + `</p:spTree><x:unknown x:v='keep'/></p:cSld></p:sld>`)
 		q := packaging.New()
-		_, _ = q.AddPart("ppt/presentation.xml", packaging.ContentTypePresentation, []byte(`<p:presentation xmlns:p="`+packaging.NSPresentationML+`" xmlns:r="`+packaging.NSRelationships+`"><p:sldIdLst><p:sldId id="256" r:id="rId1"/></p:sldIdLst></p:presentation>`))
+		_, _ = q.AddPart("ppt/presentation.xml", packaging.ContentTypePresentation, []byte(`<p:presentation xmlns:p="`+packaging.NSPresentationML+`" xmlns:r="`+packaging.NSDocumentRelationships+`"><p:sldIdLst><p:sldId id="256" r:id="rId1"/></p:sldIdLst></p:presentation>`))
 		_, _ = q.AddPart("ppt/slides/slide1.xml", packaging.ContentTypeSlide, slide)
 		q.AddRelationship("", "ppt/presentation.xml", packaging.RelTypeOfficeDocument)
 		q.AddRelationship("ppt/presentation.xml", "slides/slide1.xml", packaging.RelTypeSlide)

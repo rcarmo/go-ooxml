@@ -14,7 +14,7 @@ func TestStyleReferenceBatch(t *testing.T) {
 	}{{"implicit no table", "", `<c r="A1"><v>1</v></c>`, false}, {"nonzero no table", "", `<c r="A1" s="1"><v>1</v></c>`, true}, {"empty explicit zero", `<cellXfs count="0"/>`, `<c r="A1" s="0"><v>1</v></c>`, true}, {"empty implicit zero", `<cellXfs count="0"/>`, `<c r="A1"><v>1</v></c>`, true}, {"count absent but actual xf", `<cellXfs><xf/></cellXfs>`, `<c r="A1"><v>1</v></c>`, false}, {"overflow", `<cellXfs><xf/></cellXfs>`, `<c r="A1" s="4294967296"><v>1</v></c>`, true}, {"empty index", `<cellXfs><xf/></cellXfs>`, `<c r="A1" s=""><v>1</v></c>`, true}, {"two tables", `<cellXfs><xf/></cellXfs><cellXfs><xf/></cellXfs>`, `<c r="A1"><v>1</v></c>`, true}} {
 		t.Run(tc.name, func(t *testing.T) {
 			q := packaging.New()
-			_, _ = q.AddPart("xl/workbook.xml", packaging.ContentTypeWorkbook, []byte(`<workbook xmlns="`+packaging.NSSpreadsheetML+`" xmlns:r="`+packaging.NSRelationships+`"><sheets><sheet name="S" sheetId="1" r:id="rId1"/></sheets></workbook>`))
+			_, _ = q.AddPart("xl/workbook.xml", packaging.ContentTypeWorkbook, []byte(`<workbook xmlns="`+packaging.NSSpreadsheetML+`" xmlns:r="`+packaging.NSDocumentRelationships+`"><sheets><sheet name="S" sheetId="1" r:id="rId1"/></sheets></workbook>`))
 			_, _ = q.AddPart("xl/worksheets/sheet1.xml", packaging.ContentTypeWorksheet, []byte(`<worksheet xmlns="`+packaging.NSSpreadsheetML+`"><sheetData><row r="1">`+tc.cells+`</row></sheetData></worksheet>`))
 			q.AddRelationship("", "xl/workbook.xml", packaging.RelTypeOfficeDocument)
 			q.AddRelationship("xl/workbook.xml", "worksheets/sheet1.xml", packaging.RelTypeWorksheet)

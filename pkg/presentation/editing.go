@@ -90,7 +90,7 @@ func OpenEditing(source []byte, limits packaging.Limits) (*EditSession, error) {
 		}
 		rid := ""
 		for _, a := range e.Attributes() {
-			if a.Name == name(packaging.NSRelationships, "id") {
+			if a.Name == name(packaging.NSDocumentRelationships, "id") {
 				rid = a.Value
 			}
 		}

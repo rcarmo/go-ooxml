@@ -103,7 +103,7 @@ func OpenEditing(source []byte, limits packaging.Limits) (*EditSession, error) {
 		sheet := attr(e, "name")
 		rid := ""
 		for _, a := range e.Attributes() {
-			if a.Name == (xml.Name{Space: packaging.NSRelationships, Local: "id"}) {
+			if a.Name == (xml.Name{Space: packaging.NSDocumentRelationships, Local: "id"}) {
 				rid = a.Value
 			}
 		}
@@ -224,7 +224,7 @@ func (s *EditSession) guard() error {
 		for _, e := range d.Elements() {
 			n := e.Name()
 			for _, a := range e.Attributes() {
-				if a.Name.Space != "" && !(n.Local == "sheet" && a.Name == (xml.Name{Space: packaging.NSRelationships, Local: "id"})) && !(a.Name == (xml.Name{Space: "http://www.w3.org/XML/1998/namespace", Local: "space"})) {
+				if a.Name.Space != "" && !(n.Local == "sheet" && a.Name == (xml.Name{Space: packaging.NSDocumentRelationships, Local: "id"})) && !(a.Name == (xml.Name{Space: "http://www.w3.org/XML/1998/namespace", Local: "space"})) {
 					return editRefusal("unsupported_structure", "unknown namespaced attribute")
 				}
 			}

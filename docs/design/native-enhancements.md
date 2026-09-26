@@ -403,3 +403,12 @@ Numeric edits now validate cell/row/column style indices. Omitted s means zero,
 which must resolve when cellXfs exists; empty tables and invalid indices refuse.
 This independently reproduces/fixes the Bun-discovered V2 contract regression,
 without claiming shared style-authoring or workflow parity. Batch032.
+
+### Increment 033: shared V2 pin and namespace regression
+
+V2 pack verification independently checks byte-pinned source/member hashes, sentinel
+ownership, graph/style/no-op integrity and strict typed JSON. It found incorrect r:id
+namespace matching in new Go XLSX/PPTX editors and their synthetic fixtures; both are
+corrected to officeDocument relationships. Four fixtures verified, zero of19 shared
+workflow cases executed. Pin/spec and report: spec/shared-contracts-v2.json, batch033.
+Shared binary redistribution remains unapproved; no fixtures copied into the repo.

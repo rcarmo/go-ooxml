@@ -40,7 +40,7 @@ func styleIndexSteps(sc *godog.ScenarioContext) {
 		sheet = []byte(`<worksheet xmlns="` + packaging.NSSpreadsheetML + `"><sheetData><row r="2"><c r="B2"` + attrs + `><v>7</v></c>` + extra + `</row></sheetData></worksheet>`)
 		style = []byte(`<styleSheet xmlns="` + packaging.NSSpreadsheetML + `"><cellXfs count="` + count + `">` + entries + `</cellXfs></styleSheet>`)
 		q := packaging.New()
-		_, _ = q.AddPart("xl/workbook.xml", packaging.ContentTypeWorkbook, []byte(`<workbook xmlns="`+packaging.NSSpreadsheetML+`" xmlns:r="`+packaging.NSRelationships+`"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets></workbook>`))
+		_, _ = q.AddPart("xl/workbook.xml", packaging.ContentTypeWorkbook, []byte(`<workbook xmlns="`+packaging.NSSpreadsheetML+`" xmlns:r="`+packaging.NSDocumentRelationships+`"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets></workbook>`))
 		_, _ = q.AddPart("xl/worksheets/sheet1.xml", packaging.ContentTypeWorksheet, sheet)
 		_, _ = q.AddPart("xl/styles.xml", packaging.ContentTypeExcelStyles, style)
 		q.AddRelationship("", "xl/workbook.xml", packaging.RelTypeOfficeDocument)
