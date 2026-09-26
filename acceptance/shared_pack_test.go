@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"os"
 	"path/filepath"
 	"sort"
@@ -15,7 +16,7 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/spreadsheet"
 )
 
-const sharedPackHash = "4fb30e0d1a75e889985eceb0c6929dc59971089cc3bc692f18675f36dfeb81de"
+const sharedPackHash = "cf359dea9df753592b9b8ecfd0d25feafa74a4a57a6033a25ca97764816a2032"
 
 func sha256hex(data []byte) string { s := sha256.Sum256(data); return hex.EncodeToString(s[:]) }
 func pinnedFile(root, name, hash string) ([]byte, error) {
@@ -61,21 +62,17 @@ type sharedFixture struct {
 	Preserve     map[string]string `json:"mustPreservePayloads"`
 }
 
-// Shared pack verification is opt-in because source fixture redistribution has
-// not been cleared. Requested runs fail on missing pack/hash mismatches; normal
-// runs do not invent a skipped/pass workflow case. No Go mutation binding here.
+// The shared code-free distribution is required for native fixture/contract
+// checks. Integrity verification does not count as workflow execution.
 func TestSharedPackV2(t *testing.T) {
-	root := os.Getenv("OOXML_SHARED_PACK")
-	if root == "" {
-		t.Log("shared pack verification not requested; all19 workflows remain planned")
-		return
-	}
+	root := testutil.ReferencePath("shared", "v2", "pack")
 	b, err := pinnedFile(root, "pack-manifest.json", sharedPackHash)
 	if err != nil {
 		t.Fatal(err)
 	}
 	var pack struct {
 		Revision      string            `json:"contractRevision"`
+		Distribution  string            `json:"distributionRevision"`
 		ScenarioCount int               `json:"scenarioCount"`
 		CaseCount     int               `json:"expandedCaseCount"`
 		Files         map[string]string `json:"files"`
@@ -83,7 +80,7 @@ func TestSharedPackV2(t *testing.T) {
 	if err = json.Unmarshal(b, &pack); err != nil {
 		t.Fatal(err)
 	}
-	if pack.Revision != "ooxml-shared-contracts-v2" || pack.ScenarioCount != 8 || pack.CaseCount != 19 {
+	if pack.Revision != "ooxml-shared-contracts-v2" || pack.Distribution != "fixtures-ooxml-v0.1.0" || pack.ScenarioCount != 8 || pack.CaseCount != 19 {
 		t.Fatal("wrong shared revision/inventory")
 	}
 	for name, hash := range pack.Files {
@@ -215,7 +212,7 @@ func TestSharedPackV2(t *testing.T) {
 	if err = os.MkdirAll(dir, 0755); err != nil {
 		t.Fatal(err)
 	}
-	writeJSON(t, filepath.Join(dir, "shared-v2-verification.json"), map[string]any{"schema": 1, "contractRevision": pack.Revision, "packManifestSHA256": sharedPackHash, "fixtures": fixtureHashes, "verifiedFixtureCount": 4, "nativeReadbacks": readbacks, "inventoriedWorkflowCases": 19, "executedWorkflowCases": 0, "status": "fixture-and-contract-integrity-only", "subject": map[string]string{"kind": "native-library", "transport": "none"}})
+	writeJSON(t, filepath.Join(dir, "shared-v2-verification.json"), map[string]any{"schema": 1, "contractRevision": pack.Revision, "distributionRevision": pack.Distribution, "packManifestSHA256": sharedPackHash, "fixtures": fixtureHashes, "verifiedFixtureCount": 4, "nativeReadbacks": readbacks, "inventoriedWorkflowCases": 19, "executedWorkflowCases": 0, "status": "fixture-and-contract-integrity-only", "subject": map[string]string{"kind": "native-library", "transport": "none"}})
 }
 func validateTypedTable(argument json.RawMessage) error {
 	if len(argument) == 0 || string(argument) == "null" {

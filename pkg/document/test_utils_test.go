@@ -2,10 +2,10 @@
 package document
 
 import (
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"testing"
 )
@@ -220,14 +220,7 @@ func (h *TestHelper) OpenFixture(name string) Document {
 	return h.OpenDocument(fixturePath(name))
 }
 
-func fixturePath(name string) string {
-	_, filename, _, ok := runtime.Caller(0)
-	if !ok {
-		return filepath.Join("..", "..", "testdata", "word", name)
-	}
-	root := filepath.Join(filepath.Dir(filename), "..", "..")
-	return filepath.Join(root, "testdata", "word", name)
-}
+func fixturePath(name string) string { return testutil.FixturePath("word", name) }
 
 // RoundTrip creates, saves, and reopens a document.
 // Returns the reopened document (caller must close).
@@ -389,8 +382,8 @@ var CommonHeadingStyleCases = []HeadingStyleTestCase{
 
 // FontSizeTestCase represents a test case for font sizes.
 type FontSizeTestCase struct {
-	Points    float64
-	HalfPts   int64 // Expected internal representation
+	Points  float64
+	HalfPts int64 // Expected internal representation
 }
 
 // CommonFontSizeCases provides standard font size test cases.

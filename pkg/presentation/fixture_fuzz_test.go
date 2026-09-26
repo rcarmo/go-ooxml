@@ -64,5 +64,5 @@ func FuzzPresentationFixtureMutation(f *testing.F) {
 }
 
 func fixturePath(name string) string {
-	return filepath.Join("..", "..", "testdata", "pptx", name)
+	return testutil.FixturePath("pptx", name)
 }

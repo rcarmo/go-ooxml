@@ -2,6 +2,7 @@ package packaging
 
 import (
 	"bytes"
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,7 +12,7 @@ import (
 // This is one corpus batch: all checked-in Office fixtures, including duplicate
 // content with different provenance paths. No graph/format-edit parity is implied.
 func TestRetainedNoOpFixtureCorpus(t *testing.T) {
-	root := filepath.Join("..", "..", "testdata")
+	root := testutil.FixturePath()
 	count := 0
 	err := filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
 		if err != nil {

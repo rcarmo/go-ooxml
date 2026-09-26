@@ -1,0 +1,143 @@
+go test -p 2 ./...
+--- FAIL: TestAdvancedCorporateFrankensteinArtifacts (0.03s)
+    --- FAIL: TestAdvancedCorporateFrankensteinArtifacts/word (0.00s)
+        advanced_corporate_frankenstein_test.go:23: buildCorporateFrankensteinDoc() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/image1.png: no such file or directory
+--- FAIL: TestGeneratedRoundTripArtifacts (0.00s)
+    generated_roundtrip_test.go:34: ReadDir(/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word) error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word: no such file or directory
+--- FAIL: TestWordWorkflow_TemplateUpdate (0.00s)
+    workflow_test.go:233: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/headers_footers.docx: no such file or directory
+--- FAIL: TestExcelWorkflow_TemplateUpdate (0.00s)
+    workflow_test.go:281: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/multiple_sheets.xlsx: no such file or directory
+--- FAIL: TestPowerPointWorkflow_TemplateUpdate (0.00s)
+    workflow_test.go:325: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/tables.pptx: no such file or directory
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/e2e	0.058s
+ok  	github.com/rcarmo/go-ooxml/internal/formula	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/losslessxml	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	0.002s
+--- FAIL: TestFixtureRoundTrip_Complex (0.00s)
+    --- FAIL: TestFixtureRoundTrip_Complex/minimal.docx (0.00s)
+        fixture_roundtrip_test.go:356: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/minimal.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/minimal.docx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/single_paragraph.docx (0.00s)
+        fixture_roundtrip_test.go:356: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/single_paragraph.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/single_paragraph.docx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/formatted_text.docx (0.00s)
+        fixture_roundtrip_test.go:356: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/formatted_text.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/formatted_text.docx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/headings.docx (0.00s)
+        fixture_roundtrip_test.go:356: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/headings.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/headings.docx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/simple_table.docx (0.00s)
+        fixture_roundtrip_test.go:356: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/simple_table.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/simple_table.docx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/complex_table.docx (0.00s)
+        fixture_roundtrip_test.go:356: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/complex_table.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/complex_table.docx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/track_changes.docx (0.00s)
+        fixture_roundtrip_test.go:356: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/track_changes.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/track_changes.docx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/comments.docx (0.00s)
+        fixture_roundtrip_test.go:356: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/comments.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/comments.docx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/styles.docx (0.00s)
+        fixture_roundtrip_test.go:356: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/styles.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/styles.docx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/headers_footers.docx (0.00s)
+        fixture_roundtrip_test.go:356: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/headers_footers.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/headers_footers.docx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/sdt_content_controls.docx (0.00s)
+        fixture_roundtrip_test.go:356: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/sdt_content_controls.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/sdt_content_controls.docx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/numbered_list.docx (0.00s)
+        fixture_roundtrip_test.go:356: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/numbered_list.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/numbered_list.docx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/bullet_list.docx (0.00s)
+        fixture_roundtrip_test.go:356: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/bullet_list.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/bullet_list.docx: no such file or directory
+--- FAIL: TestContentControlsFixture (0.00s)
+    phase3_test.go:729: Open("/workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/sdt_content_controls.docx") error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/word/sdt_content_controls.docx: no such file or directory
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/pkg/document	0.194s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/chart	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/common	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/diagram	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/dml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/pml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/sml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/theme	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/wml	(cached)
+--- FAIL: TestRetainedNoOpFixtureCorpus (0.00s)
+    fixture_corpus_test.go:49: lstat /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata: no such file or directory
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/pkg/packaging	0.182s
+--- FAIL: TestFixtureRoundTrip_Complex (0.00s)
+    --- FAIL: TestFixtureRoundTrip_Complex/minimal.pptx (0.00s)
+        fixture_roundtrip_test.go:342: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/minimal.pptx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/title_slide.pptx (0.00s)
+        fixture_roundtrip_test.go:342: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/title_slide.pptx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/bullet_points.pptx (0.00s)
+        fixture_roundtrip_test.go:342: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/bullet_points.pptx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/shapes.pptx (0.00s)
+        fixture_roundtrip_test.go:342: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/shapes.pptx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/tables.pptx (0.00s)
+        fixture_roundtrip_test.go:342: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/tables.pptx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/notes.pptx (0.00s)
+        fixture_roundtrip_test.go:342: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/notes.pptx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/comments.pptx (0.00s)
+        fixture_roundtrip_test.go:342: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/comments.pptx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/hidden_slides.pptx (0.00s)
+        fixture_roundtrip_test.go:342: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/hidden_slides.pptx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/multiple_masters.pptx (0.00s)
+        fixture_roundtrip_test.go:342: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/multiple_masters.pptx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/layouts.pptx (0.00s)
+        fixture_roundtrip_test.go:342: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/layouts.pptx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/images.pptx (0.00s)
+        fixture_roundtrip_test.go:342: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/images.pptx: no such file or directory
+--- FAIL: TestExistingNotesFixtureBatch (0.00s)
+    --- FAIL: TestExistingNotesFixtureBatch/exact_part_budget_and_existing_placeholders (0.00s)
+        notes_edit_test.go:35: open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/notes.pptx: no such file or directory
+    --- FAIL: TestExistingNotesFixtureBatch/no-op_rollback_foreign_stale_handles_and_empty_output (0.00s)
+        notes_edit_test.go:96: open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/notes.pptx: no such file or directory
+    --- FAIL: TestExistingNotesFixtureBatch/part_fingerprint_catches_direct_low_level_change (0.00s)
+        notes_edit_test.go:136: open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/notes.pptx: no such file or directory
+--- FAIL: TestMultilineNotesEdges (0.00s)
+    --- FAIL: TestMultilineNotesEdges/self-closing_text_fill (0.00s)
+        notes_lines_test.go:36: open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/notes.pptx: no such file or directory
+    --- FAIL: TestMultilineNotesEdges/single_leaf_edge_whitespace_enables_preservation (0.00s)
+        notes_lines_test.go:50: open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/notes.pptx: no such file or directory
+    --- FAIL: TestMultilineNotesEdges/first_run_no_format_never_borrows_second_run (0.00s)
+        notes_lines_test.go:79: open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/notes.pptx: no such file or directory
+    --- FAIL: TestMultilineNotesEdges/template_shape_and_child_values_survive (0.00s)
+        notes_lines_test.go:108: open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/notes.pptx: no such file or directory
+--- FAIL: TestPresentation_MastersAndLayouts (0.00s)
+    presentation_test.go:81: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/comments.pptx: no such file or directory
+--- FAIL: TestAdvancedPartsRoundTrip (0.00s)
+    presentation_test.go:454: open resource: open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/pptx/images.pptx: no such file or directory
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/pkg/presentation	0.216s
+--- FAIL: TestFixtureRoundTrip_Complex (0.00s)
+    --- FAIL: TestFixtureRoundTrip_Complex/minimal.xlsx (0.00s)
+        fixture_roundtrip_test.go:314: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/minimal.xlsx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/single_cell.xlsx (0.00s)
+        fixture_roundtrip_test.go:314: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/single_cell.xlsx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/data_types.xlsx (0.00s)
+        fixture_roundtrip_test.go:314: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/data_types.xlsx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/formatting.xlsx (0.00s)
+        fixture_roundtrip_test.go:314: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/formatting.xlsx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/multiple_sheets.xlsx (0.00s)
+        fixture_roundtrip_test.go:314: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/multiple_sheets.xlsx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/tables.xlsx (0.00s)
+        fixture_roundtrip_test.go:314: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/tables.xlsx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/merged_cells.xlsx (0.00s)
+        fixture_roundtrip_test.go:314: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/merged_cells.xlsx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/named_ranges.xlsx (0.00s)
+        fixture_roundtrip_test.go:314: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/named_ranges.xlsx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/comments.xlsx (0.00s)
+        fixture_roundtrip_test.go:314: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/comments.xlsx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/formulas.xlsx (0.00s)
+        fixture_roundtrip_test.go:314: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/formulas.xlsx: no such file or directory
+    --- FAIL: TestFixtureRoundTrip_Complex/conditional_format.xlsx (0.00s)
+        fixture_roundtrip_test.go:314: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/conditional_format.xlsx: no such file or directory
+--- FAIL: TestAdvancedPartsRoundTrip (0.00s)
+    spreadsheet_test.go:699: open resource: open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/formatting.xlsx: no such file or directory
+--- FAIL: TestFixtureRoundTrip_Formatting (0.00s)
+    spreadsheet_test.go:717: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/formatting.xlsx: no such file or directory
+--- FAIL: TestFixtureRoundTrip_Formulas (0.00s)
+    spreadsheet_test.go:742: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/formulas.xlsx: no such file or directory
+--- FAIL: TestFixtureRoundTrip_ConditionalFormatting (0.00s)
+    spreadsheet_test.go:767: Open() error = open /workspace/tmp/missing-ooxml-reference-checkout/fixtures/go-current/testdata/excel/conditional_format.xlsx: no such file or directory
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/pkg/spreadsheet	0.089s
+ok  	github.com/rcarmo/go-ooxml/pkg/utils	(cached)
+?   	github.com/rcarmo/go-ooxml/tools/casefold	[no test files]
+ok  	github.com/rcarmo/go-ooxml/tools/retired-inventory	(cached)
+FAIL
+make: *** [Makefile:48: test] Error 1

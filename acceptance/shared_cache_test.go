@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"encoding/xml"
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -17,11 +18,7 @@ import (
 // from Godog inventory and not a schema2 cross-runtime outcome until that adapter
 // is implemented. Every observable assertion is checked against actual output.
 func TestSharedCacheInvalidation(t *testing.T) {
-	root := os.Getenv("OOXML_SHARED_PACK")
-	if root == "" {
-		t.Log("shared native cache execution not requested")
-		return
-	}
+	root := testutil.ReferencePath("shared", "v2", "pack")
 	if _, err := pinnedFile(root, "pack-manifest.json", sharedPackHash); err != nil {
 		t.Fatal(err)
 	}

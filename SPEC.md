@@ -1955,3 +1955,10 @@ AllowedValues caps literal lists at the same 100000 positions as static ranges.
 Unknown declared validation types refuse; an omitted type defaults to none.
 Stored numbers require finite decimal/exponent spelling; Go hexadecimal and
 underscore numeric spellings refuse. Signed decimals retain their stored text.
+
+Native tests read shared assets from `references/fixtures-ooxml`; the explicit
+`OOXML_FIXTURES_ROOT` override supports a candidate distribution before tag freeze.
+Missing inputs fail; tests do not fall back to local testdata or opt out. Outputs
+remain consumer-local, with generated-output guards against shared-root writes.
+The code-free V2 distribution seal is separate from its retained workflow IDs and
+fixture hashes. Final common submodule/tag installation awaits coordination.

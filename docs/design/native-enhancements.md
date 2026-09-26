@@ -653,3 +653,12 @@ Full library/acceptance and formula/XML/package/all-format/acceptance races pass
 with the existing opt-in reference inputs after072-075.291 native cases pass;
 20 planned plus one external remain unrun. Central shared-reference migration
 awaits a common manifest/tag. No history rewrite or publication has occurred.
+
+### Increment077: central reference consumer preparation
+
+All native fixture readers use a single shared-reference root; generated outputs
+stay under local artifacts and refuse shared-root/symlink descendants. Default
+shared/notes checks are mandatory. Both modules pass against the draft,291 native
+cases; a missing-root batch fails. No tag/gitlink or history rewrite yet. Native
+Go-only Gherkin remains local; shared workflows and future fact ingestion use the
+central distribution. reports/batches/077.md records partial-run and byte audits.

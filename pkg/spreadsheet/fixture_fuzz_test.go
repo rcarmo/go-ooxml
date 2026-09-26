@@ -64,5 +64,5 @@ func FuzzSpreadsheetFixtureMutation(f *testing.F) {
 }
 
 func fixturePath(name string) string {
-	return filepath.Join("..", "..", "testdata", "excel", name)
+	return testutil.FixturePath("excel", name)
 }

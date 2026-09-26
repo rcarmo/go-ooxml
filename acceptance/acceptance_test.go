@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -59,7 +60,7 @@ func (w *world) fixture(name string) error {
 	if !filepath.IsLocal(name) {
 		return fmt.Errorf("unsafe fixture %q", name)
 	}
-	data, err := os.ReadFile(filepath.Join("..", "testdata", name))
+	data, err := os.ReadFile(testutil.FixturePath(name))
 	if err != nil {
 		return err
 	}

@@ -696,7 +696,7 @@ func TestRoundTrip(t *testing.T) {
 }
 
 func TestAdvancedPartsRoundTrip(t *testing.T) {
-	orig := testutil.OpenResource(t, Open, filepath.Join("..", "..", "testdata", "excel", "formatting.xlsx"))
+	orig := testutil.OpenResource(t, Open, testutil.FixturePath("excel", "formatting.xlsx"))
 
 	tmpDir := t.TempDir()
 	path := filepath.Join(tmpDir, "advanced-roundtrip.xlsx")
@@ -712,7 +712,7 @@ func TestAdvancedPartsRoundTrip(t *testing.T) {
 }
 
 func TestFixtureRoundTrip_Formatting(t *testing.T) {
-	orig, err := Open(filepath.Join("..", "..", "testdata", "excel", "formatting.xlsx"))
+	orig, err := Open(testutil.FixturePath("excel", "formatting.xlsx"))
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}
@@ -737,7 +737,7 @@ func TestFixtureRoundTrip_Formatting(t *testing.T) {
 }
 
 func TestFixtureRoundTrip_Formulas(t *testing.T) {
-	orig, err := Open(filepath.Join("..", "..", "testdata", "excel", "formulas.xlsx"))
+	orig, err := Open(testutil.FixturePath("excel", "formulas.xlsx"))
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}
@@ -762,7 +762,7 @@ func TestFixtureRoundTrip_Formulas(t *testing.T) {
 }
 
 func TestFixtureRoundTrip_ConditionalFormatting(t *testing.T) {
-	orig, err := Open(filepath.Join("..", "..", "testdata", "excel", "conditional_format.xlsx"))
+	orig, err := Open(testutil.FixturePath("excel", "conditional_format.xlsx"))
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}

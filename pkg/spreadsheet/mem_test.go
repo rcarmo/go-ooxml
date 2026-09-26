@@ -2,20 +2,12 @@ package spreadsheet
 
 import (
 	"bytes"
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"os"
-	"path/filepath"
-	"runtime"
 	"testing"
 )
 
-func memFixturePath(name string) string {
-	_, filename, _, ok := runtime.Caller(0)
-	if !ok {
-		return filepath.Join("..", "..", "testdata", "excel", name)
-	}
-	root := filepath.Join(filepath.Dir(filename), "..", "..")
-	return filepath.Join(root, "testdata", "excel", name)
-}
+func memFixturePath(name string) string { return testutil.FixturePath("excel", name) }
 
 func TestWorkbookOpenReader_MemProfile(t *testing.T) {
 	if os.Getenv("ENABLE_MEMPROFILE") == "" {

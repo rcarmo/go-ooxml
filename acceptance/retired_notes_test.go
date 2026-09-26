@@ -3,6 +3,7 @@ package acceptance
 import (
 	"bytes"
 	"encoding/xml"
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -15,11 +16,7 @@ import (
 // Explicitly requested read-only source fixture checks; no Python runtime or
 // fixture redistribution. Missing/hash-mismatched inputs fail requested runs.
 func TestRetiredNotesFixtures(t *testing.T) {
-	root := os.Getenv("OOXML_RETIRED_NOTES_ROOT")
-	if root == "" {
-		t.Log("extended notes fixture run not requested")
-		return
-	}
+	root := testutil.ReferencePath("reference-assets", "pptx")
 	observations := []map[string]any{}
 	for _, f := range []struct{ path, sha string }{{"[retired external test identity]", "72f375efdbecdb8b95adf37c8fc753ec5416b4353b48bad8f6b89c0dedb74abf"}, {"[retired external test identity]", "a4ce1dae2558ced03ea5df2a415c32b57c9a10a0eedc8a1bfd60e588ee7cbf98"}} {
 		t.Run(f.path, func(t *testing.T) {

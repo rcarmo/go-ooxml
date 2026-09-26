@@ -1,10 +1,10 @@
 package spreadsheet
 
 import (
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"path/filepath"
 	"testing"
 	"time"
-
 )
 
 type spreadsheetFixtureCase struct {
@@ -388,5 +388,5 @@ func cellAlignment(sheet Worksheet, ref string) (Alignment, Alignment) {
 }
 
 func fixtureRoundTripPath(name string) string {
-	return filepath.Join("..", "..", "testdata", "excel", name)
+	return testutil.FixturePath("excel", name)
 }

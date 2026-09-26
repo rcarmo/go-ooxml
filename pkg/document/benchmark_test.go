@@ -3,20 +3,13 @@ package document
 import (
 	"bytes"
 	"fmt"
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"os"
 	"path/filepath"
-	"runtime"
 	"testing"
 )
 
-func benchmarkFixturePath(name string) string {
-	_, filename, _, ok := runtime.Caller(0)
-	if !ok {
-		return filepath.Join("..", "..", "testdata", "word", name)
-	}
-	root := filepath.Join(filepath.Dir(filename), "..", "..")
-	return filepath.Join(root, "testdata", "word", name)
-}
+func benchmarkFixturePath(name string) string { return testutil.FixturePath("word", name) }
 
 func BenchmarkDocumentOpenReader(b *testing.B) {
 	data, err := os.ReadFile(benchmarkFixturePath("minimal.docx"))

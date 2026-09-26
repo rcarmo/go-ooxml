@@ -76,7 +76,7 @@ func TestPresentation_CoreProperties(t *testing.T) {
 }
 
 func TestPresentation_MastersAndLayouts(t *testing.T) {
-	p, err := Open(filepath.Join("..", "..", "testdata", "pptx", "comments.pptx"))
+	p, err := Open(testutil.FixturePath("pptx", "comments.pptx"))
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}
@@ -451,7 +451,7 @@ func TestRoundTrip(t *testing.T) {
 }
 
 func TestAdvancedPartsRoundTrip(t *testing.T) {
-	orig := testutil.OpenResource(t, Open, filepath.Join("..", "..", "testdata", "pptx", "images.pptx"))
+	orig := testutil.OpenResource(t, Open, testutil.FixturePath("pptx", "images.pptx"))
 
 	tmpDir := t.TempDir()
 	path := filepath.Join(tmpDir, "advanced-roundtrip.pptx")

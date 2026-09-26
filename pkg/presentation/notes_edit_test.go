@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -13,7 +14,7 @@ import (
 
 func openNotesFixture(t *testing.T) (*EditSession, []byte) {
 	t.Helper()
-	data, err := os.ReadFile("../../testdata/pptx/notes.pptx")
+	data, err := os.ReadFile(testutil.FixturePath("pptx", "notes.pptx"))
 	if err != nil {
 		t.Fatal(err)
 	}
