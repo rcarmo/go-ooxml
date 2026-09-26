@@ -2,10 +2,12 @@ package acceptance
 
 import (
 	"bytes"
+	"encoding/xml"
 	"os"
 	"path/filepath"
 	"testing"
 
+	"github.com/rcarmo/go-ooxml/internal/losslessxml"
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
 	"github.com/rcarmo/go-ooxml/pkg/presentation"
 )
@@ -76,6 +78,16 @@ func TestRetiredNotesFixtures(t *testing.T) {
 					t.Fatal("unrelated payload changed", name)
 				}
 			}
+			unchangedShapes := otherNotesShapes(t, before[part])
+			afterShapes := otherNotesShapes(t, after[part])
+			if len(unchangedShapes) != len(afterShapes) {
+				t.Fatal("other notes shapes inventory changed")
+			}
+			for i, b := range unchangedShapes {
+				if !bytes.Equal(b, afterShapes[i]) {
+					t.Fatal("other notes placeholder bytes changed")
+				}
+			}
 			reopened, err := presentation.OpenEditing(output, packaging.Limits{})
 			if err != nil {
 				t.Fatal(err)
@@ -107,7 +119,7 @@ func TestRetiredNotesFixtures(t *testing.T) {
 			if err != nil || !bytes.Equal(source, sourceNow) {
 				t.Fatal("source fixture changed", err)
 			}
-			observations = append(observations, map[string]any{"path": f.path, "sha256": f.sha, "initialText": n.Text(), "multilineReadback": got.Text(), "emptyReadback": emptyNotes.Text(), "changedParts": receipt.Changes, "sourceUnchanged": true, "noOpByteIdentical": true, "otherPayloadsExact": true, "outputSHA256": sha256hex(output)})
+			observations = append(observations, map[string]any{"path": f.path, "sha256": f.sha, "initialText": n.Text(), "multilineReadback": got.Text(), "emptyReadback": emptyNotes.Text(), "changedParts": receipt.Changes, "sourceUnchanged": true, "noOpByteIdentical": true, "otherPayloadsExact": true, "otherPlaceholdersExact": true, "otherPlaceholderCount": len(unchangedShapes), "outputSHA256": sha256hex(output)})
 		})
 	}
 	dir := os.Getenv("OOXML_REPORT_DIR")
@@ -118,4 +130,43 @@ func TestRetiredNotesFixtures(t *testing.T) {
 		t.Fatal(err)
 	}
 	writeJSON(t, filepath.Join(dir, "retired-notes-readback.json"), map[string]any{"schema": 1, "sourceRevision": "[retired implementation revision]", "subject": "native-library", "transport": "none", "observations": observations, "pythonExecuted": false, "officeExecuted": false})
+}
+
+func otherNotesShapes(t *testing.T, data []byte) [][]byte {
+	t.Helper()
+	doc, err := losslessxml.Parse(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var result [][]byte
+	for _, shape := range doc.Elements() {
+		if shape.Name() != (xml.Name{Space: packaging.NSPresentationML, Local: "sp"}) {
+			continue
+		}
+		body := false
+		for _, e := range doc.Elements() {
+			if e.Name() != (xml.Name{Space: packaging.NSPresentationML, Local: "ph"}) {
+				continue
+			}
+			inside := false
+			for p, ok := e.Parent(); ok; p, ok = p.Parent() {
+				if p == shape {
+					inside = true
+					break
+				}
+			}
+			if !inside {
+				continue
+			}
+			for _, a := range e.Attributes() {
+				if a.Name == (xml.Name{Local: "type"}) && a.Value == "body" {
+					body = true
+				}
+			}
+		}
+		if !body {
+			result = append(result, shape.Raw())
+		}
+	}
+	return result
 }
