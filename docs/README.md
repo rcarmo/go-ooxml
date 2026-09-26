@@ -1,56 +1,38 @@
-# ECMA-376 Office Open XML Specification
+## Documentation and specification references
 
-This directory contains the official ECMA-376 specification documents for Office Open XML (OOXML).
+Start with [shared-reference testing](testing.md) for fixture-ID lookup, candidate
+versus released pins, batched commands and integrity checks. The native editing
+subsets and their limits are in [native-enhancements.md](design/native-enhancements.md).
+[Behaviour catalogue staging](behaviors/README.md) tracks unfinished reconciliation
+with the single central behaviour registry.
 
-## Files
+## Standards material
 
-| File | Description | Size |
-|------|-------------|------|
-| `ECMA-376-Part1-Fundamentals.pdf` | Fundamentals and Markup Language Reference (5th Edition, Dec 2016) | ~34 MB |
-| `ECMA-376-Part2-OpenPackagingConventions.pdf` | Open Packaging Conventions (5th Edition, Dec 2021) | ~2 MB |
+The ECMA-376 documents and extracts below are specification references, not a
+statement that this implementation conforms to every listed rule. Keep normative
+citations and required notices intact when editing project documentation.
 
-## Derived References
+| File | Material |
+| --- | --- |
+| `ECMA-376-Part1-Fundamentals.pdf` | Fundamentals and markup-language reference, fifth edition |
+| `ECMA-376-Part2-OpenPackagingConventions.pdf` | OPC, fifth edition |
+| [ECMA-376-Phase3-Reference.md](ECMA-376-Phase3-Reference.md) | Extracts covering revisions, comments, styles, headers and footers |
+| [ECMA-376-WML-Phase3.md](ECMA-376-WML-Phase3.md) | WordprocessingML extracts |
+| [ECMA-376-Part2-OPC.md](ECMA-376-Part2-OPC.md) | OPC relationships, content types and properties extracts |
+| [FIT-GAP-ANALYSIS.md](FIT-GAP-ANALYSIS.md) | Historical January 2026 feature assessment; percentages are not current measured coverage |
+| [ROUNDTRIP-TESTS.md](ROUNDTRIP-TESTS.md) | Native fixture round-trip assertion catalogue |
 
-- `ECMA-376-Phase3-Reference.md` - Focused Phase 3 excerpts (track changes, comments, styles, headers/footers).
-- `ECMA-376-WML-Phase3.md` - WordprocessingML Phase 3 quick reference.
-- `ECMA-376-Part2-OPC.md` - Extracted OPC sections (relationships, content types, core properties).
-- `FIT-GAP-ANALYSIS.md` - Feature coverage table vs ECMA-376.
-- `ROUNDTRIP-TESTS.md` - Summary of complex round-trip fixture tests.
+The standard also includes Part 3, Markup Compatibility and Extensibility, and
+Part 4, Transitional Migration Features. Neither is bundled here. Legacy markup
+can still occur in real files; absence from these documents is not permission to
+discard it during retained-source edits.
 
-## Parts Overview
+Specification sources: [Ecma International](https://ecma-international.org/publications-and-standards/standards/ecma-376/)
+and the [ECMA-376 fifth-edition mirror](https://github.com/QtExcel/ecma-376-5th).
+The specification documents are © Ecma International. Vendor reference material
+is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-The ECMA-376 standard consists of 4 parts:
-
-1. **Part 1 - Fundamentals and Markup Language Reference** ✅ (included)
-   - Core XML schemas for WordprocessingML, SpreadsheetML, PresentationML
-   - Element and attribute definitions
-   - ~5000 pages of reference material
-
-2. **Part 2 - Open Packaging Conventions (OPC)** ✅ (included)
-   - ZIP-based container format
-   - Relationships and content types
-   - Digital signatures
-
-3. **Part 3 - Markup Compatibility and Extensibility**
-   - Rules for versioning and extensibility
-   - Not included (less critical for implementation)
-
-4. **Part 4 - Transitional Migration Features**
-   - Legacy compatibility features
-   - Not included (deprecated features)
-
-## Quick Reference
-
-For quick lookups during development, use:
-- **[officeopenxml.com](http://officeopenxml.com/)** - User-friendly element reference
-- **[Microsoft Open XML SDK docs](https://learn.microsoft.com/en-us/office/open-xml/)** - API examples
-
-## Source
-
-Downloaded from:
-- Part 1: [GitHub mirror (QtExcel/ecma-376-5th)](https://github.com/QtExcel/ecma-376-5th)
-- Part 2: [ECMA International](https://ecma-international.org/publications-and-standards/standards/ecma-376/)
-
-## License
-
-ECMA-376 is a royalty-free standard. The specification documents are © Ecma International.
+Batch reports under `../reports/batches/` record past commands and outcomes.
+They are historical evidence, not current release status. Shared fixtures,
+provenance/licences, facts and canonical workflows belong to the pinned
+`fixtures-ooxml` checkout; this directory does not mirror their source inventories.

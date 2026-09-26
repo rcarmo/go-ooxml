@@ -1,7 +1,11 @@
 # Go OOXML Library Specification
 
 **Version:** 1.0  
-**Status:** IMPLEMENTATION COMPLETE (Phases 1-5)  
+**Status:** Historical Phases 1-5 milestone; native enhancement and canonical behaviour reconciliation incomplete.
+
+Current verification, grouped schema2 fixtures and candidate/release setup are
+documented in [docs/testing.md](docs/testing.md). Totals and phase tables below
+are historical design records, not a current test inventory or release claim.
 **Created:** January 29, 2026  
 **Updated:** January 2026  
 **Purpose:** Actionable specification for building a Go OOXML manipulation library
@@ -204,7 +208,7 @@ github.com/[org]/ooxml-go/
 │   └── xmlutil/                     # Internal XML utilities
 │       └── namespace.go            # Namespace handling
 │
-└── testdata/                        # Test fixtures
+└── references/fixtures-ooxml/       # Shared manifest, grouped inputs and workflows
     ├── word/
     │   ├── simple.docx
     │   ├── with_tables.docx
@@ -1208,106 +1212,29 @@ func TestParagraph_SetStyle(t *testing.T) {
 
 ### 7.3 Fixture Requirements
 
-> [!WARNING]
-> Do NOT create test fixtures programmatically when real Office documents will behave differently. Create fixtures in actual Office applications and commit them.
+All reusable documents/media resolve by fixture ID through the shared schema2
+manifest. Physical inputs use one file per SHA under
+`fixtures/<format>/<scenarioGroup>/`. Native labels map to IDs in
+`internal/testutil/fixture_ids.go`; no source-origin trees or compatibility
+symlinks are part of the consumer contract. Required provenance and licences
+remain in shared metadata. Some inputs are owned generated archives with qualified
+provenance; do not infer a producer version where it was not recorded.
 
-**Fixture Status:** ⚠️ Currently using programmatic fixtures. See `testdata/FIXTURES.md` for checklist of needed real Office fixtures.
-
-**Required Fixture Files:**
-
-```
-testdata/
-├── word/
-│   ├── minimal.docx              # Empty doc, just body
-│   ├── single_paragraph.docx     # One paragraph, no formatting
-│   ├── formatted_text.docx       # Bold, italic, underline, colors
-│   ├── headings.docx             # All heading levels 1-9
-│   ├── simple_table.docx         # 3x3 table, no merged cells
-│   ├── complex_table.docx        # Merged cells, nested tables
-│   ├── track_changes.docx        # Insertions and deletions
-│   ├── comments.docx             # Multiple comments with replies
-│   ├── styles.docx               # Custom styles applied
-│   ├── headers_footers.docx      # Different first page, odd/even
-│   ├── sdt_content_controls.docx # Content controls/placeholders
-│   ├── numbered_list.docx        # Numbered list items
-│   └── bullet_list.docx          # Bullet list items
-│
-├── excel/
-│   ├── minimal.xlsx              # Empty workbook, one sheet
-│   ├── single_cell.xlsx          # One cell with value
-│   ├── data_types.xlsx           # String, number, date, boolean, formula
-│   ├── formatting.xlsx           # Colors, fonts, borders
-│   ├── multiple_sheets.xlsx      # Three sheets with data
-│   ├── tables.xlsx               # Excel tables
-│   ├── merged_cells.xlsx         # Merged cell regions
-│   ├── named_ranges.xlsx         # Named ranges
-│   ├── comments.xlsx             # Cell comments
-│   ├── formulas.xlsx             # Various formulas
-│   └── conditional_format.xlsx   # Conditional formatting
-│
-└── pptx/
-    ├── minimal.pptx              # Single blank slide
-    ├── title_slide.pptx          # Title layout slide
-    ├── bullet_points.pptx        # Slide with bullets
-    ├── shapes.pptx               # Various shape types
-    ├── tables.pptx               # Table on slide
-    ├── images.pptx               # Embedded images
-    ├── notes.pptx                # Slides with notes
-    ├── comments.pptx             # Slide comments
-    ├── hidden_slides.pptx        # Mix of visible/hidden
-    ├── multiple_masters.pptx     # Multiple slide masters
-    └── layouts.pptx              # All standard layouts
-```
+The shared root and pin must match. Release checks require the annotated tag and
+commit; candidate checks require explicit root/pin overrides and grant no release
+status. Full tracked-byte and clean-checkout verification includes facts/workflows
+outside the asset manifest. See [docs/testing.md](docs/testing.md).
 
 ### 7.4 Round-Trip Test Pattern
 
-```go
-// Example: pkg/document/roundtrip_test.go
+Resolve an input ID, open it, record the semantic expectations, save a private edit
+to `t.TempDir()`, reopen and assert those expectations and the permitted part
+budget. Use ordinary Go test assertions in runtime-module tests. Keep retained
+source-custody assertions separate from mutable authoring round trips. Generated
+E2E archives belong in local `artifacts/generated`, never shared references.
 
-func TestDocument_RoundTrip(t *testing.T) {
-    fixtures := []string{
-        "testdata/word/minimal.docx",
-        "testdata/word/formatted_text.docx",
-        "testdata/word/track_changes.docx",
-        // ... all fixtures
-    }
-    
-    for _, fixture := range fixtures {
-        t.Run(filepath.Base(fixture), func(t *testing.T) {
-            // Read original
-            original, err := os.ReadFile(fixture)
-            require.NoError(t, err)
-            
-            // Open document
-            doc, err := document.Open(fixture)
-            require.NoError(t, err)
-            
-            // Save to temp file
-            tmpFile := t.TempDir() + "/output.docx"
-            err = doc.SaveAs(tmpFile)
-            require.NoError(t, err)
-            doc.Close()
-            
-            // Re-open and verify structure preserved
-            doc2, err := document.Open(tmpFile)
-            require.NoError(t, err)
-            defer doc2.Close()
-            
-            // Compare paragraph count
-            assert.Equal(t, len(doc.Paragraphs()), len(doc2.Paragraphs()))
-            
-            // Compare table count
-            assert.Equal(t, len(doc.Tables()), len(doc2.Tables()))
-            
-            // Verify it can be opened by asserting no errors on content access
-            for i, para := range doc2.Paragraphs() {
-                _ = para.Text() // Should not panic
-                assert.NotEmpty(t, para.Style(), "paragraph %d should have style", i)
-            }
-        })
-    }
-}
-```
+`docs/ROUNDTRIP-TESTS.md` lists the existing native fixture assertion families.
+They are not evidence that every combination or external producer has been tested.
 
 ### 7.5 End-to-End Tests
 
@@ -1608,7 +1535,7 @@ pkg/document/
 ├── document_integration_test.go  # Integration tests (build tag)
 ├── paragraph.go
 ├── paragraph_test.go
-├── testdata/                  # Package-specific test helpers
+├── internal/testutil/         # Package-specific test helpers
 │   └── helpers.go
 ```
 
@@ -1961,4 +1888,4 @@ Native tests read shared assets from `references/fixtures-ooxml`; the explicit
 Missing inputs fail; tests do not fall back to local testdata or opt out. Outputs
 remain consumer-local, with generated-output guards against shared-root writes.
 The code-free V2 distribution seal is separate from its retained workflow IDs and
-fixture hashes. Final common submodule/tag installation awaits coordination.
+fixture hashes. The schema2 migration currently requires an explicit candidate root and pin; the tracked older release does not satisfy the new helper. See docs/testing.md for the exact status.

@@ -7,7 +7,8 @@ Use the Makefile for all standard operations:
 ```bash
 make help          # Show all available targets
 make build-all     # Full build (clean + deps + lint + test + build)
-make test          # Run all tests
+GOMAXPROCS=2 make test-batch  # Root and acceptance modules after reference setup
+make test          # Root module only
 make coverage      # Run tests with coverage
 make lint          # Run golangci-lint
 make format        # Format code with gofumpt
@@ -20,13 +21,14 @@ If you need a new workflow step, add a Make target rather than running ad-hoc co
 
 ## CI/CD Convention
 
-CI should call `make check` (or `make lint` + `make test` if `check` is unavailable).
+CI should call lint plus `GOMAXPROCS=2 make test-batch`; root `go test ./...`
+does not discover the separate acceptance module. Read `docs/testing.md` for
+candidate/released reference setup before running either module.
 
-For targeted tests, use `go test` directly:
+Run related package batches with bounded concurrency; do not run individual tests:
 
 ```bash
-go test -v ./pkg/document -run TestParagraph_SetText   # Single test
-go test -v ./pkg/spreadsheet -run TestCell             # Tests matching pattern
+GOMAXPROCS=2 go test -p 2 ./pkg/document ./pkg/packaging
 ```
 
 ## Architecture
@@ -62,7 +64,8 @@ Go Standard Library (archive/zip, encoding/xml)
 ## Key Conventions
 
 ### Zero External Dependencies
-Use only Go standard library (`archive/zip`, `encoding/xml`, `io`, `path`). Do not add third-party dependencies.
+Runtime packages use only the Go standard library (`archive/zip`, `encoding/xml`,
+`io`, `path`). Test-only Godog/Gherkin dependencies are isolated in `acceptance/`.
 
 ### Consistent Document Lifecycle
 All document types follow the same pattern:
@@ -119,4 +122,12 @@ Custom error types are defined in `pkg/utils/errors.go` and `pkg/spreadsheet/err
 
 ## Test Fixtures
 
-Test files are in `testdata/`. See `testdata/FIXTURES.md` for the fixture documentation. When testing document manipulation, prefer round-trip tests: Open → Modify → Save → Re-open → Verify.
+Resolve fixture IDs through the shared schema2 manifest. The only physical input
+root is the shared checkout's `fixtures/<format>/<scenarioGroup>/`; paths belong
+to manifest records, not hard-coded origin trees. Required licence/provenance data
+stays in that repository. Do not copy fixtures or add compatibility symlinks.
+
+See `docs/testing.md` for the exact candidate/released pin rules and clean-checkout
+verification. Outputs belong in temporary directories or local `artifacts`; never
+write to references. Keep native semantic assertions and use round trips where
+appropriate. Local catalogue files are staging for the central canonical registry.

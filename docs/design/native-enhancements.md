@@ -30,25 +30,31 @@ regression IDs. It contains explicit limits, not a completeness score.
 
 ## Shared references
 
-Every consumer uses the annotated `v0.1.1` tag of `rcarmo/fixtures-ooxml` at
-`references/fixtures-ooxml`. `spec/reference-distribution.json` pins the commit,
-tag object, manifests and inventory counts. Native tests verify all pinned
-assets and shared fact/workflow links. Only locally executed assertions earn
-execution credit; shared planned cases and sibling outcomes remain separate.
+The target layout is one shared schema2 manifest and grouped
+`fixtures/<format>/<scenarioGroup>/` inputs. Native labels resolve fixture IDs;
+physical files are deduplicated by SHA-256. `spec/reference-distribution.json`
+records the commit, annotated release tag and seals once the coordinated release
+is installed. The tracked `v0.1.1` pin predates this layout; current checks require
+the explicit grouped candidate pin/root described in `../testing.md`.
+
+Tests verify the pinned full tracked tree, checkout identity, seals and shared
+fact/workflow links. Only locally executed assertions earn execution credit;
+planned cases and sibling outcomes remain separate.
 
 The shared checkout is read-only. Generated archives go to consumer-local
 `artifacts/generated` or temporary directories. Fixture readers never fall back
-to legacy local copies. `OOXML_FIXTURES_ROOT` selects an explicit candidate root;
-a candidate must still match the pinned distribution. Missing inputs fail.
+to legacy local copies. Candidate checks require both `OOXML_FIXTURES_ROOT` and
+`OOXML_REFERENCE_PIN`; exact candidate HEAD/seals and clean tracked bytes are
+required without claiming an annotated release. Missing inputs fail.
 
 ## Verification and limits
 
-Batch076 passed full library/acceptance and bounded formula/XML/package/all-format
-and acceptance races after validation changes. Batches077-078 migrated fixture
-readers and checked shared facts with291 native Gherkin cases passing. The cutover
-batch rechecks both modules with the installed submodule and verifies a recursive
-clone. Historical reports retain native measured results; removed implementation
-references are marked where applicable.
+The full grouped-candidate library/acceptance batch and helper race checks pass
+with 291 native Gherkin cases; 20 planned and one external case remain unrun.
+See `../../reports/batches/089.md` for commands and scope. Final default-release
+repinning and recursive-clone verification still await the common release.
+Historical reports retain original measured results, with sanitised implementation
+citations marked as historical. No removed inventory row becomes completed work.
 
 No live Office calculation/rendering, schema certification or complete enhancement
 family coverage is established. The extended-comment MIME discrepancy is recorded
