@@ -1,0 +1,319 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "spreadsheet-parameters-candidates.feature",
+  "native_prefix": "pkg/spreadsheet/",
+  "native_files": [
+    "pkg/spreadsheet/parameterized_test.go"
+  ],
+  "source_revision": "f510bab7c98a01408499f1df96e4ba8ba22354a0",
+  "inventory_observation_revision": "ec71b6cf4c6ac8bebec49ee195ac64520b104be9",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "helper_sources": [
+    {
+      "path": "internal/testutil/testutil.go",
+      "source_sha256": "e5051ec7d9c9b109996d712404c70c3091e3cffa5619c63d3913d032df9a2b4c",
+      "aspects": [
+        "RequireNoError fatal on nonnil",
+        "AssertEqual uses exact interface inequality for scalar values",
+        "AssertTrue requires true",
+        "CommonCellRefCases: nine rows, two WantErr excluded by the caller",
+        "CommonRangeCases: five rows, no WantErr",
+        "CommonNumericCases: six float64 rows",
+        "CommonStringCases: eight rows reused by two declarations; WantOK unused"
+      ]
+    }
+  ],
+  "mappings": [
+    {
+      "native_id": "pkg/spreadsheet/parameterized_test.go::TestFixtures_RoundTrip",
+      "source_sha256": "c268b52ce267d5c95877e659f739c28339e202041406ec1f4f418a9f6e12df96",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-parameters-001"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 122,
+          "expression": "fixture.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "CommonFixtures",
+        "count": 9,
+        "selected_count": 9,
+        "excluded_count": 0
+      },
+      "notes": "New, SaveAs and Open errors required nil; count captured before saving. Nine setup rows include payload/formula/merge/table/hidden data with no semantic readback beyond sheet count. Setup SetValue/SetFormula/MergeCells/UpdateRow/AddRow and SheetRaw errors ignored; all Close errors ignored."
+    },
+    {
+      "native_id": "pkg/spreadsheet/parameterized_test.go::TestCellValueTypes_Parameterized",
+      "source_sha256": "c268b52ce267d5c95877e659f739c28339e202041406ec1f4f418a9f6e12df96",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-parameters-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 166,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "valueTypeCases",
+        "count": 7,
+        "selected_count": 7,
+        "excluded_count": 0
+      },
+      "notes": "Seven Go value/type rows compare Type only. New and SetValue errors ignored; no exact value or save assertion."
+    },
+    {
+      "native_id": "pkg/spreadsheet/parameterized_test.go::TestCellReferences_Parameterized",
+      "source_sha256": "c268b52ce267d5c95877e659f739c28339e202041406ec1f4f418a9f6e12df96",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-parameters-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 189,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "testutil.CommonCellRefCases",
+        "count": 9,
+        "selected_count": 7,
+        "excluded_count": 2
+      },
+      "notes": "WantErr rows invalid and empty continue before t.Run; no t.Skip or error-path assertion. Seven remaining rows require nonnil Cell and exact Row/Column. New error ignored."
+    },
+    {
+      "native_id": "pkg/spreadsheet/parameterized_test.go::TestRanges_Parameterized",
+      "source_sha256": "c268b52ce267d5c95877e659f739c28339e202041406ec1f4f418a9f6e12df96",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-parameters-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 215,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "testutil.CommonRangeCases",
+        "count": 5,
+        "selected_count": 5,
+        "excluded_count": 0
+      },
+      "notes": "WantErr exclusion branch exists but all five current rows are selected. Require nonnil Range and inclusive RowCount/ColumnCount only; origin/endpoints and invalid ranges not asserted."
+    },
+    {
+      "native_id": "pkg/spreadsheet/parameterized_test.go::TestNumericValues_Parameterized",
+      "source_sha256": "c268b52ce267d5c95877e659f739c28339e202041406ec1f4f418a9f6e12df96",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-parameters-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 241,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "testutil.CommonNumericCases",
+        "count": 6,
+        "selected_count": 6,
+        "excluded_count": 0
+      },
+      "notes": "All inputs are float64; Float64 must return nil error and exact Want via interface scalar equality. New/SetValue errors ignored; no type, formatting or persistence check."
+    },
+    {
+      "native_id": "pkg/spreadsheet/parameterized_test.go::TestStringValues_Parameterized",
+      "source_sha256": "c268b52ce267d5c95877e659f739c28339e202041406ec1f4f418a9f6e12df96",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-parameters-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 263,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "testutil.CommonStringCases",
+        "count": 8,
+        "selected_count": 8,
+        "excluded_count": 0
+      },
+      "notes": "Exact String equality including empty expected value. WantOK unused; New/SetValue errors ignored. No persistence or cell-type assertion."
+    },
+    {
+      "native_id": "pkg/spreadsheet/parameterized_test.go::TestStringValues_RoundTrip",
+      "source_sha256": "c268b52ce267d5c95877e659f739c28339e202041406ec1f4f418a9f6e12df96",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-parameters-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 284,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "testutil.CommonStringCases",
+        "count": 8,
+        "selected_count": 8,
+        "excluded_count": 0
+      },
+      "notes": "SaveAs required successful; New, SetValue, Open and Close errors ignored. Reopened first-sheet A1 String equals Want exactly, including empty. WantOK unused; no representation or unrelated-part check."
+    },
+    {
+      "native_id": "pkg/spreadsheet/parameterized_test.go::TestSheetOperations_Parameterized",
+      "source_sha256": "c268b52ce267d5c95877e659f739c28339e202041406ec1f4f418a9f6e12df96",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-parameters-008"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 323,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "sheetOpCases",
+        "count": 4,
+        "selected_count": 4,
+        "excluded_count": 0
+      },
+      "notes": "InitialCount drives setup only. Add-one/add-two/delete-name/delete-index result counts 2/3/2/2. New/DeleteSheet errors ignored. No names, order, identity or persistence assertions."
+    },
+    {
+      "native_id": "pkg/spreadsheet/parameterized_test.go::TestFormulas_Parameterized",
+      "source_sha256": "c268b52ce267d5c95877e659f739c28339e202041406ec1f4f418a9f6e12df96",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-parameters-009"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 367,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "formulaCases",
+        "count": 12,
+        "selected_count": 12,
+        "excluded_count": 0
+      },
+      "notes": "Exact Formula, true HasFormula and formula Type in memory. New/SetFormula errors ignored. Cross-sheet row never creates Sheet2; no parser/evaluation/cache/cross-sheet validity or persistence assertion."
+    },
+    {
+      "native_id": "pkg/spreadsheet/parameterized_test.go::TestRowHeight_Parameterized",
+      "source_sha256": "c268b52ce267d5c95877e659f739c28339e202041406ec1f4f418a9f6e12df96",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-parameters-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 402,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "rowHeightCases",
+        "count": 5,
+        "selected_count": 5,
+        "excluded_count": 0
+      },
+      "notes": "Height getter equals requested 10/15/20/30/50. New error ignored; no bounds or serialization assertion."
+    },
+    {
+      "native_id": "pkg/spreadsheet/parameterized_test.go::TestMergeCells_Parameterized",
+      "source_sha256": "c268b52ce267d5c95877e659f739c28339e202041406ec1f4f418a9f6e12df96",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-parameters-011"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 435,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "mergeCellCases",
+        "count": 5,
+        "selected_count": 5,
+        "excluded_count": 0
+      },
+      "notes": "Length equals one and first Reference equals input. Length assertion is nonfatal; first-element access follows unconditionally. New/MergeCells errors ignored; overlap/cell data/serialization unchecked."
+    },
+    {
+      "native_id": "pkg/spreadsheet/parameterized_test.go::TestDateValues_Parameterized",
+      "source_sha256": "c268b52ce267d5c95877e659f739c28339e202041406ec1f4f418a9f6e12df96",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-parameters-012"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 469,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "dateCases",
+        "count": 4,
+        "selected_count": 4,
+        "excluded_count": 0
+      },
+      "notes": "Four midnight UTC dates. Time error required nil; only Year/int(Month)/Day equality. New/SetValue errors ignored; no time-of-day/timezone/serial/date-system boundary or persistence check."
+    }
+  ],
+  "notes": "Twelve declarations and twelve candidate outcomes; 82 finite table-row uses, 80 selected and two excluded before subtest dispatch. CommonStringCases counts twice across two declarations. These are source counts, not measured runtime leaves or exhaustive matrix coverage. Setup loops add no declarations or outcomes. All Close errors are ignored; only TestFixtures_RoundTrip checks New and only its reopen checks Open errors. Scalar helper equality and error limitations remain explicit. Current source hash matches the frozen inventory; helper rows supplement its empty parameter_groups without refreshing the 404-declaration denominator. No canonical IDs, binding or execution credit; default v0.14 and protected v0.9 publication state unchanged."
+}
