@@ -187,7 +187,8 @@ func (s *EditSession) FindNumber(sheet, cell string) (*NumberTarget, error) {
 	}
 	return &NumberTarget{session: s, generation: s.generation, doc: d, element: values[0], part: part, hash: hash, text: text}, nil
 }
-func (s *EditSession) guard() error {
+func (s *EditSession) guard() error { return s.guardMode(false) }
+func (s *EditSession) guardMode(allowStaticFormulas bool) error {
 	if err := s.ValidateStyles(); err != nil {
 		return err
 	}
@@ -202,7 +203,7 @@ func (s *EditSession) guard() error {
 		}
 	}
 	for _, p := range g.Parts {
-		if strings.HasPrefix(p.Name, "xl/") && (strings.Contains(p.Name, "/charts/") || strings.Contains(p.Name, "/pivot") || strings.Contains(p.Name, "/external") || strings.Contains(p.Name, "/tables/") || strings.Contains(p.Name, "/connections")) {
+		if strings.HasPrefix(p.Name, "xl/") && (strings.Contains(p.Name, "/charts/") || strings.Contains(p.Name, "/pivot") || strings.Contains(p.Name, "/external") || strings.Contains(p.Name, "/tables/") || strings.Contains(p.Name, "/connections") || strings.EqualFold(p.Name, "xl/calcChain.xml")) {
 			return editRefusal("unsupported_structure", "unproved chart/pivot/table/external dependency")
 		}
 		isSheet := p.ContentType == packaging.ContentTypeWorksheet
@@ -221,6 +222,9 @@ func (s *EditSession) guard() error {
 		for _, local := range strings.Fields("workbook fileVersion workbookPr bookViews workbookView sheets sheet calcPr worksheet sheetPr tabColor outlinePr pageSetUpPr dimension sheetViews sheetView pane selection sheetFormatPr cols col sheetData row c v is t r rPr phoneticPr pageMargins pageSetup printOptions headerFooter oddHeader oddFooter evenHeader evenFooter firstHeader firstFooter sheetCalcPr") {
 			allowed[local] = true
 		}
+		if allowStaticFormulas {
+			allowed["f"] = true
+		}
 		for _, e := range d.Elements() {
 			n := e.Name()
 			for _, a := range e.Attributes() {
@@ -231,8 +235,11 @@ func (s *EditSession) guard() error {
 			if n.Space != packaging.NSSpreadsheetML {
 				return editRefusal("unsupported_structure", "unknown workbook/worksheet extension")
 			}
+			if n.Local == "f" && !allowStaticFormulas {
+				return editRefusal("unsupported_structure", "formulas require explicit cache invalidation")
+			}
 			switch n.Local {
-			case "f", "definedName", "definedNames", "dataValidation", "dataValidations", "conditionalFormatting", "mergeCells", "mergeCell", "tableParts", "drawing", "legacyDrawing", "extLst", "externalReferences", "pivotCaches", "calcChain", "oleObjects", "sheetProtection", "workbookProtection":
+			case "definedName", "definedNames", "dataValidation", "dataValidations", "conditionalFormatting", "mergeCells", "mergeCell", "tableParts", "drawing", "legacyDrawing", "extLst", "externalReferences", "pivotCaches", "calcChain", "oleObjects", "sheetProtection", "workbookProtection":
 				kind := "unsupported_structure"
 				if n.Local == "sheetProtection" || n.Local == "workbookProtection" {
 					kind = "protected_operation"

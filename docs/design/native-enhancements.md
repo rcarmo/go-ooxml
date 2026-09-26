@@ -448,3 +448,10 @@ bindings/default resets are checked across sibling boundaries. Batch038.
 A native lexer/parser recognises bounded A1/range dependencies, quoted sheets and a
 closed nonvolatile expression subset. Unknown syntax refuses without partial analysis;
 strings never become references. No formula calculation or remapping yet. Batch040.
+
+### Increment041: static dependency cache invalidation
+
+An explicit numeric edit traces static A1/range dependencies across sheets and cycles,
+clears affected cached values, and requests recalculation atomically with the input.
+No calculation; unrelated caches/metadata and no-op bytes remain untouched. Conservative
+unknown/volatile/shared/array/graph/protection refusals remain. Batch041; not X06/X07 completion.

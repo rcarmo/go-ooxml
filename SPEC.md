@@ -1845,3 +1845,14 @@ cellXfs entry. Empty/duplicate tables, mismatched counts, malformed/overflowing 
 out-of-range indices refuse without mutation. With no style part, only default
 zero is accepted. This is index integrity, not font/fill dependency closure or
 style-authoring parity. Shared-contract pack V2 motivated the regression.
+
+`spreadsheet.EditSession.SetNumberWithInvalidation(target, value)` is an explicit
+static-formula subset separate from the formula-free SetNumber contract. It fully
+preflights the workbook, traces same/cross-sheet A1/range references transitively,
+clears affected cached value text and requests calcMode=auto/fullCalcOnLoad/
+forceFullCalc in the same retained multi-part transaction. It never calculates.
+CalculationEffect reports applied changes/invalidation, not delivery. Unrelated
+caches/calculation metadata remain exact; numeric no-ops do not consume targets.
+Dynamic/UDF/shared/array/structured/unknown references, unlisted sheets, manual or
+iterative/precision-as-displayed modes, existing calcChain and previously blocked
+chart/pivot/protected structures refuse. This is not full X06/X07/extended parity.
