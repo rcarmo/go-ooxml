@@ -25,3 +25,4 @@ Feature: Bounded preservation-safe Word text correction
       | tracked revisions |
       | field boundary |
       | significant whitespace without preserve |
+      | unknown settings extension |

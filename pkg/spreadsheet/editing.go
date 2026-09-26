@@ -214,8 +214,17 @@ func (s *EditSession) guard() error {
 		if err != nil {
 			return err
 		}
+		allowed := map[string]bool{}
+		for _, local := range strings.Fields("workbook fileVersion workbookPr bookViews workbookView sheets sheet calcPr worksheet sheetPr tabColor outlinePr pageSetUpPr dimension sheetViews sheetView pane selection sheetFormatPr cols col sheetData row c v is t r rPr phoneticPr pageMargins pageSetup printOptions headerFooter oddHeader oddFooter evenHeader evenFooter firstHeader firstFooter sheetCalcPr") {
+			allowed[local] = true
+		}
 		for _, e := range d.Elements() {
 			n := e.Name()
+			for _, a := range e.Attributes() {
+				if a.Name.Space != "" && !(n.Local == "sheet" && a.Name == (xml.Name{Space: packaging.NSRelationships, Local: "id"})) && !(a.Name == (xml.Name{Space: "http://www.w3.org/XML/1998/namespace", Local: "space"})) {
+					return editRefusal("unsupported_structure", "unknown namespaced attribute")
+				}
+			}
 			if n.Space != packaging.NSSpreadsheetML {
 				return editRefusal("unsupported_structure", "unknown workbook/worksheet extension")
 			}
@@ -226,6 +235,9 @@ func (s *EditSession) guard() error {
 					kind = "protected_operation"
 				}
 				return editRefusal(kind, "dependent/protected structure requires reference-aware editor: "+n.Local)
+			}
+			if !allowed[n.Local] {
+				return editRefusal("unsupported_structure", "unclassified workbook/worksheet element: "+n.Local)
 			}
 		}
 	}

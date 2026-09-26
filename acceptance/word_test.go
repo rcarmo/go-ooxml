@@ -37,6 +37,10 @@ func wordSteps(sc *godog.ScenarioContext) {
 		_, _ = q.AddPart("word/document.xml", packaging.ContentTypeWordDocument, main)
 		_, _ = q.AddPart("custom/opaque.bin", "application/octet-stream", []byte{0, 1, 99, 255})
 		q.AddRelationship("", "word/document.xml", packaging.RelTypeOfficeDocument)
+		if condition == "unknown settings extension" {
+			_, _ = q.AddPart("word/settings.xml", packaging.ContentTypeSettings, []byte(`<w:settings xmlns:w="`+packaging.NSWordprocessingML+`" xmlns:x="urn:extension"><x:restriction enabled="1"/></w:settings>`))
+			q.AddRelationship("word/document.xml", "settings.xml", packaging.RelTypeSettings)
+		}
 		if condition == "active document protection" {
 			_, _ = q.AddPart("word/settings.xml", packaging.ContentTypeSettings, []byte(`<w:settings xmlns:w="`+packaging.NSWordprocessingML+`"><w:documentProtection w:edit="readOnly" w:enforcement="1"/></w:settings>`))
 			q.AddRelationship("word/document.xml", "settings.xml", packaging.RelTypeSettings)

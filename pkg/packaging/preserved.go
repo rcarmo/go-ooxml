@@ -9,6 +9,8 @@ import (
 	"io"
 	"sort"
 	"strings"
+
+	"github.com/rcarmo/go-ooxml/internal/losslessxml"
 )
 
 // Replacement is a guarded replacement of an existing member. ExpectedSHA256 is
@@ -111,6 +113,9 @@ func (p *Preserved) Replace(changes []Replacement) error {
 }
 
 func validateXMLPayload(data []byte) error {
+	if _, err := losslessxml.Parse(data); err != nil {
+		return err
+	}
 	decoder := xml.NewDecoder(bytes.NewReader(data))
 	depth, roots := 0, 0
 	for {

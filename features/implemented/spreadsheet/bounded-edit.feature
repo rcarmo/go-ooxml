@@ -24,3 +24,5 @@ Feature: Bounded formula-free numeric cell correction
       | duplicate cell address |
       | chart dependency |
       | data validation |
+      | unknown worksheet element |
+      | unknown cell attribute namespace |

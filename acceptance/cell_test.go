@@ -22,7 +22,13 @@ func cellSteps(sc *godog.ScenarioContext) {
 	var dir string
 	setup := func(condition string) error {
 		cells := `<c r="B2" s="0"><v>7</v></c>`
+		if condition == "unknown cell attribute namespace" {
+			cells = `<c xmlns:x="urn:extension" r="B2" x:formula="dependent"><v>7</v></c>`
+		}
 		extra := ""
+		if condition == "unknown worksheet element" {
+			extra = `<futureDependency ref="B2"/>`
+		}
 		if condition == "duplicate cell address" {
 			cells += cells
 		}

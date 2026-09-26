@@ -287,3 +287,11 @@ formula/dependent/protected structures in its conservative initial subset. It
 preserves style and unrelated bytes and delivers through retained-source checks.
 All three formats now have one bounded adapter; B10 still needs wider integration
 and adversarial/corpus coverage. This is not X01/X02/X07 parity. See batch 013.
+
+### Increment 014: extension refusal boundaries
+
+Namespace-invalid replacement XML now refuses in the retained adapter. Numeric
+editing rejects unclassified worksheet/workbook elements and attribute namespaces;
+Word checks settings namespace policy before protection. These conservative guards
+close three proved acceptance gaps without claiming schema-complete validation.
+See batch 014; 61 native expanded cases pass.

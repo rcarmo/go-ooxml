@@ -121,7 +121,18 @@ func (s *EditSession) guard(target *TextTarget, replacement string) error {
 			if err != nil {
 				return err
 			}
+			if settings.Elements()[0].Name() != (xml.Name{Space: packaging.NSWordprocessingML, Local: "settings"}) {
+				return editRefusal("unsupported_structure", "unknown settings root")
+			}
 			for _, e := range settings.Elements() {
+				if e.Name().Space != packaging.NSWordprocessingML {
+					return editRefusal("unsupported_structure", "unknown settings extension")
+				}
+				for _, a := range e.Attributes() {
+					if a.Name.Space != "" && a.Name.Space != packaging.NSWordprocessingML && a.Name.Space != "http://www.w3.org/XML/1998/namespace" {
+						return editRefusal("unsupported_structure", "unknown settings attribute namespace")
+					}
+				}
 				if e.Name() == (xml.Name{Space: packaging.NSWordprocessingML, Local: "documentProtection"}) {
 					enforcement := ""
 					for _, a := range e.Attributes() {
