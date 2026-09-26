@@ -1,0 +1,8 @@
+ok  	github.com/rcarmo/go-ooxml/internal/losslessxml	(cached)
+--- FAIL: TestGraphURIResolutionBatch (0.00s)
+    --- FAIL: TestGraphURIResolutionBatch/word/_rels/.rels (0.00s)
+        graph_test.go:25: invalid registry path
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/pkg/packaging	0.015s
+FAIL
+ok  	github.com/rcarmo/go-ooxml/acceptance	0.064s

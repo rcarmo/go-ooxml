@@ -1726,3 +1726,9 @@ payloads before replacing a regular destination; only then does it return a rece
 Failed delivery retains staged changes. Symlink/nonregular targets refuse rather
 than silently choosing follow-link versus replace-link semantics. Filesystem crash
 durability after rename remains outside this initial contract.
+
+`Preserved.Graph()` inspects the understood OPC registry subset and returns sorted
+parts/content types/inbound ownership counts and source/ID/type/target edges.
+External targets are never fetched. Missing local parts, ambiguous registries and
+unknown extensions refuse with relationship_policy. Read-only graph validity is
+separate from graph surgery; allocation/copy/delete/import are not implemented.

@@ -256,3 +256,10 @@ namespace context; foreign/duplicate/mixed/self-closing insertion targets refuse
 Namespace errors, directives and invalid XML text refuse. This UTF-8-only internal
 primitive does not yet apply Office-specific revision/protection/field rules.
 Read `reports/batches/009.md`; B03 integration remains partial.
+
+### Increment 010: read-only relationship ownership
+
+`Preserved.Graph` verifies understood content-type and relationship registries,
+resolves internal targets and reports inbound counts without rewriting XML or
+fetching external links. Unsupported registry extensions refuse. No part deletion,
+allocation, import or automatic orphan collection is implied. See batch 010.
