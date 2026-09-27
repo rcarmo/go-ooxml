@@ -25,6 +25,7 @@ alone does not mark markup deprecated.
 | [WordprocessingML notes](../references/fixtures-ooxml/specs/ecma-376/notes/ECMA-376-Phase3-Reference.md) | Project-authored explanations; not normative |
 | [WordprocessingML extract](../references/fixtures-ooxml/specs/ecma-376/extracts/ECMA-376-WML-Phase3.md) | Verbatim selected text; check clauses in the full PDF |
 | [Part 2 extract](../references/fixtures-ooxml/specs/ecma-376/extracts/ECMA-376-Part2-OPC.md) | Verbatim selected OPC text; check clauses in the full PDF |
+| [Original-main Part 1 PDF](ECMA-376-Part1-Fundamentals.pdf) and [Part 2 PDF](ECMA-376-Part2-OpenPackagingConventions.pdf) | Retained local copies from the original main history; use the pinned specification index above for editions and provenance |
 | [FIT-GAP-ANALYSIS.md](FIT-GAP-ANALYSIS.md) | Historical January 2026 assessment; percentages are not measured current coverage |
 | [ROUNDTRIP-TESTS.md](ROUNDTRIP-TESTS.md) | Native fixture round-trip assertion catalogue |
 
@@ -32,7 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-Batch reports under `../reports/batches/` record past commands and outcomes.
-They are historical evidence, not current release status. Shared fixtures,
+[Batch 154](../reports/batches/154.md) records the v0.34 root and acceptance
+checks. Other batch reports record their own commands and outcomes; their
+results apply to those revisions. Shared fixtures,
 provenance/licences, facts and canonical workflows belong to the pinned
 `fixtures-ooxml` checkout; this directory does not mirror their source inventories.

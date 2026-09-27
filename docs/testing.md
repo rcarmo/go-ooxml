@@ -80,20 +80,19 @@ workflow inventory adds no Go binding or execution credit. Local native acceptan
 291 implemented cases, 20 planned cases and one external case. Shared
 ECMA specifications, extracts and derived notes are indexed under
 [`specs/ecma-376/`](../references/fixtures-ooxml/specs/ecma-376/README.md).
-The full PDFs are the specification sources; local copies have been removed.
-Keep this shared pin until the coordinator approves a replacement. Go's package ledger has four partial mappings and eight unmapped
-declarations; its XML ledger has three partial mappings and one unmapped.
+The full PDFs are the specification sources; five earlier ECMA documents and
+PDFs are also retained under `docs/` from the original main history. Follow the
+pinned specification index for editions and provenance. Go's package ledger has
+four partial mappings and eight unmapped declarations; its XML ledger has three
+partial mappings and one unmapped.
 Neither ledger grants canonical execution credit. The semantic-diff assertion
 `removed: []` exercises no removal case.
 
-Once a release is approved, update the gitlink and
-`spec/reference-distribution.json` together within the coordinator-approved scope.
-For v0.34 adoption, only this enhancement branch advances; legacy tips and prepared
-publication refs/mirror remain at the v0.9 checkpoint by explicit instruction.
-A separately reviewed local main integration rehearsal retains the prior v0.33
-baseline until the new pin commit is deliberately integrated and retested.
-Do not use `git submodule update --remote` or move an existing release tag to
-follow changing content.
+Update the gitlink and `spec/reference-distribution.json` together when adopting
+a release. Use the recorded submodule commit; `git submodule update --remote`
+would follow a branch tip instead of the pin. The local main-integration branch
+contains the v0.34 adoption and retains 39 original-main `testdata/` files for
+provenance. Fixture lookup does not fall back to those files.
 
 ## Integrity and output custody
 
@@ -131,27 +130,23 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The enhanced-only v0.16 default released-reference batch is recorded in
-`../reports/batches/139.md`: 291 implemented native Gherkin cases; 20 planned and
-one external case unrun. The prior v0.3 bounded race checkpoint remains
-`../reports/batches/096.md`; this reference/documentation update does not rerun races.
-Package/unit/subtest counts are separate metrics. No live Office
-rendering/calculation or exploratory fuzz campaign ran in these batches.
-Historical reports retain the commands and outcomes from their original runs.
+The v0.34 released-reference batch is recorded in
+[`reports/batches/154.md`](../reports/batches/154.md): 291 implemented native
+Gherkin cases and 972 steps passed; 20 planned and one external case were not
+run. The main-integration tree also passed an uncached default root-and-acceptance
+batch and an independent fresh-checkout run with the v0.34 pin. Package/unit
+and subtest counts are separate metrics. The integrated tree has not had race,
+fuzz, live Office rendering or calculation checks. Older batch reports retain
+the commands and results from their own revisions.
 
-## Behaviour catalogue and publication
+## Behaviour catalogue
 
 The central registry owns canonical behaviour IDs and expected outcomes. Local
 `docs/behaviors` files stage native findings for reconciliation; they do not form
 a second canonical suite. The current inventory has 404 native declarations,
 including the checkout guards: 197 have reviewed family/parameter mappings in
 207 candidates, and 207 remain unreviewed. This is the frozen inventory snapshot;
-later test declarations remain outside its denominator until a deliberate refresh. Importing Gherkin never earns execution
-credit, and sibling results do not become Go passes.
-
-The rewritten history and main/version-tip migrations are local preparations.
-The configured GitHub credential has no write permission for this repository.
-Go publication has not occurred. The shared release is available, but publishing
-the rewritten Go refs still requires write access, final ref audits and explicit
-leases against unchanged remote refs. See the batch
-reports for historical results, not current release certification.
+later test declarations need a deliberate refresh before entering its denominator.
+Importing Gherkin earns no execution credit, and sibling results do not become
+Go passes. The historic `reports/batches/` logs remain in the repository; each
+report records its own revision and measured scope.

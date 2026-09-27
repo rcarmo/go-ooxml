@@ -2,9 +2,7 @@
 
 ![Icon](docs/icon-256.png)
 
-This is another of my "things that should exist" projects: An in-development Go library for reading, writing, and manipulating Office Open XML (OOXML) documents.
-
-Supports Word (.docx), Excel (.xlsx), and PowerPoint (.pptx) formats, and is slowly being developed against the ECMA 376 specs.
+This is another of my "things that should exist" projects: a Go library for reading and writing Office Open XML (OOXML) documents. It handles Word (.docx), Excel (.xlsx) and PowerPoint (.pptx) files, with additive retained-source editors for a bounded set of changes. I am developing it against ECMA-376; [the native editing notes](docs/design/native-enhancements.md) spell out what those editors can safely change.
 
 ## Installation
 
@@ -21,8 +19,8 @@ import (
 	"log"
 
 	"github.com/rcarmo/go-ooxml/pkg/document"
-	"github.com/rcarmo/go-ooxml/pkg/spreadsheet"
 	"github.com/rcarmo/go-ooxml/pkg/presentation"
+	"github.com/rcarmo/go-ooxml/pkg/spreadsheet"
 )
 
 func main() {
@@ -43,8 +41,13 @@ func main() {
 		log.Fatal(err)
 	}
 	defer wb.Close()
-	sheet, _ := wb.Sheet(0)
-	sheet.Cell("A1").SetValue("Hello")
+	sheet, err := wb.Sheet(0)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := sheet.Cell("A1").SetValue("Hello"); err != nil {
+		log.Fatal(err)
+	}
 	if err := wb.SaveAs("hello.xlsx"); err != nil {
 		log.Fatal(err)
 	}
@@ -56,84 +59,29 @@ func main() {
 	}
 	defer pres.Close()
 	slide := pres.AddSlide(0)
-	slide.AddTextBox(0, 0, 4000000, 1000000).SetText("Hello")
+	if err := slide.AddTextBox(0, 0, 4000000, 1000000).SetText("Hello"); err != nil {
+		log.Fatal(err)
+	}
 	if err := pres.SaveAs("hello.pptx"); err != nil {
 		log.Fatal(err)
 	}
 }
 ```
 
-### Document (Word)
+## Editing scope
 
-- **Open/Save:** `document.New()`, `document.Open(path)`, `doc.Save()`, `doc.SaveAs(path)`
-- **Content:** `doc.AddParagraph()`, `doc.AddTable(rows, cols)`
-- **Formatting:** `Run` setters (`SetBold`, `SetItalic`, `SetFontSize`, `SetColor`, etc.)
-- **Track changes:** `doc.EnableTrackChanges(author)`, `doc.TrackChanges()`
-- **Comments:** `doc.Comments().Add(text, author, anchorText)`
-- **Headers/Footers:** `doc.AddHeader(type)`, `doc.AddFooter(type)`
-- **Content controls:** `doc.AddBlockContentControl(tag, alias, text)`
-
-### Spreadsheet (Excel)
-
-- **Open/Save:** `spreadsheet.New()`, `spreadsheet.Open(path)`, `wb.Save()`, `wb.SaveAs(path)`
-- **Sheets:** `wb.Sheets()`, `wb.AddSheet(name)`
-- **Cells/Ranges:** `sheet.Cell("A1")`, `sheet.Range("A1:C3")`
-- **Tables:** `sheet.AddTable("A1:C3", "Sales")`, `table.AddRow(values)`
-- **Named ranges:** `wb.AddNamedRange(name, refersTo)`
-- **Comments:** `sheet.Cell("A1").SetComment(text, author)`
-
-### Presentation (PowerPoint)
-
-- **Open/Save:** `presentation.New()`, `presentation.Open(path)`, `pres.Save()`, `pres.SaveAs(path)`
-- **Slides:** `pres.AddSlide(layoutIndex)`, `pres.Slides()`
-- **Shapes:** `slide.AddShape(type)`, `slide.AddTextBox(...)`, `shape.SetText(text)`
-- **Tables:** `slide.AddTable(rows, cols, left, top, width, height)`
-- **Validation:** `dotnet tools/validator/OoxmlValidator/bin/Release/net10.0/OoxmlValidator.dll <file>` (use when debugging repair prompts)
+The `document`, `spreadsheet` and `presentation` packages provide the authoring APIs above. Their retained-source editing sessions check the parts they change and refuse unsupported or ambiguous edits. DOCX ordinary text replacement, PPTX plain-shape and existing notes text, and XLSX style-checked numeric edits are implemented subsets. Formula calculation, general worksheet surgery, slide import and complete revision handling are outside those subsets. See [native editing](docs/design/native-enhancements.md) for the precise limits and [testing](docs/testing.md) for measured results. Office rendering and calculation have not been verified by these tests.
 
 ## Development
 
-### Repository Layout
-
-- `pkg/` - Public Go packages (document/spreadsheet/presentation)
-- `internal/` - Internal helpers (testutil/xmlutil)
-- `e2e/` - End-to-end workflows and fuzz tests
-- `references/fixtures-ooxml/` - Shared fixture manifest, grouped fixtures and canonical workflows
-- `docs/` - Specification and reference docs
-- `tools/` - Validator and tooling
-
-Tests use manifest fixture IDs from the shared checkout, with one file per hash
-under `fixtures/<format>/<scenarioGroup>/`. Inputs stay read-only; generated
-outputs go to local `artifacts` or temporary directories. See
-[shared-reference testing](docs/testing.md) for the current candidate/release state.
+The runtime uses the Go standard library; Godog and Gherkin live in the separate `acceptance/` test module. `pkg/` holds the public APIs, `internal/` holds implementation and fixture lookup helpers, and `e2e/` holds cross-package tests. The pinned `references/fixtures-ooxml/` submodule supplies shared fixture IDs, facts and workflows. Tests leave its files alone and write generated output under local `artifacts/` or temporary directories. The repository also retains older local `testdata/` fixtures and ECMA PDFs for provenance; tests resolve their inputs through the shared manifest.
 
 ```bash
-# Initialise the exact recorded reference commit; do not track its branch tip
 git submodule update --init --recursive
-
-# Show available targets
-make help
-
-# Full build (clean + deps + lint + test + build)
-make build-all
-
-# Run both native and acceptance modules (after reference validation)
-GOMAXPROCS=2 make test-batch
-
-# Run tests with coverage
-make coverage
-
-# Run benchmarks
-make bench
-
-# Run memory profiling tests
-make memprofile
-
-# Format code
-make format
-
-# Lint code
-make lint
+GOMAXPROCS=2 make test-batch TEST_JOBS=2
 ```
+
+`make test` checks only the root module. `test-batch` runs the root and acceptance modules; [docs/testing.md](docs/testing.md) records the pin, integrity checks and latest batch. Use `make help` for other targets.
 
 ## License
 

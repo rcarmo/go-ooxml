@@ -1,4 +1,4 @@
-# Native preservation-safe editing
+# Native retained-source editing
 
 The Go runtime provides additive retained-source editors for DOCX, PPTX and XLSX.
 Existing legacy authoring APIs remain separate. Mutable editing sessions are
@@ -30,14 +30,13 @@ regression IDs. It contains explicit limits, not a completeness score.
 
 ## Shared references
 
-The target layout is one shared schema2 manifest and grouped
+The shared reference has one schema2 manifest and grouped
 `fixtures/<format>/<scenarioGroup>/` inputs. Native labels resolve fixture IDs;
 physical files are deduplicated by SHA-256. `spec/reference-distribution.json`
-records the commit, annotated release tag and seals. This enhancement branch uses
-released `v0.34.0`, commit `7643c3d91f63c142e943e0820b79afe8dc7d128c`; default
-checks need no override. Legacy tips and prepared publication refs/mirror remain
-at their v0.9 checkpoint under the coordinator's enhanced-only adoption scope. A separate local integration rehearsal into the Go repository's main ancestry is pending review; this pin does not advance main or publication. Candidate checking is separate, as described in
-`../testing.md`.
+records the commit, annotated release tag and seals. The recorded release is
+`v0.34.0`, commit `7643c3d91f63c142e943e0820b79afe8dc7d128c`; default
+checks need no override. [Testing](../testing.md) explains candidate pins and
+checkout verification.
 
 Tests verify the pinned full tracked tree, checkout identity, root manifest seal and shared
 fact/workflow links. Only locally executed assertions earn execution credit;
@@ -51,13 +50,12 @@ required without claiming an annotated release. Missing inputs fail.
 
 ## Verification and limits
 
-The default released-reference library/acceptance batch passes with 291 native
-Gherkin cases; 20 planned and one external case remain unrun. See
-`../../reports/batches/139.md` for the enhanced-only v0.16 default commands and
-checkout custody. The bounded race checkpoint is the earlier v0.3 batch096;
-v0.16 changes only reference custody, pins/counts and documentation.
-Historical reports retain original measured results, with sanitised implementation
-citations marked as historical. No removed inventory row becomes completed work.
+The v0.34 default root and acceptance batch passed with 291 native Gherkin
+cases and 972 steps; 20 planned and one external case were not run. See
+[batch 154](../../reports/batches/154.md) for commands, pins and the independent
+clean-checkout run. The main-integration tree passed the same uncached batch and
+a fresh-checkout run after the v0.34 pin was merged. Earlier race reports are
+historical; no race or fuzz suite was run on that integration tree.
 
 No live Office calculation/rendering, schema certification or complete enhancement
 family coverage is established. The extended-comment MIME discrepancy is recorded
