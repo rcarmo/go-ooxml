@@ -28,6 +28,11 @@ func descriptorIntegrityFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "data-descriptor-integrity.feature")
 }
 
+// This one canonical case replaces native CHAIN-001, without selecting sibling XLSX workflows.
+func ownedChainFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xlsx", "calculation-chain-lifecycle.feature")
+}
+
 func goCandidateRoot() string {
 	return filepath.Join(testutil.ReferenceRoot(), "staging", "go", "behaviors")
 }

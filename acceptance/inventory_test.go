@@ -26,7 +26,7 @@ func inventoryCases() (map[caseID]expectedCase, []map[string]any, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	for _, path := range []string{overlapFeaturePath(), negativeBudgetFeaturePath(), descriptorIntegrityFeaturePath()} {
+	for _, path := range []string{overlapFeaturePath(), negativeBudgetFeaturePath(), descriptorIntegrityFeaturePath(), ownedChainFeaturePath()} {
 		if err = inventoryFeature(path, nil, nil, expected, &inventory, seen, next, true); err != nil {
 			return nil, nil, err
 		}
@@ -39,6 +39,8 @@ var nativeIDPattern = regexp.MustCompile(`^@[A-Z]+-[0-9]{3}$`)
 const overlapCaseID = "@id-zip-physical-member-overlap-refusal"
 const negativeBudgetCaseID = "@id-package-admission-negative-budget"
 const descriptorCollisionCaseID = "@id-zip-unsigned-descriptor-signature-collision"
+const ownedChainCaseID = "@id-xlsx-owned-calculation-chain-invalidation"
+const retiredChainCaseID = "@CHAIN-001"
 
 func canonicalID(path string) string {
 	switch path {
@@ -48,6 +50,8 @@ func canonicalID(path string) string {
 		return negativeBudgetCaseID
 	case descriptorIntegrityFeaturePath():
 		return descriptorCollisionCaseID
+	case ownedChainFeaturePath():
+		return ownedChainCaseID
 	default:
 		return ""
 	}
@@ -135,6 +139,12 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			if id == "" || (canonical && path == overlapFeaturePath() && !profile) {
 				return fmt.Errorf("%s: scenario missing ID/profile", path)
 			}
+			if !canonical && id == retiredChainCaseID {
+				// Keep the historical source in the inventory, but select its canonical replacement.
+				if path != filepath.Join(goFeatureRoot(), "implemented", "spreadsheet", "calc-chain.feature") || s.Name != "Dependent input edit atomically removes an owned calculation chain" || len(s.Steps) != 6 || len(s.Examples) != 0 {
+					return fmt.Errorf("%s: retired CHAIN-001 source drift", path)
+				}
+			}
 			if prior, ok := seen[id]; ok {
 				return fmt.Errorf("duplicate ID %s in %s and %s", id, prior, path)
 			}
@@ -174,6 +184,9 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			if id == descriptorCollisionCaseID && (p.Name != "Unsigned descriptor geometry cannot excuse a corrupted payload" || len(p.Steps) != 8) {
 				return fmt.Errorf("%s: unexpected descriptor-integrity case %q", path, p.Name)
 			}
+			if id == ownedChainCaseID && (p.Name != "Changing a precedent removes its owned nonstandard chain and invalidates dependent caches" || len(p.Steps) != 14) {
+				return fmt.Errorf("%s: unexpected owned-chain case %q", path, p.Name)
+			}
 			if id == negativeBudgetCaseID {
 				if (p.Name != "A negative source bytes budget refuses before package intake" && p.Name != "A negative entry count budget refuses before package intake") || budgetRows[p.Name] || len(p.Steps) != 6 {
 					return fmt.Errorf("%s: unexpected negative-budget case %q", path, p.Name)
@@ -183,15 +196,17 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 		}
 		key := caseID{filepath.ToSlash(filepath.Clean(path)), id, line}
 		if canonical {
-			*inventory = append(*inventory, map[string]any{"case": key, "name": p.Name, "lifecycle": "@implemented", "runner": "@go"})
+			*inventory = append(*inventory, map[string]any{"case": key, "name": p.Name, "lifecycle": "@implemented", "runner": "@go", "selection": "canonical"})
+		} else if id == retiredChainCaseID {
+			*inventory = append(*inventory, map[string]any{"case": key, "name": p.Name, "lifecycle": lifecycle, "runner": runner, "selection": "superseded by " + ownedChainCaseID})
 		} else {
 			*inventory = append(*inventory, map[string]any{"case": key, "name": p.Name, "lifecycle": lifecycle, "runner": runner})
 		}
-		if lifecycle == "@implemented" || canonical {
+		if (lifecycle == "@implemented" && id != retiredChainCaseID) || canonical {
 			expected[key] = expectedCase{key, p.Name, len(p.Steps)}
 		}
 	}
-	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1)) {
+	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1)) {
 		return fmt.Errorf("%s: selected canonical case count drift: %d", path, canonicalCases)
 	}
 	return nil

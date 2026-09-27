@@ -1,11 +1,13 @@
 package acceptance
 
 import (
+	"archive/zip"
 	"bytes"
 	"context"
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -18,7 +20,8 @@ import (
 
 func cacheSteps(sc *godog.ScenarioContext) {
 	var s *spreadsheet.EditSession
-	var source, output []byte
+	var source, output, recordedSource []byte
+	var canonicalPath string
 	var result spreadsheet.CalculationEffect
 	var failure error
 	setup := func(condition string) error {
@@ -121,8 +124,16 @@ func cacheSteps(sc *godog.ScenarioContext) {
 		s = nil
 		source = nil
 		output = nil
+		recordedSource = nil
+		canonicalPath = ""
 		failure = nil
 		result = spreadsheet.CalculationEffect{}
+		return ctx, nil
+	})
+	sc.After(func(ctx context.Context, _ *godog.Scenario, err error) (context.Context, error) {
+		if canonicalPath != "" {
+			_ = os.RemoveAll(filepath.Dir(canonicalPath))
+		}
 		return ctx, nil
 	})
 	sc.Step(`^a workbook with input one and a static cross-sheet formula chain$`, func() error { return setup("") })
@@ -282,6 +293,331 @@ func cacheSteps(sc *godog.ScenarioContext) {
 		}
 		if !bytes.Equal(source, output) {
 			return fmt.Errorf("partial edit after refusal")
+		}
+		return nil
+	})
+
+	// The selected canonical outcome uses the same synthetic producer as CHAIN-001,
+	// but asserts custody and an independent disk readback before receiving credit.
+	readSaved := func() (map[string][]byte, error) {
+		if canonicalPath == "" {
+			return nil, fmt.Errorf("canonical destination not saved")
+		}
+		b, err := os.ReadFile(canonicalPath)
+		if err != nil {
+			return nil, err
+		}
+		return zipPayloads(b)
+	}
+	cell := func(part, address, wantValue, wantFormula string) error {
+		parts, err := readSaved()
+		if err != nil {
+			return err
+		}
+		value, formula, err := sharedCell(parts[part], address)
+		if err != nil {
+			return err
+		}
+		if value != wantValue || formula != wantFormula {
+			return fmt.Errorf("%s:%s value/formula %q/%q, want %q/%q", part, address, value, formula, wantValue, wantFormula)
+		}
+		return nil
+	}
+	sc.Step(`^a two-sheet XLSX package with Input!A1 numeric 1 and Calc!A1 formula "Input!A1\*2" cached as 2$`, func() error {
+		if err := setup("owned calculation chain"); err != nil {
+			return err
+		}
+		parts, err := zipPayloads(source)
+		if err != nil {
+			return err
+		}
+		for _, c := range []struct{ part, address, value, formula string }{
+			{"xl/worksheets/sheet1.xml", "A1", "1", ""},
+			{"xl/worksheets/sheet2.xml", "A1", "2", "Input!A1*2"},
+		} {
+			v, f, err := sharedCell(parts[c.part], c.address)
+			if err != nil || v != c.value || f != c.formula {
+				return fmt.Errorf("initial %s:%s value/formula %q/%q: %v", c.part, c.address, v, f, err)
+			}
+		}
+		return nil
+	})
+	sc.Step(`^Calc!B1 formula "A1\+1" is cached as 3 and unrelated Calc!C1 formula "42" is cached as 42$`, func() error {
+		parts, err := zipPayloads(source)
+		if err != nil {
+			return err
+		}
+		for _, c := range []struct{ address, value, formula string }{{"B1", "3", "A1+1"}, {"C1", "42", "42"}} {
+			v, f, err := sharedCell(parts["xl/worksheets/sheet2.xml"], c.address)
+			if err != nil || v != c.value || f != c.formula {
+				return fmt.Errorf("initial Calc!%s value/formula %q/%q: %v", c.address, v, f, err)
+			}
+		}
+		return nil
+	})
+	sc.Step(`^the workbook alone owns a calculation-chain relationship to xl/chains/order.xml$`, func() error {
+		q, err := packaging.OpenPreserved(source, packaging.Limits{})
+		if err != nil {
+			return err
+		}
+		g, err := q.Graph()
+		if err != nil {
+			return err
+		}
+		count := 0
+		for _, e := range g.Edges {
+			if e.Type == packaging.RelTypeCalcChain {
+				if e.Source != "xl/workbook.xml" || e.External || e.ResolvedPart != "xl/chains/order.xml" {
+					return fmt.Errorf("unowned calculation chain: %+v", e)
+				}
+				count++
+			}
+		}
+		if count != 1 {
+			return fmt.Errorf("expected one workbook-owned chain edge, got %d", count)
+		}
+		return nil
+	})
+	sc.Step(`^xl/chains/order.xml has the calculation-chain content type and entries for Calc!A1 and Calc!B1$`, func() error {
+		q, err := packaging.OpenPreserved(source, packaging.Limits{})
+		if err != nil {
+			return err
+		}
+		g, err := q.Graph()
+		if err != nil {
+			return err
+		}
+		count := 0
+		for _, part := range g.Parts {
+			if part.Name == "xl/chains/order.xml" {
+				if part.ContentType != packaging.ContentTypeCalcChain {
+					return fmt.Errorf("wrong chain content type %s", part.ContentType)
+				}
+				count++
+			}
+		}
+		if count != 1 {
+			return fmt.Errorf("expected one chain part, got %d", count)
+		}
+		parts, err := zipPayloads(source)
+		if err != nil {
+			return err
+		}
+		d, err := losslessxml.Parse(parts["xl/chains/order.xml"])
+		if err != nil {
+			return err
+		}
+		var addresses []string
+		for _, e := range d.Elements() {
+			if e.Name() != (xml.Name{Space: packaging.NSSpreadsheetML, Local: "c"}) {
+				continue
+			}
+			for _, a := range e.Attributes() {
+				if a.Name.Local == "r" {
+					addresses = append(addresses, a.Value)
+				}
+			}
+		}
+		if len(addresses) != 2 || addresses[0] != "A1" || addresses[1] != "B1" {
+			return fmt.Errorf("unexpected chain entries %v", addresses)
+		}
+		return nil
+	})
+	sc.Step(`^all source package member payloads and bytes are recorded$`, func() error {
+		if _, err := zipPayloads(source); err != nil {
+			return err
+		}
+		recordedSource = bytes.Clone(source)
+		return nil
+	})
+	sc.Step(`^Input!A1 is set to numeric 10 with explicit dependent-cache invalidation and the result is saved and reopened$`, func() error {
+		if recordedSource == nil {
+			return fmt.Errorf("source not recorded")
+		}
+		target, err := s.FindNumber("Input", "A1")
+		if err != nil {
+			return err
+		}
+		result, err = s.SetNumberWithInvalidation(target, 10)
+		if err != nil {
+			return err
+		}
+		dir, err := os.MkdirTemp("", "owned-chain-")
+		if err != nil {
+			return err
+		}
+		canonicalPath = filepath.Join(dir, "out.xlsx")
+		if _, err := s.SaveAs(canonicalPath); err != nil {
+			return err
+		}
+		saved, err := os.ReadFile(canonicalPath)
+		if err != nil {
+			return err
+		}
+		reopened, err := spreadsheet.OpenEditing(saved, packaging.Limits{})
+		if err != nil {
+			return err
+		}
+		_, err = reopened.FindNumber("Input", "A1")
+		return err
+	})
+	sc.Step(`^the source package bytes remain unchanged and reopened Input!A1 is numeric 10$`, func() error {
+		if !bytes.Equal(source, recordedSource) {
+			return fmt.Errorf("source bytes changed")
+		}
+		return cell("xl/worksheets/sheet1.xml", "A1", "10", "")
+	})
+	sc.Step(`^the reopened Calc!A1 and Calc!B1 formulas are unchanged with absent or empty cached values$`, func() error {
+		if err := cell("xl/worksheets/sheet2.xml", "A1", "", "Input!A1*2"); err != nil {
+			return err
+		}
+		return cell("xl/worksheets/sheet2.xml", "B1", "", "A1+1")
+	})
+	sc.Step(`^a data-only read of those cells cannot return the old cached values 2 and 3 as current$`, func() error {
+		// Read the saved ZIP independently and decode only stored value leaves;
+		// Go has no separate data-only spreadsheet API or formula evaluator.
+		z, err := zip.OpenReader(canonicalPath)
+		if err != nil {
+			return err
+		}
+		defer z.Close()
+		found := 0
+		for _, f := range z.File {
+			if f.Name != "xl/worksheets/sheet2.xml" {
+				continue
+			}
+			found++
+			r, err := f.Open()
+			if err != nil {
+				return err
+			}
+			b, readErr := io.ReadAll(r)
+			closeErr := r.Close()
+			if readErr != nil {
+				return readErr
+			}
+			if closeErr != nil {
+				return closeErr
+			}
+			var worksheet struct {
+				Cells []struct {
+					Address string `xml:"r,attr"`
+					Value   string `xml:"v"`
+				} `xml:"sheetData>row>c"`
+			}
+			if err := xml.Unmarshal(b, &worksheet); err != nil {
+				return err
+			}
+			counts := map[string]int{}
+			for _, c := range worksheet.Cells {
+				if c.Address == "A1" || c.Address == "B1" {
+					counts[c.Address]++
+					if c.Value != "" {
+						return fmt.Errorf("data-only Calc!%s exposes cached %q", c.Address, c.Value)
+					}
+				}
+			}
+			if counts["A1"] != 1 || counts["B1"] != 1 {
+				return fmt.Errorf("data-only cell counts %v", counts)
+			}
+		}
+		if found != 1 {
+			return fmt.Errorf("expected one reopened Calc worksheet, got %d", found)
+		}
+		return nil
+	})
+	sc.Step(`^the reopened Calc!C1 formula and cached value 42 remain unchanged$`, func() error {
+		return cell("xl/worksheets/sheet2.xml", "C1", "42", "42")
+	})
+	sc.Step(`^the workbook requests full recalculation without claiming a computed result$`, func() error {
+		if result.State != "recalculation-required" || !result.ValueChanged || len(result.Invalidated) != 2 {
+			return fmt.Errorf("calculation effect %+v", result)
+		}
+		parts, err := readSaved()
+		if err != nil {
+			return err
+		}
+		d, err := losslessxml.Parse(parts["xl/workbook.xml"])
+		if err != nil {
+			return err
+		}
+		for _, e := range d.Elements() {
+			if e.Name() == (xml.Name{Space: packaging.NSSpreadsheetML, Local: "calcPr"}) {
+				attrs := map[string]string{}
+				for _, a := range e.Attributes() {
+					attrs[a.Name.Local] = a.Value
+				}
+				if attrs["calcMode"] == "auto" && attrs["fullCalcOnLoad"] == "1" && attrs["forceFullCalc"] == "1" {
+					return nil
+				}
+			}
+		}
+		return fmt.Errorf("recalculation flags absent")
+	})
+	sc.Step(`^xl/chains/order.xml, its workbook relationship and its content-type override are absent$`, func() error {
+		parts, err := readSaved()
+		if err != nil {
+			return err
+		}
+		if _, ok := parts["xl/chains/order.xml"]; ok {
+			return fmt.Errorf("chain part retained")
+		}
+		b, err := os.ReadFile(canonicalPath)
+		if err != nil {
+			return err
+		}
+		q, err := packaging.OpenPreserved(b, packaging.Limits{})
+		if err != nil {
+			return err
+		}
+		g, err := q.Graph()
+		if err != nil {
+			return err
+		}
+		for _, edge := range g.Edges {
+			if edge.Type == packaging.RelTypeCalcChain {
+				return fmt.Errorf("chain relationship retained")
+			}
+		}
+		if bytes.Contains(parts["[Content_Types].xml"], []byte("/xl/chains/order.xml")) {
+			return fmt.Errorf("chain content-type override retained")
+		}
+		return nil
+	})
+	sc.Step(`^every destination relationship and content-type target resolves$`, func() error {
+		b, err := os.ReadFile(canonicalPath)
+		if err != nil {
+			return err
+		}
+		q, err := packaging.OpenPreserved(b, packaging.Limits{})
+		if err != nil {
+			return err
+		}
+		_, err = q.Graph() // Graph verifies local edges and content-type overrides.
+		return err
+	})
+	sc.Step(`^every source member payload outside the workbook, two worksheets, workbook relationships and content types remains byte-identical$`, func() error {
+		before, err := zipPayloads(recordedSource)
+		if err != nil {
+			return err
+		}
+		after, err := readSaved()
+		if err != nil {
+			return err
+		}
+		allowed := map[string]bool{"xl/chains/order.xml": true, "xl/workbook.xml": true, "xl/worksheets/sheet1.xml": true, "xl/worksheets/sheet2.xml": true, "xl/_rels/workbook.xml.rels": true, "[Content_Types].xml": true}
+		for name, original := range before {
+			if _, exists := after[name]; !exists && name != "xl/chains/order.xml" {
+				return fmt.Errorf("unexpected removed member %s", name)
+			}
+			if !allowed[name] && !bytes.Equal(original, after[name]) {
+				return fmt.Errorf("unrelated member changed %s", name)
+			}
+		}
+		for name := range after {
+			if _, exists := before[name]; !exists {
+				return fmt.Errorf("unexpected added member %s", name)
+			}
 		}
 		return nil
 	})

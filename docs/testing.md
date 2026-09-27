@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.44.0`, commit
-`c32f0e221931e0faaaa69740bc2b3a7a5bfefca3`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.45.0`, commit
+`3f0fbe2d11f8db6deda69779d5833086ee510799`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -36,14 +36,14 @@ The released pin uses schema2 with `commit`, `tag`, `tag_object`,
 `manifest_sha256`, `assets`, `facts`, `workflows` and `workflow_cases`.
 There is no separate pack seal. The root manifest seals
 `contracts/mutation-safety.json` and all five declared operation feature paths.
-The v0.44 contract uses an explicit feature list (contract schema 2), selecting
+The v0.45 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.44.0` contains 335 manifest assets, including 79 physical fixtures,
-plus 149 facts and 301 workflows/788 expanded cases.
+Release `v0.45.0` contains 336 manifest assets, including 79 physical fixtures,
+plus 149 facts and 302 workflows/789 expanded cases.
 The canonical registry has 60 feature files. Another 143 files are staged
 consumer candidates, including 55 native Go features and 21 Go behaviour
 catalogue candidates. The Go files retain their source IDs and wording; moving
@@ -94,8 +94,14 @@ revisions workflow. The text-only profile and broader multi-story operations
 keep their earlier scope. The new cases remain planned for Go with zero
 execution credit. An opt-in paired text-move revision rule adds nine IDs and
 45 cases to the same workflow, limited to paired source/destination ranges in
-one story; these also remain planned with zero Go execution credit. Three exact shared outcomes add four canonical execution cases. All other shared
-workflows remain planned for Go. Acceptance has 294 selected cases,
+one story; these also remain planned with zero Go execution credit. The first three exact shared outcomes add four canonical execution cases. At v0.45,
+`@id-xlsx-owned-calculation-chain-invalidation` replaces native `@CHAIN-001` one-for-one.
+The native source stays in the inventory as superseded; `@CHAIN-002..004` stay
+selected. The saved synthetic workbook readback checks both dependent caches,
+formula text, the unchanged unrelated cache, recalculation flags, removed
+nonstandard chain part/edge/override, graph resolution and unrelated payloads.
+This does not select broader cache-completeness or external calculation outcomes.
+All other shared workflows remain planned for Go. Acceptance has 294 selected cases,
 20 planned native cases and one external native case. Shared
 ECMA specifications, extracts and derived notes are indexed under
 [`specs/ecma-376/`](../references/fixtures-ooxml/specs/ecma-376/README.md).
@@ -176,7 +182,10 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The v0.44 default batch is recorded in
+The v0.45 default batch is recorded in
+[`reports/batches/160.md`](../reports/batches/160.md): 294 selected cases and
+1004 passed steps; 20 native planned and one external case were not run. The
+previous v0.44 default batch is recorded in
 [`reports/batches/159.md`](../reports/batches/159.md): 294 selected cases and
 996 passed steps; 20 native planned and one external case were not run. The previous v0.43
 batch is recorded in [`reports/batches/158.md`](../reports/batches/158.md):
