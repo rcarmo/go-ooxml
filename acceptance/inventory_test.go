@@ -26,8 +26,10 @@ func inventoryCases() (map[caseID]expectedCase, []map[string]any, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	if err = inventoryFeature(overlapFeaturePath(), nil, nil, expected, &inventory, seen, next, true); err != nil {
-		return nil, nil, err
+	for _, path := range []string{overlapFeaturePath(), negativeBudgetFeaturePath()} {
+		if err = inventoryFeature(path, nil, nil, expected, &inventory, seen, next, true); err != nil {
+			return nil, nil, err
+		}
 	}
 	return expected, inventory, nil
 }
@@ -35,6 +37,18 @@ func inventoryCases() (map[caseID]expectedCase, []map[string]any, error) {
 var nativeIDPattern = regexp.MustCompile(`^@[A-Z]+-[0-9]{3}$`)
 
 const overlapCaseID = "@id-zip-physical-member-overlap-refusal"
+const negativeBudgetCaseID = "@id-package-admission-negative-budget"
+
+func canonicalID(path string) string {
+	switch path {
+	case overlapFeaturePath():
+		return overlapCaseID
+	case negativeBudgetFeaturePath():
+		return negativeBudgetCaseID
+	default:
+		return ""
+	}
+}
 
 func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID]expectedCase, inventory *[]map[string]any, seen map[string]string, next func() string, canonical bool) error {
 	if err != nil {
@@ -71,7 +85,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 		}
 	}
 	if canonical {
-		if path != overlapFeaturePath() || lifecycle != "@planned" || runner != "" {
+		if canonicalID(path) == "" || lifecycle != "@planned" || runner != "" {
 			return fmt.Errorf("%s: unexpected canonical feature metadata", path)
 		}
 	} else if lifecycle == "" || runner == "" {
@@ -101,21 +115,21 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			id := ""
 			profile := false
 			for _, tag := range s.Tags {
-				if nativeIDPattern.MatchString(tag.Name) || (canonical && tag.Name == overlapCaseID) {
+				if nativeIDPattern.MatchString(tag.Name) || (canonical && tag.Name == canonicalID(path)) {
 					if id != "" {
 						return fmt.Errorf("%s: multiple IDs", path)
 					}
 					id = tag.Name
-				} else if canonical && tag.Name == "@profile-physical-member-extents" && !profile {
+				} else if canonical && path == overlapFeaturePath() && tag.Name == "@profile-physical-member-extents" && !profile {
 					profile = true
-				} else if !canonical || id == overlapCaseID {
+				} else if !canonical || id == canonicalID(path) {
 					return fmt.Errorf("%s: unsupported scenario tag %s", path, tag.Name)
 				}
 			}
-			if canonical && id != overlapCaseID {
+			if canonical && id != canonicalID(path) {
 				continue // Other shared workflows remain planned for Go.
 			}
-			if id == "" || (canonical && !profile) {
+			if id == "" || (canonical && path == overlapFeaturePath() && !profile) {
 				return fmt.Errorf("%s: scenario missing ID/profile", path)
 			}
 			if prior, ok := seen[id]; ok {
@@ -141,15 +155,26 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 	if err := collect(doc.Feature.Children); err != nil {
 		return err
 	}
-	if canonical && seen[overlapCaseID] == "" {
-		return fmt.Errorf("%s: canonical overlap case missing", path)
+	if canonical && seen[canonicalID(path)] == "" {
+		return fmt.Errorf("%s: selected canonical case missing", path)
 	}
+	canonicalCases := 0
+	budgetRows := map[string]bool{}
 	for _, p := range gherkin.Pickles(*doc, path, next) {
-		if canonical && (len(p.AstNodeIds) == 0 || ids[p.AstNodeIds[0]] != overlapCaseID) {
+		if canonical && (len(p.AstNodeIds) == 0 || ids[p.AstNodeIds[0]] != canonicalID(path)) {
 			continue
 		}
 		line := lines[p.AstNodeIds[len(p.AstNodeIds)-1]]
 		id := ids[p.AstNodeIds[0]]
+		if canonical {
+			canonicalCases++
+			if id == negativeBudgetCaseID {
+				if (p.Name != "A negative source bytes budget refuses before package intake" && p.Name != "A negative entry count budget refuses before package intake") || budgetRows[p.Name] || len(p.Steps) != 6 {
+					return fmt.Errorf("%s: unexpected negative-budget case %q", path, p.Name)
+				}
+				budgetRows[p.Name] = true
+			}
+		}
 		key := caseID{filepath.ToSlash(filepath.Clean(path)), id, line}
 		if canonical {
 			*inventory = append(*inventory, map[string]any{"case": key, "name": p.Name, "lifecycle": "@implemented", "runner": "@go"})
@@ -159,6 +184,9 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 		if lifecycle == "@implemented" || canonical {
 			expected[key] = expectedCase{key, p.Name, len(p.Steps)}
 		}
+	}
+	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1)) {
+		return fmt.Errorf("%s: selected canonical case count drift: %d", path, canonicalCases)
 	}
 	return nil
 }

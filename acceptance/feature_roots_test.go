@@ -18,6 +18,11 @@ func overlapFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "zip-admission.feature")
 }
 
+// Only the negative-budget scenario outline in this canonical feature is selected.
+func negativeBudgetFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "admission-limit-configuration.feature")
+}
+
 func goCandidateRoot() string {
 	return filepath.Join(testutil.ReferenceRoot(), "staging", "go", "behaviors")
 }

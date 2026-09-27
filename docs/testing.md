@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.41.0`, commit
-`301ffb6141aa2207471ff51f2894428bd7e39fbf`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.42.0`, commit
+`0b8b5a204eb34bff0486174e0abf65d8794684fc`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -36,22 +36,28 @@ The released pin uses schema2 with `commit`, `tag`, `tag_object`,
 `manifest_sha256`, `assets`, `facts`, `workflows` and `workflow_cases`.
 There is no separate pack seal. The root manifest seals
 `contracts/mutation-safety.json` and all five declared operation feature paths.
-The v0.41 contract uses an explicit feature list (contract schema 2), selecting
+The v0.42 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.41.0` contains 368 manifest assets, including 114 physical fixtures
-(113 ZIP archives), plus 149 facts and 299 workflows/785 expanded cases.
-The canonical registry has 58 feature files. Another 143 files are staged
+Release `v0.42.0` contains 369 manifest assets, including 114 physical fixtures
+(113 ZIP archives), plus 149 facts and 300 workflows/787 expanded cases.
+The canonical registry has 59 feature files. Another 143 files are staged
 consumer candidates, including 55 native Go features and 21 Go behaviour
 catalogue candidates. The Go files retain their source IDs and wording; moving
 them gives no new canonical execution credit. The shared ZIP-overlap outcome
 `@id-zip-physical-member-overlap-refusal` replaces native `@ZIP-003` one-for-one.
 Its selected seven steps require independent readable-member and physical-range
-checks before a typed overlap refusal; other ZIP admission outcomes remain planned
-for Go.
+checks before a typed overlap refusal. The separate
+`@id-package-admission-negative-budget` outline selects two six-step cases on
+the sealed default DOCX. The direct `OpenReaderWithLimits` API rejects negative
+source-byte and entry-count budgets before any `ReaderAt` access, returns nil
+and a plain invalid-argument error distinct from typed package/resource refusals,
+and leaves caller bytes unchanged. Zero-budget policy is API-specific. Positive
+resource-budget cases and the staged `@candidate-go-archive-001` retain their
+existing scope; other canonical admission outcomes remain planned for Go.
 The format-grouped workflows retain the previous 229 IDs and 562 cases. In four operation
 features, 16 IDs and 18 cases keep their inputs and observable outcomes while
 reviewed actor wording and profile tags change. Two package workflows preserve
@@ -83,8 +89,8 @@ revisions workflow. The text-only profile and broader multi-story operations
 keep their earlier scope. The new cases remain planned for Go with zero
 execution credit. An opt-in paired text-move revision rule adds nine IDs and
 45 cases to the same workflow, limited to paired source/destination ranges in
-one story; these also remain planned with zero Go execution credit. The shared overlap binding adds exactly one canonical execution case; all other
-shared workflows remain planned for Go. Native acceptance has 291 selected cases,
+one story; these also remain planned with zero Go execution credit. Two exact shared outcomes add three canonical execution cases. All other shared
+workflows remain planned for Go. Acceptance has 293 selected cases,
 20 planned native cases and one external native case. Shared
 ECMA specifications, extracts and derived notes are indexed under
 [`specs/ecma-376/`](../references/fixtures-ooxml/specs/ecma-376/README.md).
@@ -156,10 +162,12 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The v0.41 default batch is recorded in
+The v0.42 default batch is recorded in
+[`reports/batches/157.md`](../reports/batches/157.md): 293 selected cases and
+988 passed steps, with 20 native planned and one native external case unrun.
+The previous v0.41 batch is recorded in
 [`reports/batches/156.md`](../reports/batches/156.md): 291 selected cases and
-976 passed steps, with 20 native planned and one native external case unrun.
-The previous v0.35 batch is recorded in
+976 passed steps. The v0.35 batch is recorded in
 [`reports/batches/155.md`](../reports/batches/155.md): 291 implemented native
 Gherkin cases and 972 steps passed; 20 planned and one external case were not
 run. The moved Go source cases keep their IDs, lines and test outcomes. Package/unit

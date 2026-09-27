@@ -1,0 +1,23 @@
+go test -p 2 ./...
+ok  	github.com/rcarmo/go-ooxml/e2e	0.812s
+ok  	github.com/rcarmo/go-ooxml/internal/formula	0.003s
+ok  	github.com/rcarmo/go-ooxml/internal/losslessxml	0.004s
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	0.462s
+ok  	github.com/rcarmo/go-ooxml/pkg/document	0.892s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/chart	0.002s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/common	0.001s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/diagram	0.003s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/dml	0.001s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/pml	0.002s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/sml	0.002s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/theme	0.002s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/wml	0.003s
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	0.400s
+ok  	github.com/rcarmo/go-ooxml/pkg/presentation	0.694s
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	0.225s
+ok  	github.com/rcarmo/go-ooxml/pkg/utils	0.002s
+?   	github.com/rcarmo/go-ooxml/tools/casefold	[no test files]
+?   	github.com/rcarmo/go-ooxml/tools/fixturepath	[no test files]
+ok  	github.com/rcarmo/go-ooxml/tools/nativeinventory	0.001s
+cd acceptance && go test -p 2 ./...
+ok  	github.com/rcarmo/go-ooxml/acceptance	3.165s
