@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "8eb8abfb18a5a2b3c65d340d74f3d61512873d1b",
+  "referenceCommit": "7b7a2fa2610c421cdde9d7b1da9125c8f98b9dd8",
+  "referenceTag": "v0.35.0",
+  "scope": "Historical Go binary path custody; no runtime fallback, binary compatibility symlinks, or canonical execution credit.",
+  "fixtures": [
+    {
+      "oldPath": "testdata/default.docx",
+      "sharedAssetId": "fixture-d9d6a313182a71a73d75a26a0ff3b7826dbd2e300e1d202114ec9f8fb018fda5",
+      "sharedPath": "fixtures/docx/creation/default-d9d6a313182a.docx",
+      "sha256": "d9d6a313182a71a73d75a26a0ff3b7826dbd2e300e1d202114ec9f8fb018fda5",
+      "bytes": 36563,
+      "displayName": "Default Word package (historical fixture label)"
+    },
+    {
+      "oldPath": "testdata/default.pptx",
+      "sharedAssetId": "fixture-151d747bc37d4f4988c1116f4abb45196b1c1644319ce342ee4dd56d111f3132",
+      "sharedPath": "fixtures/pptx/creation/default-151d747bc37d.pptx",
+      "sha256": "151d747bc37d4f4988c1116f4abb45196b1c1644319ce342ee4dd56d111f3132",
+      "bytes": 27387,
+      "displayName": "Default PowerPoint package (historical fixture label)"
+    },
+    {
+      "oldPath": "testdata/excel/comments.xlsx",
+      "sharedAssetId": "fixture-264be55e012d4bc2b3bf25e59824fdd30022e94f70869ea7d6ad960b803a902f",
+      "sharedPath": "fixtures/xlsx/comments/comments-264be55e012d.xlsx",
+      "sha256": "264be55e012d4bc2b3bf25e59824fdd30022e94f70869ea7d6ad960b803a902f",
+      "bytes": 6337,
+      "displayName": "Excel Cell comments"
+    },
+    {
+      "oldPath": "testdata/excel/conditional_format.xlsx",
+      "sharedAssetId": "fixture-7124469770b5368c036f9dcc13d0c09c382797827d1b58934d9b2a0b61efee28",
+      "sharedPath": "fixtures/xlsx/conditional-formatting/conditional-format-7124469770b5.xlsx",
+      "sha256": "7124469770b5368c036f9dcc13d0c09c382797827d1b58934d9b2a0b61efee28",
+      "bytes": 5126,
+      "displayName": "Excel Conditional formatting rules"
+    },
+    {
+      "oldPath": "testdata/excel/data_types.xlsx",
+      "sharedAssetId": "fixture-13bf5f08697e7de3da52b47d61e0f5af42081a4f1bdfbc1d51a3926910098b68",
+      "sharedPath": "fixtures/xlsx/cells/data-types-13bf5f08697e.xlsx",
+      "sha256": "13bf5f08697e7de3da52b47d61e0f5af42081a4f1bdfbc1d51a3926910098b68",
+      "bytes": 5052,
+      "displayName": "Excel String, number, date, boolean, formula cells"
+    },
+    {
+      "oldPath": "testdata/excel/formatting.xlsx",
+      "sharedAssetId": "fixture-dab1d6dbdfa594680115bc87fc1707fbd06adea87b45ef0a1115d7cf4c4f72b5",
+      "sharedPath": "fixtures/xlsx/formatting/formatting-dab1d6dbdfa5.xlsx",
+      "sha256": "dab1d6dbdfa594680115bc87fc1707fbd06adea87b45ef0a1115d7cf4c4f72b5",
+      "bytes": 5269,
+      "displayName": "Excel Colors, fonts, borders"
+    },
+    {
+      "oldPath": "testdata/excel/formulas.xlsx",
+      "sharedAssetId": "fixture-61d8806a5fd3ff6c9eb62d716a6d929d0947e35ac6d9ac56626704690ecd3877",
+      "sharedPath": "fixtures/xlsx/formulas/formulas-61d8806a5fd3.xlsx",
+      "sha256": "61d8806a5fd3ff6c9eb62d716a6d929d0947e35ac6d9ac56626704690ecd3877",
+      "bytes": 5286,
+      "displayName": "Excel Various formulas (SUM, VLOOKUP, etc.)"
+    },
+    {
+      "oldPath": "testdata/excel/merged_cells.xlsx",
+      "sharedAssetId": "fixture-691d1d459bd3d2ac3704b889bde121186b802381cf618c0a2daf12ca5b76ebec",
+      "sharedPath": "fixtures/xlsx/tables/merged-cells-691d1d459bd3.xlsx",
+      "sha256": "691d1d459bd3d2ac3704b889bde121186b802381cf618c0a2daf12ca5b76ebec",
+      "bytes": 5131,
+      "displayName": "Excel Merged cell regions"
+    },
+    {
+      "oldPath": "testdata/excel/minimal.xlsx",
+      "sharedAssetId": "fixture-5140bb7ea22875bc86e3a9790b3dce686a8adc518f7c8597fbddd5d83264b59d",
+      "sharedPath": "fixtures/xlsx/creation/minimal-5140bb7ea228.xlsx",
+      "sha256": "5140bb7ea22875bc86e3a9790b3dce686a8adc518f7c8597fbddd5d83264b59d",
+      "bytes": 4782,
+      "displayName": "Excel Empty workbook with one sheet"
+    },
+    {
+      "oldPath": "testdata/excel/multiple_sheets.xlsx",
+      "sharedAssetId": "fixture-a88d1e934bea9d3483325937f29a5d0880065bd54f95bbeceb612f7d4b5575f6",
+      "sharedPath": "fixtures/xlsx/worksheets/multiple-sheets-a88d1e934bea.xlsx",
+      "sha256": "a88d1e934bea9d3483325937f29a5d0880065bd54f95bbeceb612f7d4b5575f6",
+      "bytes": 6381,
+      "displayName": "Excel Three sheets with data"
+    },
+    {
+      "oldPath": "testdata/excel/named_ranges.xlsx",
+      "sharedAssetId": "fixture-cc8da5b5969032cbd2bdc6a40b26fc61c2366cf87e3d9455d4fdb8308ceb14fa",
+      "sharedPath": "fixtures/xlsx/defined-names/named-ranges-cc8da5b59690.xlsx",
+      "sha256": "cc8da5b5969032cbd2bdc6a40b26fc61c2366cf87e3d9455d4fdb8308ceb14fa",
+      "bytes": 5033,
+      "displayName": "Excel Named ranges defined"
+    },
+    {
+      "oldPath": "testdata/excel/single_cell.xlsx",
+      "sharedAssetId": "fixture-78318622a642a298a0ec9626fc03a86719e0d9d2f170aa7e8d15db99ee29dbd9",
+      "sharedPath": "fixtures/xlsx/cells/single-cell-78318622a642.xlsx",
+      "sha256": "78318622a642a298a0ec9626fc03a86719e0d9d2f170aa7e8d15db99ee29dbd9",
+      "bytes": 4841,
+      "displayName": "Excel One cell with a value"
+    },
+    {
+      "oldPath": "testdata/excel/tables.xlsx",
+      "sharedAssetId": "fixture-51eaa2ee2fa09f384e5c177cebd62801d628f20724c57a221a25112cf374a8fb",
+      "sharedPath": "fixtures/xlsx/tables/tables-51eaa2ee2fa0.xlsx",
+      "sha256": "51eaa2ee2fa09f384e5c177cebd62801d628f20724c57a221a25112cf374a8fb",
+      "bytes": 5726,
+      "displayName": "Excel Excel tables (not just cell ranges)"
+    },
+    {
+      "oldPath": "testdata/pptx/bullet_points.pptx",
+      "sharedAssetId": "fixture-5c615f27a23cb0d5fe3d603080ba057c7fc320f2af1df277b5b0dd128f1a8e3d",
+      "sharedPath": "fixtures/pptx/text/bullet-points-5c615f27a23c.pptx",
+      "sha256": "5c615f27a23cb0d5fe3d603080ba057c7fc320f2af1df277b5b0dd128f1a8e3d",
+      "bytes": 30170,
+      "displayName": "PowerPoint Slide with bullet points"
+    },
+    {
+      "oldPath": "testdata/pptx/comments.pptx",
+      "sharedAssetId": "fixture-ababb5bed8eeed4511f25e23da8e9039642ed3020b1517622d3ed71f5d5ef319",
+      "sharedPath": "fixtures/pptx/comments/comments-ababb5bed8ee.pptx",
+      "sha256": "ababb5bed8eeed4511f25e23da8e9039642ed3020b1517622d3ed71f5d5ef319",
+      "bytes": 38096,
+      "displayName": "PowerPoint Slide with author metadata"
+    },
+    {
+      "oldPath": "testdata/pptx/hidden_slides.pptx",
+      "sharedAssetId": "fixture-e01ded1106a28f94a3439e8368f9a12ec360891f4a9e2810f6504c4c328ed79c",
+      "sharedPath": "fixtures/pptx/slides/hidden-slides-e01ded1106a2.pptx",
+      "sha256": "e01ded1106a28f94a3439e8368f9a12ec360891f4a9e2810f6504c4c328ed79c",
+      "bytes": 30935,
+      "displayName": "PowerPoint Mix of visible and hidden slides"
+    },
+    {
+      "oldPath": "testdata/pptx/image1.png",
+      "sharedAssetId": "fixture-21e40e91bf948fd8b179c59915b5b840c0f8438ea7f2f144b4287cfd9b158e7f",
+      "sharedPath": "fixtures/png/media/sample-image.png",
+      "sha256": "21e40e91bf948fd8b179c59915b5b840c0f8438ea7f2f144b4287cfd9b158e7f",
+      "bytes": 399889,
+      "displayName": "Sample PowerPoint image"
+    },
+    {
+      "oldPath": "testdata/pptx/images.pptx",
+      "sharedAssetId": "fixture-88f5cf211cbedea688b081b2822c9207670e58a665afb1222506672fda3de2a8",
+      "sharedPath": "fixtures/pptx/media/images-88f5cf211cbe.pptx",
+      "sha256": "88f5cf211cbedea688b081b2822c9207670e58a665afb1222506672fda3de2a8",
+      "bytes": 977458,
+      "displayName": "PowerPoint Embedded images (placeholder shapes)"
+    },
+    {
+      "oldPath": "testdata/pptx/layouts.pptx",
+      "sharedAssetId": "fixture-ef5de48dec43f165d513086506ba52c8f1b9ebbbc2fc99a6b4f56731f6115862",
+      "sharedPath": "fixtures/pptx/layouts/layouts-ef5de48dec43.pptx",
+      "sha256": "ef5de48dec43f165d513086506ba52c8f1b9ebbbc2fc99a6b4f56731f6115862",
+      "bytes": 35037,
+      "displayName": "PowerPoint All standard layouts used"
+    },
+    {
+      "oldPath": "testdata/pptx/minimal.pptx",
+      "sharedAssetId": "fixture-6a28461a00850a9297690a0a53ad8c109aea9e6f279df309639e73be0cc4c762",
+      "sharedPath": "fixtures/pptx/creation/minimal-6a28461a0085.pptx",
+      "sha256": "6a28461a00850a9297690a0a53ad8c109aea9e6f279df309639e73be0cc4c762",
+      "bytes": 28104,
+      "displayName": "PowerPoint Single blank slide"
+    },
+    {
+      "oldPath": "testdata/pptx/multiple_masters.pptx",
+      "sharedAssetId": "fixture-e6bbd95968d9fd04bfc13cecc671a7438ab3c99987bc36b4fe118ef99241296f",
+      "sharedPath": "fixtures/pptx/layouts/multiple-masters-e6bbd95968d9.pptx",
+      "sha256": "e6bbd95968d9fd04bfc13cecc671a7438ab3c99987bc36b4fe118ef99241296f",
+      "bytes": 31433,
+      "displayName": "PowerPoint Multiple slide layouts used"
+    },
+    {
+      "oldPath": "testdata/pptx/notes.pptx",
+      "sharedAssetId": "fixture-04faba67841dda25dc3ff9e3e6e345e6feeeef1cf25a6b9065bf5fbdc83163dc",
+      "sharedPath": "fixtures/pptx/notes/notes-04faba67841d.pptx",
+      "sha256": "04faba67841dda25dc3ff9e3e6e345e6feeeef1cf25a6b9065bf5fbdc83163dc",
+      "bytes": 40440,
+      "displayName": "PowerPoint Slides with speaker notes"
+    },
+    {
+      "oldPath": "testdata/pptx/shapes.pptx",
+      "sharedAssetId": "fixture-2610748ab308da10d61ebc6e5677f774427a207bdb474b74ebd3ae234152589e",
+      "sharedPath": "fixtures/pptx/shapes/shapes-2610748ab308.pptx",
+      "sha256": "2610748ab308da10d61ebc6e5677f774427a207bdb474b74ebd3ae234152589e",
+      "bytes": 28643,
+      "displayName": "PowerPoint Various shape types (rectangles, arrows, etc.)"
+    },
+    {
+      "oldPath": "testdata/pptx/tables.pptx",
+      "sharedAssetId": "fixture-3465194945a0f8084084ceb843c219d59a4ad92b25a271d66182587d637db0be",
+      "sharedPath": "fixtures/pptx/tables/tables-3465194945a0.pptx",
+      "sha256": "3465194945a0f8084084ceb843c219d59a4ad92b25a271d66182587d637db0be",
+      "bytes": 28643,
+      "displayName": "PowerPoint Table on slide"
+    },
+    {
+      "oldPath": "testdata/pptx/title_slide.pptx",
+      "sharedAssetId": "fixture-836b5c7d7917a5e053ca994d96af0409d5f6650dd28b02dda9f878f8600c8656",
+      "sharedPath": "fixtures/pptx/text/title-slide-836b5c7d7917.pptx",
+      "sha256": "836b5c7d7917a5e053ca994d96af0409d5f6650dd28b02dda9f878f8600c8656",
+      "bytes": 28275,
+      "displayName": "PowerPoint Title layout slide with content"
+    },
+    {
+      "oldPath": "testdata/word/bullet_list.docx",
+      "sharedAssetId": "fixture-cb2c2610f99f786484b1941f25d068f6347cd0cd95213a57db849842d9d4a64b",
+      "sharedPath": "fixtures/docx/numbering/bullet-list-cb2c2610f99f.docx",
+      "sha256": "cb2c2610f99f786484b1941f25d068f6347cd0cd95213a57db849842d9d4a64b",
+      "bytes": 36788,
+      "displayName": "Word Bullet list items"
+    },
+    {
+      "oldPath": "testdata/word/comments.docx",
+      "sharedAssetId": "fixture-2029abbda3bdacb270137f6210791ba2ee3f8be62affb8cc3181f3ac72a7c35a",
+      "sharedPath": "fixtures/docx/comments/comments-2029abbda3bd.docx",
+      "sha256": "2029abbda3bdacb270137f6210791ba2ee3f8be62affb8cc3181f3ac72a7c35a",
+      "bytes": 36799,
+      "displayName": "Word Multiple comments with replies"
+    },
+    {
+      "oldPath": "testdata/word/complex_table.docx",
+      "sharedAssetId": "fixture-28da984e3fc4c6079579c0e8b3b9a901a46ed3f9081f3a074e0fb7333b984695",
+      "sharedPath": "fixtures/docx/tables/complex-table-28da984e3fc4.docx",
+      "sha256": "28da984e3fc4c6079579c0e8b3b9a901a46ed3f9081f3a074e0fb7333b984695",
+      "bytes": 37015,
+      "displayName": "Word Merged cells, nested tables"
+    },
+    {
+      "oldPath": "testdata/word/formatted_text.docx",
+      "sharedAssetId": "fixture-9a92eba3dc84f293a82de9496e571c780fd258cc3bf276b74464faaef5835dbc",
+      "sharedPath": "fixtures/docx/formatting/formatted-text-9a92eba3dc84.docx",
+      "sha256": "9a92eba3dc84f293a82de9496e571c780fd258cc3bf276b74464faaef5835dbc",
+      "bytes": 36756,
+      "displayName": "Word Bold, italic, underline, colors, font sizes"
+    },
+    {
+      "oldPath": "testdata/word/headers_footers.docx",
+      "sharedAssetId": "fixture-3bafa155242222dbd3529b56af6b8f1939cbd2e954de5b80afeadbbd53a432aa",
+      "sharedPath": "fixtures/docx/headers-footers/headers-footers-3bafa1552422.docx",
+      "sha256": "3bafa155242222dbd3529b56af6b8f1939cbd2e954de5b80afeadbbd53a432aa",
+      "bytes": 38462,
+      "displayName": "Word Different first page, odd/even headers/footers"
+    },
+    {
+      "oldPath": "testdata/word/headings.docx",
+      "sharedAssetId": "fixture-8513f05370714f5e288ec1ca2fb76fe21b74b458636f325666b20b100c9b021a",
+      "sharedPath": "fixtures/docx/styles/headings-8513f0537071.docx",
+      "sha256": "8513f05370714f5e288ec1ca2fb76fe21b74b458636f325666b20b100c9b021a",
+      "bytes": 36857,
+      "displayName": "Word All heading levels 1-9"
+    },
+    {
+      "oldPath": "testdata/word/minimal.docx",
+      "sharedAssetId": "fixture-9726b477472ddb7595875c9f30493df2577e587416b18418d0dc7221046690fe",
+      "sharedPath": "fixtures/docx/creation/minimal-9726b477472d.docx",
+      "sha256": "9726b477472ddb7595875c9f30493df2577e587416b18418d0dc7221046690fe",
+      "bytes": 36563,
+      "displayName": "Word Empty document with just body element"
+    },
+    {
+      "oldPath": "testdata/word/numbered_list.docx",
+      "sharedAssetId": "fixture-37d3c408403dbecf4310f0a0b1313dc0c3756302e1778cc32d975823988ea3b2",
+      "sharedPath": "fixtures/docx/numbering/numbered-list-37d3c408403d.docx",
+      "sha256": "37d3c408403dbecf4310f0a0b1313dc0c3756302e1778cc32d975823988ea3b2",
+      "bytes": 36782,
+      "displayName": "Word Numbered list items"
+    },
+    {
+      "oldPath": "testdata/word/sdt_content_controls.docx",
+      "sharedAssetId": "fixture-368fe96cb3ae55a0cc5fecbb599eda1d1058596d4914992f596083f291071ae4",
+      "sharedPath": "fixtures/docx/content-controls/sdt-content-controls-368fe96cb3ae.docx",
+      "sha256": "368fe96cb3ae55a0cc5fecbb599eda1d1058596d4914992f596083f291071ae4",
+      "bytes": 2317,
+      "displayName": "Word Content controls/placeholders"
+    },
+    {
+      "oldPath": "testdata/word/simple_table.docx",
+      "sharedAssetId": "fixture-87e3c67cb73bdbf5c8389791fd2bb459ba0eaac862149af6fd7c5b641dafd56b",
+      "sharedPath": "fixtures/docx/tables/simple-table-87e3c67cb73b.docx",
+      "sha256": "87e3c67cb73bdbf5c8389791fd2bb459ba0eaac862149af6fd7c5b641dafd56b",
+      "bytes": 36859,
+      "displayName": "Word 3x3 table, no merged cells"
+    },
+    {
+      "oldPath": "testdata/word/single_paragraph.docx",
+      "sharedAssetId": "fixture-395b75b992c6662e2bf44c72401020efccc212b41a345e082cb09abee450d97f",
+      "sharedPath": "fixtures/docx/text/single-paragraph-395b75b992c6.docx",
+      "sha256": "395b75b992c6662e2bf44c72401020efccc212b41a345e082cb09abee450d97f",
+      "bytes": 36637,
+      "displayName": "Word One paragraph, no formatting"
+    },
+    {
+      "oldPath": "testdata/word/styles.docx",
+      "sharedAssetId": "fixture-d35e32ab35d4c95e81c15c5baac18b842696adcea960664e329a5a9a699ab7a1",
+      "sharedPath": "fixtures/docx/styles/styles-d35e32ab35d4.docx",
+      "sha256": "d35e32ab35d4c95e81c15c5baac18b842696adcea960664e329a5a9a699ab7a1",
+      "bytes": 36800,
+      "displayName": "Word Custom styles applied"
+    },
+    {
+      "oldPath": "testdata/word/track_changes.docx",
+      "sharedAssetId": "fixture-2e1022f7358f0deeaeb542a6dd10005f455c433a66f1b9b7e8964a48c7f0fb2a",
+      "sharedPath": "fixtures/docx/revisions/track-changes-2e1022f7358f.docx",
+      "sha256": "2e1022f7358f0deeaeb542a6dd10005f455c433a66f1b9b7e8964a48c7f0fb2a",
+      "bytes": 36766,
+      "displayName": "Word Document with insertions and deletions tracked"
+    }
+  ],
+  "specifications": [
+    {
+      "oldPath": "docs/ECMA-376-Part1-Fundamentals.pdf",
+      "sharedPath": "specs/ecma-376/part-1/ECMA-376-Part1-Fundamentals.pdf",
+      "displayName": "ECMA-376 Part 1 — Fundamentals and Markup Language Reference",
+      "sharedAssetId": "asset-7cccfd0ad0e2ef89316acece15e44a8a088d0603ce4bba4e7b0361b50d13a37d",
+      "sha256": "7cccfd0ad0e2ef89316acece15e44a8a088d0603ce4bba4e7b0361b50d13a37d",
+      "bytes": 35304993
+    },
+    {
+      "oldPath": "docs/ECMA-376-Part2-OpenPackagingConventions.pdf",
+      "sharedPath": "specs/ecma-376/part-2/ECMA-376-Part2-OpenPackagingConventions.pdf",
+      "displayName": "ECMA-376 Part 2 — Open Packaging Conventions",
+      "sharedAssetId": "asset-18701071fe15f39389761f82512c70d2effbf22bd16dd034f2939797ff5f6147",
+      "sha256": "18701071fe15f39389761f82512c70d2effbf22bd16dd034f2939797ff5f6147",
+      "bytes": 2009726
+    }
+  ],
+  "retainedException": "pkg/presentation/templates/default.pptx remains embedded in the runtime; docs/icon.png and docs/icon-256.png remain local."
+}

@@ -74,7 +74,7 @@ The `document`, `spreadsheet` and `presentation` packages provide the authoring 
 
 ## Development
 
-The runtime uses the Go standard library; Godog and Gherkin live in the separate `acceptance/` test module. `pkg/` holds the public APIs, `internal/` holds implementation and fixture lookup helpers, and `e2e/` holds cross-package tests. The pinned `references/fixtures-ooxml/` submodule supplies shared fixture IDs, facts, canonical workflows and Go's native feature files under `staging/go/`. Tests leave its files alone and write generated output under local `artifacts/` or temporary directories. The repository also retains older local `testdata/` fixtures and ECMA PDFs for provenance; tests resolve their inputs through the shared manifest.
+The runtime uses the Go standard library; Godog and Gherkin live in the separate `acceptance/` test module. `pkg/` holds the public APIs, `internal/` holds implementation and fixture lookup helpers, and `e2e/` holds cross-package tests. The pinned `references/fixtures-ooxml/` submodule supplies shared fixture IDs, facts, canonical workflows and Go's native feature files under `staging/go/`. Tests leave its files alone and write generated output under local `artifacts/` or temporary directories. The repository records the original local fixture paths, hashes and shared IDs in [`spec/legacy-fixture-migration.json`](spec/legacy-fixture-migration.json) instead of retaining duplicate binaries or ECMA PDFs. Tests resolve inputs through the pinned shared manifest; the embedded presentation template remains local for the runtime.
 
 ```bash
 git submodule update --init --recursive

@@ -85,8 +85,10 @@ workflow inventory adds no Go binding or execution credit. Local native acceptan
 ECMA specifications, extracts and derived notes are indexed under
 [`specs/ecma-376/`](../references/fixtures-ooxml/specs/ecma-376/README.md).
 The full PDFs are the specification sources; five earlier ECMA documents and
-PDFs are also retained under `docs/` from the original main history. Follow the
-pinned specification index for editions and provenance. Go's package ledger has
+PDFs from the original main history are recorded with their old paths and hashes
+in [`spec/legacy-fixture-migration.json`](../spec/legacy-fixture-migration.json),
+not duplicated under `docs/`. Follow the pinned specification index for editions
+and provenance. Go's package ledger has
 four partial mappings and eight unmapped declarations; its XML ledger has three
 partial mappings and one unmapped.
 Neither ledger grants canonical execution credit. The semantic-diff assertion
@@ -98,8 +100,10 @@ checkout. The local behaviour mapping JSON and native source inventory remain in
 `staging/go/behaviors/`. Candidates do not enter the native execution selector.
 For a sealed candidate run, `OOXML_FIXTURES_ROOT` changes all these lookup roots
 alongside fixture lookup. The local copies of the 76 feature files have been
-removed. The 39 original-main `testdata/` files remain for provenance; fixture
-lookup does not fall back to them.
+removed. The 38 original-main binary `testdata/` files are recorded in
+[`spec/legacy-fixture-migration.json`](../spec/legacy-fixture-migration.json)
+and replaced by the byte-identical shared inputs. `testdata/FIXTURES.md` remains
+as a historical index; fixture lookup has no local fallback.
 
 Update the gitlink and `spec/reference-distribution.json` together when adopting
 a release. Use the recorded submodule commit; `git submodule update --remote`

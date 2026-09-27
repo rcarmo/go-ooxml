@@ -110,12 +110,13 @@ push: ## Push commits and current tag to origin
 # OOXML Validation (requires .NET SDK)
 # =============================================================================
 
-validate: ## Validate OOXML files in testdata/ using official SDK
-	@if [ ! -f $(VALIDATOR)/bin/Release/net10.0/OoxmlValidator.dll ]; then \
+validate: ## Validate the two historical root fixtures from the pinned shared checkout using the official SDK
+	@set -e; if [ ! -f $(VALIDATOR)/bin/Release/net10.0/OoxmlValidator.dll ]; then \
 		echo "Building validator..."; \
-		export DOTNET_ROOT=$(DOTNET_ROOT) && cd $(VALIDATOR) && dotnet build -c Release -q; \
-	fi
-	@export DOTNET_ROOT=$(DOTNET_ROOT) && \
-	for f in testdata/*.docx testdata/*.xlsx testdata/*.pptx 2>/dev/null; do \
-		[ -f "$$f" ] && dotnet $(VALIDATOR)/bin/Release/net10.0/OoxmlValidator.dll "$$f" || true; \
+		export DOTNET_ROOT=$(DOTNET_ROOT) && cd $(VALIDATOR) && dotnet build -c Release -m:1 -p:UseSharedCompilation=false --disable-build-servers -q; \
+	fi; \
+	export DOTNET_ROOT=$(DOTNET_ROOT); \
+	for id in fixture-d9d6a313182a71a73d75a26a0ff3b7826dbd2e300e1d202114ec9f8fb018fda5 fixture-151d747bc37d4f4988c1116f4abb45196b1c1644319ce342ee4dd56d111f3132; do \
+		f=$$(go run ./tools/fixturepath "$$id"); \
+		dotnet $(VALIDATOR)/bin/Release/net10.0/OoxmlValidator.dll "$$f"; \
 	done

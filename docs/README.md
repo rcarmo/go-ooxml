@@ -25,7 +25,7 @@ alone does not mark markup deprecated.
 | [WordprocessingML notes](../references/fixtures-ooxml/specs/ecma-376/notes/ECMA-376-Phase3-Reference.md) | Project-authored explanations; not normative |
 | [WordprocessingML extract](../references/fixtures-ooxml/specs/ecma-376/extracts/ECMA-376-WML-Phase3.md) | Verbatim selected text; check clauses in the full PDF |
 | [Part 2 extract](../references/fixtures-ooxml/specs/ecma-376/extracts/ECMA-376-Part2-OPC.md) | Verbatim selected OPC text; check clauses in the full PDF |
-| [Original-main Part 1 PDF](ECMA-376-Part1-Fundamentals.pdf) and [Part 2 PDF](ECMA-376-Part2-OpenPackagingConventions.pdf) | Retained local copies from the original main history; use the pinned specification index above for editions and provenance |
+| [Historical PDF custody](../spec/legacy-fixture-migration.json) | Original-main Part 1 and Part 2 paths and hashes map to the byte-identical pinned PDFs above; no local copies remain |
 | [FIT-GAP-ANALYSIS.md](FIT-GAP-ANALYSIS.md) | Historical January 2026 assessment; percentages are not measured current coverage |
 | [ROUNDTRIP-TESTS.md](ROUNDTRIP-TESTS.md) | Native fixture round-trip assertion catalogue |
 

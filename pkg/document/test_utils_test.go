@@ -214,7 +214,7 @@ func (h *TestHelper) OpenDocument(path string) Document {
 	return doc
 }
 
-// OpenFixture opens a document fixture from testdata/word.
+// OpenFixture opens a Word fixture resolved through the pinned shared manifest.
 func (h *TestHelper) OpenFixture(name string) Document {
 	h.t.Helper()
 	return h.OpenDocument(fixturePath(name))
