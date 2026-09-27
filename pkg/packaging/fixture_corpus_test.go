@@ -9,8 +9,9 @@ import (
 	"testing"
 )
 
-// One logical corpus batch; duplicate labels resolve to one canonical file.
-// These checks establish no-op custody, not graph/format-edit coverage.
+// One retained-input corpus batch. The observed-generated archives are retired
+// and cannot stand in for these committed inputs. These checks establish no-op
+// custody, not graph/format-edit coverage.
 func TestRetainedNoOpFixtureCorpus(t *testing.T) {
 	count := 0
 	for _, label := range testutil.FixtureLabels("") {
@@ -38,8 +39,8 @@ func TestRetainedNoOpFixtureCorpus(t *testing.T) {
 			}
 		})
 	}
-	if count == 0 {
-		t.Fatal("empty corpus")
+	if count != 37 {
+		t.Fatalf("retained Office corpus drift: %d labels, want 37", count)
 	}
-	t.Logf("%d Office fixtures tested", count)
+	t.Logf("%d retained Office fixture labels tested", count)
 }

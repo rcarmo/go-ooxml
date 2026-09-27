@@ -58,7 +58,7 @@ func TestLegacyFixtureMigrationBatch(t *testing.T) {
 	}
 	// These source rows describe the original v0.35 migration. Do not rewrite
 	// their identities when a later distribution retires a physical archive.
-	if ledger.Schema != 1 || ledger.ReferenceCommit != "7b7a2fa2610c421cdde9d7b1da9125c8f98b9dd8" || ledger.ReferenceTag != "v0.35.0" || identity.Tag != "v0.43.0" || len(ledger.Fixtures) != 38 || len(ledger.Specifications) != 2 {
+	if ledger.Schema != 1 || ledger.ReferenceCommit != "7b7a2fa2610c421cdde9d7b1da9125c8f98b9dd8" || ledger.ReferenceTag != "v0.35.0" || identity.Tag != "v0.44.0" || len(ledger.Fixtures) != 38 || len(ledger.Specifications) != 2 {
 		t.Fatal("historical migration or current pin differs from expected scope")
 	}
 	retired := readRetiredFixtures(t)
@@ -214,6 +214,80 @@ func TestLegacyFixtureMigrationBatch(t *testing.T) {
 	}
 	if !bytes.Equal(embedded, canonical) {
 		t.Fatalf("embedded template differs from pinned shared fixture %s", templateID)
+	}
+	checkObservedGeneratedRetirement(t, byID)
+}
+
+// checkObservedGeneratedRetirement keeps the v0.43 observed-generated inputs
+// recoverable through the immutable shared tag without treating historical IDs
+// or labels as aliases for committed Office inputs in the current distribution.
+func checkObservedGeneratedRetirement(t *testing.T, manifest map[string]struct {
+	path, hash, role string
+	size             int64
+}) {
+	t.Helper()
+	var ledger struct {
+		Schema int `json:"schemaVersion"`
+		Source struct {
+			Commit   string `json:"commit"`
+			Tag      string `json:"tag"`
+			Manifest string `json:"manifestSha256"`
+		} `json:"releaseSource"`
+		Retired []struct {
+			ID     string `json:"id"`
+			Path   string `json:"path"`
+			Hash   string `json:"sha256"`
+			Bytes  int64  `json:"bytes"`
+			Role   string `json:"role"`
+			Origin []struct {
+				Kind string `json:"kind"`
+				Path string `json:"path"`
+			} `json:"origins"`
+		} `json:"retired"`
+	}
+	data, err := os.ReadFile(ReferencePath("ledgers", "observed-generated-retirement.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(data, &ledger); err != nil {
+		t.Fatal(err)
+	}
+	if ledger.Schema != 1 || ledger.Source.Commit != "5f07417b26d199e7b6c033fcb90773ae4208e1e3" || ledger.Source.Tag != "v0.43.0" || ledger.Source.Manifest != "e970c290ce768fb9ada8f40fd83d79e68265d82c0d2131648b3cfcc0217bcfb3" || len(ledger.Retired) != 35 {
+		t.Fatal("unexpected observed-generated historical release or retirement count")
+	}
+	retiredIDs, origins := map[string]bool{}, map[string]bool{}
+	for _, row := range ledger.Retired {
+		if row.ID != "fixture-"+row.Hash || len(row.Hash) != 64 || row.Role != "fixture" || row.Bytes <= 0 || !filepath.IsLocal(row.Path) || !strings.HasPrefix(row.Path, "fixtures/") || retiredIDs[row.ID] {
+			t.Fatalf("invalid observed-generated retirement %s", row.ID)
+		}
+		retiredIDs[row.ID] = true
+		if _, ok := manifest[row.ID]; ok {
+			t.Fatalf("retired G identity still manifest-selected: %s", row.ID)
+		}
+		if _, err := os.Lstat(ReferencePath(row.Path)); !os.IsNotExist(err) {
+			t.Fatalf("retired G physical path still present: %s (%v)", row.Path, err)
+		}
+		if _, err := LookupFixture(row.ID); err == nil {
+			t.Fatalf("retired G identity still resolves: %s", row.ID)
+		}
+		for _, origin := range row.Origin {
+			const prefix = "testdata/generated/"
+			if origin.Kind != "observed-generated" || !strings.HasPrefix(origin.Path, prefix) || !filepath.IsLocal(origin.Path) || origins[origin.Path] {
+				t.Fatalf("invalid or duplicate G source path %s", origin.Path)
+			}
+			origins[origin.Path] = true
+		}
+	}
+	if len(origins) != 36 {
+		t.Fatalf("G source paths=%d, want 36", len(origins))
+	}
+	for label := range fixtureIDs {
+		if strings.HasPrefix(label, "generated/") {
+			t.Fatalf("generated input label still active: %s", label)
+		}
+	}
+	if len(fixtureIDs) != 38 {
+		t.Fatalf("retained input labels=%d, want 38", len(fixtureIDs))
 	}
 }
 

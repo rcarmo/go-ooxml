@@ -6,8 +6,8 @@ through its schema2 manifest. Documents and media live under
 Origins and required licences are metadata; consumers do not reconstruct origin
 folders, copy fixtures or install compatibility symlinks.
 
-`internal/testutil/fixture_ids.go` maps 75 native input labels to content IDs:
-74 logical Office inputs and one PNG. Several labels can resolve to the same
+`internal/testutil/fixture_ids.go` maps 38 retained native input labels to
+content IDs: 37 logical Office inputs and one PNG. Several labels can resolve to the same
 physical file. `FixturePath` accepts these trusted labels; `LookupFixture` accepts
 `fixture-<full-sha256>`. Paths, size, content hashes, format/group metadata and
 regular-file custody are checked before use. Shared workflow input records use
@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.43.0`, commit
-`5f07417b26d199e7b6c033fcb90773ae4208e1e3`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.44.0`, commit
+`c32f0e221931e0faaaa69740bc2b3a7a5bfefca3`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -36,14 +36,14 @@ The released pin uses schema2 with `commit`, `tag`, `tag_object`,
 `manifest_sha256`, `assets`, `facts`, `workflows` and `workflow_cases`.
 There is no separate pack seal. The root manifest seals
 `contracts/mutation-safety.json` and all five declared operation feature paths.
-The v0.43 contract uses an explicit feature list (contract schema 2), selecting
+The v0.44 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.43.0` contains 370 manifest assets, including 114 physical fixtures
-(113 ZIP archives), plus 149 facts and 301 workflows/788 expanded cases.
+Release `v0.44.0` contains 335 manifest assets, including 79 physical fixtures,
+plus 149 facts and 301 workflows/788 expanded cases.
 The canonical registry has 60 feature files. Another 143 files are staged
 consumer candidates, including 55 native Go features and 21 Go behaviour
 catalogue candidates. The Go files retain their source IDs and wording; moving
@@ -124,7 +124,16 @@ hashes and provenance, in the sealed
 [`fixture-content-consolidation.json`](../references/fixtures-ooxml/ledgers/fixture-content-consolidation.json).
 Active test labels select the retained `default-d9d6…` and `SDT-368fe…` files.
 The retired bytes remain recoverable at immutable shared v0.40.0; the old and
-retained full-archive hashes differ. No runtime fixture alias or fallback exists. `testdata/FIXTURES.md` remains
+retained full-archive hashes differ. Release v0.44 separately retires 35
+observed-generated Office archives and records their 36 historical input paths,
+original hashes and provenance in the sealed
+[`observed-generated-retirement.json`](../references/fixtures-ooxml/ledgers/observed-generated-retirement.json).
+Those bytes remain recoverable at immutable shared v0.43.0. All 37
+`generated/*` input labels are removed, including the SDT label that already
+selected a retained archive. No generated input is remapped to a different
+committed Office fixture. The no-op corpus now tests 37 Office labels; historical
+Go output under `artifacts/generated/` remains unrelated. No runtime fixture
+alias or fallback exists. `testdata/FIXTURES.md` remains
 as a historical index; fixture lookup has no local fallback.
 
 Update the gitlink and `spec/reference-distribution.json` together when adopting
@@ -167,10 +176,12 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The v0.43 default batch is recorded in
-[`reports/batches/158.md`](../reports/batches/158.md): 294 selected cases and
-996 passed steps, with 20 native planned and one native external case unrun.
-The previous v0.42 batch is recorded in
+The v0.44 default batch is recorded in
+[`reports/batches/159.md`](../reports/batches/159.md): 294 selected cases and
+996 passed steps; 20 native planned and one external case were not run. The previous v0.43
+batch is recorded in [`reports/batches/158.md`](../reports/batches/158.md):
+294 selected cases and 996 passed steps, with 20 native planned and one native
+external case unrun. The v0.42 batch is recorded in
 [`reports/batches/157.md`](../reports/batches/157.md): 293 selected cases and
 988 passed steps. The v0.41 batch is recorded in
 [`reports/batches/156.md`](../reports/batches/156.md): 291 selected cases and
