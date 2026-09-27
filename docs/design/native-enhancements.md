@@ -34,7 +34,7 @@ The shared reference has one schema2 manifest and grouped
 `fixtures/<format>/<scenarioGroup>/` inputs. Native labels resolve fixture IDs;
 physical files are deduplicated by SHA-256. `spec/reference-distribution.json`
 records the commit, annotated release tag and seals. The recorded release is
-`v0.34.0`, commit `7643c3d91f63c142e943e0820b79afe8dc7d128c`; default
+`v0.35.0`, commit `7b7a2fa2610c421cdde9d7b1da9125c8f98b9dd8`; default
 checks need no override. [Testing](../testing.md) explains candidate pins and
 checkout verification.
 
@@ -50,12 +50,12 @@ required without claiming an annotated release. Missing inputs fail.
 
 ## Verification and limits
 
-The v0.34 default root and acceptance batch passed with 291 native Gherkin
+The v0.35 default root and acceptance batch passed with 291 native Gherkin
 cases and 972 steps; 20 planned and one external case were not run. See
-[batch 154](../../reports/batches/154.md) for commands, pins and the independent
-clean-checkout run. The main-integration tree passed the same uncached batch and
-a fresh-checkout run after the v0.34 pin was merged. Earlier race reports are
-historical; no race or fuzz suite was run on that integration tree.
+[batch 155](../../reports/batches/155.md) for commands, pins and the independent
+clean-checkout run. Go reads 55 native and 21 catalogue feature files from the
+pinned shared checkout, without new canonical execution credit. Earlier race
+reports are historical; no race or fuzz suite was run in this batch.
 
 No live Office calculation/rendering, schema certification or complete enhancement
 family coverage is established. The extended-comment MIME discrepancy is recorded

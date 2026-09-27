@@ -33,8 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 154](../reports/batches/154.md) records the v0.34 root and acceptance
-checks. Other batch reports record their own commands and outcomes; their
+[Batch 155](../reports/batches/155.md) records the v0.35 root and acceptance
+checks, including the move of Go feature sources into the pinned shared checkout. Other batch reports record their own commands and outcomes; their
 results apply to those revisions. Shared fixtures,
 provenance/licences, facts and canonical workflows belong to the pinned
 `fixtures-ooxml` checkout; this directory does not mirror their source inventories.

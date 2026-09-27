@@ -91,7 +91,7 @@ func (w *world) contains(name string) error {
 func TestAcceptance(t *testing.T) {
 	var output bytes.Buffer
 	w := &world{fixtures: map[string]string{}}
-	suite := godog.TestSuite{Name: "go-ooxml", Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{"../features"}, Tags: "@implemented && @go", Strict: true, Concurrency: 1}}
+	suite := godog.TestSuite{Name: "go-ooxml", Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{goFeatureRoot()}, Tags: "@implemented && @go", Strict: true, Concurrency: 1}}
 	suite.ScenarioInitializer = func(sc *godog.ScenarioContext) {
 		safetySteps(sc)
 		zip64Steps(sc)

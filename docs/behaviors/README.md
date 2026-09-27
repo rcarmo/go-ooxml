@@ -1,9 +1,12 @@
 # Native behaviour reconciliation staging
 
-These files are staging input for the shared `fixtures-ooxml` behaviour registry.
-They are not an independent Go specification or an execution report. Canonical
-scenario IDs and expected outcomes are assigned/reconciled centrally; the Go
-consumer retains only adapters and per-case status/evidence mappings after import.
+The mapping JSON and native source inventory in this directory support review
+against the shared `fixtures-ooxml` behaviour registry. The 21 candidate feature
+files now live under `references/fixtures-ooxml/staging/go/behaviors/`, where
+their original IDs and wording are preserved. They are not an independent Go
+specification or an execution report. Canonical scenario IDs and expected
+outcomes are assigned or reconciled centrally; moving these candidates adds no
+Go execution credit.
 
 `native-inventory.json` inventories tracked native Go test files by SHA256,
 function identity, literal/dynamic subtest call sites, literal parameter groups

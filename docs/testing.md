@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.34.0`, commit
-`7643c3d91f63c142e943e0820b79afe8dc7d128c`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.35.0`, commit
+`7b7a2fa2610c421cdde9d7b1da9125c8f98b9dd8`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -36,14 +36,18 @@ The released pin uses schema2 with `commit`, `tag`, `tag_object`,
 `manifest_sha256`, `assets`, `facts`, `workflows` and `workflow_cases`.
 There is no separate pack seal. The root manifest seals
 `contracts/mutation-safety.json` and all five declared operation feature paths.
-The v0.34 contract uses an explicit feature list (contract schema 2), selecting
+The v0.35 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.34.0` contains 215 manifest assets, including 115 unique fixtures in
-32 format/scenario groups, plus 149 facts and 283 workflows/761 expanded cases.
+Release `v0.35.0` contains 366 manifest assets, including 115 unique fixtures in
+32 format/scenario groups, plus 149 facts and 292 workflows/772 expanded cases.
+The canonical registry has 56 feature files. Another 143 files are staged
+consumer candidates, including 55 native Go features and 21 Go behaviour
+catalogue candidates. The Go files retain their source IDs and wording; moving
+them gives no new canonical execution credit.
 The format-grouped workflows retain the previous 229 IDs and 562 cases. In four operation
 features, 16 IDs and 18 cases keep their inputs and observable outcomes while
 reviewed actor wording and profile tags change. Two package workflows preserve
@@ -88,11 +92,18 @@ partial mappings and one unmapped.
 Neither ledger grants canonical execution credit. The semantic-diff assertion
 `removed: []` exercises no removal case.
 
+The native runner and inventory read `staging/go/features/` in the pinned shared
+checkout. The local behaviour mapping JSON and native source inventory remain in
+`docs/behaviors/`; their 21 candidate features are read from
+`staging/go/behaviors/`. Candidates do not enter the native execution selector.
+For a sealed candidate run, `OOXML_FIXTURES_ROOT` changes all these lookup roots
+alongside fixture lookup. The local copies of the 76 feature files have been
+removed. The 39 original-main `testdata/` files remain for provenance; fixture
+lookup does not fall back to them.
+
 Update the gitlink and `spec/reference-distribution.json` together when adopting
 a release. Use the recorded submodule commit; `git submodule update --remote`
-would follow a branch tip instead of the pin. The local main-integration branch
-contains the v0.34 adoption and retains 39 original-main `testdata/` files for
-provenance. Fixture lookup does not fall back to those files.
+would follow a branch tip instead of the pin.
 
 ## Integrity and output custody
 
@@ -130,20 +141,20 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The v0.34 released-reference batch is recorded in
-[`reports/batches/154.md`](../reports/batches/154.md): 291 implemented native
+The v0.35 released-reference batch is recorded in
+[`reports/batches/155.md`](../reports/batches/155.md): 291 implemented native
 Gherkin cases and 972 steps passed; 20 planned and one external case were not
-run. The main-integration tree also passed an uncached default root-and-acceptance
-batch and an independent fresh-checkout run with the v0.34 pin. Package/unit
-and subtest counts are separate metrics. The integrated tree has not had race,
-fuzz, live Office rendering or calculation checks. Older batch reports retain
-the commands and results from their own revisions.
+run. The moved Go source cases keep their IDs, lines and test outcomes. Package/unit
+and subtest counts are separate metrics. This batch did not run race, fuzz, live
+Office rendering or calculation checks. Older batch reports retain the commands
+and results from their own revisions.
 
 ## Behaviour catalogue
 
-The central registry owns canonical behaviour IDs and expected outcomes. Local
-`docs/behaviors` files stage native findings for reconciliation; they do not form
-a second canonical suite. The current inventory has 404 native declarations,
+The central registry owns canonical behaviour IDs and expected outcomes. The
+`docs/behaviors` mapping JSON and inventory stage native findings for
+reconciliation; their feature sources now live in the shared checkout. They do
+not form a second canonical suite. The current inventory has 404 native declarations,
 including the checkout guards: 197 have reviewed family/parameter mappings in
 207 candidates, and 207 remain unreviewed. This is the frozen inventory snapshot;
 later test declarations need a deliberate refresh before entering its denominator.

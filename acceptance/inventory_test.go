@@ -21,7 +21,7 @@ func inventoryCases() (map[caseID]expectedCase, []map[string]any, error) {
 	counter := 0
 	next := func() string { counter++; return fmt.Sprint(counter) }
 	pattern := regexp.MustCompile(`^@[A-Z]+-[0-9]{3}$`)
-	err := filepath.WalkDir("../features", func(path string, d os.DirEntry, err error) error {
+	err := filepath.WalkDir(goFeatureRoot(), func(path string, d os.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}

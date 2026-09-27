@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -20,7 +21,7 @@ func TestBehaviourCatalogueCandidates(t *testing.T) {
 
 func validateCatalogueFamily(t *testing.T, name string) {
 	t.Helper()
-	const base = "../docs/behaviors/"
+	const mappingBase = "../docs/behaviors"
 	var mapping struct {
 		Status    string   `json:"status"`
 		Feature   string   `json:"feature"`
@@ -35,7 +36,7 @@ func validateCatalogueFamily(t *testing.T, name string) {
 			Coverage string   `json:"coverage"`
 		} `json:"mappings"`
 	}
-	b, err := os.ReadFile(base + name + "-mapping.json")
+	b, err := os.ReadFile(filepath.Join(mappingBase, name+"-mapping.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -55,7 +56,7 @@ func validateCatalogueFamily(t *testing.T, name string) {
 			File string `json:"file"`
 		} `json:"declarations"`
 	}
-	b, err = os.ReadFile(base + "native-inventory.json")
+	b, err = os.ReadFile(filepath.Join(mappingBase, "native-inventory.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -78,7 +79,10 @@ func validateCatalogueFamily(t *testing.T, name string) {
 			required[d.ID] = true
 		}
 	}
-	f, err := os.Open(base + mapping.Feature)
+	if !filepath.IsLocal(mapping.Feature) || filepath.Base(mapping.Feature) != mapping.Feature {
+		t.Fatal("unsafe candidate feature path", mapping.Feature)
+	}
+	f, err := os.Open(filepath.Join(goCandidateRoot(), mapping.Feature))
 	if err != nil {
 		t.Fatal(err)
 	}
