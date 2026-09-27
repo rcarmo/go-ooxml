@@ -20,114 +20,147 @@ func inventoryCases() (map[caseID]expectedCase, []map[string]any, error) {
 	seen := map[string]string{}
 	counter := 0
 	next := func() string { counter++; return fmt.Sprint(counter) }
-	pattern := regexp.MustCompile(`^@[A-Z]+-[0-9]{3}$`)
 	err := filepath.WalkDir(goFeatureRoot(), func(path string, d os.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		if d.IsDir() || filepath.Ext(path) != ".feature" {
-			return nil
-		}
-		f, err := os.Open(path)
-		if err != nil {
-			return err
-		}
-		doc, err := gherkin.ParseGherkinDocument(f, next)
-		_ = f.Close()
-		if err != nil {
-			return err
-		}
-		if doc.Feature == nil {
-			return fmt.Errorf("%s: no feature", path)
-		}
-		lifecycle, runner := "", ""
-		for _, tag := range doc.Feature.Tags {
-			switch tag.Name {
-			case "@implemented", "@planned", "@external":
-				if lifecycle != "" {
-					return fmt.Errorf("%s: multiple lifecycles", path)
-				}
-				lifecycle = tag.Name
-			case "@go", "@office":
-				if runner != "" {
-					return fmt.Errorf("%s: multiple runners", path)
-				}
-				runner = tag.Name
+		return inventoryFeature(path, d, err, expected, &inventory, seen, next, false)
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+	if err = inventoryFeature(overlapFeaturePath(), nil, nil, expected, &inventory, seen, next, true); err != nil {
+		return nil, nil, err
+	}
+	return expected, inventory, nil
+}
+
+var nativeIDPattern = regexp.MustCompile(`^@[A-Z]+-[0-9]{3}$`)
+
+const overlapCaseID = "@id-zip-physical-member-overlap-refusal"
+
+func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID]expectedCase, inventory *[]map[string]any, seen map[string]string, next func() string, canonical bool) error {
+	if err != nil {
+		return err
+	}
+	if (d != nil && d.IsDir()) || filepath.Ext(path) != ".feature" {
+		return nil
+	}
+	f, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	doc, err := gherkin.ParseGherkinDocument(f, next)
+	_ = f.Close()
+	if err != nil {
+		return err
+	}
+	if doc.Feature == nil {
+		return fmt.Errorf("%s: no feature", path)
+	}
+	lifecycle, runner := "", ""
+	for _, tag := range doc.Feature.Tags {
+		switch tag.Name {
+		case "@implemented", "@planned", "@external":
+			if lifecycle != "" {
+				return fmt.Errorf("%s: multiple lifecycles", path)
 			}
+			lifecycle = tag.Name
+		case "@go", "@office":
+			if runner != "" {
+				return fmt.Errorf("%s: multiple runners", path)
+			}
+			runner = tag.Name
 		}
-		if lifecycle == "" || runner == "" {
-			return fmt.Errorf("%s: lifecycle/runner missing", path)
+	}
+	if canonical {
+		if path != overlapFeaturePath() || lifecycle != "@planned" || runner != "" {
+			return fmt.Errorf("%s: unexpected canonical feature metadata", path)
 		}
-		if lifecycle == "@implemented" && runner != "@go" {
-			return fmt.Errorf("%s: implemented case omitted by native runner", path)
-		}
-		if lifecycle == "@external" && runner != "@office" {
-			return fmt.Errorf("%s: external runner mismatch", path)
-		}
-		lines := map[string]int{}
-		ids := map[string]string{}
-		var collect func([]*messages.FeatureChild) error
-		collect = func(children []*messages.FeatureChild) error {
-			for _, c := range children {
-				if c.Rule != nil {
-					return fmt.Errorf("%s: Rules require explicit inventory support", path)
-				}
-				if c.Background != nil {
-					return fmt.Errorf("%s: backgrounds require explicit inventory support", path)
-				}
-				s := c.Scenario
-				if s == nil {
-					continue
-				}
-				id := ""
-				for _, tag := range s.Tags {
-					if pattern.MatchString(tag.Name) {
-						if id != "" {
-							return fmt.Errorf("%s: multiple IDs", path)
-						}
-						id = tag.Name
-					} else {
-						return fmt.Errorf("%s: unsupported scenario tag %s", path, tag.Name)
+	} else if lifecycle == "" || runner == "" {
+		return fmt.Errorf("%s: lifecycle/runner missing", path)
+	}
+	if lifecycle == "@implemented" && runner != "@go" {
+		return fmt.Errorf("%s: implemented case omitted by native runner", path)
+	}
+	if lifecycle == "@external" && runner != "@office" {
+		return fmt.Errorf("%s: external runner mismatch", path)
+	}
+	lines := map[string]int{}
+	ids := map[string]string{}
+	var collect func([]*messages.FeatureChild) error
+	collect = func(children []*messages.FeatureChild) error {
+		for _, c := range children {
+			if c.Rule != nil {
+				return fmt.Errorf("%s: Rules require explicit inventory support", path)
+			}
+			if c.Background != nil {
+				return fmt.Errorf("%s: backgrounds require explicit inventory support", path)
+			}
+			s := c.Scenario
+			if s == nil {
+				continue
+			}
+			id := ""
+			profile := false
+			for _, tag := range s.Tags {
+				if nativeIDPattern.MatchString(tag.Name) || (canonical && tag.Name == overlapCaseID) {
+					if id != "" {
+						return fmt.Errorf("%s: multiple IDs", path)
 					}
-				}
-				if id == "" {
-					return fmt.Errorf("%s: scenario missing ID", path)
-				}
-				if prior, ok := seen[id]; ok {
-					return fmt.Errorf("duplicate ID %s in %s and %s", id, prior, path)
-				}
-				seen[id] = path
-				lines[s.Id] = int(s.Location.Line)
-				ids[s.Id] = id
-				if len(s.Steps) == 0 {
-					return fmt.Errorf("%s: empty scenario", path)
-				}
-				for _, ex := range s.Examples {
-					if len(ex.Tags) != 0 {
-						return fmt.Errorf("%s: Examples tags not supported yet", path)
-					}
-					for _, row := range ex.TableBody {
-						lines[row.Id] = int(row.Location.Line)
-					}
+					id = tag.Name
+				} else if canonical && tag.Name == "@profile-physical-member-extents" && !profile {
+					profile = true
+				} else if !canonical || id == overlapCaseID {
+					return fmt.Errorf("%s: unsupported scenario tag %s", path, tag.Name)
 				}
 			}
-			return nil
-		}
-		if err := collect(doc.Feature.Children); err != nil {
-			return err
-		}
-		for _, p := range gherkin.Pickles(*doc, path, next) {
-			line := lines[p.AstNodeIds[len(p.AstNodeIds)-1]]
-			id := ids[p.AstNodeIds[0]]
-			key := caseID{filepath.ToSlash(filepath.Clean(path)), id, line}
-			inventory = append(inventory, map[string]any{"case": key, "name": p.Name, "lifecycle": lifecycle, "runner": runner})
-			if lifecycle == "@implemented" {
-				expected[key] = expectedCase{key, p.Name, len(p.Steps)}
+			if canonical && id != overlapCaseID {
+				continue // Other shared workflows remain planned for Go.
+			}
+			if id == "" || (canonical && !profile) {
+				return fmt.Errorf("%s: scenario missing ID/profile", path)
+			}
+			if prior, ok := seen[id]; ok {
+				return fmt.Errorf("duplicate ID %s in %s and %s", id, prior, path)
+			}
+			seen[id] = path
+			lines[s.Id] = int(s.Location.Line)
+			ids[s.Id] = id
+			if len(s.Steps) == 0 {
+				return fmt.Errorf("%s: empty scenario", path)
+			}
+			for _, ex := range s.Examples {
+				if len(ex.Tags) != 0 {
+					return fmt.Errorf("%s: Examples tags not supported yet", path)
+				}
+				for _, row := range ex.TableBody {
+					lines[row.Id] = int(row.Location.Line)
+				}
 			}
 		}
 		return nil
-	})
-	return expected, inventory, err
+	}
+	if err := collect(doc.Feature.Children); err != nil {
+		return err
+	}
+	if canonical && seen[overlapCaseID] == "" {
+		return fmt.Errorf("%s: canonical overlap case missing", path)
+	}
+	for _, p := range gherkin.Pickles(*doc, path, next) {
+		if canonical && (len(p.AstNodeIds) == 0 || ids[p.AstNodeIds[0]] != overlapCaseID) {
+			continue
+		}
+		line := lines[p.AstNodeIds[len(p.AstNodeIds)-1]]
+		id := ids[p.AstNodeIds[0]]
+		key := caseID{filepath.ToSlash(filepath.Clean(path)), id, line}
+		if canonical {
+			*inventory = append(*inventory, map[string]any{"case": key, "name": p.Name, "lifecycle": "@implemented", "runner": "@go"})
+		} else {
+			*inventory = append(*inventory, map[string]any{"case": key, "name": p.Name, "lifecycle": lifecycle, "runner": runner})
+		}
+		if lifecycle == "@implemented" || canonical {
+			expected[key] = expectedCase{key, p.Name, len(p.Steps)}
+		}
+	}
+	return nil
 }
 
 func TestResultReconciliation(t *testing.T) {

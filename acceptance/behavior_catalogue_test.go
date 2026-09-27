@@ -133,6 +133,14 @@ func validateCatalogueFamily(t *testing.T, name string) {
 		}
 	}
 	for id := range required {
+		// The sealed shared registry retired this staged candidate in favour of
+		// the one explicitly selected physical-overlap workflow outcome.
+		if name == "archive" && id == "pkg/packaging/zip_overlap_test.go::TestIndependentPhysicalOverlap" {
+			if seen[id] || ids["@candidate-go-archive-007"] {
+				t.Fatal("retired overlap candidate still staged")
+			}
+			continue
+		}
 		if !seen[id] {
 			t.Fatal("missing native declaration", id)
 		}

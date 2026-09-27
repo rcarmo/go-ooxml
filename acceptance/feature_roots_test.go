@@ -13,6 +13,11 @@ func goFeatureRoot() string {
 	return filepath.Join(testutil.ReferenceRoot(), "staging", "go", "features")
 }
 
+// Only this single sealed canonical outcome is selected for native execution.
+func overlapFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "zip-admission.feature")
+}
+
 func goCandidateRoot() string {
 	return filepath.Join(testutil.ReferenceRoot(), "staging", "go", "behaviors")
 }

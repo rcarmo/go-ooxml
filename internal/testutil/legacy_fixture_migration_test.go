@@ -1,11 +1,13 @@
 package testutil
 
 import (
+	"archive/zip"
 	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -54,9 +56,12 @@ func TestLegacyFixtureMigrationBatch(t *testing.T) {
 	if err := json.Unmarshal(pin, &identity); err != nil {
 		t.Fatal(err)
 	}
-	if ledger.Schema != 1 || ledger.ReferenceCommit != identity.Commit || ledger.ReferenceTag != identity.Tag || len(ledger.Fixtures) != 38 || len(ledger.Specifications) != 2 {
-		t.Fatal("migration ledger differs from pinned reference or expected scope")
+	// These source rows describe the original v0.35 migration. Do not rewrite
+	// their identities when a later distribution retires a physical archive.
+	if ledger.Schema != 1 || ledger.ReferenceCommit != "7b7a2fa2610c421cdde9d7b1da9125c8f98b9dd8" || ledger.ReferenceTag != "v0.35.0" || identity.Tag != "v0.41.0" || len(ledger.Fixtures) != 38 || len(ledger.Specifications) != 2 {
+		t.Fatal("historical migration or current pin differs from expected scope")
 	}
+	retired := readRetiredFixtures(t)
 	root := filepath.Clean("../..")
 	manifestBytes, err := os.ReadFile(ReferencePath("manifest.json"))
 	if err != nil {
@@ -100,12 +105,25 @@ func TestLegacyFixtureMigrationBatch(t *testing.T) {
 		if fixture {
 			wantRole = "fixture"
 		}
-		if !ok || f.path != sharedPath || f.hash != hash || f.size != size || f.role != wantRole {
+		if tombstone, retiredHere := retired[id]; retiredHere {
+			if !fixture || ok || tombstone.Path != sharedPath || tombstone.Hash != hash || tombstone.Bytes != size || id != "fixture-"+hash {
+				t.Fatalf("historical tombstone differs for %s", oldPath)
+			}
+			if _, err := os.Lstat(ReferencePath(sharedPath)); !os.IsNotExist(err) {
+				t.Fatalf("retired physical archive still present: %v", err)
+			}
+			if _, err := LookupFixture(id); err == nil {
+				t.Fatalf("retired ID still resolves: %s", id)
+			}
+		} else if !ok || f.path != sharedPath || f.hash != hash || f.size != size || f.role != wantRole {
 			t.Fatalf("ledger differs from pinned manifest for %s", oldPath)
 		}
 		seenPaths[oldPath], seenIDs[id], seenNames[displayName] = true, true, true
 		if _, err := os.Lstat(filepath.Join(root, filepath.FromSlash(oldPath))); !os.IsNotExist(err) {
 			t.Fatalf("old binary path %s still exists: %v", oldPath, err)
+		}
+		if _, retiredHere := retired[id]; retiredHere {
+			return // Retired bytes belong to immutable v0.40, not the current manifest.
 		}
 		var full string
 		if fixture {
@@ -151,6 +169,9 @@ func TestLegacyFixtureMigrationBatch(t *testing.T) {
 			check(t, f.OldPath, f.SharedAssetID, f.SharedPath, f.SHA256, f.DisplayName, f.Bytes, false)
 		})
 	}
+	if len(retired) != 2 || !seenIDs["fixture-9726b477472ddb7595875c9f30493df2577e587416b18418d0dc7221046690fe"] {
+		t.Fatal("historical retired fixture not accounted for")
+	}
 	if len(seenPaths) != 40 || len(seenIDs) != 40 || len(seenNames) != 40 {
 		t.Fatal("incomplete migration custody inventory")
 	}
@@ -194,4 +215,110 @@ func TestLegacyFixtureMigrationBatch(t *testing.T) {
 	if !bytes.Equal(embedded, canonical) {
 		t.Fatalf("embedded template differs from pinned shared fixture %s", templateID)
 	}
+}
+
+// A retirement records old whole-archive identities without inventing a
+// content-hash alias. Independently check retained member bytes against the
+// sealed member inventory; v0.40 keeps the removed original archives.
+type retiredFixture struct {
+	ID, Path, Hash, RetainedID, RetainedPath, RetainedHash string
+	Bytes                                                  int64
+}
+
+func readRetiredFixtures(t *testing.T) map[string]retiredFixture {
+	t.Helper()
+	// Decode exact JSON field spellings, including SHA256 fields.
+	var raw struct {
+		Schema int `json:"schemaVersion"`
+		Source struct {
+			Commit string `json:"commit"`
+			Tag    string `json:"tag"`
+		} `json:"releaseSource"`
+		Retired []struct {
+			ID           string `json:"id"`
+			Path         string `json:"path"`
+			Hash         string `json:"sha256"`
+			Bytes        int64  `json:"bytes"`
+			RetainedID   string `json:"retainedId"`
+			RetainedPath string `json:"retainedPath"`
+			RetainedHash string `json:"retainedSha256"`
+			Members      []struct {
+				Name  string `json:"name"`
+				Hash  string `json:"sha256"`
+				Bytes int64  `json:"bytes"`
+			} `json:"members"`
+		} `json:"retired"`
+	}
+	b, err := os.ReadFile(ReferencePath("ledgers", "fixture-content-consolidation.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(b, &raw); err != nil {
+		t.Fatal(err)
+	}
+	if raw.Schema != 1 || raw.Source.Commit != "a47c51ada71dfe1561f403c8861954bdbf5b9023" || raw.Source.Tag != "v0.40.0" || len(raw.Retired) != 2 {
+		t.Fatal("unexpected historical retirement source")
+	}
+	result := make(map[string]retiredFixture)
+	for _, r := range raw.Retired {
+		if r.ID != "fixture-"+r.Hash || len(r.Hash) != 64 || !filepath.IsLocal(r.Path) || !strings.HasPrefix(r.Path, "fixtures/") || r.Bytes <= 0 || len(r.Members) == 0 || result[r.ID].ID != "" {
+			t.Fatal("invalid retired fixture identity", r.ID)
+		}
+		wantRetained := map[string]string{
+			"fixture-9726b477472ddb7595875c9f30493df2577e587416b18418d0dc7221046690fe": "fixture-d9d6a313182a71a73d75a26a0ff3b7826dbd2e300e1d202114ec9f8fb018fda5",
+			"fixture-1780cc7a1c0ee45df6c78afcea721d995bdb67846f6bdfb78cfe78c27e28b897": "fixture-368fe96cb3ae55a0cc5fecbb599eda1d1058596d4914992f596083f291071ae4",
+		}
+		if wantRetained[r.ID] == "" || wantRetained[r.ID] != r.RetainedID || r.RetainedID == r.ID || r.RetainedID != "fixture-"+r.RetainedHash {
+			t.Fatal("unreviewed retired-to-retained mapping", r.ID)
+		}
+		retainedPath, err := LookupFixture(r.RetainedID)
+		if err != nil || filepath.Clean(retainedPath) != filepath.Clean(ReferencePath(r.RetainedPath)) {
+			t.Fatalf("retained fixture path: %s %v", r.ID, err)
+		}
+		archive, err := zip.OpenReader(retainedPath)
+		if err != nil {
+			t.Fatal(err)
+		}
+		members := map[string]struct {
+			hash string
+			size int64
+		}{}
+		for _, m := range r.Members {
+			if members[m.Name].hash != "" || len(m.Hash) != 64 {
+				t.Fatal("invalid member record", m.Name)
+			}
+			members[m.Name] = struct {
+				hash string
+				size int64
+			}{m.Hash, m.Bytes}
+		}
+		if len(members) != len(archive.File) {
+			t.Fatal("retained member inventory differs", r.ID)
+		}
+		for _, f := range archive.File {
+			want, ok := members[f.Name]
+			if !ok {
+				t.Fatal("unexpected retained member", f.Name)
+			}
+			reader, err := f.Open()
+			if err != nil {
+				t.Fatal(err)
+			}
+			data, readErr := io.ReadAll(reader)
+			closeErr := reader.Close()
+			if readErr != nil || closeErr != nil {
+				t.Fatal(readErr, closeErr)
+			}
+			sum := sha256.Sum256(data)
+			if int64(len(data)) != want.size || hex.EncodeToString(sum[:]) != want.hash {
+				t.Fatal("retained member differs", f.Name)
+			}
+		}
+		if err := archive.Close(); err != nil {
+			t.Fatal(err)
+		}
+		item := retiredFixture{ID: r.ID, Path: r.Path, Hash: r.Hash, Bytes: r.Bytes, RetainedID: r.RetainedID, RetainedPath: r.RetainedPath, RetainedHash: r.RetainedHash}
+		result[r.ID] = item
+	}
+	return result
 }

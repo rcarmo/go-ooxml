@@ -6,6 +6,12 @@ Their bytes and historical paths are preserved in
 Native tests resolve fixture IDs through the pinned shared manifest; labels
 such as `word/minimal.docx` are lookup keys, not local filesystem paths.
 The shared checkout is read-only. No symlink or binary fallback is installed.
+The retired `word/minimal.docx` historical full-archive identity stays in this
+index; current native tests select the retained `default-d9d6…` archive. Its
+old bytes and the retired observed-generated SDT archive are recoverable at
+shared v0.40.0 and described in
+[`fixture-content-consolidation.json`](../references/fixtures-ooxml/ledgers/fixture-content-consolidation.json).
+These old whole-archive hashes are not aliases for the retained ZIP bytes.
 
 The original files were generated with python-docx, openpyxl and
 python-pptx from public-domain *Frankenstein* text, with author `Test Author`.
@@ -45,7 +51,7 @@ samples. The shared manifest retains origin and licence metadata.
 | `testdata/word/formatted_text.docx` | Word Bold, italic, underline, colors, font sizes | [`fixtures/docx/formatting/formatted-text-9a92eba3dc84.docx`](../references/fixtures-ooxml/fixtures/docx/formatting/formatted-text-9a92eba3dc84.docx) | `fixture-9a92eba3dc84f293a82de9496e571c780fd258cc3bf276b74464faaef5835dbc` |
 | `testdata/word/headers_footers.docx` | Word Different first page, odd/even headers/footers | [`fixtures/docx/headers-footers/headers-footers-3bafa1552422.docx`](../references/fixtures-ooxml/fixtures/docx/headers-footers/headers-footers-3bafa1552422.docx) | `fixture-3bafa155242222dbd3529b56af6b8f1939cbd2e954de5b80afeadbbd53a432aa` |
 | `testdata/word/headings.docx` | Word All heading levels 1-9 | [`fixtures/docx/styles/headings-8513f0537071.docx`](../references/fixtures-ooxml/fixtures/docx/styles/headings-8513f0537071.docx) | `fixture-8513f05370714f5e288ec1ca2fb76fe21b74b458636f325666b20b100c9b021a` |
-| `testdata/word/minimal.docx` | Word Empty document with just body element | [`fixtures/docx/creation/minimal-9726b477472d.docx`](../references/fixtures-ooxml/fixtures/docx/creation/minimal-9726b477472d.docx) | `fixture-9726b477472ddb7595875c9f30493df2577e587416b18418d0dc7221046690fe` |
+| `testdata/word/minimal.docx` | Word Empty document with just body element; historical ZIP retired at v0.41 (v0.40 source retained in Git) | [`fixtures/docx/creation/minimal-9726b477472d.docx` at v0.40](https://github.com/rcarmo/fixtures-ooxml/blob/v0.40.0/fixtures/docx/creation/minimal-9726b477472d.docx) | `fixture-9726b477472ddb7595875c9f30493df2577e587416b18418d0dc7221046690fe` |
 | `testdata/word/numbered_list.docx` | Word Numbered list items | [`fixtures/docx/numbering/numbered-list-37d3c408403d.docx`](../references/fixtures-ooxml/fixtures/docx/numbering/numbered-list-37d3c408403d.docx) | `fixture-37d3c408403dbecf4310f0a0b1313dc0c3756302e1778cc32d975823988ea3b2` |
 | `testdata/word/sdt_content_controls.docx` | Word Content controls/placeholders | [`fixtures/docx/content-controls/sdt-content-controls-368fe96cb3ae.docx`](../references/fixtures-ooxml/fixtures/docx/content-controls/sdt-content-controls-368fe96cb3ae.docx) | `fixture-368fe96cb3ae55a0cc5fecbb599eda1d1058596d4914992f596083f291071ae4` |
 | `testdata/word/simple_table.docx` | Word 3x3 table, no merged cells | [`fixtures/docx/tables/simple-table-87e3c67cb73b.docx`](../references/fixtures-ooxml/fixtures/docx/tables/simple-table-87e3c67cb73b.docx) | `fixture-87e3c67cb73bdbf5c8389791fd2bb459ba0eaac862149af6fd7c5b641dafd56b` |

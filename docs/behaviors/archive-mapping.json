@@ -159,18 +159,6 @@
       "remaining": "This group excludes graph editing and mutable package authoring; those declarations remain unreviewed."
     },
     {
-      "native_id": "pkg/packaging/zip_overlap_test.go::TestIndependentPhysicalOverlap",
-      "source_sha256": "0c63da0c273dcd9f1b850741bc558a00dd80c901d87517b67965366680580614",
-      "kind": "test",
-      "candidate_ids": [
-        "@candidate-go-archive-007"
-      ],
-      "coverage": "reviewed-family-and-parameter-groups",
-      "subtests": [],
-      "parameter_groups": [],
-      "remaining": "This group excludes graph editing and mutable package authoring; those declarations remain unreviewed."
-    },
-    {
       "native_id": "pkg/packaging/zip_structure_test.go::TestZIPStructureContracts",
       "source_sha256": "0b20478a0823f579a2ca90e7223f03fc7f67f22b032c4442df62432ca239fe15",
       "kind": "test",

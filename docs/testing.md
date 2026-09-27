@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.35.0`, commit
-`7b7a2fa2610c421cdde9d7b1da9125c8f98b9dd8`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.41.0`, commit
+`301ffb6141aa2207471ff51f2894428bd7e39fbf`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -36,18 +36,22 @@ The released pin uses schema2 with `commit`, `tag`, `tag_object`,
 `manifest_sha256`, `assets`, `facts`, `workflows` and `workflow_cases`.
 There is no separate pack seal. The root manifest seals
 `contracts/mutation-safety.json` and all five declared operation feature paths.
-The v0.35 contract uses an explicit feature list (contract schema 2), selecting
+The v0.41 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.35.0` contains 366 manifest assets, including 115 unique fixtures in
-32 format/scenario groups, plus 149 facts and 292 workflows/772 expanded cases.
-The canonical registry has 56 feature files. Another 143 files are staged
+Release `v0.41.0` contains 368 manifest assets, including 114 physical fixtures
+(113 ZIP archives), plus 149 facts and 299 workflows/785 expanded cases.
+The canonical registry has 58 feature files. Another 143 files are staged
 consumer candidates, including 55 native Go features and 21 Go behaviour
 catalogue candidates. The Go files retain their source IDs and wording; moving
-them gives no new canonical execution credit.
+them gives no new canonical execution credit. The shared ZIP-overlap outcome
+`@id-zip-physical-member-overlap-refusal` replaces native `@ZIP-003` one-for-one.
+Its selected seven steps require independent readable-member and physical-range
+checks before a typed overlap refusal; other ZIP admission outcomes remain planned
+for Go.
 The format-grouped workflows retain the previous 229 IDs and 562 cases. In four operation
 features, 16 IDs and 18 cases keep their inputs and observable outcomes while
 reviewed actor wording and profile tags change. Two package workflows preserve
@@ -79,9 +83,9 @@ revisions workflow. The text-only profile and broader multi-story operations
 keep their earlier scope. The new cases remain planned for Go with zero
 execution credit. An opt-in paired text-move revision rule adds nine IDs and
 45 cases to the same workflow, limited to paired source/destination ranges in
-one story; these also remain planned with zero Go execution credit. Shared
-workflow inventory adds no Go binding or execution credit. Local native acceptance remains
-291 implemented cases, 20 planned cases and one external case. Shared
+one story; these also remain planned with zero Go execution credit. The shared overlap binding adds exactly one canonical execution case; all other
+shared workflows remain planned for Go. Native acceptance has 291 selected cases,
+20 planned native cases and one external native case. Shared
 ECMA specifications, extracts and derived notes are indexed under
 [`specs/ecma-376/`](../references/fixtures-ooxml/specs/ecma-376/README.md).
 The full PDFs are the specification sources; five earlier ECMA documents and
@@ -101,8 +105,15 @@ checkout. The local behaviour mapping JSON and native source inventory remain in
 For a sealed candidate run, `OOXML_FIXTURES_ROOT` changes all these lookup roots
 alongside fixture lookup. The local copies of the 76 feature files have been
 removed. The 38 original-main binary `testdata/` files are recorded in
-[`spec/legacy-fixture-migration.json`](../spec/legacy-fixture-migration.json)
-and replaced by the byte-identical shared inputs. `testdata/FIXTURES.md` remains
+[`spec/legacy-fixture-migration.json`](../spec/legacy-fixture-migration.json).
+Its rows preserve the original full-archive identities. Release v0.41 removes two
+logically duplicate DOCX archives; the historical `word/minimal.docx` and observed
+`generated/word/sdt_content_controls.docx` IDs are recorded, with their original
+hashes and provenance, in the sealed
+[`fixture-content-consolidation.json`](../references/fixtures-ooxml/ledgers/fixture-content-consolidation.json).
+Active test labels select the retained `default-d9d6…` and `SDT-368fe…` files.
+The retired bytes remain recoverable at immutable shared v0.40.0; the old and
+retained full-archive hashes differ. No runtime fixture alias or fallback exists. `testdata/FIXTURES.md` remains
 as a historical index; fixture lookup has no local fallback.
 
 Update the gitlink and `spec/reference-distribution.json` together when adopting
@@ -145,7 +156,10 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The v0.35 released-reference batch is recorded in
+The v0.41 default batch is recorded in
+[`reports/batches/156.md`](../reports/batches/156.md): 291 selected cases and
+976 passed steps, with 20 native planned and one native external case unrun.
+The previous v0.35 batch is recorded in
 [`reports/batches/155.md`](../reports/batches/155.md): 291 implemented native
 Gherkin cases and 972 steps passed; 20 planned and one external case were not
 run. The moved Go source cases keep their IDs, lines and test outcomes. Package/unit

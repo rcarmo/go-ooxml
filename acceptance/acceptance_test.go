@@ -11,7 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"strings"
 	"testing"
 
 	"github.com/cucumber/godog"
@@ -89,12 +88,11 @@ func (w *world) contains(name string) error {
 }
 
 func TestAcceptance(t *testing.T) {
-	var output bytes.Buffer
 	w := &world{fixtures: map[string]string{}}
-	suite := godog.TestSuite{Name: "go-ooxml", Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{goFeatureRoot()}, Tags: "@implemented && @go", Strict: true, Concurrency: 1}}
-	suite.ScenarioInitializer = func(sc *godog.ScenarioContext) {
+	initializer := func(sc *godog.ScenarioContext) {
 		safetySteps(sc)
 		zip64Steps(sc)
+		overlapSteps(sc)
 		limitSteps(sc)
 		preservedSteps(sc)
 		receiptSteps(sc)
@@ -153,7 +151,29 @@ func TestAcceptance(t *testing.T) {
 	if len(expected) == 0 {
 		t.Fatal("no implemented cases inventoried")
 	}
-	code := suite.Run()
+	var combined []reportFeature
+	for _, selection := range []struct {
+		name, path, tags string
+	}{
+		{"go-ooxml-native", goFeatureRoot(), "@implemented && @go"},
+		{"go-ooxml-overlap", overlapFeaturePath(), overlapCaseID},
+	} {
+		var output bytes.Buffer
+		suite := godog.TestSuite{Name: selection.name, Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{selection.path}, Tags: selection.tags, Strict: true, Concurrency: 1}, ScenarioInitializer: initializer}
+		code := suite.Run()
+		var features []reportFeature
+		if err := json.Unmarshal(output.Bytes(), &features); err != nil {
+			t.Fatalf("%s invalid report: %v (%s)", selection.name, err, output.String())
+		}
+		if code != 0 {
+			t.Errorf("%s Godog failed (%d): %s", selection.name, code, output.String())
+		}
+		combined = append(combined, features...)
+	}
+	data, err := json.Marshal(combined)
+	if err != nil {
+		t.Fatal(err)
+	}
 	dir := os.Getenv("OOXML_REPORT_DIR")
 	if dir == "" {
 		dir = "../reports/acceptance"
@@ -161,15 +181,12 @@ func TestAcceptance(t *testing.T) {
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(filepath.Join(dir, "cucumber.json"), output.Bytes(), 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "cucumber.json"), data, 0644); err != nil {
 		t.Fatal(err)
 	}
 	writeJSON(t, filepath.Join(dir, "inventory.json"), inventory)
-	writeJSON(t, filepath.Join(dir, "environment.json"), map[string]any{"go": runtime.Version(), "fixture_sha256": w.fixtures, "scope": "implemented native contracts only", "external_executed": false})
-	if code != 0 {
-		t.Errorf("Godog failed (%d): %s", code, output.String())
-	}
-	if err := reconcile(expected, output.Bytes()); err != nil {
+	writeJSON(t, filepath.Join(dir, "environment.json"), map[string]any{"go": runtime.Version(), "fixture_sha256": w.fixtures, "scope": "implemented native plus one exact canonical overlap case", "external_executed": false})
+	if err := reconcile(expected, data); err != nil {
 		t.Error(err)
 	}
 }
@@ -187,7 +204,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if strings.Contains(tag, "-") {
+		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}
