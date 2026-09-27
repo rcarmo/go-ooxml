@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.31.0`, commit
-`3ea38f11fe6479a71389b35c76467595620a554e`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.32.0`, commit
+`df3dbfdb3ba7865204a16d46d113a50d34961756`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -36,14 +36,14 @@ The released pin uses schema2 with `commit`, `tag`, `tag_object`,
 `manifest_sha256`, `assets`, `facts`, `workflows` and `workflow_cases`.
 There is no separate pack seal. The root manifest seals
 `contracts/mutation-safety.json` and all five declared operation feature paths.
-The v0.31 contract uses an explicit feature list (contract schema 2), selecting
+The v0.32 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.31.0` contains 212 manifest assets, including 115 unique fixtures in
-32 format/scenario groups, plus 149 facts and 258 workflows/660 expanded cases.
+Release `v0.32.0` contains 213 manifest assets, including 115 unique fixtures in
+32 format/scenario groups, plus 149 facts and 266 workflows/683 expanded cases.
 The format-grouped workflows retain the previous 229 IDs and 562 cases. In four operation
 features, 16 IDs and 18 cases keep their inputs and observable outcomes while
 reviewed actor wording and profile tags change. Two package workflows preserve
@@ -67,8 +67,11 @@ vertical-merge IDs and 26 cases extend that workflow while preserving the
 horizontal cases. Both merge groups remain planned for Go. A concrete Word
 template-inventory rule adds eight IDs and 22 cases to the existing template
 analysis workflow while retaining its response/cache outcomes. These new IDs
-also remain planned for Go with zero new execution credit. Shared workflow
-inventory adds no Go binding or execution credit. Local native acceptance remains
+also remain planned for Go. An existing-thread rule adds eight IDs and 23
+cases to the Word comments workflow; single-comment and authoring profiles
+retain their prior scope. The new thread cases remain planned for Go with zero
+new execution credit. Shared workflow inventory adds no Go binding or execution
+credit. Local native acceptance remains
 291 implemented cases, 20 planned cases and one external case. Shared
 ECMA specifications, extracts and derived notes are indexed under
 [`specs/ecma-376/`](../references/fixtures-ooxml/specs/ecma-376/README.md).
@@ -80,7 +83,7 @@ Neither ledger grants canonical execution credit. The semantic-diff assertion
 
 Once a release is approved, update the gitlink and
 `spec/reference-distribution.json` together within the coordinator-approved scope.
-For v0.31 adoption, only this enhancement branch advances; legacy tips and prepared
+For v0.32 adoption, only this enhancement branch advances; legacy tips and prepared
 publication refs/mirror remain at the v0.9 checkpoint by explicit instruction.
 Do not use `git submodule update --remote` or move an existing release tag to
 follow changing content.
