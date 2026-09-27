@@ -34,9 +34,9 @@ The target layout is one shared schema2 manifest and grouped
 `fixtures/<format>/<scenarioGroup>/` inputs. Native labels resolve fixture IDs;
 physical files are deduplicated by SHA-256. `spec/reference-distribution.json`
 records the commit, annotated release tag and seals. This enhancement branch uses
-released `v0.33.0`, commit `3e4a21d19252c2e6f405cd005bb88071e2c05b81`; default
+released `v0.34.0`, commit `7643c3d91f63c142e943e0820b79afe8dc7d128c`; default
 checks need no override. Legacy tips and prepared publication refs/mirror remain
-at their v0.9 checkpoint under the coordinator's enhanced-only adoption scope. Candidate checking is separate, as described in
+at their v0.9 checkpoint under the coordinator's enhanced-only adoption scope. A separate local integration rehearsal into the Go repository's main ancestry is pending review; this pin does not advance main or publication. Candidate checking is separate, as described in
 `../testing.md`.
 
 Tests verify the pinned full tracked tree, checkout identity, root manifest seal and shared
