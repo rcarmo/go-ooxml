@@ -23,6 +23,11 @@ func negativeBudgetFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "admission-limit-configuration.feature")
 }
 
+// The unsigned-descriptor collision is selected without enabling sibling workflows.
+func descriptorIntegrityFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "data-descriptor-integrity.feature")
+}
+
 func goCandidateRoot() string {
 	return filepath.Join(testutil.ReferenceRoot(), "staging", "go", "behaviors")
 }

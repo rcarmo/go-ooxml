@@ -94,6 +94,7 @@ func TestAcceptance(t *testing.T) {
 		zip64Steps(sc)
 		overlapSteps(sc)
 		negativeBudgetSteps(sc)
+		descriptorCollisionSteps(sc)
 		limitSteps(sc)
 		preservedSteps(sc)
 		receiptSteps(sc)
@@ -159,6 +160,7 @@ func TestAcceptance(t *testing.T) {
 		{"go-ooxml-native", goFeatureRoot(), "@implemented && @go"},
 		{"go-ooxml-overlap", overlapFeaturePath(), overlapCaseID},
 		{"go-ooxml-negative-budget", negativeBudgetFeaturePath(), negativeBudgetCaseID},
+		{"go-ooxml-descriptor-collision", descriptorIntegrityFeaturePath(), descriptorCollisionCaseID},
 	} {
 		var output bytes.Buffer
 		suite := godog.TestSuite{Name: selection.name, Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{selection.path}, Tags: selection.tags, Strict: true, Concurrency: 1}, ScenarioInitializer: initializer}
@@ -187,7 +189,7 @@ func TestAcceptance(t *testing.T) {
 		t.Fatal(err)
 	}
 	writeJSON(t, filepath.Join(dir, "inventory.json"), inventory)
-	writeJSON(t, filepath.Join(dir, "environment.json"), map[string]any{"go": runtime.Version(), "fixture_sha256": w.fixtures, "scope": "implemented native plus exact canonical overlap and negative-budget cases", "external_executed": false})
+	writeJSON(t, filepath.Join(dir, "environment.json"), map[string]any{"go": runtime.Version(), "fixture_sha256": w.fixtures, "scope": "implemented native plus exact canonical overlap, negative-budget and descriptor-collision cases", "external_executed": false})
 	if err := reconcile(expected, data); err != nil {
 		t.Error(err)
 	}
@@ -206,7 +208,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID {
+		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}
