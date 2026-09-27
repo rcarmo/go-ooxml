@@ -14,6 +14,7 @@ go-ooxml
 coverage.out
 testdata/generated/
 artifacts/
+reports/acceptance/
 
 # Dependency directories
 vendor/

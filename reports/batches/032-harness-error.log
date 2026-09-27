@@ -1,0 +1,6 @@
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	0.075s
+# github.com/rcarmo/go-ooxml/acceptance [github.com/rcarmo/go-ooxml/acceptance.test]
+./style_index_test.go:45:47: undefined: packaging.ContentTypeSpreadsheetStyles
+FAIL	github.com/rcarmo/go-ooxml/acceptance [build failed]
+FAIL

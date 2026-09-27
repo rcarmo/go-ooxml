@@ -6,92 +6,90 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"github.com/rcarmo/go-ooxml/pkg/document"
 	"github.com/rcarmo/go-ooxml/pkg/presentation"
 	"github.com/rcarmo/go-ooxml/pkg/spreadsheet"
 )
 
 func ensureArtifactsDir(path string) error {
+	if err := testutil.CheckReferenceOutput(path); err != nil {
+		return err
+	}
 	return os.MkdirAll(path, 0o755)
 }
 
 func TestGeneratedRoundTripArtifacts(t *testing.T) {
-	base := filepath.Join("..", "testdata", "generated")
+	base := filepath.Join("..", "artifacts", "generated")
 	wordOut := filepath.Join(base, "word")
 	excelOut := filepath.Join(base, "excel")
 	pptxOut := filepath.Join(base, "pptx")
 
 	for _, dir := range []string{wordOut, excelOut, pptxOut} {
-		if err := os.MkdirAll(dir, 0o755); err != nil {
+		if err := ensureArtifactsDir(dir); err != nil {
 			t.Fatalf("MkdirAll(%s) error = %v", dir, err)
 		}
 	}
 
-	roundTripWordDir(t, filepath.Join("..", "testdata", "word"), wordOut)
-	roundTripExcelDir(t, filepath.Join("..", "testdata", "excel"), excelOut)
-	roundTripPptxDir(t, filepath.Join("..", "testdata", "pptx"), pptxOut)
+	roundTripWordDir(t, "word", wordOut)
+	roundTripExcelDir(t, "excel", excelOut)
+	roundTripPptxDir(t, "pptx", pptxOut)
 
-	roundTripWordFile(t, filepath.Join("..", "testdata", "default.docx"), filepath.Join(wordOut, "default.docx"))
-	roundTripPptxFile(t, filepath.Join("..", "testdata", "default.pptx"), filepath.Join(pptxOut, "default.pptx"))
+	roundTripWordFile(t, testutil.FixturePath("default.docx"), filepath.Join(wordOut, "default.docx"))
+	roundTripPptxFile(t, testutil.FixturePath("default.pptx"), filepath.Join(pptxOut, "default.pptx"))
 }
 
-func roundTripWordDir(t *testing.T, srcDir, dstDir string) {
+func roundTripWordDir(t *testing.T, prefix, dstDir string) {
 	t.Helper()
-	entries, err := os.ReadDir(srcDir)
-	if err != nil {
-		t.Fatalf("ReadDir(%s) error = %v", srcDir, err)
+	labels := testutil.FixtureLabels(prefix + "/")
+	if len(labels) == 0 {
+		t.Fatal("empty fixture family", prefix)
 	}
-	for _, entry := range entries {
-		if entry.IsDir() {
+	for _, label := range labels {
+		name := strings.TrimPrefix(label, prefix+"/")
+		if strings.Contains(name, "/") {
 			continue
 		}
-		name := entry.Name()
-		if !strings.HasSuffix(strings.ToLower(name), ".docx") {
+		if !strings.HasSuffix(name, ".docx") {
 			continue
 		}
-		t.Run("word/"+name, func(t *testing.T) {
-			roundTripWordFile(t, filepath.Join(srcDir, name), filepath.Join(dstDir, name))
-		})
-	}
-}
-
-func roundTripExcelDir(t *testing.T, srcDir, dstDir string) {
-	t.Helper()
-	entries, err := os.ReadDir(srcDir)
-	if err != nil {
-		t.Fatalf("ReadDir(%s) error = %v", srcDir, err)
-	}
-	for _, entry := range entries {
-		if entry.IsDir() {
-			continue
-		}
-		name := entry.Name()
-		if !strings.HasSuffix(strings.ToLower(name), ".xlsx") {
-			continue
-		}
-		t.Run("excel/"+name, func(t *testing.T) {
-			roundTripExcelFile(t, filepath.Join(srcDir, name), filepath.Join(dstDir, name))
-		})
+		t.Run(label, func(t *testing.T) { roundTripWordFile(t, testutil.FixturePath(label), filepath.Join(dstDir, name)) })
 	}
 }
 
-func roundTripPptxDir(t *testing.T, srcDir, dstDir string) {
+func roundTripExcelDir(t *testing.T, prefix, dstDir string) {
 	t.Helper()
-	entries, err := os.ReadDir(srcDir)
-	if err != nil {
-		t.Fatalf("ReadDir(%s) error = %v", srcDir, err)
+	labels := testutil.FixtureLabels(prefix + "/")
+	if len(labels) == 0 {
+		t.Fatal("empty fixture family", prefix)
 	}
-	for _, entry := range entries {
-		if entry.IsDir() {
+	for _, label := range labels {
+		name := strings.TrimPrefix(label, prefix+"/")
+		if strings.Contains(name, "/") {
 			continue
 		}
-		name := entry.Name()
-		if !strings.HasSuffix(strings.ToLower(name), ".pptx") {
+		if !strings.HasSuffix(name, ".xlsx") {
 			continue
 		}
-		t.Run("pptx/"+name, func(t *testing.T) {
-			roundTripPptxFile(t, filepath.Join(srcDir, name), filepath.Join(dstDir, name))
-		})
+		t.Run(label, func(t *testing.T) { roundTripExcelFile(t, testutil.FixturePath(label), filepath.Join(dstDir, name)) })
+	}
+}
+
+func roundTripPptxDir(t *testing.T, prefix, dstDir string) {
+	t.Helper()
+	labels := testutil.FixtureLabels(prefix + "/")
+	if len(labels) == 0 {
+		t.Fatal("empty fixture family", prefix)
+	}
+	for _, label := range labels {
+		name := strings.TrimPrefix(label, prefix+"/")
+		if strings.Contains(name, "/") {
+			continue
+		}
+		if !strings.HasSuffix(name, ".pptx") {
+			continue
+		}
+		t.Run(label, func(t *testing.T) { roundTripPptxFile(t, testutil.FixturePath(label), filepath.Join(dstDir, name)) })
 	}
 }
 
@@ -100,6 +98,9 @@ func roundTripWordFile(t *testing.T, srcPath, dstPath string) {
 	doc, err := document.Open(srcPath)
 	if err != nil {
 		t.Fatalf("Open(%s) error = %v", srcPath, err)
+	}
+	if err := testutil.CheckReferenceOutput(dstPath); err != nil {
+		t.Fatal(err)
 	}
 	if err := doc.SaveAs(dstPath); err != nil {
 		_ = doc.Close()
@@ -123,6 +124,9 @@ func roundTripExcelFile(t *testing.T, srcPath, dstPath string) {
 	if err != nil {
 		t.Fatalf("Open(%s) error = %v", srcPath, err)
 	}
+	if err := testutil.CheckReferenceOutput(dstPath); err != nil {
+		t.Fatal(err)
+	}
 	if err := wb.SaveAs(dstPath); err != nil {
 		_ = wb.Close()
 		t.Fatalf("SaveAs(%s) error = %v", dstPath, err)
@@ -144,6 +148,9 @@ func roundTripPptxFile(t *testing.T, srcPath, dstPath string) {
 	pres, err := presentation.Open(srcPath)
 	if err != nil {
 		t.Fatalf("Open(%s) error = %v", srcPath, err)
+	}
+	if err := testutil.CheckReferenceOutput(dstPath); err != nil {
+		t.Fatal(err)
 	}
 	if err := pres.SaveAs(dstPath); err != nil {
 		_ = pres.Close()

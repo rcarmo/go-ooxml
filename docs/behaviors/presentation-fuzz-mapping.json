@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "presentation-fuzz-candidates.feature",
+  "native_prefix": "pkg/presentation/",
+  "native_files": [
+    "pkg/presentation/fuzz_test.go",
+    "pkg/presentation/fixture_fuzz_test.go"
+  ],
+  "source_revision": "ca989767a13a0673ae5d2e6fa59dcfad2a4068e5",
+  "inventory_observation_revision": "ec71b6cf4c6ac8bebec49ee195ac64520b104be9",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/presentation/fixture_fuzz_test.go::FuzzPresentationFixtureMutation",
+      "source_sha256": "c7d8fbf9c9b0f5fa3afc26548fb3ec9567ca7e119767e76cd80cc52b0e7b057f",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-presentation-fuzz-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 13,
+          "expression": "[]string",
+          "rows": 11
+        }
+      ],
+      "notes": "Eleven fixturelabel candidates added if successful os.ReadFile, offset0/xor0 bytes unchanged. Nonempty<=8MiB; OpenReader/SaveAs/Open failures earlyreturn and accessors resultsdiscarded. Resolver guarantees separate from readerror branch; no measuredseedleafcount/equality/typederrors."
+    },
+    {
+      "native_id": "pkg/presentation/fuzz_test.go::FuzzPresentationRoundTrip",
+      "source_sha256": "a5290a6f05e670e688642e8fcb5e6e4a26399b8febcfcf03821c317c7da3a649",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-presentation-fuzz-001"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Two seedtuples;slides1..5,text<=1024bytes; New/AddSlide/AddTextBox/SetText then requiredSaveAs/Open; only SlideCount equality, no text/geometry/identity/readback. Legacy mutableauthoring not canonical safe-textbox operation."
+    },
+    {
+      "native_id": "pkg/presentation/fuzz_test.go::FuzzPresentationTableOps",
+      "source_sha256": "a5290a6f05e670e688642e8fcb5e6e4a26399b8febcfcf03821c317c7da3a649",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-presentation-fuzz-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Two seedtuples;rows/cols1..8,text<=512bytes;table nonnil+dimension equality after firstcellSetText. No exactcelltext,save/reopen,geometry or schema checks."
+    }
+  ],
+  "notes": "Three fuzz declarations/four literal nonfixtureseedtuples+11fixturelabelcandidates conditional on successfulreads. No newly measured runtimeleafcount or exploratoryfuzz. Calls on legacy authoring APIs do not create safe text-box executioncredit. Snapshot404 unchanged/latercontrols outside. No canonicalIDs/bindings, no publicationmirror/legacyref changes."
+}

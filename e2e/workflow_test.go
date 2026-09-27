@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"github.com/rcarmo/go-ooxml/pkg/document"
 	"github.com/rcarmo/go-ooxml/pkg/presentation"
 	"github.com/rcarmo/go-ooxml/pkg/spreadsheet"
@@ -226,7 +227,7 @@ func TestPowerPointWorkflow_SalesDeck(t *testing.T) {
 }
 
 func TestWordWorkflow_TemplateUpdate(t *testing.T) {
-	path := filepath.Join("..", "testdata", "word", "headers_footers.docx")
+	path := testutil.FixturePath("word", "headers_footers.docx")
 	doc, err := document.Open(path)
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
@@ -274,7 +275,7 @@ func TestWordWorkflow_TemplateUpdate(t *testing.T) {
 }
 
 func TestExcelWorkflow_TemplateUpdate(t *testing.T) {
-	path := filepath.Join("..", "testdata", "excel", "multiple_sheets.xlsx")
+	path := testutil.FixturePath("excel", "multiple_sheets.xlsx")
 	wb, err := spreadsheet.Open(path)
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
@@ -318,7 +319,7 @@ func TestExcelWorkflow_TemplateUpdate(t *testing.T) {
 }
 
 func TestPowerPointWorkflow_TemplateUpdate(t *testing.T) {
-	path := filepath.Join("..", "testdata", "pptx", "tables.pptx")
+	path := testutil.FixturePath("pptx", "tables.pptx")
 	pres, err := presentation.Open(path)
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)

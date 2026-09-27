@@ -1,0 +1,10 @@
+$ GOMAXPROCS=2 go test -p 2 ./pkg/ooxml/chart ./pkg/ooxml/common ./pkg/ooxml/diagram ./pkg/ooxml/dml ./pkg/ooxml/pml ./pkg/ooxml/sml ./pkg/ooxml/theme
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/chart	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/common	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/diagram	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/dml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/pml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/sml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/theme	(cached)
+$ cd acceptance && GOMAXPROCS=2 go test -p 2 ./...
+ok  	github.com/rcarmo/go-ooxml/acceptance	1.711s

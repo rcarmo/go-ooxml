@@ -1,0 +1,153 @@
+## Shared-reference testing
+
+Native tests read a single `fixtures-ooxml` checkout and resolve content IDs
+through its schema2 manifest. Documents and media live under
+`fixtures/<format>/<scenarioGroup>/`, with one physical file per SHA-256.
+Origins and required licences are metadata; consumers do not reconstruct origin
+folders, copy fixtures or install compatibility symlinks.
+
+`internal/testutil/fixture_ids.go` maps 75 native input labels to content IDs:
+74 logical Office inputs and one PNG. Several labels can resolve to the same
+physical file. `FixturePath` accepts these trusted labels; `LookupFixture` accepts
+`fixture-<full-sha256>`. Paths, size, content hashes, format/group metadata and
+regular-file custody are checked before use. Shared workflow input records use
+`assetId` and repository-root-relative paths.
+
+## Candidate and released references
+
+The gitlink and pin name annotated release `v0.33.0`, commit
+`3e4a21d19252c2e6f405cd005bb88071e2c05b81`. Initialise the recorded submodule and
+run the default batch without overrides:
+
+```sh
+git submodule update --init --recursive
+GOMAXPROCS=2 make test-batch
+```
+
+A future candidate run requires both explicit overrides:
+
+```sh
+OOXML_FIXTURES_ROOT=/path/to/clean/candidate-checkout \
+OOXML_REFERENCE_PIN=/path/to/candidate-pin.json \
+GOMAXPROCS=2 make test-batch
+```
+
+The released pin uses schema2 with `commit`, `tag`, `tag_object`,
+`manifest_sha256`, `assets`, `facts`, `workflows` and `workflow_cases`.
+There is no separate pack seal. The root manifest seals
+`contracts/mutation-safety.json` and all five declared operation feature paths.
+The v0.33 contract uses an explicit feature list (contract schema 2), selecting
+eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
+for older distributions; neither contract grants Go workflow execution credit.
+Candidate tags begin with `candidate-` and have an empty `tag_object`; release
+pins require the exact annotated tag object and its peeled commit. Use the
+coordinator-provided pin, not hashes recomputed to accept modified inputs.
+Release `v0.33.0` contains 214 manifest assets, including 115 unique fixtures in
+32 format/scenario groups, plus 149 facts and 274 workflows/716 expanded cases.
+The format-grouped workflows retain the previous 229 IDs and 562 cases. In four operation
+features, 16 IDs and 18 cases keep their inputs and observable outcomes while
+reviewed actor wording and profile tags change. Two package workflows preserve
+another 18 IDs/38 cases while separating package and ZIP32 actors from exact
+error-code and JavaScript transaction API profiles. Nine Word workflows preserve
+29 Go IDs and five anchor IDs (75 cases) while naming document-value and
+anchor-response actors and profiles by operation; getter conventions, nullable
+cells, heading classification, same-run effects, selected readback and tool
+hints retain their existing compatibility boundaries. XML editing and static
+formula-reference workflows preserve another 19 IDs/60 cases with neutral actor
+and profile names; lexical custody, byte spans, grammar and refusal results
+retain their original limits. Comment and template workflows preserve 22 IDs/22
+cases while distinguishing existing-comment resolution from authoring and
+thread policies and leaving weak response/cache outcomes explicit. XML parsing
+retains two IDs/three cases under operation profiles; the XLSX creation change
+is description-only. A distinct tracking-settings workflow adds seven IDs and
+24 cases for saved preference, custody, refusal and rollback; all remain planned
+for Go. A distinct physical horizontal table-merging workflow adds seven IDs
+and 26 cases for success, refusal, rollback, encoding and stale handles. Seven
+vertical-merge IDs and 26 cases extend that workflow while preserving the
+horizontal cases. Both merge groups remain planned for Go. A concrete Word
+template-inventory rule adds eight IDs and 22 cases to the existing template
+analysis workflow while retaining its response/cache outcomes. These new IDs
+also remain planned for Go. An existing-thread rule adds eight IDs and 23
+cases to the Word comments workflow; single-comment and authoring profiles
+retain their prior scope. The new thread cases remain planned for Go. An
+opt-in run-property revision rule adds eight IDs and 33 cases to the Word
+revisions workflow. The text-only profile and broader multi-story operations
+keep their earlier scope. The new cases remain planned for Go with zero
+execution credit. Shared workflow inventory adds no Go binding or execution
+credit. Local native acceptance remains
+291 implemented cases, 20 planned cases and one external case. Shared
+ECMA specifications, extracts and derived notes are indexed under
+[`specs/ecma-376/`](../references/fixtures-ooxml/specs/ecma-376/README.md).
+The full PDFs are the specification sources; local copies have been removed.
+Keep this shared pin until the coordinator approves a replacement. Go's package ledger has four partial mappings and eight unmapped
+declarations; its XML ledger has three partial mappings and one unmapped.
+Neither ledger grants canonical execution credit. The semantic-diff assertion
+`removed: []` exercises no removal case.
+
+Once a release is approved, update the gitlink and
+`spec/reference-distribution.json` together within the coordinator-approved scope.
+For v0.33 adoption, only this enhancement branch advances; legacy tips and prepared
+publication refs/mirror remain at the v0.9 checkpoint by explicit instruction.
+Do not use `git submodule update --remote` or move an existing release tag to
+follow changing content.
+
+## Integrity and output custody
+
+Root-module and acceptance checks require the exact reference HEAD, the pinned
+root seal, clean index/worktree and tracked bytes/modes. Release tags must be annotated.
+Changes to facts or workflows fail even when fixture manifest hashes still match;
+`assume-unchanged` does not hide altered tracked bytes. Verification is read-only.
+An absent Git checkout, mismatched pin or missing input is a failure, not a skip.
+
+Write outputs under `t.TempDir()` or consumer-local `artifacts/generated`.
+Persistent output guards reject reference-root descendants, including symlink
+redirects. Never regenerate or rebaseline the shared inputs during a test run.
+
+## Mutation workflow contract
+
+The root-only release removes the old wrapper and generated expanded-case input.
+Go compiles the official Gherkin and derives stable scenario/Examples keys and typed
+step arguments locally. The compact contract points to canonical asset IDs and
+readback facts. Exact part membership is required; preserved hashes are the
+complement of `allowedChangedPartsForSuccess`. Native semantic assertions and the
+direct cache-invalidation outcome are unchanged. Contract inventory validation
+grants no workflow execution credit.
+
+Historical v0.2 compatibility is selected only by a schema1 pin, never by checking
+which files happen to exist. Current schema2 verification reads no old wrapper or
+generated inventory. Migration results and temporary field-mapping failures are
+recorded separately in `../reports/batches/095.md`.
+
+## Batched verification
+
+`make test` covers the root Go module only. `make test-batch` also runs the separate
+acceptance module. Use `GOMAXPROCS=2` and `-p 2`; run related packages together,
+including failure reruns. Individual-test retry loops are not part of the workflow.
+Full/race checks belong at integration points; reuse caches and avoid concurrent
+duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
+isolated in the acceptance module, and checkout verification uses Git only in tests.
+
+The enhanced-only v0.16 default released-reference batch is recorded in
+`../reports/batches/139.md`: 291 implemented native Gherkin cases; 20 planned and
+one external case unrun. The prior v0.3 bounded race checkpoint remains
+`../reports/batches/096.md`; this reference/documentation update does not rerun races.
+Package/unit/subtest counts are separate metrics. No live Office
+rendering/calculation or exploratory fuzz campaign ran in these batches.
+Historical reports retain the commands and outcomes from their original runs.
+
+## Behaviour catalogue and publication
+
+The central registry owns canonical behaviour IDs and expected outcomes. Local
+`docs/behaviors` files stage native findings for reconciliation; they do not form
+a second canonical suite. The current inventory has 404 native declarations,
+including the checkout guards: 197 have reviewed family/parameter mappings in
+207 candidates, and 207 remain unreviewed. This is the frozen inventory snapshot;
+later test declarations remain outside its denominator until a deliberate refresh. Importing Gherkin never earns execution
+credit, and sibling results do not become Go passes.
+
+The rewritten history and main/version-tip migrations are local preparations.
+The configured GitHub credential has no write permission for this repository.
+Go publication has not occurred. The shared release is available, but publishing
+the rewritten Go refs still requires write access, final ref audits and explicit
+leases against unchanged remote refs. See the batch
+reports for historical results, not current release certification.

@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "spreadsheet-targets-candidates.feature",
+  "native_prefix": "pkg/spreadsheet/",
+  "native_files": [
+    "pkg/spreadsheet/style_validation_test.go",
+    "pkg/spreadsheet/image_edit_test.go"
+  ],
+  "source_revision": "3794a14783aa658ee6cab28c40ef4db7d56a74d6",
+  "inventory_observation_revision": "ec71b6cf4c6ac8bebec49ee195ac64520b104be9",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/spreadsheet/image_edit_test.go::TestImageReplacementBatch",
+      "source_sha256": "c662b80684ed08f9468a366a428dd177f97096aebd3e8f11b7d1b41c626373b2",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-targets-003",
+        "@candidate-go-spreadsheet-targets-004",
+        "@candidate-go-spreadsheet-targets-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 46,
+          "name": "PNG no-op JPEG replacement collision and handles",
+          "dynamic": false
+        },
+        {
+          "line": 89,
+          "name": "truncated payload refusal keeps target reusable",
+          "dynamic": false
+        },
+        {
+          "line": 105,
+          "name": "one replacement stales other held handles",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [],
+      "notes": "Three named subtests using helper-built2x2PNG/JPEG plus casecollision. Graph part name/MIME, receipt empty/consumed state and callsuccess/errors only; no independent payload/geometry/archive-readback. Initialno-opreceipt asserted, freshsamebytes call only success. Truncated input is exactly firsthalfJPEG, not broad corruptedimage coverage."
+    },
+    {
+      "native_id": "pkg/spreadsheet/style_validation_test.go::TestStyleReferenceBatch",
+      "source_sha256": "89b0d6827d01c0bb0b838fa2b16f72b98d29480923b343e7e67494eb5a307acb",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-targets-001",
+        "@candidate-go-spreadsheet-targets-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 15,
+          "expression": "tc.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 11,
+          "expression": "[]struct {\n\tname, table, cells\tstring\n\tbad\t\t\tbool\n}",
+          "rows": 8,
+          "names": [
+            "implicit no table",
+            "nonzero no table",
+            "empty explicit zero",
+            "empty implicit zero",
+            "count absent but actual xf",
+            "overflow",
+            "empty index",
+            "two tables"
+          ]
+        }
+      ],
+      "notes": "Eight literal rows through dynamic tc.name:2accept6refuse; checks OpenEditing success then ValidateStyles errorpresence only, no exact error kind or mutation. Cells only, not row/column scope."
+    }
+  ],
+  "notes": "Only these two snapshot declarations reviewed; helpers supply fixtures but are not independent tests. Related acceptance image/style cases are separate inventory declarations, no inherited credit. No canonical bindings, runtime changes or externalrendering. Namespace coverage not added: requested namespace filename lookup was absent; no inferred mapping. Frozen404 denominator unchanged; latercontrols outside snapshot."
+}

@@ -1,0 +1,4 @@
+ok  	github.com/rcarmo/go-ooxml/internal/formula	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	0.432s
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	(cached)
+ok  	github.com/rcarmo/go-ooxml/acceptance	1.955s

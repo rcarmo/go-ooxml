@@ -1,6 +1,15 @@
 # Round-Trip Fixture Tests
 
-This document summarizes the complex round-trip fixture tests for Word, Excel, and PowerPoint. Each test opens a fixture, mutates it, saves, re-opens, and verifies expected behavior.
+This document lists native round-trip assertions for Word, Excel and PowerPoint.
+Names in the table are logical regression labels. They resolve through
+`internal/testutil/fixture_ids.go` to manifest content IDs; they are not physical
+fixture paths. The shared schema2 checkout stores one file per hash under
+`fixtures/<format>/<scenarioGroup>/`.
+
+Each test opens an owned input, mutates a private document, saves to a local output,
+reopens it and checks the listed effects. This catalogue is not an execution report
+or Office-compatibility certification. Use [testing.md](testing.md) for exact
+reference pins and batched verification. Never write outputs into the shared tree.
 
 ## Summary Table
 

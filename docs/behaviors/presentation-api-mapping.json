@@ -1,0 +1,295 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "presentation-api-candidates.feature",
+  "native_prefix": "pkg/presentation/",
+  "native_files": [
+    "pkg/presentation/presentation_test.go"
+  ],
+  "source_revision": "c3947891f9ac15c2972914c44c8ae3e66099e67b",
+  "inventory_observation_revision": "ec71b6cf4c6ac8bebec49ee195ac64520b104be9",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "helper_sources": [
+    {
+      "path": "internal/testutil/testutil.go",
+      "source_sha256": "e5051ec7d9c9b109996d712404c70c3091e3cffa5619c63d3913d032df9a2b4c",
+      "aspects": [
+        "NewResource/OpenResource fatal on create/open error",
+        "cleanup Close errors ignored"
+      ]
+    }
+  ],
+  "mappings": [
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestNew",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-001"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Named4x3constants and zeroSlideCount, no serialization."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestNewWidescreen",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Named16x9dimensionconstants only."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestNewWithSize",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "7200000/5400000 exactpair only, no invalidbounds."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestPresentation_CoreProperties",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Inmemory Title/Creator equality with successfulsetter/getter; no save/otherfields."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestPresentation_MastersAndLayouts",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Loadedcommentsfixture collectionsnonempty/firstpathsnonempty only; directOpen succeeds, closeerrorignored."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestPresentation_SlideErrors",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 109,
+          "expression": "[]int",
+          "rows": 2
+        }
+      ],
+      "notes": "Slide0/Delete1 on empty and duplicateReorder1,1 on2slides exactErrInvalidIndex; no rollback."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestAddSlide",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Firstnonnil/count1and2/index1and2; no packagegraph."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestInsertSlide",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-008"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Insert1 on2slides count3/newindex1/allSlidesRaw indices ordinal+1; no originalidentity mapping."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestDeleteSlide",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-009"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Code deletes index1 despite middle comment, count2; delete10nonnilerr only."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestDuplicateSlide",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Count2/returnedindex2 only; OriginalText setup notasserted/copiedindependence untested."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestReorderSlides",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-011"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 219,
+          "expression": "[]int",
+          "rows": 3
+        },
+        {
+          "line": 236,
+          "expression": "[]int",
+          "rows": 2
+        }
+      ],
+      "notes": "Reverse3/2/1 IDs checked in memory; wronglength1/2 erroronly; no save/payload/rollback/ordercanonicalcredit."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestSlideHidden",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-012"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Defaultfalse/true/false getter, no persistence."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestDeleteShape",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-013"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "DeleteShape string0 successful/count decremented only."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestSlideNotes",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-014"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "HasNotesdefaultfalse; settersreturnerrorsignored; initialexacttext, appendedtwoContains, no separator/save."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestSaveAs_NotesMasterRelationshipIDAlignment",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-015"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Save/Open success/private firstNotesMasterRID resolves to expectedrelationshiptype; no targetpayloadassertion."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestSlideCommentsRoundTrip",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-016"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Savednewdeck/slideselection success/count1/exacttextauthor; no coords/IDs/multislideownership."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestSaveAs",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-017"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "SaveAssuccess and !os.IsNotExist(staterror), otherstaterrorsnotchecked/contentnotread."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestRoundTrip",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-018"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Two-slide save/open count2only; text/hidden setupunasserted."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestAdvancedPartsRoundTrip",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-019"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Imagefixture SaveAs/Open then themeedgepresenceonly; no target/content or otheradvancedparts checks."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestAutofit",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-020"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Inmemory none->normal->shape enums only."
+    },
+    {
+      "native_id": "pkg/presentation/presentation_test.go::TestShapeFill",
+      "source_sha256": "3bbdf8479bb173beffbde99d7266308760fc1d4c51d3693fc7cac31fe453b41a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-api-021"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Setter smoke only, no value or save assertions. No panic is the sole test-body predicate."
+    }
+  ],
+  "notes": "21native declarations/21stagingpredicates; loops ininsert/reorder/notes notnewscenario denominators. Strong exact getter/readback checks separated from presence/conditional/no-panic outcomes. No canonical slideorder/layout/textbox workflow credit, no runtime changes/renderproof. Snapshot404 retained/latercontrols outside. Preparedpublication/legacy records protected, enhancedv0.14."
+}

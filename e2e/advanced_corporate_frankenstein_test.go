@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"github.com/rcarmo/go-ooxml/pkg/document"
 	"github.com/rcarmo/go-ooxml/pkg/presentation"
 	"github.com/rcarmo/go-ooxml/pkg/spreadsheet"
@@ -174,7 +175,7 @@ func buildCorporateFrankensteinDoc(outPath string) error {
 	if _, err := doc.Body().AddDiagram(utils.InchesToEMU(6.0), utils.InchesToEMU(3.0), "Governance Diagram"); err != nil {
 		return err
 	}
-	if _, err := doc.Body().AddPicture(filepath.Join("..", "testdata", "pptx", "image1.png"), utils.InchesToEMU(2.5), utils.InchesToEMU(2.0)); err != nil {
+	if _, err := doc.Body().AddPicture(testutil.FixturePath("pptx", "image1.png"), utils.InchesToEMU(2.5), utils.InchesToEMU(2.0)); err != nil {
 		return err
 	}
 

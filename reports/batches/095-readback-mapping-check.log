@@ -1,0 +1,14 @@
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	(cached)
+--- FAIL: TestSharedPackV2 (0.03s)
+    --- FAIL: TestSharedPackV2/title-and-subtitle.pptx (0.00s)
+        shared_pack_test.go:126: fixture readback facts differ for title-and-subtitle.pptx: got {"slide1.subtitle":"Original subtitle","slide1.title":"Original title","slideCount":1} want {"slide1":{"subtitle":"Original subtitle","title":"Original title"},"slideCount":1}
+    --- FAIL: TestSharedPackV2/present-placeholder.docx (0.00s)
+        shared_pack_test.go:126: body readback absent
+    --- FAIL: TestSharedPackV2/default-style.xlsx (0.00s)
+        shared_pack_test.go:126: fixture readback facts differ for default-style.xlsx: got {"absentSheet":"Missing","activeSheet.A1":"before","cellXfsCount":1} want {"absentSheet":"Missing","activeSheetCellA1":"before","cellXfsCount":1}
+    --- FAIL: TestSharedPackV2/cross-sheet-cache.xlsx (0.00s)
+        shared_pack_test.go:126: strconv.ParseFloat: parsing "<nil>": invalid syntax
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/acceptance	2.111s
+FAIL

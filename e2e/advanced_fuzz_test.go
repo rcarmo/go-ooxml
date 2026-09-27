@@ -31,21 +31,21 @@ func FuzzWorkflowOpenReaderRoundTrip(f *testing.F) {
 	}
 
 	for _, name := range wordFixtures {
-		data, err := os.ReadFile(filepath.Join("..", "testdata", "word", name))
+		data, err := os.ReadFile(testutil.FixturePath("word", name))
 		if err != nil {
 			continue
 		}
 		f.Add(data, uint16(0), byte(0), uint8(0))
 	}
 	for _, name := range excelFixtures {
-		data, err := os.ReadFile(filepath.Join("..", "testdata", "excel", name))
+		data, err := os.ReadFile(testutil.FixturePath("excel", name))
 		if err != nil {
 			continue
 		}
 		f.Add(data, uint16(0), byte(0), uint8(1))
 	}
 	for _, name := range pptxFixtures {
-		data, err := os.ReadFile(filepath.Join("..", "testdata", "pptx", name))
+		data, err := os.ReadFile(testutil.FixturePath("pptx", name))
 		if err != nil {
 			continue
 		}

@@ -1,0 +1,2552 @@
+[
+  {
+    "case": {
+      "file": "../features/external/oracle.feature",
+      "id": "@ORACLE-001",
+      "line": 6
+    },
+    "lifecycle": "@external",
+    "name": "Recalculation delivers only eligible caches in the preserved package",
+    "runner": "@office"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/bounded-edit.feature",
+      "id": "@WORD-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "A plain run correction preserves opaque markup and media",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/bounded-edit.feature",
+      "id": "@WORD-002",
+      "line": 23
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsupported ownership or editing policy refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/bounded-edit.feature",
+      "id": "@WORD-002",
+      "line": 24
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsupported ownership or editing policy refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/bounded-edit.feature",
+      "id": "@WORD-002",
+      "line": 25
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsupported ownership or editing policy refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/bounded-edit.feature",
+      "id": "@WORD-002",
+      "line": 26
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsupported ownership or editing policy refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/bounded-edit.feature",
+      "id": "@WORD-002",
+      "line": 27
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsupported ownership or editing policy refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/comment-mime-preservation.feature",
+      "id": "@MIME-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Preserve the input spelling without claiming Office certification",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/comment-mime-preservation.feature",
+      "id": "@MIME-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Preserve the input spelling without claiming Office certification",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/replace-all.feature",
+      "id": "@ALL-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "A wrapper refusal does not discard independent supported matches",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/replace-all.feature",
+      "id": "@ALL-002",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Replace-all skips matches already equal to the replacement",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/replace-all.feature",
+      "id": "@ALL-003",
+      "line": 19
+    },
+    "lifecycle": "@implemented",
+    "name": "Invalid XML replacement cannot commit any selected match",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/run-boundary.feature",
+      "id": "@INSERT-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Identically formatted adjacent runs allow a boundary insertion",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/run-boundary.feature",
+      "id": "@INSERT-002",
+      "line": 19
+    },
+    "lifecycle": "@implemented",
+    "name": "Differing or interrupted boundary ownership refuses",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/run-boundary.feature",
+      "id": "@INSERT-002",
+      "line": 20
+    },
+    "lifecycle": "@implemented",
+    "name": "Differing or interrupted boundary ownership refuses",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/run-boundary.feature",
+      "id": "@INSERT-002",
+      "line": 21
+    },
+    "lifecycle": "@implemented",
+    "name": "Differing or interrupted boundary ownership refuses",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/search-boundaries.feature",
+      "id": "@EDGE-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "A partial folded candidate does not consume a later valid character match",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/search-boundaries.feature",
+      "id": "@EDGE-002",
+      "line": 12
+    },
+    "lifecycle": "@implemented",
+    "name": "A span ending in a paragraph separator remains inspection-only",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/search-policy.feature",
+      "id": "@SEARCH-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Normalised matching retains original typographic text",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/search-policy.feature",
+      "id": "@SEARCH-002",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Casefold expansion cannot select half an original character",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/search-policy.feature",
+      "id": "@SEARCH-003",
+      "line": 19
+    },
+    "lifecycle": "@implemented",
+    "name": "Near ranks every candidate but does not discard distant matches",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/search-policy.feature",
+      "id": "@SEARCH-004",
+      "line": 25
+    },
+    "lifecycle": "@implemented",
+    "name": "Conflicting positional and contextual selectors refuse",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/search-scope.feature",
+      "id": "@SCOPE-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Search sees exactly one newline between paragraphs",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/search-scope.feature",
+      "id": "@SCOPE-002",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Historical-view matches are read-only",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/search-scope.feature",
+      "id": "@SCOPE-003",
+      "line": 20
+    },
+    "lifecycle": "@implemented",
+    "name": "An explicit related story does not search the body instead",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/span-batch.feature",
+      "id": "@BATCH-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Several matches in one leaf are replaced in one transaction",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/span-batch.feature",
+      "id": "@BATCH-002",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "An unsupported later target rolls back earlier selected edits",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/span-batch.feature",
+      "id": "@BATCH-003",
+      "line": 20
+    },
+    "lifecycle": "@implemented",
+    "name": "A stale selected target aborts the whole batch",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/span-guards.feature",
+      "id": "@GUARD-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "A drawing-only run inside a changed interval refuses replacement",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/span-guards.feature",
+      "id": "@GUARD-002",
+      "line": 12
+    },
+    "lifecycle": "@implemented",
+    "name": "Lexically equal properties with different namespace bindings refuse insertion",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/span-replace.feature",
+      "id": "@REPLACE-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Replacement keeps unchanged fragments in their source runs",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/span-replace.feature",
+      "id": "@REPLACE-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Replacement keeps unchanged fragments in their source runs",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/span-replace.feature",
+      "id": "@REPLACE-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Replacement keeps unchanged fragments in their source runs",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/span-replace.feature",
+      "id": "@REPLACE-002",
+      "line": 19
+    },
+    "lifecycle": "@implemented",
+    "name": "Repeated affix ambiguity refuses without consuming the target",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/span-replace.feature",
+      "id": "@REPLACE-003",
+      "line": 26
+    },
+    "lifecycle": "@implemented",
+    "name": "A visible span across a hyperlink boundary cannot authorise an edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/spans.feature",
+      "id": "@SPAN-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Exact matching crosses formatting runs and Unicode boundaries",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/spans.feature",
+      "id": "@SPAN-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Exact matching crosses formatting runs and Unicode boundaries",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/spans.feature",
+      "id": "@SPAN-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Exact matching crosses formatting runs and Unicode boundaries",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/spans.feature",
+      "id": "@SPAN-002",
+      "line": 18
+    },
+    "lifecycle": "@implemented",
+    "name": "Repeated matches remain explicit and single-target lookup refuses",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/spans.feature",
+      "id": "@SPAN-003",
+      "line": 25
+    },
+    "lifecycle": "@implemented",
+    "name": "Text separated by paragraph boundaries is not silently concatenated",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/stories.feature",
+      "id": "@STORY-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Revision view selects the appropriate visible text",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/stories.feature",
+      "id": "@STORY-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Revision view selects the appropriate visible text",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/stories.feature",
+      "id": "@STORY-001",
+      "line": 17
+    },
+    "lifecycle": "@implemented",
+    "name": "Revision view selects the appropriate visible text",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/stories.feature",
+      "id": "@STORY-002",
+      "line": 20
+    },
+    "lifecycle": "@implemented",
+    "name": "Nested text box paragraphs do not duplicate their text in the parent",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/whitespace.feature",
+      "id": "@SPACE-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "A single replacement adds the required preservation attribute",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/document/whitespace.feature",
+      "id": "@SPACE-002",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "A selected batch adds one preservation attribute to a shared leaf",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/attributes.feature",
+      "id": "@ATTR-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Add a namespaced attribute using an existing binding",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/attributes.feature",
+      "id": "@ATTR-002",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "A namespace-changing batch refuses without changing the snapshot",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 17
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 18
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/baseline.feature",
+      "id": "@BASE-001",
+      "line": 19
+    },
+    "lifecycle": "@implemented",
+    "name": "Open the principal part from a repository fixture",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-delete.feature",
+      "id": "@DELETE-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Delete a leaf and its selected relationships in one transaction",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-delete.feature",
+      "id": "@DELETE-002",
+      "line": 22
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsafe deletion refuses without committing any payload",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-delete.feature",
+      "id": "@DELETE-002",
+      "line": 23
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsafe deletion refuses without committing any payload",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-delete.feature",
+      "id": "@DELETE-002",
+      "line": 24
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsafe deletion refuses without committing any payload",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-delete.feature",
+      "id": "@DELETE-002",
+      "line": 25
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsafe deletion refuses without committing any payload",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-delete.feature",
+      "id": "@DELETE-002",
+      "line": 26
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsafe deletion refuses without committing any payload",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-delete.feature",
+      "id": "@DELETE-002",
+      "line": 27
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsafe deletion refuses without committing any payload",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-edit.feature",
+      "id": "@SURGERY-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Add a private payload and retarget one of two shared edges",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-edit.feature",
+      "id": "@SURGERY-002",
+      "line": 22
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved graph changes refuse the entire plan",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-edit.feature",
+      "id": "@SURGERY-002",
+      "line": 23
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved graph changes refuse the entire plan",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-edit.feature",
+      "id": "@SURGERY-002",
+      "line": 24
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved graph changes refuse the entire plan",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-edit.feature",
+      "id": "@SURGERY-002",
+      "line": 25
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved graph changes refuse the entire plan",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-edit.feature",
+      "id": "@SURGERY-002",
+      "line": 26
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved graph changes refuse the entire plan",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-edit.feature",
+      "id": "@SURGERY-002",
+      "line": 27
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved graph changes refuse the entire plan",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-edit.feature",
+      "id": "@SURGERY-003",
+      "line": 30
+    },
+    "lifecycle": "@implemented",
+    "name": "A graph plan cannot overwrite an intervening payload edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-target-form.feature",
+      "id": "@TARGETFORM-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Retarget paths retain their original form",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph-target-form.feature",
+      "id": "@TARGETFORM-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Retarget paths retain their original form",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph.feature",
+      "id": "@GRAPH-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Shared and external relationships retain distinct ownership",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph.feature",
+      "id": "@GRAPH-002",
+      "line": 21
+    },
+    "lifecycle": "@implemented",
+    "name": "Ambiguous or dangling registries refuse inspection",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph.feature",
+      "id": "@GRAPH-002",
+      "line": 22
+    },
+    "lifecycle": "@implemented",
+    "name": "Ambiguous or dangling registries refuse inspection",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph.feature",
+      "id": "@GRAPH-002",
+      "line": 23
+    },
+    "lifecycle": "@implemented",
+    "name": "Ambiguous or dangling registries refuse inspection",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph.feature",
+      "id": "@GRAPH-002",
+      "line": 24
+    },
+    "lifecycle": "@implemented",
+    "name": "Ambiguous or dangling registries refuse inspection",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/graph.feature",
+      "id": "@GRAPH-002",
+      "line": 25
+    },
+    "lifecycle": "@implemented",
+    "name": "Ambiguous or dangling registries refuse inspection",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/io-safety.feature",
+      "id": "@IO-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsafe archive names refuse before package parsing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/io-safety.feature",
+      "id": "@IO-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsafe archive names refuse before package parsing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/io-safety.feature",
+      "id": "@IO-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsafe archive names refuse before package parsing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/io-safety.feature",
+      "id": "@IO-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsafe archive names refuse before package parsing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/io-safety.feature",
+      "id": "@IO-001",
+      "line": 17
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsafe archive names refuse before package parsing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/io-safety.feature",
+      "id": "@IO-002",
+      "line": 20
+    },
+    "lifecycle": "@implemented",
+    "name": "Stream finalisation failure is returned to the caller",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/io-safety.feature",
+      "id": "@IO-003",
+      "line": 26
+    },
+    "lifecycle": "@implemented",
+    "name": "A serialisation failure preserves an existing destination",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/limits.feature",
+      "id": "@LIMIT-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Intake enforces a configured resource ceiling",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/limits.feature",
+      "id": "@LIMIT-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Intake enforces a configured resource ceiling",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/limits.feature",
+      "id": "@LIMIT-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Intake enforces a configured resource ceiling",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/limits.feature",
+      "id": "@LIMIT-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Intake enforces a configured resource ceiling",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/limits.feature",
+      "id": "@LIMIT-002",
+      "line": 19
+    },
+    "lifecycle": "@implemented",
+    "name": "Finite sufficient budgets permit normal intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/office-link-namespaces.feature",
+      "id": "@OFFLINK-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Correct expanded relationship attributes open for inspection",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/office-link-namespaces.feature",
+      "id": "@OFFLINK-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Correct expanded relationship attributes open for inspection",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/office-link-namespaces.feature",
+      "id": "@OFFLINK-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Correct expanded relationship attributes open for inspection",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/office-link-namespaces.feature",
+      "id": "@OFFLINK-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Correct expanded relationship attributes open for inspection",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/office-link-namespaces.feature",
+      "id": "@OFFLINK-001",
+      "line": 17
+    },
+    "lifecycle": "@implemented",
+    "name": "Correct expanded relationship attributes open for inspection",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/office-link-namespaces.feature",
+      "id": "@OFFLINK-001",
+      "line": 18
+    },
+    "lifecycle": "@implemented",
+    "name": "Correct expanded relationship attributes open for inspection",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/office-link-namespaces.feature",
+      "id": "@OFFLINK-002",
+      "line": 28
+    },
+    "lifecycle": "@implemented",
+    "name": "Wrong expanded attributes or type URIs refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/office-link-namespaces.feature",
+      "id": "@OFFLINK-002",
+      "line": 29
+    },
+    "lifecycle": "@implemented",
+    "name": "Wrong expanded attributes or type URIs refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/office-link-namespaces.feature",
+      "id": "@OFFLINK-002",
+      "line": 30
+    },
+    "lifecycle": "@implemented",
+    "name": "Wrong expanded attributes or type URIs refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/office-link-namespaces.feature",
+      "id": "@OFFLINK-002",
+      "line": 31
+    },
+    "lifecycle": "@implemented",
+    "name": "Wrong expanded attributes or type URIs refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/office-link-namespaces.feature",
+      "id": "@OFFLINK-002",
+      "line": 32
+    },
+    "lifecycle": "@implemented",
+    "name": "Wrong expanded attributes or type URIs refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/office-link-namespaces.feature",
+      "id": "@OFFLINK-002",
+      "line": 33
+    },
+    "lifecycle": "@implemented",
+    "name": "Wrong expanded attributes or type URIs refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/preservation.feature",
+      "id": "@SOURCE-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "A no-op save preserves the exact source archive",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/preservation.feature",
+      "id": "@SOURCE-002",
+      "line": 12
+    },
+    "lifecycle": "@implemented",
+    "name": "Replacing one part leaves all other member payloads unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/preservation.feature",
+      "id": "@SOURCE-003",
+      "line": 19
+    },
+    "lifecycle": "@implemented",
+    "name": "A stale replacement batch leaves all parts unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/receipts.feature",
+      "id": "@RECEIPT-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "A saved receipt agrees with independent package hashes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/receipts.feature",
+      "id": "@RECEIPT-002",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "A directory destination refuses without consuming staged changes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/structure.feature",
+      "id": "@ZIP-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Disagreeing local headers refuse before reading XML",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/structure.feature",
+      "id": "@ZIP-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Disagreeing local headers refuse before reading XML",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/structure.feature",
+      "id": "@ZIP-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Disagreeing local headers refuse before reading XML",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/structure.feature",
+      "id": "@ZIP-002",
+      "line": 18
+    },
+    "lifecycle": "@implemented",
+    "name": "An adjusted archive prefix refuses standalone package intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/structure.feature",
+      "id": "@ZIP-003",
+      "line": 24
+    },
+    "lifecycle": "@implemented",
+    "name": "Distinct CRC-valid member payloads cannot physically overlap",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-boundary.feature",
+      "id": "@PROLOG-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Lexically illegal boundary text refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-boundary.feature",
+      "id": "@PROLOG-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Lexically illegal boundary text refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-boundary.feature",
+      "id": "@PROLOG-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Lexically illegal boundary text refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-boundary.feature",
+      "id": "@PROLOG-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Lexically illegal boundary text refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-conformance.feature",
+      "id": "@QNAME-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Invalid qualified names refuse before editing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-conformance.feature",
+      "id": "@QNAME-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Invalid qualified names refuse before editing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-conformance.feature",
+      "id": "@QNAME-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Invalid qualified names refuse before editing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-conformance.feature",
+      "id": "@QNAME-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Invalid qualified names refuse before editing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-conformance.feature",
+      "id": "@QNAME-002",
+      "line": 19
+    },
+    "lifecycle": "@implemented",
+    "name": "Fresh insertion bindings do not leak to existing or later siblings",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-insert.feature",
+      "id": "@NODE-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "A new child reuses the existing prefix for its namespace",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-insert.feature",
+      "id": "@NODE-002",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "An unqualified child resets an inherited default namespace",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-insert.feature",
+      "id": "@NODE-003",
+      "line": 19
+    },
+    "lifecycle": "@implemented",
+    "name": "A self-closing parent expands without rewriting its attributes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-insert.feature",
+      "id": "@NODE-004",
+      "line": 26
+    },
+    "lifecycle": "@implemented",
+    "name": "An invalid insertion refuses the complete batch",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-normalization.feature",
+      "id": "@NORM-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Literal line endings normalize but no-op and edits use original offsets",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-normalization.feature",
+      "id": "@NORM-002",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Literal attribute whitespace differs from numeric character references",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-normalization.feature",
+      "id": "@NORM-003",
+      "line": 21
+    },
+    "lifecycle": "@implemented",
+    "name": "Changed attribute whitespace round-trips without losing numeric characters",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-subtree.feature",
+      "id": "@SUBTREE-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Replace a shadowing subtree with two siblings under parent bindings",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml-subtree.feature",
+      "id": "@SUBTREE-002",
+      "line": 12
+    },
+    "lifecycle": "@implemented",
+    "name": "A later invalid subtree replacement leaves the snapshot unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml.feature",
+      "id": "@XML-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Editing a text leaf preserves unknown markup and namespace context",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml.feature",
+      "id": "@XML-002",
+      "line": 20
+    },
+    "lifecycle": "@implemented",
+    "name": "Namespace-invalid XML is rejected",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml.feature",
+      "id": "@XML-002",
+      "line": 21
+    },
+    "lifecycle": "@implemented",
+    "name": "Namespace-invalid XML is rejected",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml.feature",
+      "id": "@XML-002",
+      "line": 22
+    },
+    "lifecycle": "@implemented",
+    "name": "Namespace-invalid XML is rejected",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml.feature",
+      "id": "@XML-002",
+      "line": 23
+    },
+    "lifecycle": "@implemented",
+    "name": "Namespace-invalid XML is rejected",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml.feature",
+      "id": "@XML-002",
+      "line": 24
+    },
+    "lifecycle": "@implemented",
+    "name": "Namespace-invalid XML is rejected",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/xml.feature",
+      "id": "@XML-003",
+      "line": 27
+    },
+    "lifecycle": "@implemented",
+    "name": "A foreign target refuses the entire edit batch",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Verified local ZIP64 payloads survive no-op delivery",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Verified local ZIP64 payloads survive no-op delivery",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Verified local ZIP64 payloads survive no-op delivery",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Verified local ZIP64 payloads survive no-op delivery",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-002",
+      "line": 26
+    },
+    "lifecycle": "@implemented",
+    "name": "Conflicting or undeclared ZIP64 bytes refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-002",
+      "line": 27
+    },
+    "lifecycle": "@implemented",
+    "name": "Conflicting or undeclared ZIP64 bytes refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-002",
+      "line": 28
+    },
+    "lifecycle": "@implemented",
+    "name": "Conflicting or undeclared ZIP64 bytes refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-002",
+      "line": 29
+    },
+    "lifecycle": "@implemented",
+    "name": "Conflicting or undeclared ZIP64 bytes refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-002",
+      "line": 30
+    },
+    "lifecycle": "@implemented",
+    "name": "Conflicting or undeclared ZIP64 bytes refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-002",
+      "line": 31
+    },
+    "lifecycle": "@implemented",
+    "name": "Conflicting or undeclared ZIP64 bytes refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-002",
+      "line": 32
+    },
+    "lifecycle": "@implemented",
+    "name": "Conflicting or undeclared ZIP64 bytes refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-002",
+      "line": 33
+    },
+    "lifecycle": "@implemented",
+    "name": "Conflicting or undeclared ZIP64 bytes refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-002",
+      "line": 34
+    },
+    "lifecycle": "@implemented",
+    "name": "Conflicting or undeclared ZIP64 bytes refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/package/zip64.feature",
+      "id": "@ZSIX-002",
+      "line": 35
+    },
+    "lifecycle": "@implemented",
+    "name": "Conflicting or undeclared ZIP64 bytes refuse intake",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/bounded-edit.feature",
+      "id": "@SLIDE-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Shape-ID targeting preserves geometry and opaque extension bytes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/bounded-edit.feature",
+      "id": "@SLIDE-002",
+      "line": 21
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsupported presentation text context refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/bounded-edit.feature",
+      "id": "@SLIDE-002",
+      "line": 22
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsupported presentation text context refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/bounded-edit.feature",
+      "id": "@SLIDE-002",
+      "line": 23
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsupported presentation text context refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/bounded-edit.feature",
+      "id": "@SLIDE-002",
+      "line": 24
+    },
+    "lifecycle": "@implemented",
+    "name": "Unsupported presentation text context refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-edit.feature",
+      "id": "@NOTES-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Replace a plain existing notes body and retain every other payload",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-edit.feature",
+      "id": "@NOTES-002",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "An empty existing notes text leaf can be filled without other changes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-edit.feature",
+      "id": "@NOTES-004",
+      "line": 23
+    },
+    "lifecycle": "@implemented",
+    "name": "Grouping-only notes shape lock does not prevent text correction",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-edit.feature",
+      "id": "@NOTES-003",
+      "line": 38
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved notes selection or replacement refuses atomically",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-edit.feature",
+      "id": "@NOTES-003",
+      "line": 39
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved notes selection or replacement refuses atomically",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-edit.feature",
+      "id": "@NOTES-003",
+      "line": 40
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved notes selection or replacement refuses atomically",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-edit.feature",
+      "id": "@NOTES-003",
+      "line": 41
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved notes selection or replacement refuses atomically",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-edit.feature",
+      "id": "@NOTES-003",
+      "line": 42
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved notes selection or replacement refuses atomically",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-edit.feature",
+      "id": "@NOTES-003",
+      "line": 43
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved notes selection or replacement refuses atomically",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-edit.feature",
+      "id": "@NOTES-003",
+      "line": 44
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved notes selection or replacement refuses atomically",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-edit.feature",
+      "id": "@NOTES-003",
+      "line": 45
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved notes selection or replacement refuses atomically",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-multiline.feature",
+      "id": "@NOTELINES-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Replace ordinary notes paragraphs with templated lines",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-multiline.feature",
+      "id": "@NOTELINES-001",
+      "line": 17
+    },
+    "lifecycle": "@implemented",
+    "name": "Replace ordinary notes paragraphs with templated lines",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-multiline.feature",
+      "id": "@NOTELINES-001",
+      "line": 18
+    },
+    "lifecycle": "@implemented",
+    "name": "Replace ordinary notes paragraphs with templated lines",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-multiline.feature",
+      "id": "@NOTELINES-002",
+      "line": 21
+    },
+    "lifecycle": "@implemented",
+    "name": "Clearing multiline notes creates one empty paragraph then permits refill",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-multiline.feature",
+      "id": "@NOTELINES-003",
+      "line": 34
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved formatting and late invalid text refuse before paragraph removal",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-multiline.feature",
+      "id": "@NOTELINES-003",
+      "line": 35
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved formatting and late invalid text refuse before paragraph removal",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/presentation/notes-multiline.feature",
+      "id": "@NOTELINES-003",
+      "line": 36
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved formatting and late invalid text refuse before paragraph removal",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/bounded-edit.feature",
+      "id": "@CELL-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Changing a formula-free numeric cell preserves styles and opaque parts",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/bounded-edit.feature",
+      "id": "@CELL-002",
+      "line": 21
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved workbook dependencies refuse numeric writes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/bounded-edit.feature",
+      "id": "@CELL-002",
+      "line": 22
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved workbook dependencies refuse numeric writes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/bounded-edit.feature",
+      "id": "@CELL-002",
+      "line": 23
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved workbook dependencies refuse numeric writes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/bounded-edit.feature",
+      "id": "@CELL-002",
+      "line": 24
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved workbook dependencies refuse numeric writes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/bounded-edit.feature",
+      "id": "@CELL-002",
+      "line": 25
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved workbook dependencies refuse numeric writes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/bounded-edit.feature",
+      "id": "@CELL-002",
+      "line": 26
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved workbook dependencies refuse numeric writes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/bounded-edit.feature",
+      "id": "@CELL-002",
+      "line": 27
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved workbook dependencies refuse numeric writes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/bounded-edit.feature",
+      "id": "@CELL-002",
+      "line": 28
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved workbook dependencies refuse numeric writes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/cache-invalidation.feature",
+      "id": "@CACHE-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "A cross-sheet chain invalidates transitively",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/cache-invalidation.feature",
+      "id": "@CACHE-002",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "An unrelated input edit preserves all formula caches",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/cache-invalidation.feature",
+      "id": "@CACHE-003",
+      "line": 27
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dependent structures refuse the complete edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/cache-invalidation.feature",
+      "id": "@CACHE-003",
+      "line": 28
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dependent structures refuse the complete edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/cache-invalidation.feature",
+      "id": "@CACHE-003",
+      "line": 29
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dependent structures refuse the complete edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/cache-invalidation.feature",
+      "id": "@CACHE-003",
+      "line": 30
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dependent structures refuse the complete edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/cache-invalidation.feature",
+      "id": "@CACHE-003",
+      "line": 31
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dependent structures refuse the complete edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/cache-invalidation.feature",
+      "id": "@CACHE-003",
+      "line": 32
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dependent structures refuse the complete edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/cache-invalidation.feature",
+      "id": "@CACHE-004",
+      "line": 35
+    },
+    "lifecycle": "@implemented",
+    "name": "An empty inactive workbook protection marker permits invalidation",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/calc-chain.feature",
+      "id": "@CHAIN-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Dependent input edit atomically removes an owned calculation chain",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/calc-chain.feature",
+      "id": "@CHAIN-002",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "An unrelated numeric edit retains the chain and its registrations",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/calc-chain.feature",
+      "id": "@CHAIN-003",
+      "line": 22
+    },
+    "lifecycle": "@implemented",
+    "name": "A same-value edit retains the chain and keeps its target reusable",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/calc-chain.feature",
+      "id": "@CHAIN-004",
+      "line": 35
+    },
+    "lifecycle": "@implemented",
+    "name": "Unknown or shared chain ownership refuses without editing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/calc-chain.feature",
+      "id": "@CHAIN-004",
+      "line": 36
+    },
+    "lifecycle": "@implemented",
+    "name": "Unknown or shared chain ownership refuses without editing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/calc-chain.feature",
+      "id": "@CHAIN-004",
+      "line": 37
+    },
+    "lifecycle": "@implemented",
+    "name": "Unknown or shared chain ownership refuses without editing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/calc-chain.feature",
+      "id": "@CHAIN-004",
+      "line": 38
+    },
+    "lifecycle": "@implemented",
+    "name": "Unknown or shared chain ownership refuses without editing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/dependency-structure.feature",
+      "id": "@DEPEND-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Malformed non-formula cells refuse the complete dependency plan",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/dependency-structure.feature",
+      "id": "@DEPEND-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Malformed non-formula cells refuse the complete dependency plan",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/dependency-structure.feature",
+      "id": "@DEPEND-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Malformed non-formula cells refuse the complete dependency plan",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-analysis.feature",
+      "id": "@FORMULA-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Static expressions expose exact reference ranges",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-analysis.feature",
+      "id": "@FORMULA-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Static expressions expose exact reference ranges",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-analysis.feature",
+      "id": "@FORMULA-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Static expressions expose exact reference ranges",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-analysis.feature",
+      "id": "@FORMULA-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Static expressions expose exact reference ranges",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-analysis.feature",
+      "id": "@FORMULA-002",
+      "line": 26
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dynamic or extended syntax refuses analysis",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-analysis.feature",
+      "id": "@FORMULA-002",
+      "line": 27
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dynamic or extended syntax refuses analysis",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-analysis.feature",
+      "id": "@FORMULA-002",
+      "line": 28
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dynamic or extended syntax refuses analysis",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-analysis.feature",
+      "id": "@FORMULA-002",
+      "line": 29
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dynamic or extended syntax refuses analysis",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-analysis.feature",
+      "id": "@FORMULA-002",
+      "line": 30
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dynamic or extended syntax refuses analysis",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-analysis.feature",
+      "id": "@FORMULA-002",
+      "line": 31
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dynamic or extended syntax refuses analysis",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-analysis.feature",
+      "id": "@FORMULA-002",
+      "line": 32
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dynamic or extended syntax refuses analysis",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-analysis.feature",
+      "id": "@FORMULA-002",
+      "line": 33
+    },
+    "lifecycle": "@implemented",
+    "name": "Unproved dynamic or extended syntax refuses analysis",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-remap.feature",
+      "id": "@REMAP-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Row and column insertion follows structural coordinates",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-remap.feature",
+      "id": "@REMAP-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Row and column insertion follows structural coordinates",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-remap.feature",
+      "id": "@REMAP-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Row and column insertion follows structural coordinates",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-remap.feature",
+      "id": "@REMAP-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Row and column insertion follows structural coordinates",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-remap.feature",
+      "id": "@REMAP-002",
+      "line": 19
+    },
+    "lifecycle": "@implemented",
+    "name": "A remap beyond the worksheet grid refuses without a partial formula",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-tokens.feature",
+      "id": "@TOKEN-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "A quoted closing parenthesis is a literal function argument",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/formula-tokens.feature",
+      "id": "@TOKEN-002",
+      "line": 12
+    },
+    "lifecycle": "@implemented",
+    "name": "Adjacent quoted operator text cannot stand in for a binary operator",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/image-replace.feature",
+      "id": "@IMAGE-001",
+      "line": 6
+    },
+    "lifecycle": "@implemented",
+    "name": "Retarget a selected picture while another picture shares its old media",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/image-replace.feature",
+      "id": "@IMAGE-002",
+      "line": 21
+    },
+    "lifecycle": "@implemented",
+    "name": "Ambiguous or protected image replacement refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/image-replace.feature",
+      "id": "@IMAGE-002",
+      "line": 22
+    },
+    "lifecycle": "@implemented",
+    "name": "Ambiguous or protected image replacement refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/image-replace.feature",
+      "id": "@IMAGE-002",
+      "line": 23
+    },
+    "lifecycle": "@implemented",
+    "name": "Ambiguous or protected image replacement refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/image-replace.feature",
+      "id": "@IMAGE-002",
+      "line": 24
+    },
+    "lifecycle": "@implemented",
+    "name": "Ambiguous or protected image replacement refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/image-replace.feature",
+      "id": "@IMAGE-002",
+      "line": 25
+    },
+    "lifecycle": "@implemented",
+    "name": "Ambiguous or protected image replacement refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/image-replace.feature",
+      "id": "@IMAGE-002",
+      "line": 26
+    },
+    "lifecycle": "@implemented",
+    "name": "Ambiguous or protected image replacement refuses unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/style-index.feature",
+      "id": "@STYLE-001",
+      "line": 13
+    },
+    "lifecycle": "@implemented",
+    "name": "Invalid style references refuse numeric edits unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/style-index.feature",
+      "id": "@STYLE-001",
+      "line": 14
+    },
+    "lifecycle": "@implemented",
+    "name": "Invalid style references refuse numeric edits unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/style-index.feature",
+      "id": "@STYLE-001",
+      "line": 15
+    },
+    "lifecycle": "@implemented",
+    "name": "Invalid style references refuse numeric edits unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/style-index.feature",
+      "id": "@STYLE-001",
+      "line": 16
+    },
+    "lifecycle": "@implemented",
+    "name": "Invalid style references refuse numeric edits unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/style-index.feature",
+      "id": "@STYLE-001",
+      "line": 17
+    },
+    "lifecycle": "@implemented",
+    "name": "Invalid style references refuse numeric edits unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/style-index.feature",
+      "id": "@STYLE-001",
+      "line": 18
+    },
+    "lifecycle": "@implemented",
+    "name": "Invalid style references refuse numeric edits unchanged",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/implemented/spreadsheet/style-index.feature",
+      "id": "@STYLE-002",
+      "line": 21
+    },
+    "lifecycle": "@implemented",
+    "name": "Implicit style zero resolves through a nonempty table",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/document.feature",
+      "id": "@DOCX-001",
+      "line": 6
+    },
+    "lifecycle": "@planned",
+    "name": "Replacement spans several runs with one formatting region",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/document.feature",
+      "id": "@DOCX-002",
+      "line": 17
+    },
+    "lifecycle": "@planned",
+    "name": "A historical target cannot authorise a current edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/document.feature",
+      "id": "@DOCX-003",
+      "line": 25
+    },
+    "lifecycle": "@planned",
+    "name": "A redline reproduces both documents through review resolution",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/document.feature",
+      "id": "@DOCX-004",
+      "line": 33
+    },
+    "lifecycle": "@planned",
+    "name": "Comments-only protection permits comments but refuses body edits",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/oracle-contract.feature",
+      "id": "@ORACLE-002",
+      "line": 6
+    },
+    "lifecycle": "@planned",
+    "name": "An unavailable configured oracle returns a typed refusal",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/package.feature",
+      "id": "@PKG-001",
+      "line": 16
+    },
+    "lifecycle": "@planned",
+    "name": "Untouched package members retain their payload bytes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/package.feature",
+      "id": "@PKG-001",
+      "line": 17
+    },
+    "lifecycle": "@planned",
+    "name": "Untouched package members retain their payload bytes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/package.feature",
+      "id": "@PKG-001",
+      "line": 18
+    },
+    "lifecycle": "@planned",
+    "name": "Untouched package members retain their payload bytes",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/package.feature",
+      "id": "@PKG-002",
+      "line": 21
+    },
+    "lifecycle": "@planned",
+    "name": "Unknown content inside an edited XML part survives",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/package.feature",
+      "id": "@PKG-003",
+      "line": 28
+    },
+    "lifecycle": "@planned",
+    "name": "An unsafe archive is refused before editing",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/package.feature",
+      "id": "@PKG-004",
+      "line": 36
+    },
+    "lifecycle": "@planned",
+    "name": "A failed delivery leaves an existing destination untouched",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/presentation.feature",
+      "id": "@PPTX-001",
+      "line": 6
+    },
+    "lifecycle": "@planned",
+    "name": "A cloned chart has an independent embedded workbook",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/presentation.feature",
+      "id": "@PPTX-002",
+      "line": 15
+    },
+    "lifecycle": "@planned",
+    "name": "Reordering cannot redirect an anchored text edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/presentation.feature",
+      "id": "@PPTX-003",
+      "line": 22
+    },
+    "lifecycle": "@planned",
+    "name": "An ambiguous destination layout refuses the whole import",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/presentation.feature",
+      "id": "@PPTX-004",
+      "line": 30
+    },
+    "lifecycle": "@planned",
+    "name": "Replacing a shared image changes only its selected occurrence",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/spreadsheet.feature",
+      "id": "@XLSX-001",
+      "line": 6
+    },
+    "lifecycle": "@planned",
+    "name": "Row insertion updates every supported dependent reference",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/spreadsheet.feature",
+      "id": "@XLSX-002",
+      "line": 15
+    },
+    "lifecycle": "@planned",
+    "name": "An unresolved dependent reference refuses a structural edit",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/spreadsheet.feature",
+      "id": "@XLSX-003",
+      "line": 24
+    },
+    "lifecycle": "@planned",
+    "name": "A purely cosmetic style change leaves formula caches intact",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/spreadsheet.feature",
+      "id": "@XLSX-004",
+      "line": 31
+    },
+    "lifecycle": "@planned",
+    "name": "Table append does not infer a calculated column from a neighbouring cell",
+    "runner": "@go"
+  },
+  {
+    "case": {
+      "file": "../features/planned/spreadsheet.feature",
+      "id": "@XLSX-005",
+      "line": 39
+    },
+    "lifecycle": "@planned",
+    "name": "Pivot refresh permission reports the remaining stale cache",
+    "runner": "@go"
+  }
+]

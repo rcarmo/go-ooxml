@@ -1,0 +1,25 @@
+go test -p 2 ./...
+ok  	github.com/rcarmo/go-ooxml/e2e	0.976s
+ok  	github.com/rcarmo/go-ooxml/internal/formula	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/losslessxml	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	0.400s
+ok  	github.com/rcarmo/go-ooxml/pkg/document	1.059s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/chart	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/common	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/diagram	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/dml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/pml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/sml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/theme	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/wml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	0.394s
+ok  	github.com/rcarmo/go-ooxml/pkg/presentation	0.722s
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	0.262s
+ok  	github.com/rcarmo/go-ooxml/pkg/utils	(cached)
+?   	github.com/rcarmo/go-ooxml/tools/casefold	[no test files]
+ok  	github.com/rcarmo/go-ooxml/tools/nativeinventory	(cached)
+cd acceptance && go test -p 2 ./...
+ok  	github.com/rcarmo/go-ooxml/acceptance	2.078s
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	1.485s
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	3.775s
+ok  	github.com/rcarmo/go-ooxml/acceptance	10.777s

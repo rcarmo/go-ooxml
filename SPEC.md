@@ -1,12 +1,32 @@
 # Go OOXML Library Specification
 
 **Version:** 1.0  
-**Status:** IMPLEMENTATION COMPLETE (Phases 1-5)  
+**Status:** Historical Phases 1-5 milestone; native enhancement and canonical behaviour reconciliation incomplete.
+
+Current verification, grouped schema2 fixtures and candidate/release setup are
+documented in [docs/testing.md](docs/testing.md). Totals and phase tables below
+are historical design records, not a current test inventory or release claim.
 **Created:** January 29, 2026  
 **Updated:** January 2026  
 **Purpose:** Actionable specification for building a Go OOXML manipulation library
 
 ---
+
+## extended enhancement work (2026-09-26)
+
+The historical completion table below covers the original implementation scope.
+extended enhancement parity is a separate, unfinished track defined in
+[the design and source mapping](docs/design/native-enhancements.md).
+
+Library runtime packages retain standard-library-only dependencies. Gherkin/Godog
+live in the separate acceptance module; make test-batch runs both modules with
+bounded concurrency. Features are tagged planned, implemented or external.
+Implemented native cases require strict execution and exact result reconciliation;
+planned cases remain visible in the inventory and do not count as passes.
+
+New safe-edit APIs will be additive adapters/concrete types. Existing exported
+interfaces must not gain methods without a versioned compatibility decision.
+No preservation, transaction or full extended-parity guarantee exists yet.
 
 ## Document Purpose
 
@@ -188,7 +208,7 @@ github.com/[org]/ooxml-go/
 │   └── xmlutil/                     # Internal XML utilities
 │       └── namespace.go            # Namespace handling
 │
-└── testdata/                        # Test fixtures
+└── references/fixtures-ooxml/       # Shared manifest, grouped inputs and workflows
     ├── word/
     │   ├── simple.docx
     │   ├── with_tables.docx
@@ -1192,106 +1212,29 @@ func TestParagraph_SetStyle(t *testing.T) {
 
 ### 7.3 Fixture Requirements
 
-> [!WARNING]
-> Do NOT create test fixtures programmatically when real Office documents will behave differently. Create fixtures in actual Office applications and commit them.
+All reusable documents/media resolve by fixture ID through the shared schema2
+manifest. Physical inputs use one file per SHA under
+`fixtures/<format>/<scenarioGroup>/`. Native labels map to IDs in
+`internal/testutil/fixture_ids.go`; no source-origin trees or compatibility
+symlinks are part of the consumer contract. Required provenance and licences
+remain in shared metadata. Some inputs are owned generated archives with qualified
+provenance; do not infer a producer version where it was not recorded.
 
-**Fixture Status:** ⚠️ Currently using programmatic fixtures. See `testdata/FIXTURES.md` for checklist of needed real Office fixtures.
-
-**Required Fixture Files:**
-
-```
-testdata/
-├── word/
-│   ├── minimal.docx              # Empty doc, just body
-│   ├── single_paragraph.docx     # One paragraph, no formatting
-│   ├── formatted_text.docx       # Bold, italic, underline, colors
-│   ├── headings.docx             # All heading levels 1-9
-│   ├── simple_table.docx         # 3x3 table, no merged cells
-│   ├── complex_table.docx        # Merged cells, nested tables
-│   ├── track_changes.docx        # Insertions and deletions
-│   ├── comments.docx             # Multiple comments with replies
-│   ├── styles.docx               # Custom styles applied
-│   ├── headers_footers.docx      # Different first page, odd/even
-│   ├── sdt_content_controls.docx # Content controls/placeholders
-│   ├── numbered_list.docx        # Numbered list items
-│   └── bullet_list.docx          # Bullet list items
-│
-├── excel/
-│   ├── minimal.xlsx              # Empty workbook, one sheet
-│   ├── single_cell.xlsx          # One cell with value
-│   ├── data_types.xlsx           # String, number, date, boolean, formula
-│   ├── formatting.xlsx           # Colors, fonts, borders
-│   ├── multiple_sheets.xlsx      # Three sheets with data
-│   ├── tables.xlsx               # Excel tables
-│   ├── merged_cells.xlsx         # Merged cell regions
-│   ├── named_ranges.xlsx         # Named ranges
-│   ├── comments.xlsx             # Cell comments
-│   ├── formulas.xlsx             # Various formulas
-│   └── conditional_format.xlsx   # Conditional formatting
-│
-└── pptx/
-    ├── minimal.pptx              # Single blank slide
-    ├── title_slide.pptx          # Title layout slide
-    ├── bullet_points.pptx        # Slide with bullets
-    ├── shapes.pptx               # Various shape types
-    ├── tables.pptx               # Table on slide
-    ├── images.pptx               # Embedded images
-    ├── notes.pptx                # Slides with notes
-    ├── comments.pptx             # Slide comments
-    ├── hidden_slides.pptx        # Mix of visible/hidden
-    ├── multiple_masters.pptx     # Multiple slide masters
-    └── layouts.pptx              # All standard layouts
-```
+The shared root and pin must match. Release checks require the annotated tag and
+commit; candidate checks require explicit root/pin overrides and grant no release
+status. Full tracked-byte and clean-checkout verification includes facts/workflows
+outside the asset manifest. See [docs/testing.md](docs/testing.md).
 
 ### 7.4 Round-Trip Test Pattern
 
-```go
-// Example: pkg/document/roundtrip_test.go
+Resolve an input ID, open it, record the semantic expectations, save a private edit
+to `t.TempDir()`, reopen and assert those expectations and the permitted part
+budget. Use ordinary Go test assertions in runtime-module tests. Keep retained
+source-custody assertions separate from mutable authoring round trips. Generated
+E2E archives belong in local `artifacts/generated`, never shared references.
 
-func TestDocument_RoundTrip(t *testing.T) {
-    fixtures := []string{
-        "testdata/word/minimal.docx",
-        "testdata/word/formatted_text.docx",
-        "testdata/word/track_changes.docx",
-        // ... all fixtures
-    }
-    
-    for _, fixture := range fixtures {
-        t.Run(filepath.Base(fixture), func(t *testing.T) {
-            // Read original
-            original, err := os.ReadFile(fixture)
-            require.NoError(t, err)
-            
-            // Open document
-            doc, err := document.Open(fixture)
-            require.NoError(t, err)
-            
-            // Save to temp file
-            tmpFile := t.TempDir() + "/output.docx"
-            err = doc.SaveAs(tmpFile)
-            require.NoError(t, err)
-            doc.Close()
-            
-            // Re-open and verify structure preserved
-            doc2, err := document.Open(tmpFile)
-            require.NoError(t, err)
-            defer doc2.Close()
-            
-            // Compare paragraph count
-            assert.Equal(t, len(doc.Paragraphs()), len(doc2.Paragraphs()))
-            
-            // Compare table count
-            assert.Equal(t, len(doc.Tables()), len(doc2.Tables()))
-            
-            // Verify it can be opened by asserting no errors on content access
-            for i, para := range doc2.Paragraphs() {
-                _ = para.Text() // Should not panic
-                assert.NotEmpty(t, para.Style(), "paragraph %d should have style", i)
-            }
-        })
-    }
-}
-```
+`docs/ROUNDTRIP-TESTS.md` lists the existing native fixture assertion families.
+They are not evidence that every combination or external producer has been tested.
 
 ### 7.5 End-to-End Tests
 
@@ -1471,7 +1414,7 @@ func TestWordWorkflow_CreateTechnicalReport(t *testing.T) {
 
 ### Phase 7: Advanced Feature Parity (Python Superset) 🔄 PLANNED
 
-Goal: reach feature parity with advanced surfaces in openpyxl, python-docx, and python-pptx while maintaining a consistent Go API.
+Goal: reach feature parity with advanced surfaces in native-format, native-format, and native-format while maintaining a consistent Go API.
 
 #### Phase 7A: OOXML Foundations (shared)
 | Task | Priority | Status |
@@ -1480,7 +1423,7 @@ Goal: reach feature parity with advanced surfaces in openpyxl, python-docx, and 
 | Extend packaging constants (content types/relationships) | P0 | ✅ Done |
 | Add parsers + round-trip support for new parts | P0 | ✅ Done (package-level part preservation + round-trip tests) |
 
-#### Phase 7B: Spreadsheet Advanced (openpyxl parity)
+#### Phase 7B: Spreadsheet Advanced (native-format parity)
 | Task | Priority | Status |
 |------|----------|--------|
 | Charts (line/bar/pie/scatter) + series/axes | P0 | ⏳ Planned |
@@ -1495,7 +1438,7 @@ Goal: reach feature parity with advanced surfaces in openpyxl, python-docx, and 
 | Page setup/print options | P2 | ⏳ Planned |
 | Macro stubs (preserve only) | P3 | ⏳ Planned |
 
-#### Phase 7C: Word Advanced (python-docx parity)
+#### Phase 7C: Word Advanced (native-format parity)
 | Task | Priority | Status |
 |------|----------|--------|
 | Paragraph keep-lines/page-break-before/widow control | P1 | ✅ Done |
@@ -1506,7 +1449,7 @@ Goal: reach feature parity with advanced surfaces in openpyxl, python-docx, and 
 | Section/page layout controls (columns, breaks) | P2 | ⏳ Planned |
 | Revision/move tracking extras | P2 | ⏳ Planned |
 
-#### Phase 7D: PowerPoint Advanced (python-pptx parity)
+#### Phase 7D: PowerPoint Advanced (native-format parity)
 | Task | Priority | Status |
 |------|----------|--------|
 | Themes + master/layout editing | P0 | ⏳ Planned |
@@ -1592,7 +1535,7 @@ pkg/document/
 ├── document_integration_test.go  # Integration tests (build tag)
 ├── paragraph.go
 ├── paragraph_test.go
-├── testdata/                  # Package-specific test helpers
+├── internal/testutil/         # Package-specific test helpers
 │   └── helpers.go
 ```
 
@@ -1690,3 +1633,263 @@ Before declaring the library complete, ALL items must pass:
 - [ ] README with quick start examples
 - [ ] Benchmarks establish baseline performance
 - [ ] Can be imported and used in MCP Server codebase
+
+## Retained-source package adapter (initial subset)
+
+The additive `packaging.Preserved` concrete type owns immutable source/member
+bytes independently of the legacy `Package` models. `OpenPreserved([]byte, Limits)`
+validates intake; `Part(name)` returns a cloned payload and SHA-256; `Replace` takes
+an atomic batch of existing-member `Replacement{Part, ExpectedSHA256, Data}` values;
+`WriteTo` copies exact source bytes on no-op and raw-copies untouched ZIP members
+on edits. XML replacements must have one well-formed root. Registry replacements,
+duplicate/stale/missing targets and signed-package edits refuse. This is a low-level
+payload API; format semantics, reference rewriting, graph edits and native Office
+validation are separate contracts. No existing exported interface is extended.
+
+`Preserved.Receipt()` returns schema-1 byte-level changed-member hashes against
+the immutable session input. It describes staged changes, not proof of delivery.
+`Preserved.SaveAs(path)` stages output, reopens it and checks all expected member
+payloads before replacing a regular destination; only then does it return a receipt.
+Failed delivery retains staged changes. Symlink/nonregular targets refuse rather
+than silently choosing follow-link versus replace-link semantics. Filesystem crash
+durability after rename remains outside this initial contract.
+
+`Preserved.Graph()` inspects the understood OPC registry subset and returns sorted
+parts/content types/inbound ownership counts and source/ID/type/target edges.
+External targets are never fetched. Missing local parts, ambiguous registries and
+unknown extensions refuse with relationship_policy. Read-only graph validity is
+separate from graph surgery; allocation/copy/delete/import are not implemented.
+
+## Initial Word safe-edit subset
+
+`document.OpenEditing(source, packaging.Limits)` returns an additive concrete
+`EditSession` after OPC graph and main-part checks. `FindOne` targets one exact
+complete `w:t` leaf. `Replace` checks session identity/generation/fingerprint and
+consumes a target only after a changing edit succeeds. It currently permits only
+direct body paragraph/run/text ownership; fields, review/range markers, controls,
+hyperlinks, protection and unsupported whitespace refuse. No-op and refusal keep
+targets reusable; any successful text change invalidates other old targets
+conservatively. `SaveAs` returns the preserved package receipt. Cross-run search,
+all-story editing, tracked edits and full extended revision/protection semantics are
+not implemented by this subset. Existing Document interfaces are unchanged.
+
+## Initial presentation safe-edit subset
+
+`presentation.OpenEditing` validates the retained graph and ordinary transitional
+presentation/slide inventory. `EditSession.FindText(slidePart, shapeID, text)`
+selects one exact complete text leaf in a plain ungrouped shape; duplicate IDs or
+text refuse. `Replace` retains geometry/direct formatting and unrelated XML bytes,
+refusing fields, breaks, mixed content, shape locks and unsupported characters.
+Targets bind the session, generation and full part fingerprint. No-op/refusal keep
+targets reusable; successful change consumes and conservatively invalidates prior
+targets. This is not full deck search, inherited formatting or field/group/table
+editing. Existing presentation interfaces remain unchanged.
+
+## Initial spreadsheet safe-edit subset
+
+`spreadsheet.OpenEditing` validates the retained OPC graph and exact workbook/sheet
+identity. `FindNumber(sheet, cell)` requires one existing numeric value leaf at an
+exact uppercase bounded A1 address. `SetNumber` accepts finite values only and
+refuses formulas anywhere in the workbook, names, charts/pivots/tables/external
+dependencies, validation/conditional formatting, protection, merges and extensions
+that it cannot prove independent. It preserves the cell's style and all unrelated
+bytes. Targets use session/generation/part fingerprints; no-op/refusal remain
+reusable. `SaveAs` delivers through the retained-source verifier. This conservative
+formula-free subset performs no dependency rewriting or cache recalculation and is
+not the general extended spreadsheet editing contract. Existing interfaces unchanged.
+
+`document.EditSession.Outline(CurrentView|OriginalView|AllView)` returns versioned,
+read-only paragraph evidence across the main part and transitively related header,
+footer, footnote, endnote and comment stories. It projects basic insertion/deletion/
+move wrappers, preserves literal tabs/breaks and assigns nested textbox text to its
+nearest paragraph only. AlternateContent branches are skipped with warnings; field
+instructions and property revisions are not evaluated. StoryBlock is not a live
+mutation target. Full extended outline/report/revision scope remains incomplete.
+
+Word `FindText` now inventories all exact non-overlapping matches within main-story
+current-view paragraphs across run fragmentation. `FindOne` uses the same spans
+and refuses zero/multiple matches. Internal offsets are Unicode rune offsets;
+original text is returned by `TextTarget.Text()`. Paragraph boundaries are not
+implicitly joined. In this increment replacement still requires one whole leaf;
+substring/multi-run targets refuse until the planner is implemented.
+
+Word ordinary Replace now plans substring/multi-run edits using the unique maximal
+exact prefix/suffix split. Ambiguous repeated affixes refuse. Unchanged fragments
+remain in original runs; the residual is inserted into its starting run while
+later changed fragments become empty text leaves. Each affected leaf retains its
+run properties/markup. Pure insertions at interior run boundaries still refuse
+until complete formatting/owner equality is proved. Wrappers/fields/protection
+retain conservative gates; no tracked edit or revision preservation is implied.
+
+`EditSession.ReplaceBatch([]TextReplacement)` is an explicitly selected atomic
+batch: any invalid/stale/overlapping/unsupported target aborts every selected edit.
+It merges disjoint rune deltas for targets sharing a text leaf, commits once, and
+consumes changing targets only after success. All-no-op batches keep targets live.
+This API is deliberately distinct from extended replace_all's per-match refusal
+reporting/continue policy; that convenience API remains pending.
+
+`EditSession.Search(text, SearchOptions)` adds opt-in Unicode-15 full default
+casefolding, smart punctuation folding, whitespace collapse and soft-hyphen removal
+with exact source-rune maps. Matches cannot select only part of an expanded folded
+character. Near ranks the complete candidate set by main-story source-character
+distance; stable ties and missing contexts retain order. Nth is one-based and
+mutually exclusive with Near. Original raw text remains target evidence. Search
+is still paragraph-local/current-main-story; cross-paragraph/all-story policy
+coverage remains pending. Unicode data licence is retained under tools/casefold.
+
+Word ordinary single/batch replacements now set `xml:space="preserve"` on changed
+text leaves when leading/trailing/repeated spaces require it. The attribute is
+inserted/updated via the lossless start-tag primitive, alongside the text in one
+transaction. Unknown xml:space policies still refuse; tabs/newlines still require
+structural Word elements. No-op does not rewrite whitespace attributes. This
+supersedes the initial missing-preserve refusal documented in the first subset.
+
+`EditSession.ReplaceAll(needle, replacement, normalized)` searches private targets,
+skips exact no-ops, records per-match safe refusals and commits all independently
+supported changes together via ReplaceBatch. Unexpected/stale/batch conflicts abort
+without commit. Schema1 reports matched/changed/skipped counts and refusal evidence;
+it does not yet reproduce extended schema3 formatting/revision result fields. No
+private targets escape. Tracked/revision-preserving options remain pending.
+
+Word Search now accepts an exact related story part and current/original/all view.
+It joins visible paragraph streams with one literal newline for inspection; a
+separator-only match has no target. Cross-paragraph and historical-view matches
+remain read-only, and related-story mutation is still unsupported. Source maps
+preserve paragraph ownership; ordinary edits still require current body targets.
+FindText/FindOne remain their documented main-story paragraph-local convenience
+subset until their complete cross-story contracts are unified.
+
+Pure insertion at an interior Word run boundary is now allowed when both sides
+prove the same paragraph owner, equal expanded run/text attributes and byte-equal
+complete rPr markup. Both structural guards must pass. The left run is selected
+deterministically only after equivalence proof. Semantically equal but differently
+serialized properties still conservatively refuse. Raw XML remains copied evidence.
+
+`spreadsheet.EditSession.ValidateStyles()` checks cell, row and column style
+indices across worksheet parts before guarded numeric writes. An omitted cell `s`
+selects zero; when a styles relationship exists, zero must resolve to an actual
+cellXfs entry. Empty/duplicate tables, mismatched counts, malformed/overflowing and
+out-of-range indices refuse without mutation. With no style part, only default
+zero is accepted. This is index integrity, not font/fill dependency closure or
+style-authoring parity. Shared-contract pack V2 motivated the regression.
+
+`spreadsheet.EditSession.SetNumberWithInvalidation(target, value)` is an explicit
+static-formula subset separate from the formula-free SetNumber contract. It fully
+preflights the workbook, traces same/cross-sheet A1/range references transitively,
+clears affected cached value text and requests calcMode=auto/fullCalcOnLoad/
+forceFullCalc in the same retained multi-part transaction. It never calculates.
+CalculationEffect reports applied changes/invalidation, not delivery. Unrelated
+caches/calculation metadata remain exact; numeric no-ops do not consume targets.
+Dynamic/UDF/shared/array/structured/unknown references, unlisted sheets, manual or
+iterative/precision-as-displayed modes, existing calcChain and previously blocked
+chart/pivot/protected structures refuse. This is not full X06/X07/extended parity.
+
+## Unresolved extended-comment content-type discrepancy
+
+Pinned Go emits `application/vnd.ms-word.commentsExtended+xml`; pinned extended/Python
+sources emit `application/vnd.openxmlformats-officedocument.wordprocessingml.commentsExtended+xml`.
+No authoring constant is changed on source agreement alone. Retained-source unrelated
+edits preserve either input registry spelling and related bytes. This is preservation
+characterisation, not schema/native Office/comment-thread certification. Decision
+record: `spec/source-discrepancies.json`; details and required checks:
+`docs/design/comments-extended-content-type.md`.
+
+## Planned package-graph additions and retargets
+
+`Preserved.PlanGraphMutation(GraphMutation)` creates a private session-bound plan
+for explicit `PartAddition` payloads/content types and existing internal
+`RelationshipRetarget` edges. Planning patches only required registry elements,
+validates the complete candidate OPC graph, and leaves all state unchanged.
+`ApplyGraphPlan` commits once; intervening payload changes, foreign sessions and
+consumed plans refuse. A semantic no-op preserves the original archive and plan.
+
+New parts receive explicit content-type overrides. Retargets retain absolute or
+relative path form with URI escaping, preserve relationship IDs/types and keep old payloads, including
+shared or newly unreferenced parts. External/fragment edges, signatures, reserved
+registry additions, case collisions, invalid XML and missing targets refuse.
+This API does not prove format-specific occurrence ownership, cache policy or
+import closure; those checks belong to the format adapter. Explicit edge removals,
+detached-leaf deletions and fingerprint-guarded payload replacements can share one
+plan. Deleting a part with its own relationship registry refuses; every remaining
+inbound edge must resolve after the transaction. The caller proves that removed
+edges have no surviving format-level references. Relationship creation and general
+dependency import are unsupported.
+
+Saves raw-copy untouched original ZIP members and append new members in sorted
+order with fixed metadata. Reopen validation checks payloads and the graph.
+Receipts without additions/deletions retain schema1. Otherwise schema2 records
+`add`, `replace` or `delete`. Added parts have an empty `before_sha256`; deleted
+parts have an empty `after_sha256`. Empty hashes mean absence, not empty payloads.
+
+`spreadsheet.EditSession.FindImage(sheet, shapeID)` selects a loaded directly
+anchored picture by cNvPr ID. `ReplaceImage(target, data)` accepts fully decoded
+PNG/JPEG only (32 MiB compressed bytes, 16 million pixels maximum), creates fresh
+case-collision-free media and retargets its existing relationship. Drawing XML,
+geometry, crop, old media, other relationships and all other payloads remain exact.
+The drawing must have one inbound edge and the selected relationship exactly one
+XML use. Shared drawing/relationship identities, linked/external images, groups,
+charts, extensions and protection refuse. Identical image bytes are a no-op;
+changed images consume the target and stale other session handles. Existing legacy
+drawing APIs are unchanged. This bounded adapter does not complete X10's broader
+format/source-policy coverage or establish native Office/rendering compatibility.
+
+Retained intake now verifies local/central ZIP64 sizes and offsets, including tiny
+forced declarations and signed/unsigned 64-bit descriptors. ZIP64 end-record extent
+must end at its locator; the central directory must end at its declared boundary.
+Required extra fields are read only within their TLV length; duplicate/truncated
+ZIP64 extras and classic/ZIP64 disagreement refuse. Empty deflated members are
+verified through archive/zip payload CRC/size checks. Caller resource limits still
+apply; tests use bounded synthetic archives, not multi-gigabyte payloads.
+
+Explicit numeric invalidation can remove one ordinary calculation-chain part when
+an input change affects formulas. Chain ownership, MIME, root and direct entry
+structure are preflighted; shared/external/unowned/extended/outward-linked chains
+refuse. The chain relationship, override and payload are removed in the same
+GraphPlan as input/cache/calcPr changes. The effect reports its removed part name.
+Unrelated and same-value edits preserve the chain exactly. The legacy rebuild
+writer still has its historical synthetic-chain behaviour; this safe API does not
+route through it or infer dependencies from chain ordering.
+
+`presentation.EditSession.FindNotes(slidePart)` returns a session-bound NotesTarget
+for one existing, uniquely owned notes body containing ordinary paragraphs/runs.
+`NotesTarget.Text()` joins paragraph text with LF. `ReplaceNotes` uses the first
+paragraph/run formatting as templates for LF-separated lines; empty lines become
+empty paragraphs. Nonempty single-leaf corrections still use exact text splices.
+Other placeholders/body metadata/registries stay byte-identical. No notes graph is
+created. Fields, shared/ambiguous owners, text locks/protection, unproved formatting
+and malformed text refuse atomically; grouping-only noGrp locks are allowed.
+Tabs/CR are unsupported. No-op targets remain reusable; changes stale session
+handles. Broader source/format/rendering coverage is unfinished.
+
+`spreadsheet.EditSession.AllowedValues(sheet,cell)` inspects list validation
+without creating a cell. Nil means no covering list; malformed/overlapping or
+unproved vocabulary sources return a typed refusal and no partial values.
+ValidationValue tags distinguish string, number, boolean and blank. Text retains
+literal/string contents or scalar source spelling; numeric formatting/date serials
+are not interpreted. Literal lists and finite static1D ranges are supported,
+including reversed/quoted-sheet references and blank slots, up to100000 positions.
+Formulas are never evaluated and cached formula/error values refuse. Worksheet
+extensions, merged interiors, dynamic/named/external/2D sources and ambiguous
+cell ownership refuse. Whole-row/column sources use the retained stored-cell extent
+(minimum1), never the worksheet dimension hint; result size remains capped.
+
+AllowedValues also resolves shared-string indices against the retained si sequence
+without deduplication and reads supported rich inline/shared runs. Missing/external/
+ambiguous tables, bad indices and mixed/extended text structures refuse. Values are
+raw XML-decoded stored text, not Excel display or _xHHHH_ escape interpretation.
+
+AllowedValues caps literal lists at the same 100000 positions as static ranges.
+Unknown declared validation types refuse; an omitted type defaults to none.
+Stored numbers require finite decimal/exponent spelling; Go hexadecimal and
+underscore numeric spellings refuse. Signed decimals retain their stored text.
+
+Native tests read shared assets from `references/fixtures-ooxml`; the explicit
+`OOXML_FIXTURES_ROOT` override supports a candidate distribution before tag freeze.
+Missing inputs fail; tests do not fall back to local testdata or opt out. Outputs
+remain consumer-local, with generated-output guards against shared-root writes.
+The root manifest seals the mutation-safety feature and compact contract, with
+fixture bytes addressed by canonical asset IDs. Official Gherkin supplies expanded
+cases at verification; no wrapper or generated case inventory is read. The
+schema2 shared checkout is pinned to annotated v0.33.0; default batches require no
+override. Exact commit/tag/root seal and full tracked-tree custody are checked.
+See docs/testing.md for candidate policy and current verification.

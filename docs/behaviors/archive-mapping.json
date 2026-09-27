@@ -1,0 +1,313 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "archive-candidates.feature",
+  "native_prefix": "pkg/packaging/",
+  "native_files": [
+    "pkg/packaging/fixture_corpus_test.go",
+    "pkg/packaging/limits_test.go",
+    "pkg/packaging/zip64_test.go",
+    "pkg/packaging/zip_overlap_test.go",
+    "pkg/packaging/zip_structure_test.go",
+    "pkg/packaging/zip64_delivery_test.go",
+    "pkg/packaging/zip_adversarial_test.go"
+  ],
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/packaging/fixture_corpus_test.go::TestRetainedNoOpFixtureCorpus",
+      "source_sha256": "4049233ac8b30bf0086947360bc756a98db6457bf79bede4ac2c7045eb99f6dc",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-archive-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 29,
+          "expression": "filepath.ToSlash(path)",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "remaining": "This group excludes graph editing and mutable package authoring; those declarations remain unreviewed."
+    },
+    {
+      "native_id": "pkg/packaging/limits_test.go::TestIntakeBudgetAndIntegrityContracts",
+      "source_sha256": "dbe634a45fd262860cc84d2ffe7dd7aa4346979296d94a570b697f8833f58442",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-archive-001",
+        "@candidate-go-archive-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 25,
+          "expression": "tc.name",
+          "dynamic": true
+        },
+        {
+          "line": 36,
+          "name": "invalid arguments",
+          "dynamic": false
+        },
+        {
+          "line": 43,
+          "name": "CRC typed refusal",
+          "dynamic": false
+        },
+        {
+          "line": 66,
+          "name": "directory and empty binary",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 19,
+          "expression": "[]struct {\n\tname\tstring\n\tlimit\tLimits\n}",
+          "rows": 4,
+          "names": [
+            "source",
+            "entries",
+            "part",
+            "total"
+          ]
+        },
+        {
+          "line": 37,
+          "expression": "[]Limits",
+          "rows": 2
+        },
+        {
+          "line": 69,
+          "expression": "[]struct{ name, text string }",
+          "rows": 3,
+          "names": [
+            "assets/",
+            "[Content_Types].xml",
+            "assets/empty.bin"
+          ]
+        }
+      ],
+      "remaining": "This group excludes graph editing and mutable package authoring; those declarations remain unreviewed."
+    },
+    {
+      "native_id": "pkg/packaging/zip64_test.go::TestZIP64IntakeBatch",
+      "source_sha256": "4e7b20044712613deb6d019baa6eb29c35403106092fdd716f2d321a522295a3",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-archive-005",
+        "@candidate-go-archive-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 17,
+          "expression": "fmt.Sprintf(\"deflate=%v/descriptor=%s\", deflate, descriptor)",
+          "dynamic": true
+        },
+        {
+          "line": 49,
+          "expression": "defect",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 15,
+          "expression": "[]bool",
+          "rows": 2
+        },
+        {
+          "line": 16,
+          "expression": "[]string",
+          "rows": 3
+        },
+        {
+          "line": 48,
+          "expression": "[]string",
+          "rows": 15
+        }
+      ],
+      "remaining": "This group excludes graph editing and mutable package authoring; those declarations remain unreviewed."
+    },
+    {
+      "native_id": "pkg/packaging/zip64_test.go::TestZIP64TerminalGeometryBatch",
+      "source_sha256": "4e7b20044712613deb6d019baa6eb29c35403106092fdd716f2d321a522295a3",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-archive-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 63,
+          "expression": "defect",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 62,
+          "expression": "[]string",
+          "rows": 4
+        }
+      ],
+      "remaining": "This group excludes graph editing and mutable package authoring; those declarations remain unreviewed."
+    },
+    {
+      "native_id": "pkg/packaging/zip_overlap_test.go::TestIndependentPhysicalOverlap",
+      "source_sha256": "0c63da0c273dcd9f1b850741bc558a00dd80c901d87517b67965366680580614",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-archive-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "This group excludes graph editing and mutable package authoring; those declarations remain unreviewed."
+    },
+    {
+      "native_id": "pkg/packaging/zip_structure_test.go::TestZIPStructureContracts",
+      "source_sha256": "0b20478a0823f579a2ca90e7223f03fc7f67f22b032c4442df62432ca239fe15",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-archive-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 31,
+          "expression": "tc.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 17,
+          "expression": "[]struct {\n\tname\tstring\n\tmutate\tfunc([]byte)\n}",
+          "rows": 4,
+          "names": [
+            "name",
+            "method",
+            "flags",
+            "central offset points at another header"
+          ]
+        },
+        {
+          "line": 25,
+          "expression": "[]byte",
+          "rows": 4
+        },
+        {
+          "line": 26,
+          "expression": "[]byte",
+          "rows": 4
+        }
+      ],
+      "remaining": "This group excludes graph editing and mutable package authoring; those declarations remain unreviewed."
+    },
+    {
+      "native_id": "pkg/packaging/zip64_delivery_test.go::TestZIP64DeliveryBatch",
+      "source_sha256": "bf9df4fee8a39b8b46113261b324d2e8b74ea9df10c4975e81f5d112e625daa7",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-archive-006",
+        "@candidate-go-archive-008",
+        "@candidate-go-archive-009"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 19,
+          "expression": "\"edited forced ZIP64 \" + descriptor",
+          "dynamic": true
+        },
+        {
+          "line": 64,
+          "name": "writer count sentinel at65535 entries",
+          "dynamic": false
+        },
+        {
+          "line": 96,
+          "name": "required fields cannot borrow following TLV bytes",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 18,
+          "expression": "[]string",
+          "rows": 3
+        },
+        {
+          "line": 26,
+          "expression": "[]Replacement",
+          "rows": 1
+        },
+        {
+          "line": 41,
+          "expression": "[]string",
+          "rows": 2
+        },
+        {
+          "line": 52,
+          "expression": "[]PartAddition",
+          "rows": 1,
+          "names": [
+            "new.bin"
+          ]
+        }
+      ],
+      "remaining": "Graph editing and mutable package authoring declarations are outside this intake family."
+    },
+    {
+      "native_id": "pkg/packaging/zip_adversarial_test.go::TestZIPDescriptorAndPrefixBatch",
+      "source_sha256": "1134e2d4fe16c97795b2a604c6332d4b159479830015199c4774a7b1f1a780ad",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-archive-003",
+        "@candidate-go-archive-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 22,
+          "name": "absolute adjusted prefixed archive refuses",
+          "dynamic": false
+        },
+        {
+          "line": 38,
+          "name": "unsigned descriptor whose CRC equals signature",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 25,
+          "expression": "[]byte",
+          "rows": 4
+        },
+        {
+          "line": 26,
+          "expression": "[]byte",
+          "rows": 4
+        },
+        {
+          "line": 52,
+          "expression": "[]byte",
+          "rows": 4
+        },
+        {
+          "line": 53,
+          "expression": "[]byte",
+          "rows": 4
+        }
+      ],
+      "remaining": "Graph editing and mutable package authoring declarations are outside this intake family."
+    }
+  ]
+}

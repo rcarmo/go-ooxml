@@ -1,0 +1,9 @@
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	(cached)
+--- FAIL: TestSharedFactRegistry (0.00s)
+    reference_facts_test.go:50: missing evidence registry
+--- FAIL: TestSharedWorkflowRegistry (0.00s)
+    reference_facts_test.go:172: invalid workflow {ID:@id-pptx-dry-run-no-mutation Feature:shared/v2/pack/features/mutation-safety.feature Cases:3 Facts:[] Expected:[] Consumers:map[bun:{State: Evidence:consumer-reported:240 native tests;114 total implemented Gherkin cases;19 shared cases at prior checkpoint} go:{State: Evidence:fixture verification and one direct-native cache outcome only; formal shared runner not complete} python:{State: Evidence:consumer-reported:19 shared cases/159 steps direct-server-call}]}
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/acceptance	1.986s
+FAIL

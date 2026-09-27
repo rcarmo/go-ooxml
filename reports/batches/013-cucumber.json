@@ -1,0 +1,4314 @@
+[
+    {
+        "uri": "../features/implemented/package/io-safety.feature",
+        "id": "archive-intake-and-failure-safe-package-delivery",
+        "keyword": "Feature",
+        "name": "Archive intake and failure-safe package delivery",
+        "description": "  Ambiguous archive names and failed writes must not produce a successful edit.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@package",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;2",
+                "keyword": "Scenario Outline",
+                "name": "Unsafe archive names refuse before package parsing",
+                "description": "",
+                "line": 13,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a synthetic archive with \"duplicate\" member names",
+                        "line": 7,
+                        "match": {
+                            "location": "io_test.go:131"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 68520
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to open the synthetic archive",
+                        "line": 8,
+                        "match": {
+                            "location": "io_test.go:154"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 20415
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "archive intake fails without changing the source bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "io_test.go:155"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 14843
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;3",
+                "keyword": "Scenario Outline",
+                "name": "Unsafe archive names refuse before package parsing",
+                "description": "",
+                "line": 14,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a synthetic archive with \"collision\" member names",
+                        "line": 7,
+                        "match": {
+                            "location": "io_test.go:131"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 62466
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to open the synthetic archive",
+                        "line": 8,
+                        "match": {
+                            "location": "io_test.go:154"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16513
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "archive intake fails without changing the source bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "io_test.go:155"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17941
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;4",
+                "keyword": "Scenario Outline",
+                "name": "Unsafe archive names refuse before package parsing",
+                "description": "",
+                "line": 15,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a synthetic archive with \"traversal\" member names",
+                        "line": 7,
+                        "match": {
+                            "location": "io_test.go:131"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 59752
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to open the synthetic archive",
+                        "line": 8,
+                        "match": {
+                            "location": "io_test.go:154"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 19335
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "archive intake fails without changing the source bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "io_test.go:155"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 15183
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;5",
+                "keyword": "Scenario Outline",
+                "name": "Unsafe archive names refuse before package parsing",
+                "description": "",
+                "line": 16,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a synthetic archive with \"absolute\" member names",
+                        "line": 7,
+                        "match": {
+                            "location": "io_test.go:131"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 630651
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to open the synthetic archive",
+                        "line": 8,
+                        "match": {
+                            "location": "io_test.go:154"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 26476
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "archive intake fails without changing the source bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "io_test.go:155"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 15594
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;unsafe-archive-names-refuse-before-package-parsing;;6",
+                "keyword": "Scenario Outline",
+                "name": "Unsafe archive names refuse before package parsing",
+                "description": "",
+                "line": 17,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a synthetic archive with \"backslash\" member names",
+                        "line": 7,
+                        "match": {
+                            "location": "io_test.go:131"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 63187
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to open the synthetic archive",
+                        "line": 8,
+                        "match": {
+                            "location": "io_test.go:154"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 18370
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "archive intake fails without changing the source bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "io_test.go:155"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 15625
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;stream-finalisation-failure-is-returned-to-the-caller",
+                "keyword": "Scenario",
+                "name": "Stream finalisation failure is returned to the caller",
+                "description": "",
+                "line": 20,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-002",
+                        "line": 19
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a small new Office package",
+                        "line": 21,
+                        "match": {
+                            "location": "io_test.go:156"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 13291
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I write it to a stream that fails during finalisation",
+                        "line": 22,
+                        "match": {
+                            "location": "io_test.go:157"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 75394
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the write reports the injected failure",
+                        "line": 23,
+                        "match": {
+                            "location": "io_test.go:158"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 98697
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "archive-intake-and-failure-safe-package-delivery;a-serialisation-failure-preserves-an-existing-destination",
+                "keyword": "Scenario",
+                "name": "A serialisation failure preserves an existing destination",
+                "description": "",
+                "line": 26,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@IO-003",
+                        "line": 25
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an existing destination and an unserialisable package",
+                        "line": 27,
+                        "match": {
+                            "location": "io_test.go:164"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 92132
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to save over the destination",
+                        "line": 28,
+                        "match": {
+                            "location": "io_test.go:165"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 37560
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "saving fails and the destination and package state remain unchanged",
+                        "line": 29,
+                        "match": {
+                            "location": "io_test.go:166"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 21195
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "no temporary files remain in the destination directory",
+                        "line": 30,
+                        "match": {
+                            "location": "io_test.go:167"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 61314
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "uri": "../features/implemented/spreadsheet/bounded-edit.feature",
+        "id": "bounded-formula-free-numeric-cell-correction",
+        "keyword": "Feature",
+        "name": "Bounded formula-free numeric cell correction",
+        "description": "  Existing numeric cells can change only when dependent structures are absent.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@spreadsheet",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "bounded-formula-free-numeric-cell-correction;changing-a-formula-free-numeric-cell-preserves-styles-and-opaque-parts",
+                "keyword": "Scenario",
+                "name": "Changing a formula-free numeric cell preserves styles and opaque parts",
+                "description": "",
+                "line": 6,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@spreadsheet",
+                        "line": 1
+                    },
+                    {
+                        "name": "@CELL-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a formula-free workbook with numeric cell \"B2\"",
+                        "line": 7,
+                        "match": {
+                            "location": "cell_test.go:89"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 537151
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I set the guarded numeric cell to 125",
+                        "line": 8,
+                        "match": {
+                            "location": "cell_test.go:91"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 236812
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "delivery changes only the cell value bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "cell_test.go:99"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1768092
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "the consumed cell target refuses reuse",
+                        "line": 10,
+                        "match": {
+                            "location": "cell_test.go:126"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 64800
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-formula-free-numeric-cell-correction;unproved-workbook-dependencies-refuse-numeric-writes;;2",
+                "keyword": "Scenario Outline",
+                "name": "Unproved workbook dependencies refuse numeric writes",
+                "description": "",
+                "line": 21,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@spreadsheet",
+                        "line": 1
+                    },
+                    {
+                        "name": "@CELL-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a workbook containing \"formula on another sheet\"",
+                        "line": 14,
+                        "match": {
+                            "location": "cell_test.go:90"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 364549
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt the guarded numeric correction",
+                        "line": 15,
+                        "match": {
+                            "location": "cell_test.go:134"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 86748
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the numeric correction returns a typed refusal",
+                        "line": 16,
+                        "match": {
+                            "location": "cell_test.go:141"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16196
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "saving the numeric session preserves the original archive",
+                        "line": 17,
+                        "match": {
+                            "location": "cell_test.go:148"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1462539
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-formula-free-numeric-cell-correction;unproved-workbook-dependencies-refuse-numeric-writes;;3",
+                "keyword": "Scenario Outline",
+                "name": "Unproved workbook dependencies refuse numeric writes",
+                "description": "",
+                "line": 22,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@spreadsheet",
+                        "line": 1
+                    },
+                    {
+                        "name": "@CELL-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a workbook containing \"protected worksheet\"",
+                        "line": 14,
+                        "match": {
+                            "location": "cell_test.go:90"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 402575
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt the guarded numeric correction",
+                        "line": 15,
+                        "match": {
+                            "location": "cell_test.go:134"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 93667
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the numeric correction returns a typed refusal",
+                        "line": 16,
+                        "match": {
+                            "location": "cell_test.go:141"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 15571
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "saving the numeric session preserves the original archive",
+                        "line": 17,
+                        "match": {
+                            "location": "cell_test.go:148"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1530336
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-formula-free-numeric-cell-correction;unproved-workbook-dependencies-refuse-numeric-writes;;4",
+                "keyword": "Scenario Outline",
+                "name": "Unproved workbook dependencies refuse numeric writes",
+                "description": "",
+                "line": 23,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@spreadsheet",
+                        "line": 1
+                    },
+                    {
+                        "name": "@CELL-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a workbook containing \"defined name\"",
+                        "line": 14,
+                        "match": {
+                            "location": "cell_test.go:90"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 356117
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt the guarded numeric correction",
+                        "line": 15,
+                        "match": {
+                            "location": "cell_test.go:134"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 77937
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the numeric correction returns a typed refusal",
+                        "line": 16,
+                        "match": {
+                            "location": "cell_test.go:141"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 15660
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "saving the numeric session preserves the original archive",
+                        "line": 17,
+                        "match": {
+                            "location": "cell_test.go:148"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1452004
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-formula-free-numeric-cell-correction;unproved-workbook-dependencies-refuse-numeric-writes;;5",
+                "keyword": "Scenario Outline",
+                "name": "Unproved workbook dependencies refuse numeric writes",
+                "description": "",
+                "line": 24,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@spreadsheet",
+                        "line": 1
+                    },
+                    {
+                        "name": "@CELL-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a workbook containing \"duplicate cell address\"",
+                        "line": 14,
+                        "match": {
+                            "location": "cell_test.go:90"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 844894
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt the guarded numeric correction",
+                        "line": 15,
+                        "match": {
+                            "location": "cell_test.go:134"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 227231
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the numeric correction returns a typed refusal",
+                        "line": 16,
+                        "match": {
+                            "location": "cell_test.go:141"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 35850
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "saving the numeric session preserves the original archive",
+                        "line": 17,
+                        "match": {
+                            "location": "cell_test.go:148"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1577169
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-formula-free-numeric-cell-correction;unproved-workbook-dependencies-refuse-numeric-writes;;6",
+                "keyword": "Scenario Outline",
+                "name": "Unproved workbook dependencies refuse numeric writes",
+                "description": "",
+                "line": 25,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@spreadsheet",
+                        "line": 1
+                    },
+                    {
+                        "name": "@CELL-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a workbook containing \"chart dependency\"",
+                        "line": 14,
+                        "match": {
+                            "location": "cell_test.go:90"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 420763
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt the guarded numeric correction",
+                        "line": 15,
+                        "match": {
+                            "location": "cell_test.go:134"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 91215
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the numeric correction returns a typed refusal",
+                        "line": 16,
+                        "match": {
+                            "location": "cell_test.go:141"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16332
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "saving the numeric session preserves the original archive",
+                        "line": 17,
+                        "match": {
+                            "location": "cell_test.go:148"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1274416
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-formula-free-numeric-cell-correction;unproved-workbook-dependencies-refuse-numeric-writes;;7",
+                "keyword": "Scenario Outline",
+                "name": "Unproved workbook dependencies refuse numeric writes",
+                "description": "",
+                "line": 26,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@spreadsheet",
+                        "line": 1
+                    },
+                    {
+                        "name": "@CELL-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a workbook containing \"data validation\"",
+                        "line": 14,
+                        "match": {
+                            "location": "cell_test.go:90"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 356464
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt the guarded numeric correction",
+                        "line": 15,
+                        "match": {
+                            "location": "cell_test.go:134"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 246022
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the numeric correction returns a typed refusal",
+                        "line": 16,
+                        "match": {
+                            "location": "cell_test.go:141"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 41301
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "saving the numeric session preserves the original archive",
+                        "line": 17,
+                        "match": {
+                            "location": "cell_test.go:148"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1414905
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "uri": "../features/implemented/presentation/bounded-edit.feature",
+        "id": "bounded-presentation-text-correction",
+        "keyword": "Feature",
+        "name": "Bounded presentation text correction",
+        "description": "  A shape-ID target changes only its plain text while preserving source formatting.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@presentation",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "bounded-presentation-text-correction;shape-id-targeting-preserves-geometry-and-opaque-extension-bytes",
+                "keyword": "Scenario",
+                "name": "Shape-ID targeting preserves geometry and opaque extension bytes",
+                "description": "",
+                "line": 6,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@presentation",
+                        "line": 1
+                    },
+                    {
+                        "name": "@SLIDE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a presentation with a plain text shape and opaque slide markup",
+                        "line": 7,
+                        "match": {
+                            "location": "slide_test.go:77"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 618045
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I replace \"old text\" in shape 7 on \"ppt/slides/slide1.xml\"",
+                        "line": 8,
+                        "match": {
+                            "location": "slide_test.go:79"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 69783
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "only the selected slide text bytes differ after delivery",
+                        "line": 9,
+                        "match": {
+                            "location": "slide_test.go:87"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 2674257
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "the consumed presentation target refuses reuse",
+                        "line": 10,
+                        "match": {
+                            "location": "slide_test.go:114"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 71451
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-presentation-text-correction;unsupported-presentation-text-context-refuses-unchanged;;2",
+                "keyword": "Scenario Outline",
+                "name": "Unsupported presentation text context refuses unchanged",
+                "description": "",
+                "line": 21,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@presentation",
+                        "line": 1
+                    },
+                    {
+                        "name": "@SLIDE-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a presentation text shape with \"duplicate shape IDs\"",
+                        "line": 14,
+                        "match": {
+                            "location": "slide_test.go:78"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 380650
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I request a guarded presentation text correction",
+                        "line": 15,
+                        "match": {
+                            "location": "slide_test.go:122"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 45336
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the presentation operation returns a typed refusal",
+                        "line": 16,
+                        "match": {
+                            "location": "slide_test.go:133"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 15703
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "its delivered archive is byte-identical to the source",
+                        "line": 17,
+                        "match": {
+                            "location": "slide_test.go:140"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1623472
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-presentation-text-correction;unsupported-presentation-text-context-refuses-unchanged;;3",
+                "keyword": "Scenario Outline",
+                "name": "Unsupported presentation text context refuses unchanged",
+                "description": "",
+                "line": 22,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@presentation",
+                        "line": 1
+                    },
+                    {
+                        "name": "@SLIDE-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a presentation text shape with \"repeated leaf text\"",
+                        "line": 14,
+                        "match": {
+                            "location": "slide_test.go:78"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 418867
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I request a guarded presentation text correction",
+                        "line": 15,
+                        "match": {
+                            "location": "slide_test.go:122"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 43326
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the presentation operation returns a typed refusal",
+                        "line": 16,
+                        "match": {
+                            "location": "slide_test.go:133"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17127
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "its delivered archive is byte-identical to the source",
+                        "line": 17,
+                        "match": {
+                            "location": "slide_test.go:140"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1528712
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-presentation-text-correction;unsupported-presentation-text-context-refuses-unchanged;;4",
+                "keyword": "Scenario Outline",
+                "name": "Unsupported presentation text context refuses unchanged",
+                "description": "",
+                "line": 23,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@presentation",
+                        "line": 1
+                    },
+                    {
+                        "name": "@SLIDE-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a presentation text shape with \"field-bearing paragraph\"",
+                        "line": 14,
+                        "match": {
+                            "location": "slide_test.go:78"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 508039
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I request a guarded presentation text correction",
+                        "line": 15,
+                        "match": {
+                            "location": "slide_test.go:122"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 43340
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the presentation operation returns a typed refusal",
+                        "line": 16,
+                        "match": {
+                            "location": "slide_test.go:133"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16476
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "its delivered archive is byte-identical to the source",
+                        "line": 17,
+                        "match": {
+                            "location": "slide_test.go:140"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1587260
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-presentation-text-correction;unsupported-presentation-text-context-refuses-unchanged;;5",
+                "keyword": "Scenario Outline",
+                "name": "Unsupported presentation text context refuses unchanged",
+                "description": "",
+                "line": 24,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@presentation",
+                        "line": 1
+                    },
+                    {
+                        "name": "@SLIDE-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a presentation text shape with \"foreign slide part\"",
+                        "line": 14,
+                        "match": {
+                            "location": "slide_test.go:78"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 352142
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I request a guarded presentation text correction",
+                        "line": 15,
+                        "match": {
+                            "location": "slide_test.go:122"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 22225
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the presentation operation returns a typed refusal",
+                        "line": 16,
+                        "match": {
+                            "location": "slide_test.go:133"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 24626
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "its delivered archive is byte-identical to the source",
+                        "line": 17,
+                        "match": {
+                            "location": "slide_test.go:140"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1484298
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "uri": "../features/implemented/document/bounded-edit.feature",
+        "id": "bounded-preservation-safe-word-text-correction",
+        "keyword": "Feature",
+        "name": "Bounded preservation-safe Word text correction",
+        "description": "  Plain body text corrections preserve every unrelated XML byte and package part.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@document",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "bounded-preservation-safe-word-text-correction;a-plain-run-correction-preserves-opaque-markup-and-media",
+                "keyword": "Scenario",
+                "name": "A plain run correction preserves opaque markup and media",
+                "description": "",
+                "line": 6,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@document",
+                        "line": 1
+                    },
+                    {
+                        "name": "@WORD-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a Word package containing a plain body text run and opaque content",
+                        "line": 7,
+                        "match": {
+                            "location": "word_test.go:67"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 629067
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I replace the unique text \"old text\" with \"new \u0026 text\" through a guarded target",
+                        "line": 8,
+                        "match": {
+                            "location": "word_test.go:69"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 74488
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "save the edited Word package",
+                        "line": 9,
+                        "match": {
+                            "location": "word_test.go:87"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 10717635
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "only the matched XML character data differs",
+                        "line": 10,
+                        "match": {
+                            "location": "word_test.go:88"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 61785
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "every other package member retains its payload bytes",
+                        "line": 11,
+                        "match": {
+                            "location": "word_test.go:103"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 56702
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "reusing the consumed target returns a stale-target refusal",
+                        "line": 12,
+                        "match": {
+                            "location": "word_test.go:126"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 88583
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-preservation-safe-word-text-correction;unsupported-ownership-or-editing-policy-refuses-unchanged;;2",
+                "keyword": "Scenario Outline",
+                "name": "Unsupported ownership or editing policy refuses unchanged",
+                "description": "",
+                "line": 23,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@document",
+                        "line": 1
+                    },
+                    {
+                        "name": "@WORD-002",
+                        "line": 14
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a Word package with \"duplicate text\"",
+                        "line": 16,
+                        "match": {
+                            "location": "word_test.go:68"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 266420
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I request a guarded correction of \"old text\"",
+                        "line": 17,
+                        "match": {
+                            "location": "word_test.go:134"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 32179
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the correction returns a typed refusal",
+                        "line": 18,
+                        "match": {
+                            "location": "word_test.go:141"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 14438
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "saving the Word session retains the original archive bytes",
+                        "line": 19,
+                        "match": {
+                            "location": "word_test.go:148"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 2437192
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-preservation-safe-word-text-correction;unsupported-ownership-or-editing-policy-refuses-unchanged;;3",
+                "keyword": "Scenario Outline",
+                "name": "Unsupported ownership or editing policy refuses unchanged",
+                "description": "",
+                "line": 24,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@document",
+                        "line": 1
+                    },
+                    {
+                        "name": "@WORD-002",
+                        "line": 14
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a Word package with \"active document protection\"",
+                        "line": 16,
+                        "match": {
+                            "location": "word_test.go:68"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 400218
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I request a guarded correction of \"old text\"",
+                        "line": 17,
+                        "match": {
+                            "location": "word_test.go:134"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 74913
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the correction returns a typed refusal",
+                        "line": 18,
+                        "match": {
+                            "location": "word_test.go:141"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 22364
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "saving the Word session retains the original archive bytes",
+                        "line": 19,
+                        "match": {
+                            "location": "word_test.go:148"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 2122043
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-preservation-safe-word-text-correction;unsupported-ownership-or-editing-policy-refuses-unchanged;;4",
+                "keyword": "Scenario Outline",
+                "name": "Unsupported ownership or editing policy refuses unchanged",
+                "description": "",
+                "line": 25,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@document",
+                        "line": 1
+                    },
+                    {
+                        "name": "@WORD-002",
+                        "line": 14
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a Word package with \"tracked revisions\"",
+                        "line": 16,
+                        "match": {
+                            "location": "word_test.go:68"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 250073
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I request a guarded correction of \"old text\"",
+                        "line": 17,
+                        "match": {
+                            "location": "word_test.go:134"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 59067
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the correction returns a typed refusal",
+                        "line": 18,
+                        "match": {
+                            "location": "word_test.go:141"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 22141
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "saving the Word session retains the original archive bytes",
+                        "line": 19,
+                        "match": {
+                            "location": "word_test.go:148"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 2250562
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-preservation-safe-word-text-correction;unsupported-ownership-or-editing-policy-refuses-unchanged;;5",
+                "keyword": "Scenario Outline",
+                "name": "Unsupported ownership or editing policy refuses unchanged",
+                "description": "",
+                "line": 26,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@document",
+                        "line": 1
+                    },
+                    {
+                        "name": "@WORD-002",
+                        "line": 14
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a Word package with \"field boundary\"",
+                        "line": 16,
+                        "match": {
+                            "location": "word_test.go:68"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 500332
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I request a guarded correction of \"old text\"",
+                        "line": 17,
+                        "match": {
+                            "location": "word_test.go:134"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 54174
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the correction returns a typed refusal",
+                        "line": 18,
+                        "match": {
+                            "location": "word_test.go:141"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 14159
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "saving the Word session retains the original archive bytes",
+                        "line": 19,
+                        "match": {
+                            "location": "word_test.go:148"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1791187
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "bounded-preservation-safe-word-text-correction;unsupported-ownership-or-editing-policy-refuses-unchanged;;6",
+                "keyword": "Scenario Outline",
+                "name": "Unsupported ownership or editing policy refuses unchanged",
+                "description": "",
+                "line": 27,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@document",
+                        "line": 1
+                    },
+                    {
+                        "name": "@WORD-002",
+                        "line": 14
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a Word package with \"significant whitespace without preserve\"",
+                        "line": 16,
+                        "match": {
+                            "location": "word_test.go:68"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 297838
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I request a guarded correction of \"old text\"",
+                        "line": 17,
+                        "match": {
+                            "location": "word_test.go:134"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 53137
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the correction returns a typed refusal",
+                        "line": 18,
+                        "match": {
+                            "location": "word_test.go:141"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 13827
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "saving the Word session retains the original archive bytes",
+                        "line": 19,
+                        "match": {
+                            "location": "word_test.go:148"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1160946
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "uri": "../features/implemented/package/limits.feature",
+        "id": "caller-defined-package-intake-budgets",
+        "keyword": "Feature",
+        "name": "Caller-defined package intake budgets",
+        "description": "  Budget violations are refused before payload allocation or decompression.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@package",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "caller-defined-package-intake-budgets;intake-enforces-a-configured-resource-ceiling;;2",
+                "keyword": "Scenario Outline",
+                "name": "Intake enforces a configured resource ceiling",
+                "description": "",
+                "line": 13,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@LIMIT-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an archive exceeding its \"source\" budget",
+                        "line": 7,
+                        "match": {
+                            "location": "limits_test.go:43"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 803634
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open it with the configured resource limits",
+                        "line": 8,
+                        "match": {
+                            "location": "limits_test.go:62"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 23510
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "I receive a typed resource-limit refusal",
+                        "line": 9,
+                        "match": {
+                            "location": "limits_test.go:66"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16148
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "caller-defined-package-intake-budgets;intake-enforces-a-configured-resource-ceiling;;3",
+                "keyword": "Scenario Outline",
+                "name": "Intake enforces a configured resource ceiling",
+                "description": "",
+                "line": 14,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@LIMIT-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an archive exceeding its \"entries\" budget",
+                        "line": 7,
+                        "match": {
+                            "location": "limits_test.go:43"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 100868
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open it with the configured resource limits",
+                        "line": 8,
+                        "match": {
+                            "location": "limits_test.go:62"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 27808
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "I receive a typed resource-limit refusal",
+                        "line": 9,
+                        "match": {
+                            "location": "limits_test.go:66"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 19453
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "caller-defined-package-intake-budgets;intake-enforces-a-configured-resource-ceiling;;4",
+                "keyword": "Scenario Outline",
+                "name": "Intake enforces a configured resource ceiling",
+                "description": "",
+                "line": 15,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@LIMIT-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an archive exceeding its \"part\" budget",
+                        "line": 7,
+                        "match": {
+                            "location": "limits_test.go:43"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 177732
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open it with the configured resource limits",
+                        "line": 8,
+                        "match": {
+                            "location": "limits_test.go:62"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 23931
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "I receive a typed resource-limit refusal",
+                        "line": 9,
+                        "match": {
+                            "location": "limits_test.go:66"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 15732
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "caller-defined-package-intake-budgets;intake-enforces-a-configured-resource-ceiling;;5",
+                "keyword": "Scenario Outline",
+                "name": "Intake enforces a configured resource ceiling",
+                "description": "",
+                "line": 16,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@LIMIT-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an archive exceeding its \"total\" budget",
+                        "line": 7,
+                        "match": {
+                            "location": "limits_test.go:43"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 466521
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open it with the configured resource limits",
+                        "line": 8,
+                        "match": {
+                            "location": "limits_test.go:62"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 26431
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "I receive a typed resource-limit refusal",
+                        "line": 9,
+                        "match": {
+                            "location": "limits_test.go:66"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16156
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "caller-defined-package-intake-budgets;finite-sufficient-budgets-permit-normal-intake",
+                "keyword": "Scenario",
+                "name": "Finite sufficient budgets permit normal intake",
+                "description": "",
+                "line": 19,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@LIMIT-002",
+                        "line": 18
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an archive within all configured budgets",
+                        "line": 20,
+                        "match": {
+                            "location": "limits_test.go:61"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 150635
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open it with the configured resource limits",
+                        "line": 21,
+                        "match": {
+                            "location": "limits_test.go:62"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 124885
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "its XML payload is available without changes",
+                        "line": 22,
+                        "match": {
+                            "location": "limits_test.go:76"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 80379
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "uri": "../features/implemented/package/baseline.feature",
+        "id": "existing-office-fixture-intake",
+        "keyword": "Feature",
+        "name": "Existing Office fixture intake",
+        "description": "  Repository fixtures can be inspected without a fixed workspace mount.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@package",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;2",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 13,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"word/minimal.docx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:115"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 55529
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:116"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1406200
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"word/document.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:117"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 26005
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;3",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 14,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"pptx/minimal.pptx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:115"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 46024
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:116"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 668000
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"ppt/presentation.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:117"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 18036
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;4",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 15,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"excel/minimal.xlsx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:115"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 36903
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:116"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 155935
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:117"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17415
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;5",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 16,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"pptx/comments.pptx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:115"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 59541
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:116"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 667176
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"ppt/presentation.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:117"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 25451
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;6",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 17,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"excel/formatting.xlsx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:115"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 40235
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:116"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 172861
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:117"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 18385
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;7",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 18,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"excel/formulas.xlsx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:115"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 106915
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:116"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 337240
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:117"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 24017
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "existing-office-fixture-intake;open-the-principal-part-from-a-repository-fixture;;8",
+                "keyword": "Scenario Outline",
+                "name": "Open the principal part from a repository fixture",
+                "description": "",
+                "line": 19,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@BASE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "the repository fixture \"excel/conditional_format.xlsx\"",
+                        "line": 7,
+                        "match": {
+                            "location": "acceptance_test.go:115"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 45497
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open its Office package",
+                        "line": 8,
+                        "match": {
+                            "location": "acceptance_test.go:116"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 155935
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the package contains a nonempty part \"xl/workbook.xml\"",
+                        "line": 9,
+                        "match": {
+                            "location": "acceptance_test.go:117"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 26261
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "uri": "../features/implemented/package/structure.feature",
+        "id": "local-and-central-zip-structures-agree",
+        "keyword": "Feature",
+        "name": "Local and central ZIP structures agree",
+        "description": "  Member identity cannot change between directory lookup and payload reading.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@package",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "local-and-central-zip-structures-agree;disagreeing-local-headers-refuse-before-reading-xml;;2",
+                "keyword": "Scenario Outline",
+                "name": "Disagreeing local headers refuse before reading XML",
+                "description": "",
+                "line": 13,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@ZIP-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a synthetic archive with a mismatched local \"name\"",
+                        "line": 7,
+                        "match": {
+                            "location": "io_test.go:132"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 81211
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to open the synthetic archive",
+                        "line": 8,
+                        "match": {
+                            "location": "io_test.go:154"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 18367
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "archive intake fails without changing the source bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "io_test.go:155"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16660
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "local-and-central-zip-structures-agree;disagreeing-local-headers-refuse-before-reading-xml;;3",
+                "keyword": "Scenario Outline",
+                "name": "Disagreeing local headers refuse before reading XML",
+                "description": "",
+                "line": 14,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@ZIP-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a synthetic archive with a mismatched local \"method\"",
+                        "line": 7,
+                        "match": {
+                            "location": "io_test.go:132"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 90922
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to open the synthetic archive",
+                        "line": 8,
+                        "match": {
+                            "location": "io_test.go:154"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 32514
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "archive intake fails without changing the source bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "io_test.go:155"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 28367
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "local-and-central-zip-structures-agree;disagreeing-local-headers-refuse-before-reading-xml;;4",
+                "keyword": "Scenario Outline",
+                "name": "Disagreeing local headers refuse before reading XML",
+                "description": "",
+                "line": 15,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@ZIP-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a synthetic archive with a mismatched local \"flags\"",
+                        "line": 7,
+                        "match": {
+                            "location": "io_test.go:132"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 149197
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I attempt to open the synthetic archive",
+                        "line": 8,
+                        "match": {
+                            "location": "io_test.go:154"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 22050
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "archive intake fails without changing the source bytes",
+                        "line": 9,
+                        "match": {
+                            "location": "io_test.go:155"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17935
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "uri": "../features/implemented/package/xml.feature",
+        "id": "lossless-namespace-aware-xml-leaf-edits",
+        "keyword": "Feature",
+        "name": "Lossless namespace-aware XML leaf edits",
+        "description": "  XML inspection identifies expanded names while edits retain unrelated source bytes.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@package",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "lossless-namespace-aware-xml-leaf-edits;editing-a-text-leaf-preserves-unknown-markup-and-namespace-context",
+                "keyword": "Scenario",
+                "name": "Editing a text leaf preserves unknown markup and namespace context",
+                "description": "",
+                "line": 6,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@XML-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "XML with prefixed text and an opaque extension",
+                        "line": 7,
+                        "match": {
+                            "location": "xml_test.go:36"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 35957
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I replace the selected text leaf with \"A\u0026B \u003cnew\u003e\"",
+                        "line": 8,
+                        "match": {
+                            "location": "xml_test.go:43"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 18801
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "only the leaf character-data bytes change",
+                        "line": 9,
+                        "match": {
+                            "location": "xml_test.go:51"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 14282
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "the replacement decodes to \"A\u0026B \u003cnew\u003e\"",
+                        "line": 10,
+                        "match": {
+                            "location": "xml_test.go:61"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 18546
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "lossless-namespace-aware-xml-leaf-edits;namespace-invalid-xml-is-rejected;;2",
+                "keyword": "Scenario Outline",
+                "name": "Namespace-invalid XML is rejected",
+                "description": "",
+                "line": 20,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@XML-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "XML with \"undeclared element prefix\"",
+                        "line": 14,
+                        "match": {
+                            "location": "xml_test.go:76"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 14543
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I parse the XML for lossless editing",
+                        "line": 15,
+                        "match": {
+                            "location": "xml_test.go:86"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17577
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "parsing refuses without changing the source",
+                        "line": 16,
+                        "match": {
+                            "location": "xml_test.go:87"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 13260
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "lossless-namespace-aware-xml-leaf-edits;namespace-invalid-xml-is-rejected;;3",
+                "keyword": "Scenario Outline",
+                "name": "Namespace-invalid XML is rejected",
+                "description": "",
+                "line": 21,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@XML-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "XML with \"undeclared attribute prefix\"",
+                        "line": 14,
+                        "match": {
+                            "location": "xml_test.go:76"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 15554
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I parse the XML for lossless editing",
+                        "line": 15,
+                        "match": {
+                            "location": "xml_test.go:86"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17228
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "parsing refuses without changing the source",
+                        "line": 16,
+                        "match": {
+                            "location": "xml_test.go:87"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 13623
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "lossless-namespace-aware-xml-leaf-edits;namespace-invalid-xml-is-rejected;;4",
+                "keyword": "Scenario Outline",
+                "name": "Namespace-invalid XML is rejected",
+                "description": "",
+                "line": 22,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@XML-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "XML with \"duplicate expanded attribute\"",
+                        "line": 14,
+                        "match": {
+                            "location": "xml_test.go:76"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 19538
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I parse the XML for lossless editing",
+                        "line": 15,
+                        "match": {
+                            "location": "xml_test.go:86"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 22644
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "parsing refuses without changing the source",
+                        "line": 16,
+                        "match": {
+                            "location": "xml_test.go:87"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 14913
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "lossless-namespace-aware-xml-leaf-edits;namespace-invalid-xml-is-rejected;;5",
+                "keyword": "Scenario Outline",
+                "name": "Namespace-invalid XML is rejected",
+                "description": "",
+                "line": 23,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@XML-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "XML with \"invalid xml binding\"",
+                        "line": 14,
+                        "match": {
+                            "location": "xml_test.go:76"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 14481
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I parse the XML for lossless editing",
+                        "line": 15,
+                        "match": {
+                            "location": "xml_test.go:86"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 15452
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "parsing refuses without changing the source",
+                        "line": 16,
+                        "match": {
+                            "location": "xml_test.go:87"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 13309
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "lossless-namespace-aware-xml-leaf-edits;namespace-invalid-xml-is-rejected;;6",
+                "keyword": "Scenario Outline",
+                "name": "Namespace-invalid XML is rejected",
+                "description": "",
+                "line": 24,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@XML-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "XML with \"mismatched end prefix\"",
+                        "line": 14,
+                        "match": {
+                            "location": "xml_test.go:76"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17062
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I parse the XML for lossless editing",
+                        "line": 15,
+                        "match": {
+                            "location": "xml_test.go:86"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17196
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "parsing refuses without changing the source",
+                        "line": 16,
+                        "match": {
+                            "location": "xml_test.go:87"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 14677
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "lossless-namespace-aware-xml-leaf-edits;a-foreign-target-refuses-the-entire-edit-batch",
+                "keyword": "Scenario",
+                "name": "A foreign target refuses the entire edit batch",
+                "description": "",
+                "line": 27,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@XML-003",
+                        "line": 26
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "XML with prefixed text and an opaque extension",
+                        "line": 28,
+                        "match": {
+                            "location": "xml_test.go:36"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 62852
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "an edit batch contains a target from another parsed document",
+                        "line": 29,
+                        "match": {
+                            "location": "xml_test.go:96"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 42742
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the batch refuses and a valid target remains reusable",
+                        "line": 30,
+                        "match": {
+                            "location": "xml_test.go:112"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 33026
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "uri": "../features/implemented/package/graph.feature",
+        "id": "read-only-relationship-ownership-inspection",
+        "keyword": "Feature",
+        "name": "Read-only relationship ownership inspection",
+        "description": "  Package inspection resolves local ownership without fetching external targets.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@package",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "read-only-relationship-ownership-inspection;shared-and-external-relationships-retain-distinct-ownership",
+                "keyword": "Scenario",
+                "name": "Shared and external relationships retain distinct ownership",
+                "description": "",
+                "line": 6,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@GRAPH-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a package with two users of one image and an external hyperlink",
+                        "line": 7,
+                        "match": {
+                            "location": "graph_test.go:89"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 716164
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I inspect the retained package relationship graph",
+                        "line": 8,
+                        "match": {
+                            "location": "graph_test.go:91"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 112296
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the image has two incoming relationships",
+                        "line": 9,
+                        "match": {
+                            "location": "graph_test.go:92"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 141543
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "the hyperlink remains an unresolved external edge",
+                        "line": 10,
+                        "match": {
+                            "location": "graph_test.go:103"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 18423
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "graph inspection leaves the archive byte-identical",
+                        "line": 11,
+                        "match": {
+                            "location": "graph_test.go:111"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 17893
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "read-only-relationship-ownership-inspection;ambiguous-or-dangling-registries-refuse-inspection;;2",
+                "keyword": "Scenario Outline",
+                "name": "Ambiguous or dangling registries refuse inspection",
+                "description": "",
+                "line": 21,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@GRAPH-002",
+                        "line": 13
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a relationship package with \"missing target\"",
+                        "line": 15,
+                        "match": {
+                            "location": "graph_test.go:90"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 255086
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I inspect the retained package relationship graph",
+                        "line": 16,
+                        "match": {
+                            "location": "graph_test.go:91"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 52171
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "graph inspection returns a relationship-policy refusal",
+                        "line": 17,
+                        "match": {
+                            "location": "graph_test.go:121"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16279
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "read-only-relationship-ownership-inspection;ambiguous-or-dangling-registries-refuse-inspection;;3",
+                "keyword": "Scenario Outline",
+                "name": "Ambiguous or dangling registries refuse inspection",
+                "description": "",
+                "line": 22,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@GRAPH-002",
+                        "line": 13
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a relationship package with \"duplicate relationship ID\"",
+                        "line": 15,
+                        "match": {
+                            "location": "graph_test.go:90"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 535240
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I inspect the retained package relationship graph",
+                        "line": 16,
+                        "match": {
+                            "location": "graph_test.go:91"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 56054
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "graph inspection returns a relationship-policy refusal",
+                        "line": 17,
+                        "match": {
+                            "location": "graph_test.go:121"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 63298
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "read-only-relationship-ownership-inspection;ambiguous-or-dangling-registries-refuse-inspection;;4",
+                "keyword": "Scenario Outline",
+                "name": "Ambiguous or dangling registries refuse inspection",
+                "description": "",
+                "line": 23,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@GRAPH-002",
+                        "line": 13
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a relationship package with \"escaping target\"",
+                        "line": 15,
+                        "match": {
+                            "location": "graph_test.go:90"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 274417
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I inspect the retained package relationship graph",
+                        "line": 16,
+                        "match": {
+                            "location": "graph_test.go:91"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 52847
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "graph inspection returns a relationship-policy refusal",
+                        "line": 17,
+                        "match": {
+                            "location": "graph_test.go:121"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16198
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "read-only-relationship-ownership-inspection;ambiguous-or-dangling-registries-refuse-inspection;;5",
+                "keyword": "Scenario Outline",
+                "name": "Ambiguous or dangling registries refuse inspection",
+                "description": "",
+                "line": 24,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@GRAPH-002",
+                        "line": 13
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a relationship package with \"duplicate content-type default\"",
+                        "line": 15,
+                        "match": {
+                            "location": "graph_test.go:90"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 272647
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I inspect the retained package relationship graph",
+                        "line": 16,
+                        "match": {
+                            "location": "graph_test.go:91"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 36054
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "graph inspection returns a relationship-policy refusal",
+                        "line": 17,
+                        "match": {
+                            "location": "graph_test.go:121"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16362
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "read-only-relationship-ownership-inspection;ambiguous-or-dangling-registries-refuse-inspection;;6",
+                "keyword": "Scenario Outline",
+                "name": "Ambiguous or dangling registries refuse inspection",
+                "description": "",
+                "line": 25,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@GRAPH-002",
+                        "line": 13
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a relationship package with \"unknown registry extension\"",
+                        "line": 15,
+                        "match": {
+                            "location": "graph_test.go:90"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 404136
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I inspect the retained package relationship graph",
+                        "line": 16,
+                        "match": {
+                            "location": "graph_test.go:91"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 52831
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "graph inspection returns a relationship-policy refusal",
+                        "line": 17,
+                        "match": {
+                            "location": "graph_test.go:121"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16948
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "uri": "../features/implemented/package/receipts.feature",
+        "id": "retained-source-delivery-receipts",
+        "keyword": "Feature",
+        "name": "Retained-source delivery receipts",
+        "description": "  Receipts describe observed payload changes and failed delivery preserves prior output.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@package",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "retained-source-delivery-receipts;a-saved-receipt-agrees-with-independent-package-hashes",
+                "keyword": "Scenario",
+                "name": "A saved receipt agrees with independent package hashes",
+                "description": "",
+                "line": 6,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@RECEIPT-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a staged main-part edit with an opaque custom part",
+                        "line": 7,
+                        "match": {
+                            "location": "receipts_test.go:56"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 223286
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I save a main-part replacement with a delivery receipt",
+                        "line": 8,
+                        "match": {
+                            "location": "receipts_test.go:57"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1770779
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the receipt identifies exactly the changed member and both hashes",
+                        "line": 9,
+                        "match": {
+                            "location": "receipts_test.go:67"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 70376
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "the delivered archive reopens with unchanged opaque bytes",
+                        "line": 10,
+                        "match": {
+                            "location": "receipts_test.go:90"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 89040
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "retained-source-delivery-receipts;a-directory-destination-refuses-without-consuming-staged-changes",
+                "keyword": "Scenario",
+                "name": "A directory destination refuses without consuming staged changes",
+                "description": "",
+                "line": 13,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@RECEIPT-002",
+                        "line": 12
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a staged main-part edit with an opaque custom part",
+                        "line": 14,
+                        "match": {
+                            "location": "receipts_test.go:56"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 196395
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I deliver staged changes to a directory destination",
+                        "line": 15,
+                        "match": {
+                            "location": "receipts_test.go:109"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 51239
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "delivery fails without changing the directory",
+                        "line": 16,
+                        "match": {
+                            "location": "receipts_test.go:118"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 23050
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "the staged change remains available for another save",
+                        "line": 17,
+                        "match": {
+                            "location": "receipts_test.go:131"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 1563317
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "uri": "../features/implemented/package/preservation.feature",
+        "id": "retained-source-package-editing",
+        "keyword": "Feature",
+        "name": "Retained-source package editing",
+        "description": "  A bounded part replacement preserves every other source payload.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@implemented",
+                "line": 1
+            },
+            {
+                "name": "@go",
+                "line": 1
+            },
+            {
+                "name": "@package",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "retained-source-package-editing;a-no-op-save-preserves-the-exact-source-archive",
+                "keyword": "Scenario",
+                "name": "A no-op save preserves the exact source archive",
+                "description": "",
+                "line": 6,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@SOURCE-001",
+                        "line": 5
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an Office source archive with an opaque custom part",
+                        "line": 7,
+                        "match": {
+                            "location": "preserved_test.go:54"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 155411
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I open a retained-source editing session and save without edits",
+                        "line": 8,
+                        "match": {
+                            "location": "preserved_test.go:55"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 19483
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the output archive is byte-identical to the source",
+                        "line": 9,
+                        "match": {
+                            "location": "preserved_test.go:56"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 16103
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "retained-source-package-editing;replacing-one-part-leaves-all-other-member-payloads-unchanged",
+                "keyword": "Scenario",
+                "name": "Replacing one part leaves all other member payloads unchanged",
+                "description": "",
+                "line": 12,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@SOURCE-002",
+                        "line": 11
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an Office source archive with an opaque custom part",
+                        "line": 13,
+                        "match": {
+                            "location": "preserved_test.go:54"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 133076
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I replace the main XML part using its current fingerprint",
+                        "line": 14,
+                        "match": {
+                            "location": "preserved_test.go:62"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 51716
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "only that member payload changes after saving",
+                        "line": 15,
+                        "match": {
+                            "location": "preserved_test.go:73"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 36840
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "the retained source bytes remain unchanged",
+                        "line": 16,
+                        "match": {
+                            "location": "preserved_test.go:100"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 13215
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "retained-source-package-editing;a-stale-replacement-batch-leaves-all-parts-unchanged",
+                "keyword": "Scenario",
+                "name": "A stale replacement batch leaves all parts unchanged",
+                "description": "",
+                "line": 19,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@implemented",
+                        "line": 1
+                    },
+                    {
+                        "name": "@go",
+                        "line": 1
+                    },
+                    {
+                        "name": "@package",
+                        "line": 1
+                    },
+                    {
+                        "name": "@SOURCE-003",
+                        "line": 18
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an Office source archive with an opaque custom part",
+                        "line": 20,
+                        "match": {
+                            "location": "preserved_test.go:54"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 396314
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "I request two replacements with one stale fingerprint",
+                        "line": 21,
+                        "match": {
+                            "location": "preserved_test.go:106"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 25011
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the batch returns a stale-target refusal",
+                        "line": 22,
+                        "match": {
+                            "location": "preserved_test.go:114"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 14626
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "the session still saves the exact original archive",
+                        "line": 23,
+                        "match": {
+                            "location": "preserved_test.go:121"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 14610
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]

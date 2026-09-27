@@ -4,6 +4,7 @@ GO ?= go
 GOFMT ?= gofumpt
 GOLINT ?= golangci-lint
 GOSEC ?= gosec
+TEST_JOBS ?= 2
 DOTNET_ROOT ?= /home/linuxbrew/.linuxbrew/opt/dotnet/libexec
 VALIDATOR ?= tools/validator/OoxmlValidator
 
@@ -43,8 +44,18 @@ format: ## Format code with gofumpt
 	@which $(GOFMT) > /dev/null || (echo "Installing gofumpt..." && $(GO) install mvdan.cc/gofumpt@latest)
 	$(GOFMT) -w .
 
-test: ## Run tests
-	$(GO) test -v ./...
+test: ## Run native tests as a bounded batch
+	$(GO) test -p $(TEST_JOBS) ./...
+
+.PHONY: acceptance test-batch
+acceptance: ## Run strict native Gherkin and report reconciliation
+	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...
+
+test-batch: test acceptance ## Run library and acceptance modules
+
+.PHONY: shared-pack-check
+shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
+	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...
 
 coverage: ## Run tests with coverage
 	$(GO) test -coverprofile=coverage.out ./...

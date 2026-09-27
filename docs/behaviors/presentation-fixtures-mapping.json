@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "presentation-fixtures-candidates.feature",
+  "native_prefix": "pkg/presentation/",
+  "native_files": [
+    "pkg/presentation/fixture_roundtrip_test.go"
+  ],
+  "source_revision": "6de00e142b38ece4b493d33bb13734b2837900fe",
+  "inventory_observation_revision": "ec71b6cf4c6ac8bebec49ee195ac64520b104be9",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/presentation/fixture_roundtrip_test.go::TestFixtureRoundTrip_Complex",
+      "source_sha256": "8bf77dc2a2a7d2f496511f12bf1b3cd392e67e3b52ac005d4370270d0b78099e",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-fixtures-001",
+        "@candidate-go-presentation-fixtures-002",
+        "@candidate-go-presentation-fixtures-003",
+        "@candidate-go-presentation-fixtures-004",
+        "@candidate-go-presentation-fixtures-005",
+        "@candidate-go-presentation-fixtures-006",
+        "@candidate-go-presentation-fixtures-007",
+        "@candidate-go-presentation-fixtures-008",
+        "@candidate-go-presentation-fixtures-009",
+        "@candidate-go-presentation-fixtures-010",
+        "@candidate-go-presentation-fixtures-011"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 339,
+          "expression": "tc.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 17,
+          "expression": "[]presentationFixtureCase",
+          "rows": 11,
+          "names": [
+            "minimal.pptx",
+            "title_slide.pptx",
+            "bullet_points.pptx",
+            "shapes.pptx",
+            "tables.pptx",
+            "notes.pptx",
+            "comments.pptx",
+            "hidden_slides.pptx",
+            "multiple_masters.pptx",
+            "layouts.pptx",
+            "images.pptx"
+          ]
+        }
+      ],
+      "notes": "Eleven literal row names through dynamic tc.name. Shared driver requires Open/SaveAs/Close/Open success; close of reopened object deferred unchecked. slideHasText uses anyshape substring, not exact text identity. Strong minimalrow exactgeometry/font/notes predicates separate from conditional shape/row/placeholder branches and nonempty source collections. SetNotes/placeholderSetText errorsignored in mutations but readback later. No originalpayloadhash/membership/rendering or safe-session parity inferred."
+    }
+  ],
+  "notes": "One declaration=11 reviewedfixtureoutcomes, not11newdeclarations. Helpers are source assertions within scope, not standalone tests. Existing hidden/comments/tables/master collections may satisfy presence checks; exactrowpredicate preserved. Frozen404denominator/no canonicalIDs or executioncredit; latercontrols outside. Protectedpublication/legacy state untouched; enhanced v0.12 only."
+}

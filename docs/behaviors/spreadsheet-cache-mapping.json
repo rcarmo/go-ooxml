@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "spreadsheet-cache-candidates.feature",
+  "native_prefix": "pkg/spreadsheet/",
+  "native_files": [
+    "pkg/spreadsheet/invalidation_test.go",
+    "pkg/spreadsheet/invalidation_edges_test.go",
+    "pkg/spreadsheet/calc_chain_lifecycle_test.go"
+  ],
+  "source_revision": "4ab1559c7f5d810057f0ecba78ff008951a93af0",
+  "inventory_observation_revision": "ec71b6cf4c6ac8bebec49ee195ac64520b104be9",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/spreadsheet/calc_chain_lifecycle_test.go::TestCalculationChainLifecycleBatch",
+      "source_sha256": "e38ca5e7d56935c68a30bb52d3a6486b61abe193de8e03911281ac1197f8d1c3",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-cache-008",
+        "@candidate-go-spreadsheet-cache-009",
+        "@candidate-go-spreadsheet-cache-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 48,
+          "name": "nonstandard owned chain removal then repeated edit",
+          "dynamic": false
+        },
+        {
+          "line": 81,
+          "expression": "defect",
+          "dynamic": true
+        },
+        {
+          "line": 96,
+          "name": "unresolved relationship rejected before policy helper",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 80,
+          "expression": "[]string",
+          "rows": 2
+        }
+      ],
+      "notes": "Two named cases plus dynamic defect labels mixed/signed. Helper missing branch itself asserts OpenEditing error; no named test declaration for helper. Serialization errors in rollback case ignored; equality of buffers is narrower than successful delivery."
+    },
+    {
+      "native_id": "pkg/spreadsheet/invalidation_edges_test.go::TestInvalidationEdgeBatch",
+      "source_sha256": "04f3b251fe2be0879cf794e5801db8c3558362e4f329b9db7a09ed65ffdfe5d2",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-cache-005",
+        "@candidate-go-spreadsheet-cache-006",
+        "@candidate-go-spreadsheet-cache-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 32,
+          "name": "quoted sheet and huge static range",
+          "dynamic": false
+        },
+        {
+          "line": 46,
+          "name": "nonfinite refusal does not consume target",
+          "dynamic": false
+        },
+        {
+          "line": 63,
+          "name": "foreign target refuses",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 50,
+          "expression": "[]float64",
+          "rows": 3
+        }
+      ],
+      "notes": "Three named subtests; nonfinite loop has NaN/+Inf/-Inf without named leaves. Fullgrid syntax not allocation measurement; foreigntarget only nonnilerror."
+    },
+    {
+      "native_id": "pkg/spreadsheet/invalidation_test.go::TestStaticInvalidationBatch",
+      "source_sha256": "be1ff02a64130480eabe69eafd0b44b133c80489c3e70470a4f3fc78ec5d7bea",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-spreadsheet-cache-001",
+        "@candidate-go-spreadsheet-cache-002",
+        "@candidate-go-spreadsheet-cache-003",
+        "@candidate-go-spreadsheet-cache-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 28,
+          "name": "range same sheet empty cache and no-op",
+          "dynamic": false
+        },
+        {
+          "line": 49,
+          "name": "cycles terminate with affected closure",
+          "dynamic": false
+        },
+        {
+          "line": 57,
+          "name": "string literals not references",
+          "dynamic": false
+        },
+        {
+          "line": 65,
+          "name": "array and volatile refusal reusable",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 66,
+          "expression": "[]string",
+          "rows": 2
+        }
+      ],
+      "notes": "Four named subtests; nested array/NOW two-row loop is not two named subtests. Counts/state and selectedworksheet bytes only; no formula calculation."
+    }
+  ],
+  "notes": "Selected native unit assertions only. Related acceptance bindings are separate unmapped declarations, not credited by proximity. Reports and private target flags are not independent complete-package cache/calculation evidence. No canonical IDs or execution credit; frozen404 denominator remains; later controls outside snapshot. This reviews field/return/byte predicates without changing runtime/tests."
+}

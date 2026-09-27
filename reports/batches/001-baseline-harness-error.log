@@ -1,0 +1,22 @@
+go test -p 2 ./...
+ok  	github.com/rcarmo/go-ooxml/e2e	0.696s
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	0.002s
+ok  	github.com/rcarmo/go-ooxml/pkg/document	0.658s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/chart	0.001s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/common	0.001s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/diagram	0.003s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/dml	0.001s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/pml	0.002s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/sml	0.002s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/theme	0.002s
+ok  	github.com/rcarmo/go-ooxml/pkg/ooxml/wml	0.003s
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	0.005s
+ok  	github.com/rcarmo/go-ooxml/pkg/presentation	0.463s
+ok  	github.com/rcarmo/go-ooxml/pkg/spreadsheet	0.087s
+ok  	github.com/rcarmo/go-ooxml/pkg/utils	0.002s
+cd acceptance && go test -p 2 ./...
+# github.com/rcarmo/go-ooxml/acceptance [github.com/rcarmo/go-ooxml/acceptance.test]
+./acceptance_test.go:80:5: invalid operation: too many arguments for len(p.Content()) (expected 1, found 2)
+FAIL	github.com/rcarmo/go-ooxml/acceptance [build failed]
+FAIL
+make: *** [Makefile:52: acceptance] Error 1

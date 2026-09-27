@@ -1,0 +1,7 @@
+--- FAIL: TestSharedCacheInvalidation (0.00s)
+    shared_cache_test.go:26: pack hash mismatch pack-manifest.json
+--- FAIL: TestSharedPackV2 (0.00s)
+    shared_pack_test.go:75: pack hash mismatch pack-manifest.json
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/acceptance	1.696s
+FAIL

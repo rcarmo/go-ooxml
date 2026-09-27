@@ -1,6 +1,7 @@
 package presentation
 
 import (
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -311,10 +312,10 @@ func TestFixtureRoundTrip_Complex(t *testing.T) {
 				if err != nil {
 					t.Fatalf("Slide(1) error = %v", err)
 				}
-				if _, err := slide.AddPicture(filepath.Join("..", "..", "testdata", "pptx", "image1.png"), 200000, 200000, 1000000, 1000000); err != nil {
+				if _, err := slide.AddPicture(testutil.FixturePath("pptx", "image1.png"), 200000, 200000, 1000000, 1000000); err != nil {
 					t.Fatalf("AddPicture() error = %v", err)
 				}
-				if err := slide.ReplacePictureImage("0", filepath.Join("..", "..", "testdata", "pptx", "image1.png")); err != nil {
+				if err := slide.ReplacePictureImage("0", testutil.FixturePath("pptx", "image1.png")); err != nil {
 					t.Fatalf("ReplacePictureImage() error = %v", err)
 				}
 				slide.AddTextBox(100000, 100000, 3000000, 800000).SetText("Fixture Image Placeholder")
@@ -375,5 +376,5 @@ func slideHasText(slide Slide, text string) bool {
 }
 
 func fixtureRoundTripPath(name string) string {
-	return filepath.Join("..", "..", "testdata", "pptx", name)
+	return testutil.FixturePath("pptx", name)
 }

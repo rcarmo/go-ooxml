@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "presentation-notes-candidates.feature",
+  "native_prefix": "pkg/presentation/",
+  "native_files": [
+    "pkg/presentation/notes_edit_test.go",
+    "pkg/presentation/notes_lines_test.go"
+  ],
+  "source_revision": "78b1ef7ce9d86d44b751efd2cc5ee04598132f00",
+  "inventory_observation_revision": "ec71b6cf4c6ac8bebec49ee195ac64520b104be9",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/presentation/notes_edit_test.go::TestExistingNotesFixtureBatch",
+      "source_sha256": "1510925446aa1ba3466bd47dec9b9db67ea1fa9db8fc847f064343dbd7894673",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-notes-001",
+        "@candidate-go-presentation-notes-002",
+        "@candidate-go-presentation-notes-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 34,
+          "name": "exact part budget and existing placeholders",
+          "dynamic": false
+        },
+        {
+          "line": 95,
+          "name": "no-op rollback foreign stale handles and empty output",
+          "dynamic": false
+        },
+        {
+          "line": 135,
+          "name": "part fingerprint catches direct low level change",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 105,
+          "expression": "[]string",
+          "rows": 3
+        },
+        {
+          "line": 105,
+          "expression": "[]byte",
+          "rows": 1
+        },
+        {
+          "line": 143,
+          "expression": "[]packaging.Replacement",
+          "rows": 1
+        }
+      ],
+      "notes": "Three named subtests; nested invalidinput loop3values not3named leaves. Helper requires fixtureSHA04faba67841dda25dc3ff9e3e6e345e6feeeef1cf25a6b9065bf5fbdc83163dc. First branch independentpartsplice+receipt+alloriginalgraphpartpayloads+disknotesreadback; no explicit complete ZIP membership assertion. Refusal/no-op serialize before clear/refill, not after refill. Fingerprint stale check nonnilerror only."
+    },
+    {
+      "native_id": "pkg/presentation/notes_lines_test.go::TestMultilineNotesEdges",
+      "source_sha256": "311fb00148555f9d429da465799cfea0738ab2fd4b0d090c99393cc82794a3e1",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-notes-004",
+        "@candidate-go-presentation-notes-005",
+        "@candidate-go-presentation-notes-006",
+        "@candidate-go-presentation-notes-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 35,
+          "name": "self-closing text fill",
+          "dynamic": false
+        },
+        {
+          "line": 49,
+          "name": "single leaf edge whitespace enables preservation",
+          "dynamic": false
+        },
+        {
+          "line": 78,
+          "name": "first run no format never borrows second run",
+          "dynamic": false
+        },
+        {
+          "line": 107,
+          "name": "template shape and child values survive",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 117,
+          "expression": "[]string",
+          "rows": 4
+        }
+      ],
+      "notes": "Four named subtests. Helper changes firstparagraph in loadedfixture with low-level Replace; sourcefixture untouched. xmlspace expandedname checked; fourparagraph text+no literal bold1; template loop counts4selectedfragments twice, not actualsize/alignment/placement/rendering. Uses privateparagraph handles and part payloads, no diskreopen in this declaration."
+    }
+  ],
+  "notes": "Two declarations/seven named subtests with helper custody and selected predicate strength retained. Fuzz/producer/acceptance notes declarations outside selectedfiles gain no coverage. Snapshot404 unchanged; latercontrols outside. No canonical IDs or executioncredit, runtime changes, full enum/schema or Office rendering claim. Prepared publication refs remain protected at v0.9 while owned enhancement default is v0.10."
+}

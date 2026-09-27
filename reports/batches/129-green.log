@@ -1,0 +1,5 @@
+$ GOMAXPROCS=2 go test -p 2 ./pkg/presentation ./internal/testutil
+ok  	github.com/rcarmo/go-ooxml/pkg/presentation	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	(cached)
+$ cd acceptance && GOMAXPROCS=2 go test -p 2 ./...
+ok  	github.com/rcarmo/go-ooxml/acceptance	1.705s

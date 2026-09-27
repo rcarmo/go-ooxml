@@ -1,0 +1,3 @@
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	0.423s
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	0.447s
+ok  	github.com/rcarmo/go-ooxml/acceptance	2.078s

@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "consumer": "go",
+  "source": {
+    "repository": "https://github.com/rcarmo/go-ooxml",
+    "revision": "395b1e99556b3e36e230511a9fc09f15ba30217e",
+    "publication": "local-unpublished; repository credential lacks push access"
+  },
+  "scope": "Twelve graph/archive declarations from the existing reviewed staging snapshot; selected assertion overlap with released v0.4 graph/ZIP64 scenarios only. Native plan, compressed-byte custody, writer/corruption and dynamic parameter outcomes remain distinct; no cross-runtime execution.",
+  "declarationCount": 12,
+  "mappings": [
+    {
+      "nativeId": "pkg/packaging/graph_delete_lifecycle_test.go::TestGraphDeletionLifecycleBatch",
+      "path": "pkg/packaging/graph_delete_lifecycle_test.go",
+      "sourceSha256": "735b40e7df1fc466ce4388c95d52e7638798e35ea05724ae8a662615e30b6453",
+      "coverage": "partial",
+      "scenarioIds": ["@id-opc-remove-related-part"],
+      "verifiedAspects": [
+        "A single Go plan retargets one document edge, removes another and deletes the formerly shared media leaf; surviving edge resolves to the new part",
+        "Save/reopen omits the deleted member and the reopened graph validates"
+      ],
+      "gaps": [
+        "Synthetic package and document-owned edges differ from shared DOCX and canonical root-edge detach",
+        "Helper creates an explicit .bin override through EnsureContentType; the test checks member absence and Graph success, not independent delivered-XML override removal",
+        "Failed mixed-plan rollback concerns a stale replacement fingerprint; nonleaf refusal concerns an owned relationship registry. Neither is the referenced opaque leaf/code opc-part-referenced in @id-opc-graph-rollback, which is not mapped",
+        "Transient cancellation, held-plan lifetime, reserved names and stale-plan checks are extra native scope"
+      ],
+      "executionCredit": false
+    },
+    {
+      "nativeId": "pkg/packaging/graph_edit_properties_test.go::TestRetargetURIAndChainedPlans",
+      "path": "pkg/packaging/graph_edit_properties_test.go",
+      "sourceSha256": "e63c6307b3ba9ff78e3d09d27ed786f936dcdeb94e62d5ae95881f73bf06b64b",
+      "coverage": "partial",
+      "scenarioIds": ["@id-opc-add-related-part"],
+      "verifiedAspects": [
+        "Repeated additions/retargets accumulate; reopening retains the added and original shared media parts and yields a valid graph"
+      ],
+      "gaps": [
+        "Existing document relationship is retargeted; no new root relationship is created and the shared DOCX is not used",
+        "The selected subtest checks part presence and graph validity, not independent exact MIME and unrelated payload-byte equality",
+        "The 4 source x 4 target x 3 original-form URI loop gives 48 native resolution combinations, not canonical graph-edit cases",
+        "Retarget-only receipt and exact-source restoration are separate native outcomes; no type-only part diff is asserted"
+      ],
+      "executionCredit": false
+    },
+    {
+      "nativeId": "pkg/packaging/graph_edit_test.go::TestGraphPlanContracts",
+      "path": "pkg/packaging/graph_edit_test.go",
+      "sourceSha256": "3fb4fda1664a6b2e11efc267faab2d8c1478c5438e0d3883cd993e060243ac02",
+      "coverage": "partial",
+      "scenarioIds": ["@id-opc-add-related-part"],
+      "verifiedAspects": [
+        "Added payload bytes are privately snapshotted and remain independently readable after caller mutation; saved addition receipt hashes reflect the later updated payload",
+        "Unchanged original members retain compressed streams, extra fields, comments and external attributes after addition/retarget"
+      ],
+      "gaps": [
+        "Synthetic package with existing document-edge retarget differs from canonical shared DOCX/new root relationship; GraphMutation has no relationship-creation operation",
+        "Compressed-stream custody is distinct from canonical decoded payload equality; exact content type for the canonical action is not independently asserted",
+        "Private preflight, foreign/consumed/ABA guards, no-op plan reuse and malformed-addition rollback do not establish Bun direct-transaction or opc-part-referenced semantics",
+        "Some receipt assertions inspect matching changes only; no complete-declaration equivalence or type-only diff credit"
+      ],
+      "executionCredit": false
+    },
+    {
+      "nativeId": "pkg/packaging/graph_test.go::TestGraphURIResolutionBatch",
+      "path": "pkg/packaging/graph_test.go",
+      "sourceSha256": "a7e99fa69a76c222ee4c64e0bc0a4dae2570e6450feddc12fa5e5c9ec63f4526",
+      "coverage": "unmapped",
+      "scenarioIds": [],
+      "verifiedAspects": [],
+      "gaps": [
+        "Native URI resolution admission/refusal table does not perform any of the four released graph mutations or their saved-package assertions",
+        "Root escape, aliases and URI-form policy need separate canonical outcomes; no type-only content-type diff assertion"
+      ],
+      "executionCredit": false
+    },
+    {
+      "nativeId": "pkg/packaging/fixture_corpus_test.go::TestRetainedNoOpFixtureCorpus",
+      "path": "pkg/packaging/fixture_corpus_test.go",
+      "sourceSha256": "4049233ac8b30bf0086947360bc756a98db6457bf79bede4ac2c7045eb99f6dc",
+      "coverage": "unmapped",
+      "scenarioIds": [],
+      "verifiedAspects": [],
+      "gaps": [
+        "Dynamic corpus traversal checks no-op source retention; it does not establish that every fixture uses ZIP64 or perform the canonical changed-member rewrite",
+        "No new runtime leaf-case count or canonical ZIP64 geometry is measured by this source review"
+      ],
+      "executionCredit": false
+    },
+    {
+      "nativeId": "pkg/packaging/limits_test.go::TestIntakeBudgetAndIntegrityContracts",
+      "path": "pkg/packaging/limits_test.go",
+      "sourceSha256": "dbe634a45fd262860cc84d2ffe7dd7aa4346979296d94a570b697f8833f58442",
+      "coverage": "unmapped",
+      "scenarioIds": [],
+      "verifiedAspects": [],
+      "gaps": [
+        "Source/entry/part/total budget and CRC tests use ordinary ZIP inputs; they do not establish the released ZIP64-specific resource-limit scenario",
+        "Invalid argument, directory exclusion and empty binary outcomes need separate canonical scenarios",
+        "Go resource_limit/invalid_package taxonomy is distinct from Bun codes; no pre-allocation timing assertion"
+      ],
+      "executionCredit": false
+    },
+    {
+      "nativeId": "pkg/packaging/zip64_test.go::TestZIP64IntakeBatch",
+      "path": "pkg/packaging/zip64_test.go",
+      "sourceSha256": "4e7b20044712613deb6d019baa6eb29c35403106092fdd716f2d321a522295a3",
+      "coverage": "unmapped",
+      "scenarioIds": [],
+      "verifiedAspects": [],
+      "gaps": [
+        "Six valid compression/descriptor combinations preserve exact no-op bytes; no changed-member rewrite/ZIP64 output-mode assertion from @id-parity-zip64",
+        "Fifteen corruption rows include classic-count mismatch, local-size overflow and ZIP64-record-length overflow; none asserts impossible declared ZIP64 count versus directory capacity, locator offset above JS safe integer range, or a valid caller-entry-limit refusal",
+        "Malformed rows require non-nil errors, not canonical codes or observed pre-allocation refusal; corruption scope remains separate"
+      ],
+      "executionCredit": false
+    },
+    {
+      "nativeId": "pkg/packaging/zip64_test.go::TestZIP64TerminalGeometryBatch",
+      "path": "pkg/packaging/zip64_test.go",
+      "sourceSha256": "4e7b20044712613deb6d019baa6eb29c35403106092fdd716f2d321a522295a3",
+      "coverage": "unmapped",
+      "scenarioIds": [],
+      "verifiedAspects": [],
+      "gaps": [
+        "One valid and three invalid terminal-layout variants check gaps and record length; none is the canonical impossible count, safe-integer locator offset, entry budget or changed-member workflow",
+        "Ordinary tiny payload archive is fitted with ZIP64 endings; no full canonical fixture or exact refusal-code equivalence"
+      ],
+      "executionCredit": false
+    },
+    {
+      "nativeId": "pkg/packaging/zip_overlap_test.go::TestIndependentPhysicalOverlap",
+      "path": "pkg/packaging/zip_overlap_test.go",
+      "sourceSha256": "0c63da0c273dcd9f1b850741bc558a00dd80c901d87517b67965366680580614",
+      "coverage": "unmapped",
+      "scenarioIds": [],
+      "verifiedAspects": [],
+      "gaps": [
+        "Independently readable distinct-name/CRC-valid overlapping entries refuse without changing source; physical overlap has no matching released ZIP64 scenario here",
+        "No invented generic corruption ID and no safe-integer/pre-allocation inference"
+      ],
+      "executionCredit": false
+    },
+    {
+      "nativeId": "pkg/packaging/zip_structure_test.go::TestZIPStructureContracts",
+      "path": "pkg/packaging/zip_structure_test.go",
+      "sourceSha256": "0b20478a0823f579a2ca90e7223f03fc7f67f22b032c4442df62432ca239fe15",
+      "coverage": "unmapped",
+      "scenarioIds": [],
+      "verifiedAspects": [],
+      "gaps": [
+        "Four local/central inconsistencies concern names, methods, flags and a borrowed local-header offset; these are not the released ZIP64-specific fixtures or codes",
+        "Refusal tables add no canonical graph or changed-member rewrite credit"
+      ],
+      "executionCredit": false
+    },
+    {
+      "nativeId": "pkg/packaging/zip64_delivery_test.go::TestZIP64DeliveryBatch",
+      "path": "pkg/packaging/zip64_delivery_test.go",
+      "sourceSha256": "bf9df4fee8a39b8b46113261b324d2e8b74ea9df10c4975e81f5d112e625daa7",
+      "coverage": "partial",
+      "scenarioIds": ["@id-parity-zip64", "@id-zip64-resource-limit"],
+      "verifiedAspects": [
+        "Three deflate descriptor variants edit a forced-ZIP64 input, save/reopen the new data.bin bytes and preserve registry/empty.bin payload bytes",
+        "A valid 65535-entry ZIP64 archive opens, then OpenPreserved refuses with typed resource_limit under a 65534-entry budget"
+      ],
+      "gaps": [
+        "Fixture contains an XML registry plus two binary members, not two native-written XML members; no forced ZIP64-output option or retained edited-output encoding assertion",
+        "Resource-limit values differ from canonical two entries/one-entry budget and Go resource_limit differs from zip-too-many-entries",
+        "Count-sentinel geometry is produced by Go archive/zip writer; no released count-write scenario exists. Subsequent part addition/save and direct TLV bounds checks are extra native scope",
+        "No impossible declared count/pre-allocation timing, JS safe-integer locator-offset, large-payload or exploratory-fuzz assertion"
+      ],
+      "executionCredit": false
+    },
+    {
+      "nativeId": "pkg/packaging/zip_adversarial_test.go::TestZIPDescriptorAndPrefixBatch",
+      "path": "pkg/packaging/zip_adversarial_test.go",
+      "sourceSha256": "1134e2d4fe16c97795b2a604c6332d4b159479830015199c4774a7b1f1a780ad",
+      "coverage": "unmapped",
+      "scenarioIds": [],
+      "verifiedAspects": [],
+      "gaps": [
+        "Adjusted prefix refusal and unsigned descriptor CRC equal to signature exercise native archive geometry, not any of the four released ZIP64 scenarios",
+        "Descriptor geometry is accepted but full intake still rejects the deliberately wrong payload CRC; no generic corruption or exact canonical-code mapping"
+      ],
+      "executionCredit": false
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	0.268s
+ok  	github.com/rcarmo/go-ooxml/pkg/presentation	(cached)
+--- FAIL: TestRetiredNotesFixtures (0.02s)
+    --- FAIL: TestRetiredNotesFixtures/[retired external test identity] (0.00s)
+        retired_notes_test.go:36: presentation_edit: unsupported_structure (): unproved/duplicate notes formatting child
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/acceptance	1.167s
+FAIL

@@ -1,0 +1,5 @@
+ok  	github.com/rcarmo/go-ooxml/internal/losslessxml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/document	(cached)
+?   	github.com/rcarmo/go-ooxml/tools/casefold	[no test files]
+ok  	github.com/rcarmo/go-ooxml/acceptance	0.233s

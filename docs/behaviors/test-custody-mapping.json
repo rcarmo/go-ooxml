@@ -1,0 +1,281 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "test-custody-candidates.feature",
+  "native_prefix": "internal/testutil/",
+  "native_files": [
+    "internal/testutil/fixture_lookup_test.go",
+    "internal/testutil/reference_checkout_test.go",
+    "internal/testutil/references_test.go",
+    "internal/testutil/testutil_test.go"
+  ],
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "internal/testutil/fixture_lookup_test.go::TestFixtureIdentityLookupBatch",
+      "source_sha256": "88dd5e13248d2f925d185b20e03d0c8f74f83eec7305bee59b9b1bed9d315c49",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-test-custody-001",
+        "@candidate-go-test-custody-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 44,
+          "expression": "tc.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 35,
+          "expression": "[]map[string]any",
+          "rows": 1
+        },
+        {
+          "line": 40,
+          "expression": "[]struct {\n\tname, key\tstring\n\tvalue\t\tany\n}",
+          "rows": 8,
+          "names": [
+            "traversal",
+            "nonfixtures",
+            "noncanonical",
+            "backslash",
+            "wrong identity",
+            "wrong size",
+            "missing format",
+            "missing group"
+          ]
+        },
+        {
+          "line": 50,
+          "expression": "[]map[string]any",
+          "rows": 1
+        },
+        {
+          "line": 56,
+          "expression": "[]map[string]any",
+          "rows": 2
+        },
+        {
+          "line": 60,
+          "expression": "[]map[string]any",
+          "rows": 1
+        }
+      ],
+      "remaining": "Helper characterisation is limited to asserted success/error cases; no unasserted cleanup timing, failing assertion diagnostics or document-format coverage is inferred."
+    },
+    {
+      "native_id": "internal/testutil/reference_checkout_test.go::TestPinnedReferenceCheckout",
+      "source_sha256": "c24f0add7a30941d9617ee28fbf1d7810a800b850aebf974b64a814c4047221e",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-test-custody-004",
+        "@candidate-go-test-custody-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Helper characterisation is limited to asserted success/error cases; no unasserted cleanup timing, failing assertion diagnostics or document-format coverage is inferred."
+    },
+    {
+      "native_id": "internal/testutil/reference_checkout_test.go::TestReferenceCheckoutIntegrityBatch",
+      "source_sha256": "c24f0add7a30941d9617ee28fbf1d7810a800b850aebf974b64a814c4047221e",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-test-custody-004",
+        "@candidate-go-test-custody-005",
+        "@candidate-go-test-custody-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 137,
+          "expression": "tc.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 81,
+          "expression": "[]struct {\n\tname\t\t\tstring\n\tchange\t\t\tfunc(*testing.T, string, *ReferenceIdentity)\n\tcandidate, refuse\tbool\n}",
+          "rows": 18,
+          "names": [
+            "clean annotated release",
+            "dirty constants outside asset manifest",
+            "staged workflow outside asset manifest",
+            "deleted tracked workflow",
+            "untracked fact",
+            "changed manifest seal",
+            "changed pack seal",
+            "wrong pinned commit",
+            "clean different checkout",
+            "lightweight release tag",
+            "wrong annotated tag object",
+            "annotated tag points elsewhere",
+            "missing release annotation",
+            "invalid commit syntax",
+            "clean candidate",
+            "dirty candidate",
+            "assume unchanged cannot hide edit",
+            "missing git metadata"
+          ]
+        }
+      ],
+      "remaining": "Helper characterisation is limited to asserted success/error cases; no unasserted cleanup timing, failing assertion diagnostics or document-format coverage is inferred."
+    },
+    {
+      "native_id": "internal/testutil/references_test.go::TestReferencePathsAndOutputGuards",
+      "source_sha256": "aff3031545cb491b7befd7ec64ea5300a0b41703cf55dc440132f12a07c8f802",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-test-custody-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 30,
+          "expression": "tc.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 20,
+          "expression": "[]struct {\n\tname, path\tstring\n\trefuse\t\tbool\n}",
+          "rows": 5,
+          "names": [
+            "root",
+            "new descendant",
+            "symlink descendant",
+            "sibling prefix",
+            "outside"
+          ]
+        }
+      ],
+      "remaining": "Helper characterisation is limited to asserted success/error cases; no unasserted cleanup timing, failing assertion diagnostics or document-format coverage is inferred."
+    },
+    {
+      "native_id": "internal/testutil/testutil_test.go::TestHelper",
+      "source_sha256": "84f0f8fb5b9ba6764af2259a35c520fa96c60790411caaca16e7565a13515fe7",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-test-custody-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Helper characterisation is limited to asserted success/error cases; no unasserted cleanup timing, failing assertion diagnostics or document-format coverage is inferred."
+    },
+    {
+      "native_id": "internal/testutil/testutil_test.go::TestAssertions",
+      "source_sha256": "84f0f8fb5b9ba6764af2259a35c520fa96c60790411caaca16e7565a13515fe7",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-test-custody-008"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Helper characterisation is limited to asserted success/error cases; no unasserted cleanup timing, failing assertion diagnostics or document-format coverage is inferred."
+    },
+    {
+      "native_id": "internal/testutil/testutil_test.go::TestFormatOptionsString",
+      "source_sha256": "84f0f8fb5b9ba6764af2259a35c520fa96c60790411caaca16e7565a13515fe7",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-test-custody-009"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 47,
+          "expression": "tc.want",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 34,
+          "expression": "[]struct {\n\topts\tFormatOptions\n\twant\tstring\n}",
+          "rows": 6,
+          "names": [
+            "plain",
+            "bold",
+            "italic",
+            "bold_italic",
+            "size",
+            "bold_size_color"
+          ]
+        }
+      ],
+      "remaining": "Helper characterisation is limited to asserted success/error cases; no unasserted cleanup timing, failing assertion diagnostics or document-format coverage is inferred."
+    },
+    {
+      "native_id": "internal/testutil/testutil_test.go::TestDocumentType",
+      "source_sha256": "84f0f8fb5b9ba6764af2259a35c520fa96c60790411caaca16e7565a13515fe7",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-test-custody-009"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 68,
+          "expression": "tc.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 57,
+          "expression": "[]struct {\n\tdt\tDocumentType\n\text\tstring\n\tname\tstring\n}",
+          "rows": 3,
+          "names": [
+            ".docx",
+            ".pptx",
+            ".xlsx"
+          ]
+        }
+      ],
+      "remaining": "Helper characterisation is limited to asserted success/error cases; no unasserted cleanup timing, failing assertion diagnostics or document-format coverage is inferred."
+    },
+    {
+      "native_id": "internal/testutil/testutil_test.go::TestCommonTestData",
+      "source_sha256": "84f0f8fb5b9ba6764af2259a35c520fa96c60790411caaca16e7565a13515fe7",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-test-custody-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Helper characterisation is limited to asserted success/error cases; no unasserted cleanup timing, failing assertion diagnostics or document-format coverage is inferred."
+    },
+    {
+      "native_id": "internal/testutil/testutil_test.go::TestResourceHelpers",
+      "source_sha256": "84f0f8fb5b9ba6764af2259a35c520fa96c60790411caaca16e7565a13515fe7",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-test-custody-011"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 106,
+          "name": "NewResource",
+          "dynamic": false
+        },
+        {
+          "line": 115,
+          "name": "OpenResource",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [],
+      "remaining": "Helper characterisation is limited to asserted success/error cases; no unasserted cleanup timing, failing assertion diagnostics or document-format coverage is inferred."
+    }
+  ]
+}

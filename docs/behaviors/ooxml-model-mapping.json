@@ -1,0 +1,232 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "ooxml-model-candidates.feature",
+  "native_prefix": "pkg/ooxml/",
+  "native_files": [
+    "pkg/ooxml/chart/chart_test.go",
+    "pkg/ooxml/chart/fuzz_test.go",
+    "pkg/ooxml/common/fuzz_test.go",
+    "pkg/ooxml/diagram/diagram_test.go",
+    "pkg/ooxml/diagram/fuzz_test.go",
+    "pkg/ooxml/dml/fuzz_test.go",
+    "pkg/ooxml/dml/graphic_test.go",
+    "pkg/ooxml/pml/fuzz_test.go",
+    "pkg/ooxml/sml/fuzz_test.go",
+    "pkg/ooxml/sml/worksheet_test.go",
+    "pkg/ooxml/theme/fuzz_test.go",
+    "pkg/ooxml/theme/theme_test.go"
+  ],
+  "source_revision": "819f442173b41b4034173c88ab46b374b8b83974",
+  "inventory_observation_revision": "ec71b6cf4c6ac8bebec49ee195ac64520b104be9",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/ooxml/chart/chart_test.go::TestChartSpaceRoundTrip",
+      "source_sha256": "1ae666463ebe82a4b53d76766a0ccbc7557f73e2dca31116e369a268df415e38",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-001"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Checks container presence and nonempty PlotArea.Content only; no chart data/title values or rendering."
+    },
+    {
+      "native_id": "pkg/ooxml/chart/fuzz_test.go::FuzzUnmarshalChartSpace",
+      "source_sha256": "f16cd8b7cbfe700261ff090380c66a97b7290890600755ec32380b8dcb1361a8",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "One seed; input substring filter and decode-error early return; output marker only."
+    },
+    {
+      "native_id": "pkg/ooxml/common/fuzz_test.go::FuzzCorePropertiesRoundTrip",
+      "source_sha256": "3ebf557c3f82b431ff1105a0aebc9060109b7ccd382cf9e883d4912937cf4694",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Two seed tuples; byte length bounds128/128/256, exact3field equality. Arbitrary XML-illegal characters outside seeds are not explored."
+    },
+    {
+      "native_id": "pkg/ooxml/common/fuzz_test.go::FuzzSharedStringsRoundTrip",
+      "source_sha256": "3ebf557c3f82b431ff1105a0aebc9060109b7ccd382cf9e883d4912937cf4694",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Two seed pairs;256byte cap per string; first lookup equality OR substring predicate; second value/count/deduplication unasserted."
+    },
+    {
+      "native_id": "pkg/ooxml/diagram/diagram_test.go::TestDiagramPartsRoundTrip",
+      "source_sha256": "3c6be7d4f3faa04b0a3ce578f7358cc3e52fef53d961232928c532e2fa95fad2",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 22,
+          "expression": "tt.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 10,
+          "expression": "[]struct {\n\tname\tstring\n\tdoc\tinterface{}\n}",
+          "rows": 5,
+          "names": [
+            "dataModel",
+            "layoutDef",
+            "styleDef",
+            "colorsDef",
+            "drawing"
+          ]
+        }
+      ],
+      "notes": "Five literal model rows checked only for successful marshal/unmarshal, not decoded semantic equality."
+    },
+    {
+      "native_id": "pkg/ooxml/diagram/fuzz_test.go::FuzzUnmarshalDiagramParts",
+      "source_sha256": "84065e9139bb3526402ee1176732614af40a80aedbbaa52d93ce835651a3decb",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 11,
+          "expression": "[]string",
+          "rows": 5
+        }
+      ],
+      "notes": "Five seeds; xmlns:dgm substring guard and ordered name-selector switch; marker output only. Decode errors return without assertions."
+    },
+    {
+      "native_id": "pkg/ooxml/dml/fuzz_test.go::FuzzUnmarshalTxBody",
+      "source_sha256": "74594ca751918a0b24ef32b167928977a5f3fa98edea9aa54d5f2f4c0fcf89c6",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 11,
+          "expression": "[]string",
+          "rows": 2
+        }
+      ],
+      "notes": "Two seeds; admitted successful decode must emit unprefixed txBody substring and namespace URI; contents unasserted."
+    },
+    {
+      "native_id": "pkg/ooxml/dml/graphic_test.go::TestGraphicDataChartRoundTrip",
+      "source_sha256": "ea63bf1e804b4423c6dc0cc49bc252f286b40d4c9850fa1776cd57e4e710aa1a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-008"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Chart nonnil and rId5 retained; no relationship target resolution or URI field equality assertion."
+    },
+    {
+      "native_id": "pkg/ooxml/pml/fuzz_test.go::FuzzUnmarshalSlide",
+      "source_sha256": "ffe330c64322d33e40b3b71388a94565d7659e7be4a12f40d94f3c04444803b0",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-009"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 11,
+          "expression": "[]string",
+          "rows": 2
+        }
+      ],
+      "notes": "Two seeds; either unprefixed or p-prefixed slide substring accepted; no semantic equality."
+    },
+    {
+      "native_id": "pkg/ooxml/sml/fuzz_test.go::FuzzUnmarshalWorksheet",
+      "source_sha256": "0cd03f2fe56ee9f0dc3620c1d64c38c07f5696ca71c35f8cff0cfde96867f957",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Two seeds (cell and drawing); output root marker only, values/relationship not compared."
+    },
+    {
+      "native_id": "pkg/ooxml/sml/fuzz_test.go::FuzzUnmarshalTable",
+      "source_sha256": "0cd03f2fe56ee9f0dc3620c1d64c38c07f5696ca71c35f8cff0cfde96867f957",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-011"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "One seed; root marker only, table geometry/names/count not compared."
+    },
+    {
+      "native_id": "pkg/ooxml/sml/worksheet_test.go::TestWorksheetDrawingRoundTrip",
+      "source_sha256": "b772d688eff016d06257e57467bf1e45b002640d16f360496430f8c13586df48",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-012"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Drawing nonnil and rId7 retained; no package target/anchor semantics."
+    },
+    {
+      "native_id": "pkg/ooxml/theme/fuzz_test.go::FuzzUnmarshalTheme",
+      "source_sha256": "7dcd135076f8d2b2ff160cf15f4b70e814183ad66a0cb49e7e765eecbf7f6bd2",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-013"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "One seed; input-prefix filter and output name marker only; no colour/font equality."
+    },
+    {
+      "native_id": "pkg/ooxml/theme/theme_test.go::TestThemeRoundTrip",
+      "source_sha256": "afae7bcdb0c2454bcaae36982f001b495651989f47a0e4f1408820f8f1a57c80",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-ooxml-model-014"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Office name and nonnil ThemeElements/ClrScheme only; actual colour/font/style fields unasserted."
+    }
+  ],
+  "notes": "Fourteen declarations in seven non-WML model packages:5 tests and9 fuzz targets with18 explicit seed tuples. Candidate predicates record exactly the asserted outcomes; name-marker predicates are not field equivalence or schema validity. Seed execution and reviewed declarations are separate metrics, no exploratory fuzz campaign or package/rendering correctness. Existing frozen404 inventory denominator retained; new validator/control declarations outside snapshot remain gaps."
+}

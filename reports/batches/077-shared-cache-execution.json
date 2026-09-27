@@ -1,0 +1,46 @@
+{
+  "allReferencesResolve": true,
+  "binding": "native Go direct contract test; shared Godog/schema2 adapter pending",
+  "cachedValue": "",
+  "calculationPerformed": false,
+  "calculationState": "recalculation-required",
+  "committedChanges": 1,
+  "contractRevision": "ooxml-shared-contracts-v2",
+  "fixtureSHA256": "8ba5708d5030adf93a4f7e4ae466563a1b66341067a200a6cb9b782484dcb5b1",
+  "formula": "Input!A1*2",
+  "input": "10",
+  "invalidated": [
+    "Calc!A1"
+  ],
+  "outputSHA256": "ea97f8265bb43fa125bcc3d44f31d17bad453e793ac8f9945f25f2687127ece0",
+  "packManifestSHA256": "cf359dea9df753592b9b8ecfd0d25feafa74a4a57a6033a25ca97764816a2032",
+  "receipt": {
+    "schema": 1,
+    "changes": [
+      {
+        "part": "xl/workbook.xml",
+        "before_sha256": "3fac8ac4c7ec6c13cfc1660513c3315145ef20d0fee37f5e17e1eb5e1f927b6e",
+        "after_sha256": "573a2fcf5dc036f675a4cbcba33b009de3f5bfec85e07adaa60024dc510fb3c2"
+      },
+      {
+        "part": "xl/worksheets/sheet1.xml",
+        "before_sha256": "63841d43a2b6686e56b50601bed72c1d007ad52d5d844a0ddc56bac7ba8b3a97",
+        "after_sha256": "7f831f7b46348655eb0256a6004bafb1aaf8dce26659cc98ff4300ea37a94e40"
+      },
+      {
+        "part": "xl/worksheets/sheet2.xml",
+        "before_sha256": "636912335c42b3ee0516632ffdf446441a650942364b3786ea125d41ecd0aa64",
+        "after_sha256": "e2e07eed5acdf5c93183cfdaa9bfe4534d86fec3e9c67a64c7601182f102143b"
+      }
+    ]
+  },
+  "scenarioId": "@id-xlsx-cross-sheet-cache-invalidation",
+  "schema": 1,
+  "sourceUnchanged": true,
+  "stableCaseKey": "@id-xlsx-cross-sheet-cache-invalidation:{}",
+  "subject": {
+    "kind": "native-library",
+    "transport": "none"
+  },
+  "unrelatedMembersIdentical": true
+}

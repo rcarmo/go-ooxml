@@ -1,0 +1,187 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "delivery-candidates.feature",
+  "native_prefix": "pkg/packaging/",
+  "native_files": [
+    "pkg/packaging/delivery_test.go",
+    "pkg/packaging/io_safety_test.go",
+    "pkg/packaging/preserved_test.go",
+    "pkg/packaging/replacement_policy_test.go"
+  ],
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/packaging/delivery_test.go::TestAtomicDeliveryFaultBatch",
+      "source_sha256": "a61f02dad496efceab0bffadf3a6eaf756fbca6be48935add686de1ac50f3dde",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-delivery-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 15,
+          "expression": "phase",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 14,
+          "expression": "[]string",
+          "rows": 3
+        }
+      ],
+      "remaining": "OS durability beyond exercised injected faults and schema-complete XML validation remain outside these assertions."
+    },
+    {
+      "native_id": "pkg/packaging/io_safety_test.go::TestPackageSerializationContracts",
+      "source_sha256": "3aa6c6882bab9e1fe27da28e5d3769af58409dbb2387e24d8ef68df15821aaa1",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-delivery-005",
+        "@candidate-go-delivery-006",
+        "@candidate-go-delivery-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 17,
+          "name": "closed stream",
+          "dynamic": false
+        },
+        {
+          "line": 28,
+          "name": "ordered members",
+          "dynamic": false
+        },
+        {
+          "line": 59,
+          "name": "atomic success and rename failure",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 30,
+          "expression": "[]string",
+          "rows": 4
+        },
+        {
+          "line": 100,
+          "expression": "[]string",
+          "rows": 2
+        }
+      ],
+      "remaining": "OS durability beyond exercised injected faults and schema-complete XML validation remain outside these assertions."
+    },
+    {
+      "native_id": "pkg/packaging/preserved_test.go::TestRetainedSourceContracts",
+      "source_sha256": "e1da263acb3b836c1edcf4c2c3cd15bb44e684d00936f08e411e308953096278",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-delivery-001",
+        "@candidate-go-delivery-002",
+        "@candidate-go-delivery-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 27,
+          "name": "source and part isolation",
+          "dynamic": false
+        },
+        {
+          "line": 47,
+          "name": "atomic mixed batch",
+          "dynamic": false
+        },
+        {
+          "line": 61,
+          "name": "malformed XML refuses",
+          "dynamic": false
+        },
+        {
+          "line": 68,
+          "name": "registry changes refuse",
+          "dynamic": false
+        },
+        {
+          "line": 75,
+          "name": "duplicate targets refuse",
+          "dynamic": false
+        },
+        {
+          "line": 82,
+          "name": "short no-op writer",
+          "dynamic": false
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 50,
+          "expression": "[]Replacement",
+          "rows": 2,
+          "names": [
+            "a.xml",
+            "b.xml"
+          ]
+        },
+        {
+          "line": 64,
+          "expression": "[]Replacement",
+          "rows": 1,
+          "names": [
+            "a.xml"
+          ]
+        },
+        {
+          "line": 71,
+          "expression": "[]Replacement",
+          "rows": 1
+        },
+        {
+          "line": 78,
+          "expression": "[]Replacement",
+          "rows": 2,
+          "names": [
+            "a.xml",
+            "a.xml"
+          ]
+        }
+      ],
+      "remaining": "OS durability beyond exercised injected faults and schema-complete XML validation remain outside these assertions."
+    },
+    {
+      "native_id": "pkg/packaging/replacement_policy_test.go::TestReplacementXMLNamespacePolicy",
+      "source_sha256": "465db7b21a38c983e0928f3b90c5572fa60040c83f1757ee105d90c24955416a",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-delivery-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 11,
+          "expression": "text",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 10,
+          "expression": "[]string",
+          "rows": 3
+        },
+        {
+          "line": 23,
+          "expression": "[]Replacement",
+          "rows": 1
+        }
+      ],
+      "remaining": "OS durability beyond exercised injected faults and schema-complete XML validation remain outside these assertions."
+    }
+  ]
+}

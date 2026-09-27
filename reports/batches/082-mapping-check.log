@@ -1,0 +1,7 @@
+ok  	github.com/rcarmo/go-ooxml/tools/nativeinventory	(cached)
+ok  	github.com/rcarmo/go-ooxml/internal/formula	(cached)
+--- FAIL: TestBehaviourCatalogueCandidates (0.00s)
+    behavior_catalogue_test.go:108: invalid native mapping {Native:internal/formula/properties_test.go::TestStaticFormulaReferenceProperties Hash:54bd2c1b318b5e4ebab5cf41da5d38b0d2f73dd6430aac3df24ecb2220f91045 IDs:[] Coverage:reviewed-family-and-parameter-groups}
+FAIL
+FAIL	github.com/rcarmo/go-ooxml/acceptance	1.522s
+FAIL

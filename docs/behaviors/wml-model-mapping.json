@@ -1,0 +1,493 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "wml-model-candidates.feature",
+  "native_prefix": "pkg/ooxml/wml/",
+  "native_files": [
+    "pkg/ooxml/wml/fields_fuzz_test.go",
+    "pkg/ooxml/wml/fuzz_test.go",
+    "pkg/ooxml/wml/wml_test.go"
+  ],
+  "source_revision": "da64a61e61ff9ec9dc9922cd66c7e23d8cd3631f",
+  "inventory_observation_revision": "ec71b6cf4c6ac8bebec49ee195ac64520b104be9",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/ooxml/wml/fields_fuzz_test.go::FuzzUnmarshalFldChar",
+      "source_sha256": "aa4f738b427c39960eb3476ea02c38036ca1585a67d692f4beeddc58da0d2649",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-wml-model-001"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "One begin-field seed; substring guards and decode-error early return, output fldChar marker only; no type/value/refusal semantics."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/fuzz_test.go::FuzzUnmarshalParagraph",
+      "source_sha256": "a18862cfb9d5afdd4dde091ea92a75e08bd02d22a0599dd8051ecd2cababf8be",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-wml-model-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 11,
+          "expression": "[]string",
+          "rows": 5
+        }
+      ],
+      "notes": "Five seeds (plain, space, insertion, deletion, paragraph properties); successful decode must reserialize <p and namespace markers only."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/fuzz_test.go::FuzzUnmarshalRun",
+      "source_sha256": "a18862cfb9d5afdd4dde091ea92a75e08bd02d22a0599dd8051ecd2cababf8be",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-wml-model-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 46,
+          "expression": "[]string",
+          "rows": 4
+        }
+      ],
+      "notes": "Four seeds (text, preserved text/tab, break, effects); successful decode must emit <r and namespace markers only."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/fuzz_test.go::FuzzUnmarshalBody",
+      "source_sha256": "a18862cfb9d5afdd4dde091ea92a75e08bd02d22a0599dd8051ecd2cababf8be",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-wml-model-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 80,
+          "expression": "[]string",
+          "rows": 2
+        }
+      ],
+      "notes": "Two seeds; root and namespace output markers only, no content equality."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestDocument_Marshal",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Empty body model; document/body output substring predicates only."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestDocument_Unmarshal",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "One body child P and one child R, direct T concatenation exactly Hello World; no unrelated model assertions."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestBody_Unmarshal_MultipleParagraphs",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Content length3 only, not per-slot types/text equality."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestBody_Unmarshal_WithTable",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-008"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Length3 and ordered P/Tbl/P types only; no cell/text/geometry assertion."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestBody_Unmarshal_WithSectPr",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-009"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "SectPr presence only; 12240x15840 fixture values are not asserted."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestParagraph_Unmarshal_WithStyle",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "PPr plus direct Heading1 and center values; no inherited formatting resolution."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestParagraph_Unmarshal_WithInsertions",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-011"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Length2, second slot Ins and Author Author only; ID/date/text not asserted."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestParagraph_Unmarshal_WithDeletions",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-012"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Length2, first slot Del and Author Editor only; ID/date/deleted text not asserted."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestRun_Unmarshal_WithFormatting",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-013"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "RPr/B/I nonnil; exact underline single,size28,colourFF0000; at least one direct T Formatted Text, not complete sequence equality."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestRun_Unmarshal_WithBreaks",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-014"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Length5 only; individual text/tab/break types or order unasserted."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestTable_Unmarshal",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-015"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Two rows,two cells in first row,one first-cell P with one slot; no last-slot type,cell text,width/style or second-row-cell count."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestTable_Marshal_RoundTrip",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-016"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 377,
+          "expression": "[]*GridCol",
+          "rows": 2
+        },
+        {
+          "line": 379,
+          "expression": "[]*Tr",
+          "rows": 2
+        },
+        {
+          "line": 381,
+          "expression": "[]*Tc",
+          "rows": 2
+        },
+        {
+          "line": 382,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 382,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 382,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 383,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 383,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 383,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 387,
+          "expression": "[]*Tc",
+          "rows": 2
+        },
+        {
+          "line": 388,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 388,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 388,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 389,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 389,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 389,
+          "expression": "[]interface{}",
+          "rows": 1
+        }
+      ],
+      "notes": "Two rows and first-row-cell count2 only; grid/style/text/second-row cell count unasserted."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestCell_Unmarshal_WithProperties",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-017"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "TcPr presence,span2,vMerge restart,fillFFFF00; width/type/shadingmode/text unasserted."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestOnOff_Enabled",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-018"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 472,
+          "expression": "tt.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 460,
+          "expression": "[]struct {\n\tname\tstring\n\tonoff\t*OnOff\n\tenabled\tbool\n}",
+          "rows": 4,
+          "names": [
+            "nil",
+            "empty (presence=true)",
+            "val=true",
+            "val=false"
+          ]
+        }
+      ],
+      "notes": "Four dynamic tt.name subtests resolve literal nil/empty/true/false rows ->false/true/true/false; no XML boolean lexical interpretation."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestNewOnOffEnabled",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-019"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Nonnil constructor result and Enabled true; no serialization."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestNewOnOff",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-020"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Two direct constructor calls true/false retain Enabled results; no dynamic leaves or serialized values."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestRPr_Marshal",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-021"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Only single-character substring checks b/i/u, potentially satisfied by namespace or other output; no independent element/value assertions."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestPPr_Marshal",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-022"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Only pStyle/jc/spacing substrings; no exact values or KeepNext readback."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestDocument_RoundTrip",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-023"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 582,
+          "expression": "[]interface{}",
+          "rows": 3
+        },
+        {
+          "line": 587,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 590,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 597,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 599,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 606,
+          "expression": "[]*Tr",
+          "rows": 1
+        },
+        {
+          "line": 608,
+          "expression": "[]*Tc",
+          "rows": 1
+        },
+        {
+          "line": 609,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 609,
+          "expression": "[]interface{}",
+          "rows": 1
+        },
+        {
+          "line": 609,
+          "expression": "[]interface{}",
+          "rows": 1
+        }
+      ],
+      "notes": "Body nonnil,len3,first P styleHeading1,third Tbl rowcount1; text/bold/secondslot/cells/page size unasserted."
+    },
+    {
+      "native_id": "pkg/ooxml/wml/wml_test.go::TestNewT",
+      "source_sha256": "ccb83bf1186db285fd643bedbfc4dcc52b769a82c87d28a2120965e145f725b5",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-wml-model-024"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 679,
+          "expression": "tt.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 666,
+          "expression": "[]struct {\n\tname\t\tstring\n\ttext\t\tstring\n\texpectPreserve\tbool\n}",
+          "rows": 5,
+          "names": [
+            "simple",
+            "leading space",
+            "trailing space",
+            "double space",
+            "no space"
+          ]
+        }
+      ],
+      "notes": "Five literal rows routed by dynamic tt.name; Text equality and (Space==preserve) true only for leading/trailing/double spaces. False rows do not assert Space empty. No serialized xml:space or broader whitespace."
+    }
+  ],
+  "notes": "Twenty unit declarations and four fuzz targets in three files, twelve explicit fuzz seed strings. Two dynamic tt.name sites correspond to four OnOff and five NewT literal rows; data/setup literals elsewhere do not add executed variants. This reviews exact predicate strength, not all XML schema/field/rendering behavior. The prior non-WML review's five unit declarations and nine fuzz targets remain separate. No canonical IDs, cross-runtime execution or exploratory fuzz credit. Frozen404 denominator is unchanged; later control tests remain outside it."
+}

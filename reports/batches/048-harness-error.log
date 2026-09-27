@@ -1,0 +1,7 @@
+ok  	github.com/rcarmo/go-ooxml/internal/losslessxml	(cached)
+ok  	github.com/rcarmo/go-ooxml/pkg/packaging	0.080s
+# github.com/rcarmo/go-ooxml/acceptance [github.com/rcarmo/go-ooxml/acceptance.test]
+./graph_edit_test.go:36:17: undefined: archive
+./graph_edit_test.go:36:27: undefined: zipMember
+FAIL	github.com/rcarmo/go-ooxml/acceptance [build failed]
+FAIL

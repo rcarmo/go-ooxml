@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "presentation-measurement-candidates.feature",
+  "native_prefix": "pkg/presentation/",
+  "native_files": [
+    "pkg/presentation/benchmark_test.go",
+    "pkg/presentation/mem_test.go"
+  ],
+  "source_revision": "ea91fa4c69c7d3e35f259df1778ecd134ea6636c",
+  "inventory_observation_revision": "ec71b6cf4c6ac8bebec49ee195ac64520b104be9",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/presentation/benchmark_test.go::BenchmarkPresentationOpenReader",
+      "source_sha256": "0712a773426b774bf540128bda6ad9fe058673a8481e8566418319c1b9990ac5",
+      "kind": "benchmark",
+      "candidate_ids": [
+        "@candidate-go-presentation-measurement-001"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Benchmark only: minimal.pptx resolved then readerror skips; b.SetBytes inputlength and ResetTimer precede b.N OpenReader/Close checked errors. Resolver failures are separate, not necessarily skippable read errors. No content/performance assertions."
+    },
+    {
+      "native_id": "pkg/presentation/benchmark_test.go::BenchmarkPresentationOpenReaderLarge",
+      "source_sha256": "0712a773426b774bf540128bda6ad9fe058673a8481e8566418319c1b9990ac5",
+      "kind": "benchmark",
+      "candidate_ids": [
+        "@candidate-go-presentation-measurement-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Benchmark only: images.pptx same readskip/OpenReader+Close checks; Large label does not assert source size or resource ceiling. Ordinary go test does not run benchmark body."
+    },
+    {
+      "native_id": "pkg/presentation/benchmark_test.go::BenchmarkPresentationSaveAs",
+      "source_sha256": "0712a773426b774bf540128bda6ad9fe058673a8481e8566418319c1b9990ac5",
+      "kind": "benchmark",
+      "candidate_ids": [
+        "@candidate-go-presentation-measurement-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Benchmark only: New/one-slide textbox setup before ResetTimer, same mutablepresentation saved to new indexedfile per b.N; SaveAs errors fatal; deferredClose ignored. No reopen/content/time/allocation threshold."
+    },
+    {
+      "native_id": "pkg/presentation/benchmark_test.go::BenchmarkPresentationSaveAsLarge",
+      "source_sha256": "0712a773426b774bf540128bda6ad9fe058673a8481e8566418319c1b9990ac5",
+      "kind": "benchmark",
+      "candidate_ids": [
+        "@candidate-go-presentation-measurement-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "Benchmark only:20slides with text and2x2table setup before timer; b.N saves to indexedfiles. New/SaveAs checked, deferredClose ignored, setter outcomes/content/counts unasserted. Setup20 and b.N do not increase scenario denominator."
+    },
+    {
+      "native_id": "pkg/presentation/mem_test.go::TestPresentationOpenReader_MemProfile",
+      "source_sha256": "da5a4b4958d586e7c9c26de32763be27359d7af70137237f92a37e7479368b60",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-measurement-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "notes": "ENABLE_MEMPROFILE empty -> explicit skip before fixture resolution. Any nonempty value enables read/OpenReader/Close error checks. Body creates no profile and asserts no memory/allocations. Gate runs with variable explicitly unset; enabled path unrun."
+    }
+  ],
+  "notes": "Five source-reviewed declarations:4benchmarks+1opt-in smoke. No benchmark execution/performance result, enabled memprofile result, canonicalIDs or executioncredit. Standard package gate explicitly unsets ENABLE_MEMPROFILE and selects no benchmarks. All presentation declarations in fixedsnapshot then have scoped staging mappings; this does not establish complete workflows or current-source inventory. Latercontrols outside404snapshot; preparedpublication/legacy references unchanged."
+}

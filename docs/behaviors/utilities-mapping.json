@@ -1,0 +1,551 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "utilities-candidates.feature",
+  "native_prefix": "pkg/utils/",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "mappings": [
+    {
+      "native_id": "pkg/utils/cell_ref_test.go::TestColumnToLetter",
+      "source_sha256": "557a5f6dfb3951bcbb16469f3b785e3e9cb0e4a79b40b29267928f963423b680",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-001"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 6,
+          "expression": "[]struct {\n\tcol\tint\n\texpect\tstring\n}",
+          "rows": 11,
+          "names": [
+            "A",
+            "B",
+            "Z",
+            "AA",
+            "AB",
+            "AZ",
+            "BA",
+            "ZZ",
+            "AAA",
+            "",
+            ""
+          ]
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/cell_ref_test.go::TestLetterToColumn",
+      "source_sha256": "557a5f6dfb3951bcbb16469f3b785e3e9cb0e4a79b40b29267928f963423b680",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-001"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 32,
+          "expression": "[]struct {\n\tletter\tstring\n\texpect\tint\n}",
+          "rows": 12,
+          "names": [
+            "A",
+            "B",
+            "Z",
+            "AA",
+            "AB",
+            "AZ",
+            "BA",
+            "ZZ",
+            "AAA",
+            "a",
+            "aa",
+            ""
+          ]
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/cell_ref_test.go::TestParseCellRef",
+      "source_sha256": "557a5f6dfb3951bcbb16469f3b785e3e9cb0e4a79b40b29267928f963423b680",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 59,
+          "expression": "[]struct {\n\tref\tstring\n\twant\tCellRef\n\twantErr\tbool\n}",
+          "rows": 13,
+          "names": [
+            "A1",
+            "B2",
+            "Z100",
+            "AA1",
+            "$A$1",
+            "$A1",
+            "A$1",
+            "Sheet1!A1",
+            "Sheet1!$A$1",
+            "",
+            "A",
+            "1",
+            "A0"
+          ]
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/cell_ref_test.go::TestCellRefString",
+      "source_sha256": "557a5f6dfb3951bcbb16469f3b785e3e9cb0e4a79b40b29267928f963423b680",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 92,
+          "expression": "[]struct {\n\tref\tCellRef\n\texpect\tstring\n}",
+          "rows": 6,
+          "names": [
+            "A1",
+            "AA100",
+            "$A1",
+            "A$1",
+            "$A$1",
+            "Sheet1!A1"
+          ]
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/cell_ref_test.go::TestParseRangeRef",
+      "source_sha256": "557a5f6dfb3951bcbb16469f3b785e3e9cb0e4a79b40b29267928f963423b680",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 113,
+          "expression": "[]struct {\n\tref\tstring\n\twantErr\tbool\n}",
+          "rows": 6,
+          "names": [
+            "A1:B2",
+            "A1:Z100",
+            "$A$1:$B$2",
+            "Sheet1!A1:B2",
+            "A1",
+            ""
+          ]
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/cell_ref_test.go::TestRangeRefContains",
+      "source_sha256": "557a5f6dfb3951bcbb16469f3b785e3e9cb0e4a79b40b29267928f963423b680",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 136,
+          "expression": "[]struct {\n\tref\tstring\n\texpect\tbool\n}",
+          "rows": 6,
+          "names": [
+            "B2",
+            "C3",
+            "D4",
+            "A1",
+            "E5",
+            "B5"
+          ]
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/color_test.go::TestParseHexColor",
+      "source_sha256": "2054edd8f3a366558f948c05306ddb43b52ba7ff113484da7b0b32269d01eca4",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 6,
+          "expression": "[]struct {\n\thex\tstring\n\twant\tColor\n\twantErr\tbool\n}",
+          "rows": 11,
+          "names": [
+            "FF0000",
+            "#FF0000",
+            "00FF00",
+            "0000FF",
+            "FFFFFF",
+            "000000",
+            "80FF0000",
+            "ff0000",
+            "invalid",
+            "FFF",
+            "FFFFFFFFF"
+          ]
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/color_test.go::TestColorToHex",
+      "source_sha256": "2054edd8f3a366558f948c05306ddb43b52ba7ff113484da7b0b32269d01eca4",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 37,
+          "expression": "[]struct {\n\tcolor\tColor\n\texpect\tstring\n}",
+          "rows": 4,
+          "names": [
+            "FF0000",
+            "00FF00",
+            "0000FF",
+            "80FF0000"
+          ]
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/color_test.go::TestColorToARGB",
+      "source_sha256": "2054edd8f3a366558f948c05306ddb43b52ba7ff113484da7b0b32269d01eca4",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 56,
+          "expression": "[]struct {\n\tcolor\tColor\n\texpect\tstring\n}",
+          "rows": 2,
+          "names": [
+            "FFFF0000",
+            "8000FF00"
+          ]
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/emu_test.go::TestEMUConversions",
+      "source_sha256": "536c60d5ea9475be2d46a037dbfa3ec5909c7bcd70dfc728af026c4d40545c13",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/errors_test.go::TestValidationError",
+      "source_sha256": "0b224509d3fd80fbf045ac4293a0c127877bb87f89a6c0f60660394444008571",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 39,
+          "expression": "tt.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 8,
+          "expression": "[]struct {\n\tname\tstring\n\tfield\tstring\n\tmessage\tstring\n\tvalue\tinterface{}\n\twant\tstring\n}",
+          "rows": 3,
+          "names": [
+            "with value",
+            "without value",
+            "numeric value"
+          ]
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/errors_test.go::TestStandardErrors",
+      "source_sha256": "0b224509d3fd80fbf045ac4293a0c127877bb87f89a6c0f60660394444008571",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 83,
+          "expression": "tt.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 56,
+          "expression": "[]struct {\n\tname\tstring\n\terr\terror\n}",
+          "rows": 20,
+          "names": [
+            "ErrDocumentClosed",
+            "ErrPartNotFound",
+            "ErrInvalidCellRef",
+            "ErrInvalidRange",
+            "ErrTableNotFound",
+            "ErrSectionNotFound",
+            "ErrSlideNotFound",
+            "ErrShapeNotFound",
+            "ErrInvalidIndex",
+            "ErrReadOnly",
+            "ErrInvalidFormat",
+            "ErrCorruptedFile",
+            "ErrPathNotSet",
+            "ErrMissingContentTypes",
+            "ErrContentControlNotFound",
+            "ErrCommentNotFound",
+            "ErrCannotDeleteLastSheet",
+            "ErrSheetNotFound",
+            "ErrCellNotFound",
+            "ErrInvalidValue"
+          ]
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/fuzz_test.go::FuzzColumnLetterRoundTrip",
+      "source_sha256": "789130e9fe4fe5a69014fe4c9ec657d57b8efcef06546f996bb2c43de8294c22",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-utilities-011"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 6,
+          "expression": "[]int",
+          "rows": 7
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/fuzz_test.go::FuzzParseCellRef",
+      "source_sha256": "789130e9fe4fe5a69014fe4c9ec657d57b8efcef06546f996bb2c43de8294c22",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-utilities-011"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 29,
+          "expression": "[]string",
+          "rows": 6
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/fuzz_test.go::FuzzParseRangeRef",
+      "source_sha256": "789130e9fe4fe5a69014fe4c9ec657d57b8efcef06546f996bb2c43de8294c22",
+      "kind": "fuzz",
+      "candidate_ids": [
+        "@candidate-go-utilities-011"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [
+        {
+          "line": 64,
+          "expression": "[]string",
+          "rows": 3
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/xml_test.go::TestXMLHeader",
+      "source_sha256": "cf8ab5d35a6717264eeafd213e2879db411f0fe98078c42d369636972b0e0ebc",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/xml_test.go::TestMarshalXMLWithHeader",
+      "source_sha256": "cf8ab5d35a6717264eeafd213e2879db411f0fe98078c42d369636972b0e0ebc",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 47,
+          "expression": "tt.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 22,
+          "expression": "[]struct {\n\tname\tstring\n\tinput\tinterface{}\n\twantErr\tbool\n\tcheck\tfunc([]byte) bool\n}",
+          "rows": 2,
+          "names": [
+            "simple struct",
+            "empty struct"
+          ]
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/xml_test.go::TestMarshalXMLIndentWithHeader",
+      "source_sha256": "cf8ab5d35a6717264eeafd213e2879db411f0fe98078c42d369636972b0e0ebc",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/xml_test.go::TestUnmarshalXML",
+      "source_sha256": "cf8ab5d35a6717264eeafd213e2879db411f0fe98078c42d369636972b0e0ebc",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-008"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 113,
+          "expression": "tt.name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 87,
+          "expression": "[]struct {\n\tname\tstring\n\tinput\t[]byte\n\twant\tstring\n\twantErr\tbool\n}",
+          "rows": 3,
+          "names": [
+            "normal XML",
+            "with BOM",
+            "invalid XML"
+          ]
+        },
+        {
+          "line": 101,
+          "expression": "[]byte",
+          "rows": 3
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/xml_test.go::TestEscapeXMLText",
+      "source_sha256": "cf8ab5d35a6717264eeafd213e2879db411f0fe98078c42d369636972b0e0ebc",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-009"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 141,
+          "expression": "tt.input",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [
+        {
+          "line": 128,
+          "expression": "[]struct {\n\tinput\tstring\n\twant\tstring\n}",
+          "rows": 6,
+          "names": [
+            "hello",
+            "<script>",
+            "a & b",
+            "\"quoted\"",
+            "line1\nline2",
+            ""
+          ]
+        }
+      ],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/xml_test.go::TestPointerHelpers",
+      "source_sha256": "cf8ab5d35a6717264eeafd213e2879db411f0fe98078c42d369636972b0e0ebc",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    },
+    {
+      "native_id": "pkg/utils/xml_test.go::TestDerefHelpers",
+      "source_sha256": "cf8ab5d35a6717264eeafd213e2879db411f0fe98078c42d369636972b0e0ebc",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-utilities-010"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [],
+      "parameter_groups": [],
+      "remaining": "Legacy utility parsing is distinct from conservative formula/XML editing contracts; fuzz-space execution and schema completeness not inferred."
+    }
+  ],
+  "conflicts": [
+    {
+      "topic": "bare cell as range",
+      "scope": "utils.ParseRangeRef versus formula.ParseRange",
+      "resolution": "Different APIs: utility range requires two endpoints, direct formula range accepts a single cell. Keep preconditions/API explicit."
+    }
+  ]
+}

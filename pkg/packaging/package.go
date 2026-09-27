@@ -4,10 +4,12 @@ import (
 	"archive/zip"
 	"bytes"
 	"encoding/xml"
+	"errors"
 	"io"
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/rcarmo/go-ooxml/pkg/utils"
@@ -50,8 +52,15 @@ func Open(filePath string) (*Package, error) {
 
 // OpenReader opens an OPC package from an io.ReaderAt.
 func OpenReader(r io.ReaderAt, size int64) (*Package, error) {
+	return OpenReaderWithLimits(r, size, Limits{})
+}
+
+func openReader(r io.ReaderAt, size int64, limits Limits) (*Package, error) {
 	zr, err := zip.NewReader(r, size)
 	if err != nil {
+		if errors.Is(err, zip.ErrFormat) {
+			return nil, invalidPart("open", "", err.Error())
+		}
 		return nil, err
 	}
 
@@ -60,8 +69,38 @@ func OpenReader(r io.ReaderAt, size int64) (*Package, error) {
 		relationships: make(map[string]*Relationships),
 	}
 
-	// Read all files from ZIP
+	if err := validateBudgets(zr.File, limits); err != nil {
+		return nil, err
+	}
+	if err := validateZIPStructure(r, size, zr.File); err != nil {
+		return nil, err
+	}
+
+	// Validate names before inflating or inserting members into a map. Never
+	// silently let the last duplicate win.
+	seen := make(map[string]string, len(zr.File))
 	for _, f := range zr.File {
+		if err := validateMemberName(f.Name, f.FileInfo().IsDir()); err != nil {
+			return nil, err
+		}
+		key := strings.ToLower(strings.TrimSuffix(f.Name, "/"))
+		if prior, exists := seen[key]; exists {
+			return nil, invalidPart("open", f.Name, "duplicate or case-colliding member with "+prior)
+		}
+		seen[key] = f.Name
+		if f.Flags&1 != 0 {
+			return nil, invalidPart("open", f.Name, "encrypted member")
+		}
+		if f.Method != zip.Store && f.Method != zip.Deflate {
+			return nil, invalidPart("open", f.Name, "unsupported compression")
+		}
+	}
+
+	// Read all files from ZIP. Directory entries are not OPC parts.
+	for _, f := range zr.File {
+		if f.FileInfo().IsDir() {
+			continue
+		}
 		content, err := readZipFile(f)
 		if err != nil {
 			return nil, err
@@ -123,13 +162,7 @@ func (p *Package) SaveAs(filePath string) error {
 		return utils.ErrPathNotSet
 	}
 	cleanPath := filepath.Clean(filePath)
-	f, err := os.Create(cleanPath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	if err := p.WriteTo(f); err != nil {
+	if err := atomicDeliver(cleanPath, p.WriteTo, nil); err != nil {
 		return err
 	}
 
@@ -140,8 +173,13 @@ func (p *Package) SaveAs(filePath string) error {
 
 // WriteTo writes the package to an io.Writer.
 func (p *Package) WriteTo(w io.Writer) error {
+	if p.closed {
+		return utils.ErrDocumentClosed
+	}
+	if err := p.validateOutputNames(); err != nil {
+		return err
+	}
 	zw := zip.NewWriter(w)
-	defer zw.Close()
 
 	// Write [Content_Types].xml first
 	ctData, err := xml.Marshal(p.contentTypes)
@@ -153,8 +191,14 @@ func (p *Package) WriteTo(w io.Writer) error {
 		return err
 	}
 
-	// Write relationships files
-	for sourceURI, rels := range p.relationships {
+	// Write relationship files and parts in stable order.
+	sources := make([]string, 0, len(p.relationships))
+	for source := range p.relationships {
+		sources = append(sources, source)
+	}
+	sort.Strings(sources)
+	for _, sourceURI := range sources {
+		rels := p.relationships[sourceURI]
 		if len(rels.Relationships) == 0 {
 			continue
 		}
@@ -174,8 +218,14 @@ func (p *Package) WriteTo(w io.Writer) error {
 		}
 	}
 
-	// Write all parts
-	for uri, part := range p.parts {
+	// Write all parts.
+	uris := make([]string, 0, len(p.parts))
+	for uri := range p.parts {
+		uris = append(uris, uri)
+	}
+	sort.Strings(uris)
+	for _, uri := range uris {
+		part := p.parts[uri]
 		// Skip [Content_Types].xml and .rels files (already written)
 		if uri == ContentTypesPath || strings.HasSuffix(uri, ".rels") {
 			continue
@@ -185,7 +235,9 @@ func (p *Package) WriteTo(w io.Writer) error {
 		}
 	}
 
-	return nil
+	// Close emits the central directory and flushes buffered bytes. Its error
+	// is part of the write result, not a best-effort cleanup detail.
+	return zw.Close()
 }
 
 // Close closes the package.
@@ -357,10 +409,20 @@ func (p *Package) parseRelationships() error {
 func readZipFile(f *zip.File) ([]byte, error) {
 	rc, err := f.Open()
 	if err != nil {
-		return nil, err
+		return nil, invalidPart("open", f.Name, err.Error())
 	}
 	defer rc.Close()
-	return io.ReadAll(rc)
+	// Read at most the declared length plus one byte, even if a malicious
+	// stream expands beyond its advertised size. ReadAll must reach checksum
+	// verification before any bytes enter the package model.
+	content, err := io.ReadAll(io.LimitReader(rc, int64(f.UncompressedSize64)+1))
+	if err != nil {
+		return nil, invalidPart("open", f.Name, err.Error())
+	}
+	if uint64(len(content)) != f.UncompressedSize64 {
+		return nil, invalidPart("open", f.Name, "declared and actual sizes differ")
+	}
+	return content, nil
 }
 
 func writeZipFile(zw *zip.Writer, name string, data []byte) error {

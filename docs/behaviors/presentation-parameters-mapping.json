@@ -1,0 +1,206 @@
+{
+  "schema": 1,
+  "status": "central-reconciliation-staging",
+  "feature": "presentation-parameters-candidates.feature",
+  "native_prefix": "pkg/presentation/",
+  "native_files": [
+    "pkg/presentation/parameterized_test.go"
+  ],
+  "source_revision": "0f96cf2c7e74d20131f0e18ae465558461a765aa",
+  "inventory_observation_revision": "ec71b6cf4c6ac8bebec49ee195ac64520b104be9",
+  "canonical_ids_assigned": false,
+  "execution_credit": false,
+  "helper_sources": [
+    {
+      "path": "internal/testutil/testutil.go",
+      "source_sha256": "e5051ec7d9c9b109996d712404c70c3091e3cffa5619c63d3913d032df9a2b4c",
+      "aspects": [
+        "RequireNoError fatal on nonnil",
+        "AssertEqual scalar !=",
+        "AssertNotNil interface nil only",
+        "AssertContains returns for empty expected substring",
+        "CommonFormatCombinations16rows and String duplicate labels",
+        "CommonStringCases8rows"
+      ]
+    }
+  ],
+  "mappings": [
+    {
+      "native_id": "pkg/presentation/parameterized_test.go::TestFixtures_RoundTrip",
+      "source_sha256": "1f6a5bcd8ddbea8709e9830a371242e94653d21b94c4b7f4e9264a1768befae3",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-parameters-001"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 147,
+          "expression": "fixture.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "CommonFixtures",
+        "count": 11
+      },
+      "notes": "Eleven globalsetup rows inclwidescreenconstructor; SlideCount captured afterSaveAs only, Close errorsignored. Setup fields otherthan count get no assertion credit."
+    },
+    {
+      "native_id": "pkg/presentation/parameterized_test.go::TestShapeTypes_Parameterized",
+      "source_sha256": "1f6a5bcd8ddbea8709e9830a371242e94653d21b94c4b7f4e9264a1768befae3",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-parameters-002"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 199,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "shapeTypeCases",
+        "count": 6
+      },
+      "notes": "Six enumrows; Helper.AssertNotNil checks interface==nil not typednil reflection; subsequent Type assertion. New errorignored, no persistence."
+    },
+    {
+      "native_id": "pkg/presentation/parameterized_test.go::TestTextFormatting_Parameterized",
+      "source_sha256": "1f6a5bcd8ddbea8709e9830a371242e94653d21b94c4b7f4e9264a1768befae3",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-parameters-003"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 220,
+          "expression": "fc.String()",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "testutil.CommonFormatCombinations",
+        "count": 16
+      },
+      "notes": "Sixteen externalhelper rows, dynamic fc.String labels repeat size/font/color; require source rowidentity not unique names. Bold/Italic unconditional, size/font/color conditional; Underline never readback; no serialized output."
+    },
+    {
+      "native_id": "pkg/presentation/parameterized_test.go::TestSlideOperations_Parameterized",
+      "source_sha256": "1f6a5bcd8ddbea8709e9830a371242e94653d21b94c4b7f4e9264a1768befae3",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-parameters-004"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 293,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "slideOpCases",
+        "count": 9
+      },
+      "notes": "Nine rows, outputslidecount only; New/operation errorsunchecked and no order/content/cloneownership checks."
+    },
+    {
+      "native_id": "pkg/presentation/parameterized_test.go::TestAlignment_Parameterized",
+      "source_sha256": "1f6a5bcd8ddbea8709e9830a371242e94653d21b94c4b7f4e9264a1768befae3",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-parameters-005"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 331,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "alignmentCases",
+        "count": 4
+      },
+      "notes": "Four enumrows, inmemory getteronly; New errorignored, no serialization/inheritance."
+    },
+    {
+      "native_id": "pkg/presentation/parameterized_test.go::TestBulletTypes_Parameterized",
+      "source_sha256": "1f6a5bcd8ddbea8709e9830a371242e94653d21b94c4b7f4e9264a1768befae3",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-parameters-006"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 364,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "bulletCases",
+        "count": 3
+      },
+      "notes": "Three enumrows, inmemory getteronly; no bullet markup/schema/rendering."
+    },
+    {
+      "native_id": "pkg/presentation/parameterized_test.go::TestShapePosition_Parameterized",
+      "source_sha256": "1f6a5bcd8ddbea8709e9830a371242e94653d21b94c4b7f4e9264a1768befae3",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-parameters-007"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 401,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "positionCases",
+        "count": 4
+      },
+      "notes": "Four integergeometrytuples, all4getters equal; no bounds/refusals/save/rendering."
+    },
+    {
+      "native_id": "pkg/presentation/parameterized_test.go::TestStringValues_RoundTrip",
+      "source_sha256": "1f6a5bcd8ddbea8709e9830a371242e94653d21b94c4b7f4e9264a1768befae3",
+      "kind": "test",
+      "candidate_ids": [
+        "@candidate-go-presentation-parameters-008"
+      ],
+      "coverage": "reviewed-family-and-parameter-groups",
+      "subtests": [
+        {
+          "line": 424,
+          "expression": "tc.Name",
+          "dynamic": true
+        }
+      ],
+      "parameter_groups": [],
+      "reviewed_rows": {
+        "source": "testutil.CommonStringCases",
+        "count": 8
+      },
+      "notes": "Eight externalhelperrows; SaveAs required; Open errorignored; shape-empty branch skips assertion; AssertContains emptywanted returns immediately; WantOK unused. No exactstring equality."
+    }
+  ],
+  "notes": "Eight declarations,61 finite table rows (11+6+16+9+4+3+4+8), not measured current runtimeleafcount and not exhaustive combinatorialcoverage. Nested setup loops do not add independent variants. Source snapshot may omit global/helper table rows; reviewed_rows records explicit read-only review without scannerdenominatorchurn. No canonicalIDs/executioncredit/runtimechange. Preparedpublication/legacy protected; defaultv0.13."
+}

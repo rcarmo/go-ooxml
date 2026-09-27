@@ -97,19 +97,27 @@ func main() {
 - `pkg/` - Public Go packages (document/spreadsheet/presentation)
 - `internal/` - Internal helpers (testutil/xmlutil)
 - `e2e/` - End-to-end workflows and fuzz tests
-- `testdata/` - Fixture files
+- `references/fixtures-ooxml/` - Shared fixture manifest, grouped fixtures and canonical workflows
 - `docs/` - Specification and reference docs
 - `tools/` - Validator and tooling
 
+Tests use manifest fixture IDs from the shared checkout, with one file per hash
+under `fixtures/<format>/<scenarioGroup>/`. Inputs stay read-only; generated
+outputs go to local `artifacts` or temporary directories. See
+[shared-reference testing](docs/testing.md) for the current candidate/release state.
+
 ```bash
+# Initialise the exact recorded reference commit; do not track its branch tip
+git submodule update --init --recursive
+
 # Show available targets
 make help
 
 # Full build (clean + deps + lint + test + build)
 make build-all
 
-# Run tests
-make test
+# Run both native and acceptance modules (after reference validation)
+GOMAXPROCS=2 make test-batch
 
 # Run tests with coverage
 make coverage

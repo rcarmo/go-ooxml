@@ -3,20 +3,13 @@ package presentation
 import (
 	"bytes"
 	"fmt"
+	"github.com/rcarmo/go-ooxml/internal/testutil"
 	"os"
 	"path/filepath"
-	"runtime"
 	"testing"
 )
 
-func benchmarkFixturePath(name string) string {
-	_, filename, _, ok := runtime.Caller(0)
-	if !ok {
-		return filepath.Join("..", "..", "testdata", "pptx", name)
-	}
-	root := filepath.Join(filepath.Dir(filename), "..", "..")
-	return filepath.Join(root, "testdata", "pptx", name)
-}
+func benchmarkFixturePath(name string) string { return testutil.FixturePath("pptx", name) }
 
 func BenchmarkPresentationOpenReader(b *testing.B) {
 	data, err := os.ReadFile(benchmarkFixturePath("minimal.pptx"))

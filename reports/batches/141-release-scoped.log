@@ -1,0 +1,4 @@
+$ env -u OOXML_FIXTURES_ROOT -u OOXML_REFERENCE_PIN GOMAXPROCS=2 go test -p 2 ./internal/testutil
+ok  	github.com/rcarmo/go-ooxml/internal/testutil	0.354s
+$ cd acceptance && env -u OOXML_FIXTURES_ROOT -u OOXML_REFERENCE_PIN GOMAXPROCS=2 go test -p 2 -run "TestPinnedReferenceDistribution|TestSharedWorkflowCaseInventory|TestSharedFactRegistry|TestSharedWorkflowRegistry|TestMutationContractAndCompilerBatch|TestAcceptance" ./...
+ok  	github.com/rcarmo/go-ooxml/acceptance	1.648s

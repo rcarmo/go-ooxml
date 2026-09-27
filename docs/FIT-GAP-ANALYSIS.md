@@ -4,7 +4,13 @@
 **Analysis Date:** January 2026  
 **Spec Reference:** ECMA-376, 5th Edition
 
-This document provides a detailed analysis of features implemented versus ECMA-376 specification requirements.
+This is a historical January 2026 design assessment. Its feature totals,
+percentages and status rows have not been reconciled to current per-case test
+results; they are not current measured coverage or schema certification.
+Read [testing.md](testing.md) for current candidate/release state and
+[design/native-enhancements.md](design/native-enhancements.md) for guarded-edit
+scope. Shared facts and canonical behaviour are maintained centrally; new native
+catalogue mappings remain incomplete.
 
 ---
 
@@ -20,9 +26,10 @@ This document provides a detailed analysis of features implemented versus ECMA-3
 
 **Overall:** Core document manipulation features are well-covered. Advanced features (pivot tables, digital signatures) are not implemented; charts/diagrams/pictures are minimal/partial.
 
-## Known Limitations
+## Limitations recorded in January 2026
 
-The library focuses on core OOXML manipulation rather than full Office parity. The following areas are explicitly out of scope or only partially implemented today:
+The following were the assessment's partial or unsupported areas. Consult current
+native tests and design limits before using these historical statements:
 
 - **OPC**: growth hint stream, interleaving, thumbnails, digital signatures.
 - **WordprocessingML**: field parsing (no evaluation), remaining revision/move tracking elements (sect/table/row/cell property changes), and permissions/spell/grammar are not implemented.
