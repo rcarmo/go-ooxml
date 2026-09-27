@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
@@ -27,7 +28,8 @@ type mutationFixture struct {
 type mutationContract struct {
 	Schema    int      `json:"schemaVersion"`
 	Revision  string   `json:"contractRevision"`
-	Feature   string   `json:"feature"`
+	Feature   string   `json:"feature"`  // schema 1 only
+	Features  []string `json:"features"` // schema 2 only
 	Scenarios []string `json:"scenarioIds"`
 	Count     int      `json:"expandedCaseCount"`
 	Policy    struct {
@@ -57,8 +59,24 @@ func parseMutationContract(b []byte) (mutationContract, error) {
 	if err := d.Decode(new(any)); err != io.EOF {
 		return c, fmt.Errorf("trailing contract content")
 	}
-	if c.Schema != 1 || c.Revision != "ooxml-shared-contracts-v2" || c.Feature != "workflows/mutation-safety.feature" || c.Count != 19 || len(c.Scenarios) != 8 || len(c.Fixtures) != 4 || c.Policy.Membership != "exact" || c.Policy.Preserve != "all-except-allowed" {
+	if (c.Schema != 1 && c.Schema != 2) || c.Revision != "ooxml-shared-contracts-v2" || c.Count != 19 || len(c.Scenarios) != 8 || len(c.Fixtures) != 4 || c.Policy.Membership != "exact" || c.Policy.Preserve != "all-except-allowed" {
 		return c, fmt.Errorf("unsupported mutation contract")
+	}
+	if c.Schema == 1 {
+		if c.Feature != "workflows/mutation-safety.feature" || len(c.Features) != 0 {
+			return c, fmt.Errorf("invalid schema 1 mutation feature")
+		}
+	} else {
+		if c.Feature != "" || len(c.Features) == 0 {
+			return c, fmt.Errorf("schema 2 requires an explicit feature list")
+		}
+		paths := map[string]bool{}
+		for _, feature := range c.Features {
+			if !strings.HasPrefix(feature, "workflows/") || !strings.HasSuffix(feature, ".feature") || !filepath.IsLocal(feature) || path.Clean(feature) != feature || strings.Contains(feature, "\\") || paths[feature] {
+				return c, fmt.Errorf("invalid/duplicate mutation feature %s", feature)
+			}
+			paths[feature] = true
+		}
 	}
 	seen := map[string]bool{}
 	assets := map[string]bool{}
@@ -131,40 +149,42 @@ func compileMutationCases(b []byte, path string, ids []string, count int) ([]mut
 	values := map[string]map[string]string{}
 	owners := map[string]string{}
 	defined := map[string]bool{}
-	for _, child := range doc.Feature.Children {
-		s := child.Scenario
-		if s == nil {
-			return nil, fmt.Errorf("unsupported shared feature child")
-		}
+	indexScenario := func(s *messages.Scenario) error {
 		id := ""
 		for _, tag := range s.Tags {
 			if strings.HasPrefix(tag.Name, "@id-") {
 				if id != "" {
-					return nil, fmt.Errorf("multiple scenario IDs")
+					return fmt.Errorf("multiple scenario IDs")
 				}
 				id = tag.Name
 			}
 		}
-		if !expected[id] || defined[id] {
-			return nil, fmt.Errorf("unknown/duplicate workflow %s", id)
+		if !expected[id] {
+			if count != 0 { // schema 1 owned the whole feature
+				return fmt.Errorf("unknown workflow %s", id)
+			}
+			return nil // other planned scenarios in an operation-group feature
+		}
+		if defined[id] {
+			return fmt.Errorf("duplicate workflow %s", id)
 		}
 		defined[id] = true
 		owners[s.Id] = id
 		values[s.Id] = map[string]string{}
 		for _, ex := range s.Examples {
 			if ex.TableHeader == nil || len(ex.TableBody) == 0 {
-				return nil, fmt.Errorf("empty examples")
+				return fmt.Errorf("empty examples")
 			}
 			headers := map[string]bool{}
 			for _, h := range ex.TableHeader.Cells {
 				if h.Value == "" || headers[h.Value] {
-					return nil, fmt.Errorf("duplicate example column")
+					return fmt.Errorf("duplicate example column")
 				}
 				headers[h.Value] = true
 			}
 			for _, row := range ex.TableBody {
 				if len(row.Cells) != len(ex.TableHeader.Cells) {
-					return nil, fmt.Errorf("example width mismatch")
+					return fmt.Errorf("example width mismatch")
 				}
 				m := map[string]string{}
 				for i, cell := range row.Cells {
@@ -172,6 +192,25 @@ func compileMutationCases(b []byte, path string, ids []string, count int) ([]mut
 				}
 				values[row.Id] = m
 			}
+		}
+		return nil
+	}
+	for _, child := range doc.Feature.Children {
+		if child.Scenario != nil {
+			if err := indexScenario(child.Scenario); err != nil {
+				return nil, err
+			}
+		} else if child.Rule != nil && count == 0 {
+			for _, nested := range child.Rule.Children {
+				if nested.Scenario == nil {
+					return nil, fmt.Errorf("unsupported mutation rule child")
+				}
+				if err := indexScenario(nested.Scenario); err != nil {
+					return nil, err
+				}
+			}
+		} else {
+			return nil, fmt.Errorf("unsupported shared feature child")
 		}
 	}
 	if len(defined) != len(expected) {
@@ -184,6 +223,9 @@ func compileMutationCases(b []byte, path string, ids []string, count int) ([]mut
 			return nil, fmt.Errorf("missing pickle identity")
 		}
 		id := owners[p.AstNodeIds[0]]
+		if id == "" && count == 0 {
+			continue // unselected planned operation-group scenario
+		}
 		m, ok := values[p.AstNodeIds[len(p.AstNodeIds)-1]]
 		if id == "" || !ok {
 			return nil, fmt.Errorf("unknown pickle identity")
@@ -218,7 +260,7 @@ func compileMutationCases(b []byte, path string, ids []string, count int) ([]mut
 		}
 		result = append(result, c)
 	}
-	if len(result) != count {
+	if count != 0 && len(result) != count {
 		return nil, fmt.Errorf("expanded cases %d != %d", len(result), count)
 	}
 	return result, nil
@@ -261,12 +303,118 @@ func loadMutationContract(pin referencePin) (mutationContract, []mutationCase, e
 	if err != nil {
 		return c, nil, err
 	}
-	feature, err := os.ReadFile(testutil.ReferencePath(c.Feature))
-	if err != nil {
-		return c, nil, err
+	if c.Schema == 1 {
+		feature, err := os.ReadFile(testutil.ReferencePath(c.Feature))
+		if err != nil {
+			return c, nil, err
+		}
+		cases, err := compileMutationCases(feature, c.Feature, c.Scenarios, c.Count)
+		return c, cases, err
 	}
-	cases, err := compileMutationCases(feature, c.Feature, c.Scenarios, c.Count)
+	cases, err := loadSplitMutation(c)
 	return c, cases, err
+}
+
+// Compile the selected workflows from each declared feature. Other planned
+// scenarios in the same operation feature do not become mutation contracts.
+func loadSplitMutation(c mutationContract) ([]mutationCase, error) {
+	return compileSplitMutation(c, func(path string) ([]byte, error) {
+		return os.ReadFile(testutil.ReferencePath(path))
+	})
+}
+
+func compileSplitMutation(c mutationContract, read func(string) ([]byte, error)) ([]mutationCase, error) {
+	declared := make(map[string]bool, len(c.Scenarios))
+	for _, id := range c.Scenarios {
+		declared[id] = true
+	}
+	owners := map[string]string{}
+	var cases []mutationCase
+	seen := map[string]bool{}
+	for _, featurePath := range c.Features {
+		b, err := read(featurePath)
+		if err != nil {
+			return nil, err
+		}
+		ids, err := mutationFeatureIDs(b, featurePath, declared, owners)
+		if err != nil {
+			return nil, err
+		}
+		if len(ids) == 0 {
+			return nil, fmt.Errorf("mutation feature has no selected scenarios: %s", featurePath)
+		}
+		compiled, err := compileMutationCases(b, featurePath, ids, 0)
+		if err != nil {
+			return nil, err
+		}
+		for _, row := range compiled {
+			if seen[row.ID] {
+				return nil, fmt.Errorf("duplicate mutation case key %s", row.ID)
+			}
+			seen[row.ID] = true
+			cases = append(cases, row)
+		}
+	}
+	if len(owners) != len(declared) || len(cases) != c.Count {
+		return nil, fmt.Errorf("mutation inventory differs: %d cases, %d of %d IDs", len(cases), len(owners), len(declared))
+	}
+	return cases, nil
+}
+
+func mutationFeatureIDs(b []byte, featurePath string, declared map[string]bool, owners map[string]string) ([]string, error) {
+	n := 0
+	next := func() string { n++; return fmt.Sprint(n) }
+	doc, err := gherkin.ParseGherkinDocument(bytes.NewReader(b), next)
+	if err != nil {
+		return nil, err
+	}
+	if doc.Feature == nil {
+		return nil, fmt.Errorf("missing mutation feature %s", featurePath)
+	}
+	var ids []string
+	for _, child := range doc.Feature.Children {
+		if child.Scenario != nil {
+			id := ""
+			for _, tag := range child.Scenario.Tags {
+				if strings.HasPrefix(tag.Name, "@id-") {
+					if id != "" {
+						return nil, fmt.Errorf("multiple scenario IDs in %s", featurePath)
+					}
+					id = tag.Name
+				}
+			}
+			if declared[id] {
+				if owners[id] != "" {
+					return nil, fmt.Errorf("mutation scenario %s appears in both %s and %s", id, owners[id], featurePath)
+				}
+				owners[id] = featurePath
+				ids = append(ids, id)
+			}
+		} else if child.Rule != nil {
+			for _, nested := range child.Rule.Children {
+				if nested.Scenario == nil {
+					continue
+				}
+				id := ""
+				for _, tag := range nested.Scenario.Tags {
+					if strings.HasPrefix(tag.Name, "@id-") {
+						if id != "" {
+							return nil, fmt.Errorf("multiple scenario IDs in %s", featurePath)
+						}
+						id = tag.Name
+					}
+				}
+				if declared[id] {
+					if owners[id] != "" {
+						return nil, fmt.Errorf("mutation scenario %s appears in both %s and %s", id, owners[id], featurePath)
+					}
+					owners[id] = featurePath
+					ids = append(ids, id)
+				}
+			}
+		}
+	}
+	return ids, nil
 }
 func loadLegacyMutation(pin referencePin) (mutationContract, []mutationCase, error) {
 	root := testutil.ReferencePath("shared", "v2", "pack")
@@ -395,6 +543,41 @@ func TestMutationContractAndCompilerBatch(t *testing.T) {
 			x.Fixtures[0].Allowed = append(x.Fixtures[0].Allowed, x.Fixtures[0].Allowed[0])
 		}},
 		{"malformed member hash", func(x *mutationContract) { x.Fixtures[0].Members["bad.xml"] = strings.Repeat("z", 64) }},
+		{"schema 1 rejects feature list", func(x *mutationContract) {
+			if x.Schema == 1 {
+				x.Features = []string{x.Feature}
+			} else {
+				x.Feature = "workflows/mutation-safety.feature"
+			}
+		}},
+		{"schema 2 requires feature list", func(x *mutationContract) {
+			if x.Schema == 2 {
+				x.Features = nil
+			} else {
+				x.Feature = ""
+			}
+		}},
+		{"schema 2 rejects duplicate feature", func(x *mutationContract) {
+			if x.Schema == 2 {
+				x.Features = append(x.Features, x.Features[0])
+			} else {
+				x.Features = []string{x.Feature, x.Feature}
+			}
+		}},
+		{"schema 2 rejects escaping feature", func(x *mutationContract) {
+			if x.Schema == 2 {
+				x.Features[0] = "workflows/../outside.feature"
+			} else {
+				x.Features = []string{"workflows/../outside.feature"}
+			}
+		}},
+		{"schema 2 rejects absolute feature", func(x *mutationContract) {
+			if x.Schema == 2 {
+				x.Features[0] = "/tmp/outside.feature"
+			} else {
+				x.Features = []string{"/tmp/outside.feature"}
+			}
+		}},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			var x mutationContract
@@ -422,31 +605,78 @@ func TestMutationContractAndCompilerBatch(t *testing.T) {
 			}
 		}
 	}
-	featurePath := testutil.ReferencePath(c.Feature)
-	if pin.Schema == 1 {
-		featurePath = testutil.ReferencePath("shared", "v2", "pack", "features", "mutation-safety.feature")
-	}
-	feature, err := os.ReadFile(featurePath)
-	if err != nil {
-		t.Fatal(err)
-	}
-	for _, tc := range []struct {
-		name  string
-		data  []byte
-		ids   []string
-		count int
-	}{
-		{"wrong expanded count", feature, c.Scenarios, c.Count + 1},
-		{"unknown scenario", bytes.Replace(feature, []byte(c.Scenarios[0]), []byte("@id-absent"), 1), c.Scenarios, c.Count},
-		{"claim executed lifecycle", bytes.Replace(feature, []byte("@planned"), []byte("@implemented"), 1), c.Scenarios, c.Count},
-		{"duplicate destination row", bytes.ReplaceAll(feature, []byte("distinct-absent"), []byte("source")), c.Scenarios, c.Count},
-		{"invalid typed JSON", bytes.ReplaceAll(feature, []byte(`"Changed by dry run"`), []byte(`NaN`)), c.Scenarios, c.Count},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			if _, err := compileMutationCases(tc.data, c.Feature, tc.ids, tc.count); err == nil {
-				t.Fatal("invalid feature inventory accepted")
+	if c.Schema == 1 {
+		featurePath := testutil.ReferencePath(c.Feature)
+		if pin.Schema == 1 {
+			featurePath = testutil.ReferencePath("shared", "v2", "pack", "features", "mutation-safety.feature")
+		}
+		feature, err := os.ReadFile(featurePath)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, tc := range []struct {
+			name  string
+			data  []byte
+			ids   []string
+			count int
+		}{
+			{"wrong expanded count", feature, c.Scenarios, c.Count + 1},
+			{"unknown scenario", bytes.Replace(feature, []byte(c.Scenarios[0]), []byte("@id-absent"), 1), c.Scenarios, c.Count},
+			{"claim executed lifecycle", bytes.Replace(feature, []byte("@planned"), []byte("@implemented"), 1), c.Scenarios, c.Count},
+			{"duplicate destination row", bytes.ReplaceAll(feature, []byte("distinct-absent"), []byte("source")), c.Scenarios, c.Count},
+			{"invalid typed JSON", bytes.ReplaceAll(feature, []byte(`"Changed by dry run"`), []byte(`NaN`)), c.Scenarios, c.Count},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				if _, err := compileMutationCases(tc.data, c.Feature, tc.ids, tc.count); err == nil {
+					t.Fatal("invalid feature inventory accepted")
+				}
+			})
+		}
+	} else {
+		feature := c.Features[0]
+		original, err := os.ReadFile(testutil.ReferencePath(feature))
+		if err != nil {
+			t.Fatal(err)
+		}
+		fixtureBytes := map[string][]byte{}
+		for _, name := range c.Features {
+			fixtureBytes[name], err = os.ReadFile(testutil.ReferencePath(name))
+			if err != nil {
+				t.Fatal(err)
 			}
-		})
+		}
+		for _, tc := range []struct {
+			name   string
+			change func(*mutationContract)
+			input  []byte
+		}{
+			{"missing selected scenario", nil, bytes.Replace(original, []byte(c.Scenarios[1]), []byte("@id-absent"), 1)},
+			{"claim executed lifecycle", nil, bytes.Replace(original, []byte("@planned"), []byte("@implemented"), 1)},
+			{"duplicate selected scenario in second feature", func(x *mutationContract) { x.Features = append(x.Features, feature+"-duplicate.feature") }, original},
+			{"wrong expanded count", func(x *mutationContract) { x.Count++ }, nil},
+			{"duplicate destination row", nil, bytes.ReplaceAll(original, []byte("distinct-absent"), []byte("source"))},
+			{"invalid typed JSON", nil, bytes.ReplaceAll(original, []byte(`"changed"`), []byte(`NaN`))},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				x := c
+				if tc.change != nil {
+					tc.change(&x)
+				}
+				changed := make(map[string][]byte, len(fixtureBytes)+1)
+				for path, contents := range fixtureBytes {
+					changed[path] = contents
+				}
+				if tc.input != nil {
+					changed[feature] = tc.input
+				}
+				if strings.Contains(tc.name, "duplicate selected") {
+					changed[feature+"-duplicate.feature"] = original
+				}
+				if _, err := compileSplitMutation(x, func(name string) ([]byte, error) { return changed[name], nil }); err == nil {
+					t.Fatal("invalid split mutation inventory accepted")
+				}
+			})
+		}
 	}
 	if len(cases) != 19 {
 		t.Fatal("case inventory")

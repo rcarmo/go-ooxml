@@ -124,9 +124,25 @@ func TestPinnedReferenceDistribution(t *testing.T) {
 	if pin.Schema == 1 {
 		areas = append(areas, "shared/v2/pack")
 	} else {
-		for _, path := range []string{"workflows/mutation-safety.feature", "contracts/mutation-safety.json"} {
+		const contractPath = "contracts/mutation-safety.json"
+		if !seen[contractPath] {
+			t.Fatal("unsealed contract artifact", contractPath)
+		}
+		contractBytes, err := os.ReadFile(testutil.ReferencePath(contractPath))
+		if err != nil {
+			t.Fatal(err)
+		}
+		contract, err := parseMutationContract(contractBytes)
+		if err != nil {
+			t.Fatal(err)
+		}
+		paths := contract.Features
+		if contract.Schema == 1 {
+			paths = []string{contract.Feature}
+		}
+		for _, path := range paths {
 			if !seen[path] {
-				t.Fatal("unsealed contract artifact", path)
+				t.Fatal("unsealed contract feature", path)
 			}
 		}
 		if _, err := os.Lstat(testutil.ReferencePath("shared")); !os.IsNotExist(err) {
