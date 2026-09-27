@@ -33,7 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 160](../reports/batches/160.md) records the v0.45 owned-chain canonical
+[Batch 161](../reports/batches/161.md) records the v0.46 shared evidence-ledger
+adoption. [Batch 160](../reports/batches/160.md) records the v0.45 owned-chain canonical
 binding. [Batch 159](../reports/batches/159.md) records the v0.44 generated-input
 retirement. [Batch 158](../reports/batches/158.md) records the v0.43 descriptor-integrity
 adapter. [Batch 157](../reports/batches/157.md) records the v0.42 negative-budget admission

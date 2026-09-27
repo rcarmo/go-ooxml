@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.45.0`, commit
-`3f0fbe2d11f8db6deda69779d5833086ee510799`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.46.0`, commit
+`7c0ec178930e76b12a9d6a6772156299f7ea42b4`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -36,13 +36,13 @@ The released pin uses schema2 with `commit`, `tag`, `tag_object`,
 `manifest_sha256`, `assets`, `facts`, `workflows` and `workflow_cases`.
 There is no separate pack seal. The root manifest seals
 `contracts/mutation-safety.json` and all five declared operation feature paths.
-The v0.45 contract uses an explicit feature list (contract schema 2), selecting
+The v0.46 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.45.0` contains 336 manifest assets, including 79 physical fixtures,
+Release `v0.46.0` contains 336 manifest assets, including 79 physical fixtures,
 plus 149 facts and 302 workflows/789 expanded cases.
 The canonical registry has 60 feature files. Another 143 files are staged
 consumer candidates, including 55 native Go features and 21 Go behaviour
@@ -182,10 +182,14 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The v0.45 default batch is recorded in
+The v0.46 evidence-only adoption is recorded in
+[`reports/batches/161.md`](../reports/batches/161.md). The Go runner keeps
+294 selected cases and 1004 passed steps; v0.46 marks its already published
+owned-chain binding implemented in the shared ledger without selecting another
+case. The previous v0.45 binding is recorded in
 [`reports/batches/160.md`](../reports/batches/160.md): 294 selected cases and
 1004 passed steps; 20 native planned and one external case were not run. The
-previous v0.44 default batch is recorded in
+v0.44 default batch is recorded in
 [`reports/batches/159.md`](../reports/batches/159.md): 294 selected cases and
 996 passed steps; 20 native planned and one external case were not run. The previous v0.43
 batch is recorded in [`reports/batches/158.md`](../reports/batches/158.md):
