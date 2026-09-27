@@ -34,7 +34,7 @@ The target layout is one shared schema2 manifest and grouped
 `fixtures/<format>/<scenarioGroup>/` inputs. Native labels resolve fixture IDs;
 physical files are deduplicated by SHA-256. `spec/reference-distribution.json`
 records the commit, annotated release tag and seals. This enhancement branch uses
-released `v0.27.0`, commit `ef635908663b650f96824d9045e252de3bc344ff`; default
+released `v0.28.0`, commit `33efabb91a144207b1514a3b2fb50cb0f3a90b6b`; default
 checks need no override. Legacy tips and prepared publication refs/mirror remain
 at their v0.9 checkpoint under the coordinator's enhanced-only adoption scope. Candidate checking is separate, as described in
 `../testing.md`.
