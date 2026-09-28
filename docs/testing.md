@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.49.0`, commit
-`8bf2883c2f9605e97f7c9c37d7b3a1e1dfc1201b`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.50.0`, commit
+`0da726931aa894270169c550efc510602c6038b5`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -36,14 +36,14 @@ The released pin uses schema2 with `commit`, `tag`, `tag_object`,
 `manifest_sha256`, `assets`, `facts`, `workflows` and `workflow_cases`.
 There is no separate pack seal. The root manifest seals
 `contracts/mutation-safety.json` and all five declared operation feature paths.
-The v0.49 contract uses an explicit feature list (contract schema 2), selecting
+The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.49.0` contains 338 manifest assets, including 79 physical fixtures,
-plus 149 facts and 302 workflows/789 expanded cases.
+Release `v0.50.0` contains 342 manifest assets, including 79 physical fixtures,
+plus 149 facts and 304 workflows/791 expanded cases.
 The canonical registry has 60 feature files. Another 143 files are staged
 consumer candidates, including 55 native Go features and 21 Go behaviour
 catalogue candidates. The Go files retain their source IDs and wording; moving
@@ -182,7 +182,10 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The v0.49 Python owned-chain evidence adoption is recorded in
+The v0.50 PPTX visibility inventory adoption is recorded in
+[`reports/batches/165.md`](../reports/batches/165.md). Two new cases remain
+planned for Go, with no Office-confirmed positive or new execution credit. The
+v0.49 Python owned-chain evidence adoption is recorded in
 [`reports/batches/164.md`](../reports/batches/164.md). It changes no Go binding,
 selector or execution credit. The v0.48 Go cross-sheet cache evidence adoption is recorded in
 [`reports/batches/163.md`](../reports/batches/163.md). It records the already
