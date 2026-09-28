@@ -20,7 +20,9 @@ counted from source alone. Fuzz seeds and benchmark declarations are inventories
 not exploratory-fuzz or performance results. Helpers and acceptance binding-only
 files remain visible, even when they declare no executable test entry point.
 
-The current inventory contains 155 native test files and 404 declarations.
+The frozen `ec71b6c` inventory contains 155 native test files and 404 declarations.
+The [current-source delta](current-source-delta.md) records 165 tracked test files
+and 410 declarations at Go `8e6fa28` without changing that snapshot.
 Reviewed family mappings cover 197 declarations in 207 candidate outcomes across
 formula, XML, archive, mutable package-model, delivery, graph, test-custody,
 utility, OOXML-model, WML-model, spreadsheet-cache, spreadsheet-targets and
@@ -29,7 +31,8 @@ presentation-parameters, presentation-api, presentation-measurement and
 spreadsheet-parameters and spreadsheet-measurement families; 207 declarations
 remain unreviewed. This denominator is the static
 inventory snapshot, not the number of executed leaf cases. Checkout guard tests
-are now included. The executable native Gherkin result is separate at 291 cases.
+are now included. At shared v0.57 the separate executable native Gherkin
+selection passed 294 cases and 1013 steps; it does not alter this snapshot.
 See [testing.md](../testing.md) for released/candidate reference setup and limits.
 The OOXML-model family reviews five tests and nine fuzz targets in seven non-WML
 packages. Field equality, marker-only output predicates and decode-error early
