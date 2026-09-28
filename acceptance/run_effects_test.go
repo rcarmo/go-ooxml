@@ -73,6 +73,46 @@ func runEffectsSteps(sc *godog.ScenarioContext) {
 		}
 		return checkRunFontName(run, font)
 	})
+	sc.Step(`^its colour is set to (FF0000|#FF0000|ff0000)$`, func(colour string) error {
+		if run == nil {
+			return fmt.Errorf("no Word run")
+		}
+		run.SetColor(colour)
+		return nil
+	})
+	sc.Step(`^its in-memory colour getter equals (FF0000|ff0000)$`, func(want string) error {
+		if run == nil {
+			return fmt.Errorf("no Word run")
+		}
+		return checkRunColor(run, want)
+	})
+	sc.Step(`^highlight is set to (yellow|cyan|darkBlue|lightGray|black)$`, func(colour string) error {
+		if run == nil {
+			return fmt.Errorf("no Word run")
+		}
+		run.SetHighlight(colour)
+		return nil
+	})
+	sc.Step(`^the Highlight getter equals (yellow|cyan|darkBlue|lightGray|black)$`, func(want string) error {
+		if run == nil {
+			return fmt.Errorf("no Word run")
+		}
+		return checkRunHighlight(run, want)
+	})
+}
+
+func checkRunColor(run document.Run, want string) error {
+	if got := run.Color(); got != want {
+		return fmt.Errorf("Color getter = %q, want %q", got, want)
+	}
+	return nil
+}
+
+func checkRunHighlight(run document.Run, want string) error {
+	if got := run.Highlight(); got != want {
+		return fmt.Errorf("Highlight getter = %q, want %q", got, want)
+	}
+	return nil
 }
 
 func checkRunUnderlineStyle(run document.Run, want string) error {
@@ -169,6 +209,45 @@ func TestRunFormattingGetterNegativeControls(t *testing.T) {
 			run.SetFontName(wrong)
 			if err := checkRunFontName(run, font); err == nil || !strings.Contains(err.Error(), "FontName") {
 				t.Fatalf("wrong FontName should fail %s: %v", font, err)
+			}
+		})
+	}
+}
+
+func TestRunColourHighlightNegativeControls(t *testing.T) {
+	for _, tc := range []struct{ input, want string }{{"FF0000", "FF0000"}, {"#FF0000", "FF0000"}, {"ff0000", "ff0000"}} {
+		t.Run("colour/"+tc.input, func(t *testing.T) {
+			doc, err := document.New()
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer doc.Close()
+			run := doc.AddParagraph().AddRun()
+			run.SetColor(tc.input)
+			if err := checkRunColor(run, tc.want); err != nil {
+				t.Fatalf("positive control: %v", err)
+			}
+			run.SetColor("00FF00")
+			if err := checkRunColor(run, tc.want); err == nil || !strings.Contains(err.Error(), "Color") {
+				t.Fatalf("wrong colour should fail %s: %v", tc.input, err)
+			}
+		})
+	}
+	for _, colour := range []string{"yellow", "cyan", "darkBlue", "lightGray", "black"} {
+		t.Run("highlight/"+colour, func(t *testing.T) {
+			doc, err := document.New()
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer doc.Close()
+			run := doc.AddParagraph().AddRun()
+			run.SetHighlight(colour)
+			if err := checkRunHighlight(run, colour); err != nil {
+				t.Fatalf("positive control: %v", err)
+			}
+			run.SetHighlight("")
+			if err := checkRunHighlight(run, colour); err == nil || !strings.Contains(err.Error(), "Highlight") {
+				t.Fatalf("cleared highlight should fail %s: %v", colour, err)
 			}
 		})
 	}

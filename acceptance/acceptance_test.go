@@ -89,6 +89,7 @@ func (w *world) contains(name string) error {
 
 func TestAcceptance(t *testing.T) {
 	w := &world{fixtures: map[string]string{}}
+	readbackDir := t.TempDir()
 	initializer := func(sc *godog.ScenarioContext) {
 		safetySteps(sc)
 		zip64Steps(sc)
@@ -130,6 +131,7 @@ func TestAcceptance(t *testing.T) {
 		cacheSteps(sc)
 		canonicalCacheSteps(sc)
 		runEffectsSteps(sc)
+		runFormattingReadbackSteps(sc, readbackDir)
 		imageReplaceSteps(sc)
 		remapSteps(sc)
 		commentMIMESteps(sc)
@@ -168,6 +170,9 @@ func TestAcceptance(t *testing.T) {
 		{"go-ooxml-run-effects", runEffectsFeaturePath(), runEffectsCaseID},
 		{"go-ooxml-run-underline-style", runEffectsFeaturePath(), runUnderlineCaseID},
 		{"go-ooxml-run-font-name", runEffectsFeaturePath(), runFontNameCaseID},
+		{"go-ooxml-run-color-getter", runEffectsFeaturePath(), runColorCaseID},
+		{"go-ooxml-run-highlight", runEffectsFeaturePath(), runHighlightCaseID},
+		{"go-ooxml-roundtrip-selected-formatting", runEffectsFeaturePath(), runRoundtripFormattingCaseID},
 	} {
 		var output bytes.Buffer
 		suite := godog.TestSuite{Name: selection.name, Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{selection.path}, Tags: selection.tags, Strict: true, Concurrency: 1}, ScenarioInitializer: initializer}
@@ -215,7 +220,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID {
+		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runRoundtripFormattingCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}

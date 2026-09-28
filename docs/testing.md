@@ -36,11 +36,13 @@ The released pin uses schema2 with `commit`, `tag`, `tag_object`,
 `manifest_sha256`, `assets`, `facts`, `workflows` and `workflow_cases`.
 There is no separate pack seal. The root manifest seals
 `contracts/mutation-safety.json` and all five declared operation feature paths.
-Go selects the six underline-style and six font-name in-memory getter rows in
-`workflows/docx/run-formatting.feature`, alongside the eight-effects getter case.
-These direct API assertions do not save or reopen a document and grant no Office
-rendering or effective-formatting claim. [Batch 179](../reports/batches/179.md)
-records the exact row identities, negative controls and execution gate.
+Go selects six underline-style, six font-name, three colour-getter and five
+highlight in-memory rows in `workflows/docx/run-formatting.feature`, alongside
+the eight-effects getter case. One selected case saves and reopens three authored
+runs before checking their named direct properties. [Batch 179](../reports/batches/179.md)
+and [Batch 181](../reports/batches/181.md) record the exact rows, negative
+controls and gates. These checks grant no Office rendering, general OOXML
+validity or effective-formatting claim.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.

@@ -47,7 +47,14 @@ const crossSheetCacheCaseID = "@id-xlsx-cross-sheet-cache-invalidation"
 const runEffectsCaseID = "@id-docx-go-run-effects-getters"
 const runUnderlineCaseID = "@id-docx-go-run-underline-style"
 const runFontNameCaseID = "@id-docx-go-run-font-name"
+const runColorCaseID = "@id-docx-go-run-color-getter"
+const runHighlightCaseID = "@id-docx-go-run-highlight"
+const runRoundtripFormattingCaseID = "@id-docx-go-roundtrip-selected-formatting"
 const retiredCacheCaseID = "@CACHE-001"
+
+func selectedRunFormattingID(id string) bool {
+	return id == runUnderlineCaseID || id == runFontNameCaseID || id == runColorCaseID || id == runHighlightCaseID || id == runRoundtripFormattingCaseID
+}
 
 func canonicalID(path string) string {
 	switch path {
@@ -146,23 +153,23 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			id := ""
 			profile := ""
 			for _, tag := range s.Tags {
-				if nativeIDPattern.MatchString(tag.Name) || (canonical && (tag.Name == canonicalID(path) || (path == runEffectsFeaturePath() && (tag.Name == runUnderlineCaseID || tag.Name == runFontNameCaseID)))) {
+				if nativeIDPattern.MatchString(tag.Name) || (canonical && (tag.Name == canonicalID(path) || (path == runEffectsFeaturePath() && selectedRunFormattingID(tag.Name)))) {
 					if id != "" {
 						return fmt.Errorf("%s: multiple IDs", path)
 					}
 					id = tag.Name
 				} else if canonical && path == overlapFeaturePath() && tag.Name == "@profile-physical-member-extents" && profile == "" {
 					profile = tag.Name
-				} else if canonical && path == runEffectsFeaturePath() && (tag.Name == "@profile-in-memory-effects-api" || tag.Name == "@profile-document-value-api") && profile == "" {
+				} else if canonical && path == runEffectsFeaturePath() && (tag.Name == "@profile-in-memory-effects-api" || tag.Name == "@profile-document-value-api" || tag.Name == "@profile-selected-formatting-readback") && profile == "" {
 					profile = tag.Name
-				} else if !canonical || id == canonicalID(path) || (path == runEffectsFeaturePath() && (id == runUnderlineCaseID || id == runFontNameCaseID)) {
+				} else if !canonical || id == canonicalID(path) || (path == runEffectsFeaturePath() && selectedRunFormattingID(id)) {
 					return fmt.Errorf("%s: unsupported scenario tag %s", path, tag.Name)
 				}
 			}
-			if canonical && id != canonicalID(path) && !(path == runEffectsFeaturePath() && (id == runUnderlineCaseID || id == runFontNameCaseID)) {
+			if canonical && id != canonicalID(path) && !(path == runEffectsFeaturePath() && selectedRunFormattingID(id)) {
 				continue // Other shared workflows remain planned for Go.
 			}
-			if id == "" || (canonical && path == overlapFeaturePath() && profile != "@profile-physical-member-extents") || (canonical && path == runEffectsFeaturePath() && ((id == runEffectsCaseID && profile != "@profile-in-memory-effects-api") || (id != runEffectsCaseID && profile != "@profile-document-value-api"))) {
+			if id == "" || (canonical && path == overlapFeaturePath() && profile != "@profile-physical-member-extents") || (canonical && path == runEffectsFeaturePath() && ((id == runEffectsCaseID && profile != "@profile-in-memory-effects-api") || ((id == runRoundtripFormattingCaseID && profile != "@profile-selected-formatting-readback") || (id != runEffectsCaseID && id != runRoundtripFormattingCaseID && profile != "@profile-document-value-api")))) {
 				return fmt.Errorf("%s: scenario missing or mismatched ID/profile", path)
 			}
 			if !canonical && id == retiredChainCaseID {
@@ -202,15 +209,17 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 	if canonical && seen[canonicalID(path)] == "" {
 		return fmt.Errorf("%s: selected canonical case missing", path)
 	}
-	if canonical && path == runEffectsFeaturePath() && (seen[runUnderlineCaseID] == "" || seen[runFontNameCaseID] == "") {
+	if canonical && path == runEffectsFeaturePath() && (seen[runUnderlineCaseID] == "" || seen[runFontNameCaseID] == "" || seen[runColorCaseID] == "" || seen[runHighlightCaseID] == "" || seen[runRoundtripFormattingCaseID] == "") {
 		return fmt.Errorf("%s: selected run-formatting outline missing", path)
 	}
 	canonicalCases := 0
 	underlineRows := map[string]bool{}
 	fontNameRows := map[string]bool{}
+	colorRows := map[string]bool{}
+	highlightRows := map[string]bool{}
 	budgetRows := map[string]bool{}
 	for _, p := range gherkin.Pickles(*doc, path, next) {
-		if canonical && (len(p.AstNodeIds) == 0 || (ids[p.AstNodeIds[0]] != canonicalID(path) && !(path == runEffectsFeaturePath() && (ids[p.AstNodeIds[0]] == runUnderlineCaseID || ids[p.AstNodeIds[0]] == runFontNameCaseID)))) {
+		if canonical && (len(p.AstNodeIds) == 0 || (ids[p.AstNodeIds[0]] != canonicalID(path) && !(path == runEffectsFeaturePath() && selectedRunFormattingID(ids[p.AstNodeIds[0]])))) {
 			continue
 		}
 		line := lines[p.AstNodeIds[len(p.AstNodeIds)-1]]
@@ -243,6 +252,33 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 				}
 				fontNameRows[font] = true
 			}
+			if id == runColorCaseID {
+				variant := strings.TrimSuffix(strings.TrimPrefix(p.Name, "A "), " run colour is normalised by its getter")
+				want := map[string][2]string{"red": {"FF0000", "FF0000"}, "hash-red": {"#FF0000", "FF0000"}, "lowercase": {"ff0000", "ff0000"}}
+				values, ok := want[variant]
+				if !ok || colorRows[variant] || p.Name != "A "+variant+" run colour is normalised by its getter" || len(p.Steps) != 3 || p.Steps[0].Text != "a new Word run" || p.Steps[1].Text != "its colour is set to "+values[0] || p.Steps[2].Text != "its in-memory colour getter equals "+values[1] {
+					return fmt.Errorf("%s: unexpected colour row %q", path, p.Name)
+				}
+				colorRows[variant] = true
+			}
+			if id == runHighlightCaseID {
+				colour := strings.TrimSuffix(strings.TrimPrefix(p.Name, "A run retains highlight name "), " in memory")
+				if p.Name != "A run retains highlight name "+colour+" in memory" || !slices.Contains([]string{"yellow", "cyan", "darkBlue", "lightGray", "black"}, colour) || highlightRows[colour] || len(p.Steps) != 3 || p.Steps[0].Text != "a new Word run" || p.Steps[1].Text != "highlight is set to "+colour || p.Steps[2].Text != "the Highlight getter equals "+colour {
+					return fmt.Errorf("%s: unexpected highlight row %q", path, p.Name)
+				}
+				highlightRows[colour] = true
+			}
+			if id == runRoundtripFormattingCaseID {
+				steps := []string{"a new Word paragraph with three runs Bold-space, Italic-space and Colored", "the first run is bold, the second italic, and the third has colour FF0000, font size 14 and font Arial", "the document is saved and reopened", "at least one paragraph and three runs are readable", "the first run is bold and the second italic", "the third run reports colour FF0000, font size 14 and font Arial"}
+				if p.Name != "Selected direct run formatting survives save and reopen" || len(p.Steps) != len(steps) {
+					return fmt.Errorf("%s: unexpected selected formatting readback %q", path, p.Name)
+				}
+				for i, step := range steps {
+					if p.Steps[i].Text != step {
+						return fmt.Errorf("%s: unexpected selected formatting step %d", path, i+1)
+					}
+				}
+			}
 			if id == negativeBudgetCaseID {
 				if (p.Name != "A negative source bytes budget refuses before package intake" && p.Name != "A negative entry count budget refuses before package intake") || budgetRows[p.Name] || len(p.Steps) != 6 {
 					return fmt.Errorf("%s: unexpected negative-budget case %q", path, p.Name)
@@ -264,7 +300,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			expected[key] = expectedCase{key, p.Name, len(p.Steps)}
 		}
 	}
-	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 13 || len(underlineRows) != 6 || len(fontNameRows) != 6))) {
+	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 22 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
 		return fmt.Errorf("%s: selected canonical case count drift: %d", path, canonicalCases)
 	}
 	return nil
