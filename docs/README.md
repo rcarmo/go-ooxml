@@ -33,6 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 171](../reports/batches/171.md) records the v0.54 decoder evidence
+ledger adoption. [Batch 170](../reports/batches/170.md) records the Go decoder fix.
 [Batch 169](../reports/batches/169.md) records the v0.53 visibility evidence
 ledger adoption. [Batch 168](../reports/batches/168.md) records the native Go S/P structural
 tests. [Batch 167](../reports/batches/167.md) records the v0.52 CI checkout custody
