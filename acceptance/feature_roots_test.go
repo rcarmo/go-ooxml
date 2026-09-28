@@ -33,6 +33,11 @@ func ownedChainFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xlsx", "calculation-chain-lifecycle.feature")
 }
 
+// This exact shared case checks only the in-memory Go run-effect getters.
+func runEffectsFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "run-formatting.feature")
+}
+
 // The cross-sheet cache case replaces native CACHE-001 one-for-one.
 func crossSheetCacheFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xlsx", "formula-cache.feature")

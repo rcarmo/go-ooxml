@@ -26,7 +26,7 @@ func inventoryCases() (map[caseID]expectedCase, []map[string]any, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	for _, path := range []string{overlapFeaturePath(), negativeBudgetFeaturePath(), descriptorIntegrityFeaturePath(), ownedChainFeaturePath(), crossSheetCacheFeaturePath()} {
+	for _, path := range []string{overlapFeaturePath(), negativeBudgetFeaturePath(), descriptorIntegrityFeaturePath(), ownedChainFeaturePath(), crossSheetCacheFeaturePath(), runEffectsFeaturePath()} {
 		if err = inventoryFeature(path, nil, nil, expected, &inventory, seen, next, true); err != nil {
 			return nil, nil, err
 		}
@@ -42,6 +42,7 @@ const descriptorCollisionCaseID = "@id-zip-unsigned-descriptor-signature-collisi
 const ownedChainCaseID = "@id-xlsx-owned-calculation-chain-invalidation"
 const retiredChainCaseID = "@CHAIN-001"
 const crossSheetCacheCaseID = "@id-xlsx-cross-sheet-cache-invalidation"
+const runEffectsCaseID = "@id-docx-go-run-effects-getters"
 const retiredCacheCaseID = "@CACHE-001"
 
 func canonicalID(path string) string {
@@ -56,6 +57,8 @@ func canonicalID(path string) string {
 		return ownedChainCaseID
 	case crossSheetCacheFeaturePath():
 		return crossSheetCacheCaseID
+	case runEffectsFeaturePath():
+		return runEffectsCaseID
 	default:
 		return ""
 	}
@@ -114,7 +117,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 	collect = func(children []*messages.FeatureChild) error {
 		for _, c := range children {
 			if c.Rule != nil {
-				if !canonical || path != crossSheetCacheFeaturePath() {
+				if !canonical || (path != crossSheetCacheFeaturePath() && path != runEffectsFeaturePath()) {
 					return fmt.Errorf("%s: Rules require explicit inventory support", path)
 				}
 				for _, child := range c.Rule.Children {
@@ -146,6 +149,8 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 					id = tag.Name
 				} else if canonical && path == overlapFeaturePath() && tag.Name == "@profile-physical-member-extents" && !profile {
 					profile = true
+				} else if canonical && path == runEffectsFeaturePath() && tag.Name == "@profile-in-memory-effects-api" && !profile {
+					profile = true
 				} else if !canonical || id == canonicalID(path) {
 					return fmt.Errorf("%s: unsupported scenario tag %s", path, tag.Name)
 				}
@@ -153,7 +158,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			if canonical && id != canonicalID(path) {
 				continue // Other shared workflows remain planned for Go.
 			}
-			if id == "" || (canonical && path == overlapFeaturePath() && !profile) {
+			if id == "" || (canonical && (path == overlapFeaturePath() || path == runEffectsFeaturePath()) && !profile) {
 				return fmt.Errorf("%s: scenario missing ID/profile", path)
 			}
 			if !canonical && id == retiredChainCaseID {
@@ -212,6 +217,9 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			if id == crossSheetCacheCaseID && (p.Name != "An input edit invalidates a cached answer on another sheet" || len(p.Steps) != 14) {
 				return fmt.Errorf("%s: unexpected cross-sheet cache case %q", path, p.Name)
 			}
+			if id == runEffectsCaseID && (p.Name != "Eight direct run effects read true after setting them" || len(p.Steps) != 3) {
+				return fmt.Errorf("%s: unexpected run-effects case %q", path, p.Name)
+			}
 			if id == negativeBudgetCaseID {
 				if (p.Name != "A negative source bytes budget refuses before package intake" && p.Name != "A negative entry count budget refuses before package intake") || budgetRows[p.Name] || len(p.Steps) != 6 {
 					return fmt.Errorf("%s: unexpected negative-budget case %q", path, p.Name)
@@ -233,7 +241,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			expected[key] = expectedCase{key, p.Name, len(p.Steps)}
 		}
 	}
-	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1)) {
+	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == runEffectsCaseID && canonicalCases != 1)) {
 		return fmt.Errorf("%s: selected canonical case count drift: %d", path, canonicalCases)
 	}
 	return nil

@@ -101,8 +101,14 @@ selected. The saved synthetic workbook readback checks both dependent caches,
 formula text, the unchanged unrelated cache, recalculation flags, removed
 nonstandard chain part/edge/override, graph resolution and unrelated payloads.
 This does not select broader cache-completeness or external calculation outcomes.
-All other shared workflows remain planned for Go. Acceptance has 294 selected cases,
-20 planned native cases and one external native case. Shared
+The in-memory Go run-effects case `@id-docx-go-run-effects-getters` also executes
+its three exact steps. It sets DoubleStrike, Caps, SmallCaps, Outline, Shadow,
+Emboss, Imprint and Vanish on one new run and checks all eight direct getters.
+Eight per-getter negative controls fail the assertion when one flag is cleared.
+Simultaneous conflicting effects are a Go API observation; saved WordprocessingML
+validity and rendering are untested. Other shared run-formatting workflows remain
+planned for Go. Acceptance has 295 selected cases, 20 planned native cases and
+one external native case. Shared
 ECMA specifications, extracts and derived notes are indexed under
 [`specs/ecma-376/`](../references/fixtures-ooxml/specs/ecma-376/README.md).
 The full PDFs are the specification sources; five earlier ECMA documents and
@@ -182,6 +188,9 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
+The v0.59 Go run-effects binding is recorded in
+[`reports/batches/177.md`](../reports/batches/177.md). It adds one exact
+three-step in-memory case; it does not certify saved OOXML or other consumers.
 The v0.50 PPTX visibility inventory adoption is recorded in
 [`reports/batches/165.md`](../reports/batches/165.md). Two new cases remain
 planned for Go, with no Office-confirmed positive or new execution credit. The
