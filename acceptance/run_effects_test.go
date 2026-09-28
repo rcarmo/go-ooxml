@@ -47,6 +47,49 @@ func runEffectsSteps(sc *godog.ScenarioContext) {
 		}
 		return checkAllRunEffects(run)
 	})
+	sc.Step(`^its underline style is set to (single|double|thick|dotted|dash|wave)$`, func(style string) error {
+		if run == nil {
+			return fmt.Errorf("no Word run")
+		}
+		run.SetUnderlineStyle(style)
+		return nil
+	})
+	sc.Step(`^Underline is true and UnderlineStyle equals (single|double|thick|dotted|dash|wave)$`, func(style string) error {
+		if run == nil {
+			return fmt.Errorf("no Word run")
+		}
+		return checkRunUnderlineStyle(run, style)
+	})
+	sc.Step(`^its font name is set to (Arial|Times New Roman|Calibri|Courier New|Georgia|Verdana)$`, func(font string) error {
+		if run == nil {
+			return fmt.Errorf("no Word run")
+		}
+		run.SetFontName(font)
+		return nil
+	})
+	sc.Step(`^its font-name getter equals (Arial|Times New Roman|Calibri|Courier New|Georgia|Verdana)$`, func(font string) error {
+		if run == nil {
+			return fmt.Errorf("no Word run")
+		}
+		return checkRunFontName(run, font)
+	})
+}
+
+func checkRunUnderlineStyle(run document.Run, want string) error {
+	if !run.Underline() {
+		return fmt.Errorf("Underline getter is false for %s", want)
+	}
+	if got := run.UnderlineStyle(); got != want {
+		return fmt.Errorf("UnderlineStyle getter = %q, want %q", got, want)
+	}
+	return nil
+}
+
+func checkRunFontName(run document.Run, want string) error {
+	if got := run.FontName(); got != want {
+		return fmt.Errorf("FontName getter = %q, want %q", got, want)
+	}
+	return nil
 }
 
 func setAllRunEffects(run document.Run) {
@@ -79,6 +122,56 @@ func checkAllRunEffects(run document.Run) error {
 		}
 	}
 	return nil
+}
+
+func TestRunFormattingGetterNegativeControls(t *testing.T) {
+	for _, style := range []string{"single", "double", "thick", "dotted", "dash", "wave"} {
+		t.Run("underline/"+style, func(t *testing.T) {
+			doc, err := document.New()
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer doc.Close()
+			run := doc.AddParagraph().AddRun()
+			run.SetUnderlineStyle(style)
+			if err := checkRunUnderlineStyle(run, style); err != nil {
+				t.Fatalf("positive control: %v", err)
+			}
+			run.SetUnderlineStyle("none")
+			if err := checkRunUnderlineStyle(run, style); err == nil || !strings.Contains(err.Error(), "Underline") {
+				t.Fatalf("cleared Underline should fail %s: %v", style, err)
+			}
+			run.SetUnderlineStyle("single")
+			if style == "single" {
+				run.SetUnderlineStyle("double")
+			}
+			if err := checkRunUnderlineStyle(run, style); err == nil || !strings.Contains(err.Error(), "UnderlineStyle") {
+				t.Fatalf("wrong UnderlineStyle should fail %s: %v", style, err)
+			}
+		})
+	}
+	for _, font := range []string{"Arial", "Times New Roman", "Calibri", "Courier New", "Georgia", "Verdana"} {
+		t.Run("font/"+font, func(t *testing.T) {
+			doc, err := document.New()
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer doc.Close()
+			run := doc.AddParagraph().AddRun()
+			run.SetFontName(font)
+			if err := checkRunFontName(run, font); err != nil {
+				t.Fatalf("positive control: %v", err)
+			}
+			wrong := "Arial"
+			if font == wrong {
+				wrong = "Verdana"
+			}
+			run.SetFontName(wrong)
+			if err := checkRunFontName(run, font); err == nil || !strings.Contains(err.Error(), "FontName") {
+				t.Fatalf("wrong FontName should fail %s: %v", font, err)
+			}
+		})
+	}
 }
 
 func TestRunEffectsGetterNegativeControls(t *testing.T) {

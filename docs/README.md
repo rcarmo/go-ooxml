@@ -33,7 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 178](../reports/batches/178.md) records the v0.60 Go run-effect getter
+[Batch 179](../reports/batches/179.md) records the direct run underline/font
+getter bindings. [Batch 178](../reports/batches/178.md) records the v0.60 Go run-effect getter
 ledger adoption. [Batch 177](../reports/batches/177.md) records the Go binding.
 [Batch 176](../reports/batches/176.md) records the v0.59 Bun XLSX-style
 readback evidence adoption. [Batch 175](../reports/batches/175.md) records the v0.58 Bun ZIP-overlap
