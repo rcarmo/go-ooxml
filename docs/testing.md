@@ -55,9 +55,12 @@ adoption for that getter-only case. [Batch 188](../reports/batches/188.md) selec
 eight exact dimension rows and the cell-access, cell-text and row-count cases
 from the same table feature. These assert in-memory getters, five tested
 out-of-range cell coordinates, and an error on deletion at index ten. [Batch 189](../reports/batches/189.md)
-records v0.66 shared Go and Bun evidence for all four cases. These in-memory
-checks do not establish physical merge topology, safe grid authoring,
-save/reopen, Office rendering or general OOXML validity.
+records v0.66 shared Go and Bun evidence for all four cases. [Batch 190](../reports/batches/190.md)
+adds one new-document empty-body case and one 3×3 table-text save/reopen case;
+those Go shared-ledger entries remain planned pending shared-owner review. The
+in-memory table-value checks do not establish physical merge topology or safe
+grid authoring. The selected table readback checks nine text getters, not Office
+rendering or general OOXML validity.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.

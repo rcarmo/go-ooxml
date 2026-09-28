@@ -38,7 +38,12 @@ func runEffectsFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "run-formatting.feature")
 }
 
-// Select only the direct in-memory cell merge getter case, not table editing workflows.
+// Select only the new-document body/count case, not sibling authoring workflows.
+func creationFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "creation.feature")
+}
+
+// Select named table getter/readback cases, not table editing workflows.
 func tableMergeFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "tables.feature")
 }

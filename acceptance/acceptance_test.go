@@ -91,6 +91,7 @@ func TestAcceptance(t *testing.T) {
 	w := &world{fixtures: map[string]string{}}
 	readbackDir := t.TempDir()
 	initializer := func(sc *godog.ScenarioContext) {
+		tableReadback := &tableTextReadbackState{}
 		safetySteps(sc)
 		zip64Steps(sc)
 		overlapSteps(sc)
@@ -133,8 +134,10 @@ func TestAcceptance(t *testing.T) {
 		runEffectsSteps(sc)
 		runVerticalAlignSteps(sc)
 		tableMergeGetterSteps(sc)
-		tableValueSteps(sc)
-		runFormattingReadbackSteps(sc, readbackDir)
+		tableValueSteps(sc, tableReadback)
+		documentCreationSteps(sc, tableReadback)
+		tableTextReadbackSteps(sc, tableReadback)
+		runFormattingReadbackSteps(sc, readbackDir, tableReadback)
 		imageReplaceSteps(sc)
 		remapSteps(sc)
 		commentMIMESteps(sc)
@@ -182,6 +185,8 @@ func TestAcceptance(t *testing.T) {
 		{"go-ooxml-table-cell-access", tableMergeFeaturePath(), tableCellAccessCaseID},
 		{"go-ooxml-table-cell-text", tableMergeFeaturePath(), tableCellTextCaseID},
 		{"go-ooxml-table-row-counts", tableMergeFeaturePath(), tableRowCountsCaseID},
+		{"go-ooxml-new-empty-body", creationFeaturePath(), newEmptyBodyCaseID},
+		{"go-ooxml-roundtrip-table-text", tableMergeFeaturePath(), roundtripTableTextCaseID},
 	} {
 		var output bytes.Buffer
 		suite := godog.TestSuite{Name: selection.name, Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{selection.path}, Tags: selection.tags, Strict: true, Concurrency: 1}, ScenarioInitializer: initializer}
@@ -229,7 +234,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID {
+		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}

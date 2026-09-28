@@ -14,7 +14,7 @@ var tableDimensions = [][2]int{{1, 1}, {1, 5}, {5, 1}, {2, 2}, {3, 3}, {5, 5}, {
 var cellTexts = [2][2]string{{"A1", "B1"}, {"A2", "B2"}}
 var boundaryCells = [][2]int{{-1, 0}, {0, -1}, {3, 0}, {0, 3}, {3, 3}}
 
-func tableValueSteps(sc *godog.ScenarioContext) {
+func tableValueSteps(sc *godog.ScenarioContext, tableReadback *tableTextReadbackState) {
 	var doc document.Document
 	var table document.Table
 	var rowCounts []int
@@ -47,7 +47,13 @@ func tableValueSteps(sc *godog.ScenarioContext) {
 		}
 		return nil
 	}
-	sc.Step(`^a new Word document$`, newDocument)
+	sc.Step(`^a new Word document$`, func() error {
+		if err := newDocument(); err != nil {
+			return err
+		}
+		tableReadback.doc = doc
+		return nil
+	})
 	sc.Step(`^a table with (\d+) rows and (\d+) columns is added$`, func(rows, cols int) error {
 		return newTable(rows, cols)
 	})
@@ -56,7 +62,13 @@ func tableValueSteps(sc *godog.ScenarioContext) {
 	})
 	sc.Step(`^a new Word table with (three|two) rows and (three|two) columns$`, func(rows, cols string) error {
 		values := map[string]int{"two": 2, "three": 3}
-		return newTable(values[rows], values[cols])
+		if err := newTable(values[rows], values[cols]); err != nil {
+			return err
+		}
+		if rows == "three" && cols == "three" {
+			tableReadback.doc, tableReadback.table = doc, table
+		}
+		return nil
 	})
 	sc.Step(`^its Cell getter is called for all nine coordinates from zero through two$`, func() error {
 		if table == nil {

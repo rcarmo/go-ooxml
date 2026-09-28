@@ -12,7 +12,7 @@ import (
 
 // Only the three authored runs and named direct properties are checked after
 // reopening. This does not assert Office rendering or effective formatting.
-func runFormattingReadbackSteps(sc *godog.ScenarioContext, outputDir string) {
+func runFormattingReadbackSteps(sc *godog.ScenarioContext, outputDir string, tableReadback *tableTextReadbackState) {
 	var doc document.Document
 	var runs []document.Run
 	var savedPath string
@@ -52,6 +52,9 @@ func runFormattingReadbackSteps(sc *godog.ScenarioContext, outputDir string) {
 		return nil
 	})
 	sc.Step(`^the document is saved and reopened$`, func() error {
+		if tableReadback.doc != nil {
+			return tableReadback.saveAndReopen(outputDir)
+		}
 		if doc == nil {
 			return fmt.Errorf("no Word document")
 		}
