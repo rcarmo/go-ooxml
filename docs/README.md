@@ -33,8 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 165](../reports/batches/165.md) records the v0.50 PPTX visibility
-inventory adoption. [Batch 164](../reports/batches/164.md) records the v0.49 Python owned-chain
+[Batch 166](../reports/batches/166.md) records the v0.51 PPTX visibility
+semantic correction. [Batch 165](../reports/batches/165.md) records the v0.50 inventory adoption. [Batch 164](../reports/batches/164.md) records the v0.49 Python owned-chain
 evidence-ledger adoption. [Batch 163](../reports/batches/163.md) records the v0.48 Go cross-sheet cache
 evidence-ledger adoption. [Batch 162](../reports/batches/162.md) records the v0.47 Python XLSX dependency
 mapping-only adoption. [Batch 161](../reports/batches/161.md) records the v0.46 shared evidence-ledger
