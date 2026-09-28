@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.60.0`, commit
-`7502c11d5fbf98af56b9360031609bd96f20cce8`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.61.0`, commit
+`d983be75704bc5a531cddf97d4b2405ee82b9c08`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
