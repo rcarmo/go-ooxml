@@ -61,7 +61,9 @@ adds one new-document empty-body case and one 3×3 table-text save/reopen case.
 for both cases; Python remains planned. The in-memory table-value checks do not
 establish physical merge topology or safe grid authoring. The selected table
 readback checks nine text getters, not Office rendering or general OOXML
-validity.
+validity. [Batch 192](../reports/batches/192.md) binds the in-memory core
+Title/Creator/Subject getters and first-section TitlePage/background getters;
+other supplied core fields are setup, without saved or broader setter credit.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.

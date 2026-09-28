@@ -43,6 +43,16 @@ func creationFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "creation.feature")
 }
 
+// Select only the named in-memory core-property getter case.
+func corePropertiesFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "properties.feature")
+}
+
+// Select only the named first-section and background getter case.
+func pageLayoutFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "page-layout.feature")
+}
+
 // Select named table getter/readback cases, not table editing workflows.
 func tableMergeFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "tables.feature")

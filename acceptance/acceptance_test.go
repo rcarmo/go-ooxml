@@ -136,6 +136,7 @@ func TestAcceptance(t *testing.T) {
 		tableMergeGetterSteps(sc)
 		tableValueSteps(sc, tableReadback)
 		documentCreationSteps(sc, tableReadback)
+		documentPropertyGetterSteps(sc, tableReadback)
 		tableTextReadbackSteps(sc, tableReadback)
 		runFormattingReadbackSteps(sc, readbackDir, tableReadback)
 		imageReplaceSteps(sc)
@@ -187,6 +188,8 @@ func TestAcceptance(t *testing.T) {
 		{"go-ooxml-table-row-counts", tableMergeFeaturePath(), tableRowCountsCaseID},
 		{"go-ooxml-new-empty-body", creationFeaturePath(), newEmptyBodyCaseID},
 		{"go-ooxml-roundtrip-table-text", tableMergeFeaturePath(), roundtripTableTextCaseID},
+		{"go-ooxml-core-properties-getters", corePropertiesFeaturePath(), corePropertiesCaseID},
+		{"go-ooxml-section-title-background", pageLayoutFeaturePath(), sectionTitleBackgroundCaseID},
 	} {
 		var output bytes.Buffer
 		suite := godog.TestSuite{Name: selection.name, Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{selection.path}, Tags: selection.tags, Strict: true, Concurrency: 1}, ScenarioInitializer: initializer}
@@ -234,7 +237,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID {
+		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID || tag == corePropertiesCaseID || tag == sectionTitleBackgroundCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}
