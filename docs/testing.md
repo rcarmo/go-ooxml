@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.61.0`, commit
-`d983be75704bc5a531cddf97d4b2405ee82b9c08`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.62.0`, commit
+`af93651c5fca2d7e2d3eff76dd9b8ad10b90c71c`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -41,8 +41,11 @@ highlight in-memory rows in `workflows/docx/run-formatting.feature`, alongside
 the eight-effects getter case. One selected case saves and reopens three authored
 runs before checking their named direct properties. [Batch 179](../reports/batches/179.md)
 and [Batch 181](../reports/batches/181.md) record the exact rows, negative
-controls and gates. These checks grant no Office rendering, general OOXML
-validity or effective-formatting claim.
+controls and gates. [Batch 182](../reports/batches/182.md) records the v0.62
+pin adoption. The new shared ledger evidence is Bun-only; Go's nine selected
+colour, highlight and saved-readback cases still await shared Go execution
+credit. These checks grant no Office rendering, general OOXML validity or
+effective-formatting claim.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.

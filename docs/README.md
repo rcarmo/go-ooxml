@@ -33,8 +33,9 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 181](../reports/batches/181.md) records the colour/highlight and selected
-save-reopen run bindings. [Batch 180](../reports/batches/180.md) records the v0.61 Bun/Go run-getter
+[Batch 182](../reports/batches/182.md) records the v0.62 Bun-only run-appearance
+and readback evidence pin; it adds no Go credit. [Batch 181](../reports/batches/181.md)
+records the colour/highlight and selected save-reopen run bindings. [Batch 180](../reports/batches/180.md) records the v0.61 Bun/Go run-getter
 ledger adoption. [Batch 179](../reports/batches/179.md) records the direct run underline/font
 getter bindings. [Batch 178](../reports/batches/178.md) records the v0.60 Go run-effect getter
 ledger adoption. [Batch 177](../reports/batches/177.md) records the Go binding.
