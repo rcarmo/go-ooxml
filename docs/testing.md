@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.64.0`, commit
-`f8c2736194fd70594b33e2091334a3ebbceea9f6`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.65.0`, commit
+`0f0b56c6744c5ef7e6c5c5a8fd750da3f6227fc1`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -50,9 +50,11 @@ records the v0.64 shared Go evidence for the two-run case and Bun-only table/cel
 getter evidence. [Batch 186](../reports/batches/186.md) binds just the four-step
 `@id-docx-go-table-merge-properties` case: it reads GridSpan 3 at cell (0,0)
 and VerticalMerge restart/continue at first-column rows one/two in memory.
-Three other table/cell getter cases remain unselected for Go. These direct
-getters do not establish physical merge topology, safe grid authoring,
-save/reopen, Office rendering or general OOXML validity.
+[Batch 187](../reports/batches/187.md) records the v0.65 shared Go evidence
+adoption for that getter-only case. Three other table/cell getter cases remain
+unselected for Go. These direct getters do not establish physical merge
+topology, safe grid authoring, save/reopen, Office rendering or general OOXML
+validity.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
