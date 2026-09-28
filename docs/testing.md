@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.63.0`, commit
-`11f21b29c3c4c93db03fd04a47eb1e92c21e2456`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.64.0`, commit
+`f8c2736194fd70594b33e2091334a3ebbceea9f6`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -45,8 +45,9 @@ and [Batch 181](../reports/batches/181.md) record the earlier rows, negative
 controls and gates. [Batch 184](../reports/batches/184.md) records the two-run
 vertical-align binding. [Batch 182](../reports/batches/182.md) records the v0.62
 pin adoption; [Batch 183](../reports/batches/183.md) records the v0.63 shared
-Go evidence adoption for the nine earlier cases. The new two-run Go case still
-has planned status in the shared ledger pending shared-owner review. These checks
+Go evidence adoption for the nine earlier cases. [Batch 185](../reports/batches/185.md)
+records the v0.64 shared Go evidence for the two-run case and Bun-only table/cell
+getter evidence. The four table/cell cases remain planned for Go. These checks
 grant no Office rendering, general OOXML validity or effective-formatting claim.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
