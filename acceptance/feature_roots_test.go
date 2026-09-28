@@ -33,6 +33,11 @@ func ownedChainFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xlsx", "calculation-chain-lifecycle.feature")
 }
 
+// The cross-sheet cache case replaces native CACHE-001 one-for-one.
+func crossSheetCacheFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xlsx", "formula-cache.feature")
+}
+
 func goCandidateRoot() string {
 	return filepath.Join(testutil.ReferenceRoot(), "staging", "go", "behaviors")
 }

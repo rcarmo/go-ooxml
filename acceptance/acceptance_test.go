@@ -128,6 +128,7 @@ func TestAcceptance(t *testing.T) {
 		officeLinkSteps(sc)
 		formulaSteps(sc)
 		cacheSteps(sc)
+		canonicalCacheSteps(sc)
 		imageReplaceSteps(sc)
 		remapSteps(sc)
 		commentMIMESteps(sc)
@@ -157,11 +158,12 @@ func TestAcceptance(t *testing.T) {
 	for _, selection := range []struct {
 		name, path, tags string
 	}{
-		{"go-ooxml-native", goFeatureRoot(), "@implemented && @go && ~@CHAIN-001"},
+		{"go-ooxml-native", goFeatureRoot(), "@implemented && @go && ~@CHAIN-001 && ~@CACHE-001"},
 		{"go-ooxml-overlap", overlapFeaturePath(), overlapCaseID},
 		{"go-ooxml-negative-budget", negativeBudgetFeaturePath(), negativeBudgetCaseID},
 		{"go-ooxml-descriptor-collision", descriptorIntegrityFeaturePath(), descriptorCollisionCaseID},
 		{"go-ooxml-owned-chain", ownedChainFeaturePath(), ownedChainCaseID},
+		{"go-ooxml-cross-sheet-cache", crossSheetCacheFeaturePath(), crossSheetCacheCaseID},
 	} {
 		var output bytes.Buffer
 		suite := godog.TestSuite{Name: selection.name, Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{selection.path}, Tags: selection.tags, Strict: true, Concurrency: 1}, ScenarioInitializer: initializer}
@@ -190,7 +192,7 @@ func TestAcceptance(t *testing.T) {
 		t.Fatal(err)
 	}
 	writeJSON(t, filepath.Join(dir, "inventory.json"), inventory)
-	writeJSON(t, filepath.Join(dir, "environment.json"), map[string]any{"go": runtime.Version(), "fixture_sha256": w.fixtures, "scope": "implemented native except CHAIN-001, replaced one-for-one by the exact canonical owned-chain case, plus overlap, negative-budget and descriptor-collision cases", "external_executed": false})
+	writeJSON(t, filepath.Join(dir, "environment.json"), map[string]any{"go": runtime.Version(), "fixture_sha256": w.fixtures, "scope": "implemented native except CHAIN-001 and CACHE-001, each replaced one-for-one by its exact canonical case, plus overlap, negative-budget and descriptor-collision cases", "external_executed": false})
 	if err := reconcile(expected, data); err != nil {
 		t.Error(err)
 	}
@@ -209,7 +211,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID {
+		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}
