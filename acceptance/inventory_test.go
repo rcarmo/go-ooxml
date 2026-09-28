@@ -52,10 +52,22 @@ const runHighlightCaseID = "@id-docx-go-run-highlight"
 const runVerticalAlignCaseID = "@id-docx-go-run-vertical-align"
 const runRoundtripFormattingCaseID = "@id-docx-go-roundtrip-selected-formatting"
 const tableMergeCaseID = "@id-docx-go-table-merge-properties"
+const tableDimensionsCaseID = "@id-docx-go-table-dimensions-getters"
+const tableCellAccessCaseID = "@id-docx-go-table-cell-access"
+const tableCellTextCaseID = "@id-docx-go-table-cell-text-getters"
+const tableRowCountsCaseID = "@id-docx-go-table-row-counts"
 const retiredCacheCaseID = "@CACHE-001"
 
 func selectedRunFormattingID(id string) bool {
 	return id == runUnderlineCaseID || id == runFontNameCaseID || id == runColorCaseID || id == runHighlightCaseID || id == runVerticalAlignCaseID || id == runRoundtripFormattingCaseID
+}
+
+func selectedTableValueID(id string) bool {
+	return id == tableDimensionsCaseID || id == tableCellAccessCaseID || id == tableCellTextCaseID || id == tableRowCountsCaseID
+}
+
+func selectedCanonicalID(path, id string) bool {
+	return id == canonicalID(path) || (path == runEffectsFeaturePath() && selectedRunFormattingID(id)) || (path == tableMergeFeaturePath() && selectedTableValueID(id))
 }
 
 func canonicalID(path string) string {
@@ -157,25 +169,25 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			id := ""
 			profile := ""
 			for _, tag := range s.Tags {
-				if nativeIDPattern.MatchString(tag.Name) || (canonical && (tag.Name == canonicalID(path) || (path == runEffectsFeaturePath() && selectedRunFormattingID(tag.Name)))) {
+				if nativeIDPattern.MatchString(tag.Name) || (canonical && selectedCanonicalID(path, tag.Name)) {
 					if id != "" {
 						return fmt.Errorf("%s: multiple IDs", path)
 					}
 					id = tag.Name
 				} else if canonical && path == overlapFeaturePath() && tag.Name == "@profile-physical-member-extents" && profile == "" {
 					profile = tag.Name
-				} else if canonical && path == tableMergeFeaturePath() && tag.Name == "@profile-document-value-api" && profile == "" {
+				} else if canonical && path == tableMergeFeaturePath() && (tag.Name == "@profile-document-value-api" || tag.Name == "@profile-nullable-cell-api") && profile == "" {
 					profile = tag.Name
 				} else if canonical && path == runEffectsFeaturePath() && (tag.Name == "@profile-in-memory-effects-api" || tag.Name == "@profile-document-value-api" || tag.Name == "@profile-selected-formatting-readback") && profile == "" {
 					profile = tag.Name
-				} else if !canonical || id == canonicalID(path) || (path == runEffectsFeaturePath() && selectedRunFormattingID(id)) {
+				} else if !canonical || selectedCanonicalID(path, id) {
 					return fmt.Errorf("%s: unsupported scenario tag %s", path, tag.Name)
 				}
 			}
-			if canonical && id != canonicalID(path) && !(path == runEffectsFeaturePath() && selectedRunFormattingID(id)) {
+			if canonical && !selectedCanonicalID(path, id) {
 				continue // Other shared workflows remain planned for Go.
 			}
-			if id == "" || (canonical && path == overlapFeaturePath() && profile != "@profile-physical-member-extents") || (canonical && path == tableMergeFeaturePath() && profile != "@profile-document-value-api") || (canonical && path == runEffectsFeaturePath() && ((id == runEffectsCaseID && profile != "@profile-in-memory-effects-api") || ((id == runRoundtripFormattingCaseID && profile != "@profile-selected-formatting-readback") || (id != runEffectsCaseID && id != runRoundtripFormattingCaseID && profile != "@profile-document-value-api")))) {
+			if id == "" || (canonical && path == overlapFeaturePath() && profile != "@profile-physical-member-extents") || (canonical && path == tableMergeFeaturePath() && ((id == tableCellAccessCaseID && profile != "@profile-nullable-cell-api") || (id != tableCellAccessCaseID && profile != "@profile-document-value-api"))) || (canonical && path == runEffectsFeaturePath() && ((id == runEffectsCaseID && profile != "@profile-in-memory-effects-api") || ((id == runRoundtripFormattingCaseID && profile != "@profile-selected-formatting-readback") || (id != runEffectsCaseID && id != runRoundtripFormattingCaseID && profile != "@profile-document-value-api")))) {
 				return fmt.Errorf("%s: scenario missing or mismatched ID/profile", path)
 			}
 			if !canonical && id == retiredChainCaseID {
@@ -215,6 +227,9 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 	if canonical && seen[canonicalID(path)] == "" {
 		return fmt.Errorf("%s: selected canonical case missing", path)
 	}
+	if canonical && path == tableMergeFeaturePath() && (seen[tableDimensionsCaseID] == "" || seen[tableCellAccessCaseID] == "" || seen[tableCellTextCaseID] == "" || seen[tableRowCountsCaseID] == "") {
+		return fmt.Errorf("%s: selected table value cases missing", path)
+	}
 	if canonical && path == runEffectsFeaturePath() && (seen[runUnderlineCaseID] == "" || seen[runFontNameCaseID] == "" || seen[runColorCaseID] == "" || seen[runHighlightCaseID] == "" || seen[runVerticalAlignCaseID] == "" || seen[runRoundtripFormattingCaseID] == "") {
 		return fmt.Errorf("%s: selected run-formatting outline missing", path)
 	}
@@ -223,9 +238,10 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 	fontNameRows := map[string]bool{}
 	colorRows := map[string]bool{}
 	highlightRows := map[string]bool{}
+	dimensionRows := map[string]bool{}
 	budgetRows := map[string]bool{}
 	for _, p := range gherkin.Pickles(*doc, path, next) {
-		if canonical && (len(p.AstNodeIds) == 0 || (ids[p.AstNodeIds[0]] != canonicalID(path) && !(path == runEffectsFeaturePath() && selectedRunFormattingID(ids[p.AstNodeIds[0]])))) {
+		if canonical && (len(p.AstNodeIds) == 0 || !selectedCanonicalID(path, ids[p.AstNodeIds[0]])) {
 			continue
 		}
 		line := lines[p.AstNodeIds[len(p.AstNodeIds)-1]]
@@ -273,6 +289,40 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 					return fmt.Errorf("%s: unexpected highlight row %q", path, p.Name)
 				}
 				highlightRows[colour] = true
+			}
+			if id == tableDimensionsCaseID {
+				var rows, cols int
+				if _, err := fmt.Sscanf(p.Name, "A newly added %d by %d table reports its dimensions", &rows, &cols); err != nil {
+					return fmt.Errorf("%s: unexpected dimension row %q: %w", path, p.Name, err)
+				}
+				key := fmt.Sprintf("%dx%d", rows, cols)
+				if !slices.Contains([]string{"1x1", "1x5", "5x1", "2x2", "3x3", "5x5", "10x3", "3x10"}, key) || dimensionRows[key] || p.Name != fmt.Sprintf("A newly added %d by %d table reports its dimensions", rows, cols) || len(p.Steps) != 3 || p.Steps[0].Text != "a new Word document" || p.Steps[1].Text != fmt.Sprintf("a table with %d rows and %d columns is added", rows, cols) || p.Steps[2].Text != fmt.Sprintf("RowCount equals %d and ColumnCount equals %d in memory", rows, cols) {
+					return fmt.Errorf("%s: unexpected dimension row %q", path, p.Name)
+				}
+				dimensionRows[key] = true
+			}
+			if id == tableCellAccessCaseID || id == tableCellTextCaseID || id == tableRowCountsCaseID {
+				var name string
+				var steps []string
+				switch id {
+				case tableCellAccessCaseID:
+					name = "A three-by-three table returns cells only at in-range coordinates"
+					steps = []string{"a new Word table with three rows and three columns", "its Cell getter is called for all nine coordinates from zero through two", "each of those nine calls returns a nonnil cell", "calls for row or column negative one or three at the tested boundary coordinates return nil"}
+				case tableCellTextCaseID:
+					name = "A two-by-two table reads four assigned texts and its first row"
+					steps = []string{"a new Word table with two rows and two columns", "its cells are set by row to A1, B1, A2 and B2", "the four cell text getters equal A1, B1, A2 and B2 in those positions", "FirstRowText returns exactly A1 and B1"}
+				case tableRowCountsCaseID:
+					name = "Adding, inserting and deleting rows changes table count in memory"
+					steps = []string{"a new Word table with two rows and three columns", "one row is appended, one is inserted at index one, and index one is deleted", "row counts after each step are three, four and three respectively", "deletion at index ten returns an error"}
+				}
+				if p.Name != name || len(p.Steps) != len(steps) {
+					return fmt.Errorf("%s: unexpected table value case %q", path, p.Name)
+				}
+				for i, step := range steps {
+					if p.Steps[i].Text != step {
+						return fmt.Errorf("%s: unexpected table value step %d for %s", path, i+1, id)
+					}
+				}
 			}
 			if id == tableMergeCaseID {
 				steps := []string{"a new Word table with three rows and four columns", "cell zero-zero gets GridSpan three and first-column rows one and two get restart and continue", "GridSpan at zero-zero equals three", "VerticalMerge at row one is restart and at row two is continue"}
@@ -328,7 +378,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			expected[key] = expectedCase{key, p.Name, len(p.Steps)}
 		}
 	}
-	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == tableMergeCaseID && canonicalCases != 1) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 23 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
+	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == tableMergeCaseID && (canonicalCases != 12 || len(dimensionRows) != 8)) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 23 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
 		return fmt.Errorf("%s: selected canonical case count drift: %d", path, canonicalCases)
 	}
 	return nil

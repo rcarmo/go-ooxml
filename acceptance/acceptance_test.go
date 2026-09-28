@@ -133,6 +133,7 @@ func TestAcceptance(t *testing.T) {
 		runEffectsSteps(sc)
 		runVerticalAlignSteps(sc)
 		tableMergeGetterSteps(sc)
+		tableValueSteps(sc)
 		runFormattingReadbackSteps(sc, readbackDir)
 		imageReplaceSteps(sc)
 		remapSteps(sc)
@@ -177,6 +178,10 @@ func TestAcceptance(t *testing.T) {
 		{"go-ooxml-run-vertical-align", runEffectsFeaturePath(), runVerticalAlignCaseID},
 		{"go-ooxml-roundtrip-selected-formatting", runEffectsFeaturePath(), runRoundtripFormattingCaseID},
 		{"go-ooxml-table-merge-properties", tableMergeFeaturePath(), tableMergeCaseID},
+		{"go-ooxml-table-dimensions", tableMergeFeaturePath(), tableDimensionsCaseID},
+		{"go-ooxml-table-cell-access", tableMergeFeaturePath(), tableCellAccessCaseID},
+		{"go-ooxml-table-cell-text", tableMergeFeaturePath(), tableCellTextCaseID},
+		{"go-ooxml-table-row-counts", tableMergeFeaturePath(), tableRowCountsCaseID},
 	} {
 		var output bytes.Buffer
 		suite := godog.TestSuite{Name: selection.name, Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{selection.path}, Tags: selection.tags, Strict: true, Concurrency: 1}, ScenarioInitializer: initializer}
@@ -224,7 +229,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID {
+		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}

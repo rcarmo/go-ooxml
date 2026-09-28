@@ -51,10 +51,13 @@ getter evidence. [Batch 186](../reports/batches/186.md) binds just the four-step
 `@id-docx-go-table-merge-properties` case: it reads GridSpan 3 at cell (0,0)
 and VerticalMerge restart/continue at first-column rows one/two in memory.
 [Batch 187](../reports/batches/187.md) records the v0.65 shared Go evidence
-adoption for that getter-only case. Three other table/cell getter cases remain
-unselected for Go. These direct getters do not establish physical merge
-topology, safe grid authoring, save/reopen, Office rendering or general OOXML
-validity.
+adoption for that getter-only case. [Batch 188](../reports/batches/188.md) selects
+eight exact dimension rows and the cell-access, cell-text and row-count cases
+from the same table feature. These assert in-memory getters, five tested
+out-of-range cell coordinates, and an error on deletion at index ten. Their Go
+shared-ledger status remains planned pending shared review. Direct getters do
+not establish physical merge topology, safe grid authoring, save/reopen, Office
+rendering or general OOXML validity.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
