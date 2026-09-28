@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.67.0`, commit
-`8450367177a03798b8c49b9bb1553ba1df51bd2b`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.68.0`, commit
+`6ed911b4c547f7a74a58122b6564c11247bff9c1`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -62,8 +62,10 @@ for both cases; Python remains planned. The in-memory table-value checks do not
 establish physical merge topology or safe grid authoring. The selected table
 readback checks nine text getters, not Office rendering or general OOXML
 validity. [Batch 192](../reports/batches/192.md) binds the in-memory core
-Title/Creator/Subject getters and first-section TitlePage/background getters;
-other supplied core fields are setup, without saved or broader setter credit.
+Title/Creator/Subject getters and first-section TitlePage/background getters.
+[Batch 193](../reports/batches/193.md) records v0.68 shared Go and Bun evidence
+for those exact cases; Python remains planned. Other supplied core fields are
+setup, without saved or broader setter credit.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
