@@ -47,8 +47,12 @@ vertical-align binding. [Batch 182](../reports/batches/182.md) records the v0.62
 pin adoption; [Batch 183](../reports/batches/183.md) records the v0.63 shared
 Go evidence adoption for the nine earlier cases. [Batch 185](../reports/batches/185.md)
 records the v0.64 shared Go evidence for the two-run case and Bun-only table/cell
-getter evidence. The four table/cell cases remain planned for Go. These checks
-grant no Office rendering, general OOXML validity or effective-formatting claim.
+getter evidence. [Batch 186](../reports/batches/186.md) binds just the four-step
+`@id-docx-go-table-merge-properties` case: it reads GridSpan 3 at cell (0,0)
+and VerticalMerge restart/continue at first-column rows one/two in memory.
+Three other table/cell getter cases remain unselected for Go. These direct
+getters do not establish physical merge topology, safe grid authoring,
+save/reopen, Office rendering or general OOXML validity.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.

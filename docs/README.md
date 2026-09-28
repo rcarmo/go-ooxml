@@ -33,7 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 185](../reports/batches/185.md) records the v0.64 Go vertical and Bun-only
+[Batch 186](../reports/batches/186.md) records the bounded Go table/cell merge-property
+getter binding. [Batch 185](../reports/batches/185.md) records the v0.64 Go vertical and Bun-only
 table/cell getter evidence pin. [Batch 184](../reports/batches/184.md) records the two-run direct vertical-align
 getter binding. [Batch 183](../reports/batches/183.md) records the v0.63 Go colour/highlight
 and selected saved-readback ledger evidence pin. [Batch 182](../reports/batches/182.md)

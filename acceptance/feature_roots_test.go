@@ -38,6 +38,11 @@ func runEffectsFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "run-formatting.feature")
 }
 
+// Select only the direct in-memory cell merge getter case, not table editing workflows.
+func tableMergeFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "tables.feature")
+}
+
 // The cross-sheet cache case replaces native CACHE-001 one-for-one.
 func crossSheetCacheFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xlsx", "formula-cache.feature")
