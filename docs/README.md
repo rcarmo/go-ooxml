@@ -33,7 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 173](../reports/batches/173.md) records the v0.56 Bun owned-chain
+[Batch 174](../reports/batches/174.md) records the v0.57 Bun owned-chain
+execution ledger adoption. [Batch 173](../reports/batches/173.md) records the v0.56 Bun owned-chain
 refusal ledger adoption. [Batch 172](../reports/batches/172.md) records the v0.55 Python owned-chain
 wording adoption. [Batch 171](../reports/batches/171.md) records the v0.54 decoder evidence
 ledger adoption. [Batch 170](../reports/batches/170.md) records the Go decoder fix.
