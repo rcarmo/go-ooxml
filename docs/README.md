@@ -33,7 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 162](../reports/batches/162.md) records the v0.47 Python XLSX dependency
+[Batch 163](../reports/batches/163.md) records the v0.48 Go cross-sheet cache
+evidence-ledger adoption. [Batch 162](../reports/batches/162.md) records the v0.47 Python XLSX dependency
 mapping-only adoption. [Batch 161](../reports/batches/161.md) records the v0.46 shared evidence-ledger
 adoption. [Batch 160](../reports/batches/160.md) records the v0.45 owned-chain canonical
 binding. [Batch 159](../reports/batches/159.md) records the v0.44 generated-input

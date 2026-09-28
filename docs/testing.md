@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.47.0`, commit
-`380ba5ae65674a0a544fa283bf5683e8a979495e`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.48.0`, commit
+`82a67a1eb942cac8031421de970048ce1e10d9ca`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -36,13 +36,13 @@ The released pin uses schema2 with `commit`, `tag`, `tag_object`,
 `manifest_sha256`, `assets`, `facts`, `workflows` and `workflow_cases`.
 There is no separate pack seal. The root manifest seals
 `contracts/mutation-safety.json` and all five declared operation feature paths.
-The v0.47 contract uses an explicit feature list (contract schema 2), selecting
+The v0.48 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
 Candidate tags begin with `candidate-` and have an empty `tag_object`; release
 pins require the exact annotated tag object and its peeled commit. Use the
 coordinator-provided pin, not hashes recomputed to accept modified inputs.
-Release `v0.47.0` contains 338 manifest assets, including 79 physical fixtures,
+Release `v0.48.0` contains 338 manifest assets, including 79 physical fixtures,
 plus 149 facts and 302 workflows/789 expanded cases.
 The canonical registry has 60 feature files. Another 143 files are staged
 consumer candidates, including 55 native Go features and 21 Go behaviour
@@ -182,7 +182,10 @@ Full/race checks belong at integration points; reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 
-The v0.47 mapping-only adoption is recorded in
+The v0.48 Go cross-sheet cache evidence adoption is recorded in
+[`reports/batches/163.md`](../reports/batches/163.md). It records the already
+published 14-step canonical case replacing native `CACHE-001`, with no added
+selected case or execution credit. The v0.47 mapping-only adoption is recorded in
 [`reports/batches/162.md`](../reports/batches/162.md). It adds a Python XLSX
 dependency contract and five-declaration partial source mapping, with no Go
 binding or selection change. The v0.46 evidence-only adoption is recorded in
