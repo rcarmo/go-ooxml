@@ -16,6 +16,27 @@ type Sld struct {
 	Show    *bool    `xml:"show,attr,omitempty"` // false means hidden
 }
 
+// UnmarshalXML only admits CT_Slide's unqualified show attribute. Go's
+// encoding/xml otherwise matches an unqualified attribute field by local name
+// and would interpret p:show (or another namespace's show) as slide visibility.
+func (s *Sld) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
+	type plain Sld // avoids calling this method again
+	filtered := start
+	filtered.Attr = make([]xml.Attr, 0, len(start.Attr))
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "show" && attr.Name.Space != "" {
+			continue
+		}
+		filtered.Attr = append(filtered.Attr, attr)
+	}
+	var decoded plain
+	if err := dec.DecodeElement(&decoded, &filtered); err != nil {
+		return err
+	}
+	*s = Sld(decoded)
+	return nil
+}
+
 // CSld represents common slide data.
 type CSld struct {
 	Name   string  `xml:"name,attr,omitempty"`
