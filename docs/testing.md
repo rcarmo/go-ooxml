@@ -38,14 +38,16 @@ There is no separate pack seal. The root manifest seals
 `contracts/mutation-safety.json` and all five declared operation feature paths.
 Go selects six underline-style, six font-name, three colour-getter and five
 highlight in-memory rows in `workflows/docx/run-formatting.feature`, alongside
-the eight-effects getter case. One selected case saves and reopens three authored
-runs before checking their named direct properties. [Batch 179](../reports/batches/179.md)
-and [Batch 181](../reports/batches/181.md) record the exact rows, negative
-controls and gates. [Batch 182](../reports/batches/182.md) records the v0.62
+the eight-effects getter case. A separate four-step case tests opposite direct
+superscript/subscript flags on two runs. One selected case saves and reopens three
+authored runs before checking their named direct properties. [Batch 179](../reports/batches/179.md)
+and [Batch 181](../reports/batches/181.md) record the earlier rows, negative
+controls and gates. [Batch 184](../reports/batches/184.md) records the two-run
+vertical-align binding. [Batch 182](../reports/batches/182.md) records the v0.62
 pin adoption; [Batch 183](../reports/batches/183.md) records the v0.63 shared
-Go evidence adoption for those nine cases. The Go vertical-alignment case
-remains planned in the shared ledger. These checks grant no Office rendering,
-general OOXML validity or effective-formatting claim.
+Go evidence adoption for the nine earlier cases. The new two-run Go case still
+has planned status in the shared ledger pending shared-owner review. These checks
+grant no Office rendering, general OOXML validity or effective-formatting claim.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.

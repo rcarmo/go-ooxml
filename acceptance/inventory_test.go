@@ -49,11 +49,12 @@ const runUnderlineCaseID = "@id-docx-go-run-underline-style"
 const runFontNameCaseID = "@id-docx-go-run-font-name"
 const runColorCaseID = "@id-docx-go-run-color-getter"
 const runHighlightCaseID = "@id-docx-go-run-highlight"
+const runVerticalAlignCaseID = "@id-docx-go-run-vertical-align"
 const runRoundtripFormattingCaseID = "@id-docx-go-roundtrip-selected-formatting"
 const retiredCacheCaseID = "@CACHE-001"
 
 func selectedRunFormattingID(id string) bool {
-	return id == runUnderlineCaseID || id == runFontNameCaseID || id == runColorCaseID || id == runHighlightCaseID || id == runRoundtripFormattingCaseID
+	return id == runUnderlineCaseID || id == runFontNameCaseID || id == runColorCaseID || id == runHighlightCaseID || id == runVerticalAlignCaseID || id == runRoundtripFormattingCaseID
 }
 
 func canonicalID(path string) string {
@@ -209,7 +210,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 	if canonical && seen[canonicalID(path)] == "" {
 		return fmt.Errorf("%s: selected canonical case missing", path)
 	}
-	if canonical && path == runEffectsFeaturePath() && (seen[runUnderlineCaseID] == "" || seen[runFontNameCaseID] == "" || seen[runColorCaseID] == "" || seen[runHighlightCaseID] == "" || seen[runRoundtripFormattingCaseID] == "") {
+	if canonical && path == runEffectsFeaturePath() && (seen[runUnderlineCaseID] == "" || seen[runFontNameCaseID] == "" || seen[runColorCaseID] == "" || seen[runHighlightCaseID] == "" || seen[runVerticalAlignCaseID] == "" || seen[runRoundtripFormattingCaseID] == "") {
 		return fmt.Errorf("%s: selected run-formatting outline missing", path)
 	}
 	canonicalCases := 0
@@ -268,6 +269,17 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 				}
 				highlightRows[colour] = true
 			}
+			if id == runVerticalAlignCaseID {
+				steps := []string{"two new Word runs", "Superscript is enabled on the first and Subscript on the second", "the first reports superscript true and subscript false", "the second reports subscript true and superscript false"}
+				if p.Name != "Separate superscript and subscript runs have opposite flags" || len(p.Steps) != len(steps) {
+					return fmt.Errorf("%s: unexpected vertical-align case %q", path, p.Name)
+				}
+				for i, step := range steps {
+					if p.Steps[i].Text != step {
+						return fmt.Errorf("%s: unexpected vertical-align step %d", path, i+1)
+					}
+				}
+			}
 			if id == runRoundtripFormattingCaseID {
 				steps := []string{"a new Word paragraph with three runs Bold-space, Italic-space and Colored", "the first run is bold, the second italic, and the third has colour FF0000, font size 14 and font Arial", "the document is saved and reopened", "at least one paragraph and three runs are readable", "the first run is bold and the second italic", "the third run reports colour FF0000, font size 14 and font Arial"}
 				if p.Name != "Selected direct run formatting survives save and reopen" || len(p.Steps) != len(steps) {
@@ -300,7 +312,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			expected[key] = expectedCase{key, p.Name, len(p.Steps)}
 		}
 	}
-	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 22 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
+	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 23 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
 		return fmt.Errorf("%s: selected canonical case count drift: %d", path, canonicalCases)
 	}
 	return nil

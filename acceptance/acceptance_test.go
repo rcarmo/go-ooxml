@@ -131,6 +131,7 @@ func TestAcceptance(t *testing.T) {
 		cacheSteps(sc)
 		canonicalCacheSteps(sc)
 		runEffectsSteps(sc)
+		runVerticalAlignSteps(sc)
 		runFormattingReadbackSteps(sc, readbackDir)
 		imageReplaceSteps(sc)
 		remapSteps(sc)
@@ -172,6 +173,7 @@ func TestAcceptance(t *testing.T) {
 		{"go-ooxml-run-font-name", runEffectsFeaturePath(), runFontNameCaseID},
 		{"go-ooxml-run-color-getter", runEffectsFeaturePath(), runColorCaseID},
 		{"go-ooxml-run-highlight", runEffectsFeaturePath(), runHighlightCaseID},
+		{"go-ooxml-run-vertical-align", runEffectsFeaturePath(), runVerticalAlignCaseID},
 		{"go-ooxml-roundtrip-selected-formatting", runEffectsFeaturePath(), runRoundtripFormattingCaseID},
 	} {
 		var output bytes.Buffer
@@ -220,7 +222,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runRoundtripFormattingCaseID {
+		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}

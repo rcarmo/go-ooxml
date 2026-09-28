@@ -33,7 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 183](../reports/batches/183.md) records the v0.63 Go colour/highlight
+[Batch 184](../reports/batches/184.md) records the two-run direct vertical-align
+getter binding. [Batch 183](../reports/batches/183.md) records the v0.63 Go colour/highlight
 and selected saved-readback ledger evidence pin. [Batch 182](../reports/batches/182.md)
 records the v0.62 Bun-only run-appearance
 and readback evidence pin; it adds no Go credit. [Batch 181](../reports/batches/181.md)
