@@ -33,7 +33,9 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 167](../reports/batches/167.md) records the v0.52 CI checkout custody
+[Batch 169](../reports/batches/169.md) records the v0.53 visibility evidence
+ledger adoption. [Batch 168](../reports/batches/168.md) records the native Go S/P structural
+tests. [Batch 167](../reports/batches/167.md) records the v0.52 CI checkout custody
 release adoption. [Batch 166](../reports/batches/166.md) records the v0.51 PPTX visibility
 semantic correction. [Batch 165](../reports/batches/165.md) records the v0.50 inventory adoption. [Batch 164](../reports/batches/164.md) records the v0.49 Python owned-chain
 evidence-ledger adoption. [Batch 163](../reports/batches/163.md) records the v0.48 Go cross-sheet cache
