@@ -33,7 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 190](../reports/batches/190.md) records Go new-document empty-body and table-text
+[Batch 191](../reports/batches/191.md) records the v0.67 Go/Bun new-body and table-text
+readback ledger pin. [Batch 190](../reports/batches/190.md) records Go new-document empty-body and table-text
 save/reopen bindings. [Batch 189](../reports/batches/189.md) records the v0.66 Go/Bun table-value ledger
 evidence pin. [Batch 188](../reports/batches/188.md) records the bounded Go table dimensions,
 cell access/text and row-count bindings. [Batch 187](../reports/batches/187.md) records the v0.65 shared Go table merge-property

@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.66.0`, commit
-`78612e1447921af26f640a97ec4591463ba872e9`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.67.0`, commit
+`8450367177a03798b8c49b9bb1553ba1df51bd2b`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -56,11 +56,12 @@ eight exact dimension rows and the cell-access, cell-text and row-count cases
 from the same table feature. These assert in-memory getters, five tested
 out-of-range cell coordinates, and an error on deletion at index ten. [Batch 189](../reports/batches/189.md)
 records v0.66 shared Go and Bun evidence for all four cases. [Batch 190](../reports/batches/190.md)
-adds one new-document empty-body case and one 3×3 table-text save/reopen case;
-those Go shared-ledger entries remain planned pending shared-owner review. The
-in-memory table-value checks do not establish physical merge topology or safe
-grid authoring. The selected table readback checks nine text getters, not Office
-rendering or general OOXML validity.
+adds one new-document empty-body case and one 3×3 table-text save/reopen case.
+[Batch 191](../reports/batches/191.md) records v0.67 shared Go and Bun evidence
+for both cases; Python remains planned. The in-memory table-value checks do not
+establish physical merge topology or safe grid authoring. The selected table
+readback checks nine text getters, not Office rendering or general OOXML
+validity.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
