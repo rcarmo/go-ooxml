@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.91.0`, commit
-`af04b1d42b787f76b88f21009ac105888b9d16bd`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.92.0`, commit
+`92dc81cc00958b57611faa4025a63d7a81f301ec`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -165,6 +165,11 @@ for two PPTX/XLSX relationship expanded-name IDs (four cases / 16 steps):
 `link:id` survives edit/reopen; the wrong URI produces distinct typed
 structural refusals without changing the input. Go and Python remain planned;
 no live Office or rendering check was run by this pin.
+[Batch 221](../reports/batches/221.md) records v0.92 Bun-only evidence
+for four existing DOCX comment IDs (14 cases / 46 steps): pinned threaded
+inspection, resolve/reopen and restore, no-op and eleven typed refusals with
+unchanged package bytes. Missing-metadata creation and arbitrary thread edits
+are outside this evidence; Go and Python remain planned.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
