@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.83.0`, commit
-`151b022133d2aefe60db860ee502f5812348b0dc`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.84.0`, commit
+`423398e552dd737bd7dc1d89707165927d894d75`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -128,6 +128,10 @@ Go and Python remain planned; this pin adds no Go semantic-diff credit.
 for four ZIP32 scenarios: CRC vector (1 case), reader refusal (12), writer
 refusal (2) and configured bounds (5), totalling 20 cases / 91 steps.
 Go and Python remain planned; this pin adds no Go ZIP32 execution credit.
+[Batch 213](../reports/batches/213.md) records v0.84 Bun-only evidence
+for positive ZIP32 read (seven steps) and deterministic write (six steps).
+Broad unsafe/bounds cases and Go/Python execution remain planned; this pin
+adds no Go ZIP32 credit.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
