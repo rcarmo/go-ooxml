@@ -137,6 +137,7 @@ func TestAcceptance(t *testing.T) {
 		tableValueSteps(sc, tableReadback)
 		documentCreationSteps(sc, tableReadback)
 		documentPropertyGetterSteps(sc, tableReadback)
+		paragraphTextGetterSteps(sc)
 		tableTextReadbackSteps(sc, tableReadback)
 		runFormattingReadbackSteps(sc, readbackDir, tableReadback)
 		imageReplaceSteps(sc)
@@ -190,6 +191,7 @@ func TestAcceptance(t *testing.T) {
 		{"go-ooxml-roundtrip-table-text", tableMergeFeaturePath(), roundtripTableTextCaseID},
 		{"go-ooxml-core-properties-getters", corePropertiesFeaturePath(), corePropertiesCaseID},
 		{"go-ooxml-section-title-background", pageLayoutFeaturePath(), sectionTitleBackgroundCaseID},
+		{"go-ooxml-paragraph-text-getter", paragraphFeaturePath(), paragraphTextGetterCaseID},
 	} {
 		var output bytes.Buffer
 		suite := godog.TestSuite{Name: selection.name, Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{selection.path}, Tags: selection.tags, Strict: true, Concurrency: 1}, ScenarioInitializer: initializer}
@@ -218,7 +220,7 @@ func TestAcceptance(t *testing.T) {
 		t.Fatal(err)
 	}
 	writeJSON(t, filepath.Join(dir, "inventory.json"), inventory)
-	writeJSON(t, filepath.Join(dir, "environment.json"), map[string]any{"go": runtime.Version(), "fixture_sha256": w.fixtures, "scope": "implemented native except CHAIN-001 and CACHE-001, each replaced one-for-one by its exact canonical case, plus overlap, negative-budget, descriptor-collision and selected in-memory run-formatting cases", "external_executed": false})
+	writeJSON(t, filepath.Join(dir, "environment.json"), map[string]any{"go": runtime.Version(), "fixture_sha256": w.fixtures, "scope": "implemented native except CHAIN-001 and CACHE-001, each replaced one-for-one by its exact canonical case, plus overlap, negative-budget, descriptor-collision and selected in-memory run-formatting and paragraph-text getter cases", "external_executed": false})
 	if err := reconcile(expected, data); err != nil {
 		t.Error(err)
 	}
@@ -237,7 +239,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID || tag == corePropertiesCaseID || tag == sectionTitleBackgroundCaseID {
+		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID || tag == corePropertiesCaseID || tag == sectionTitleBackgroundCaseID || tag == paragraphTextGetterCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}

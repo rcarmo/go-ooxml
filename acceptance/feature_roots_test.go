@@ -43,6 +43,11 @@ func creationFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "creation.feature")
 }
 
+// Select only the five in-memory paragraph text getter rows, not sibling scenarios.
+func paragraphFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "paragraphs.feature")
+}
+
 // Select only the named in-memory core-property getter case.
 func corePropertiesFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "properties.feature")
