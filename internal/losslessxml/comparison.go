@@ -54,7 +54,7 @@ func Equivalent(left, right []byte) bool {
 			as, bs = as[:len(as)-1], bs[:len(bs)-1]
 		case xml.CharData:
 			y, ok := bt.(xml.CharData)
-			if !ok || !bytes.Equal(x, y) {
+			if !ok || !bytes.Equal(x, y) || !comparisonBoundReferences(string(x), as[len(as)-1], bs[len(bs)-1]) {
 				return false
 			}
 		case xml.Comment:
@@ -107,33 +107,69 @@ func comparisonAttrs(left, right []xml.Attr, ln, rn map[string]string) bool {
 		if !ok || !comparisonValue(v, a.Value, ln, rn) {
 			return false
 		}
+		if a.Name.Space == "http://schemas.openxmlformats.org/markup-compatibility/2006" && a.Name.Local == "Ignorable" && !comparisonPrefixList(a.Value, ln, rn) {
+			return false
+		}
 		count++
 	}
 	return count == len(values)
 }
 
-// Attribute values retain lexical spelling. Identical QName-like values with
-// different or unbound prefix scopes are conservatively non-equivalent.
-// Attribute schema typing is unknown, so aliases in values cannot be normalised.
+// Attribute values retain lexical spelling. An in-scope prefix reference can
+// occur in text, a QName-like value or a whitespace-separated prefix list.
+// Without schema types, this may reject ordinary colon-bearing values.
 func comparisonValue(left, right string, ln, rn map[string]string) bool {
-	if left != right {
-		return false
-	}
-	if !comparisonQNameLike(left) {
-		return true
-	}
-	lp, ll, lok := comparisonQName(left, ln)
-	rp, rl, rok := comparisonQName(right, rn)
-	return lok && rok && lp == rp && ll == rl
+	return left == right && comparisonBoundReferences(left, ln, rn)
 }
 
-func comparisonQName(s string, ns map[string]string) (uri, local string, ok bool) {
-	if !comparisonQNameLike(s) {
-		return "", "", false
+func comparisonBoundReferences(value string, ln, rn map[string]string) bool {
+	for _, word := range strings.Fields(value) {
+		if comparisonQNameLike(word) {
+			prefix, _, _ := strings.Cut(word, ":")
+			l, lok := ln[prefix]
+			r, rok := rn[prefix]
+			if !lok || !rok || l == "" || l != r {
+				return false
+			}
+			continue
+		}
+		if localName(word) {
+			l, lok := ln[word]
+			r, rok := rn[word]
+			if lok || rok {
+				if !lok || !rok || l == "" || l != r {
+					return false
+				}
+			}
+		} else if strings.Contains(word, ":") && !comparisonSameScope(ln, rn) {
+			// Unknown colon-bearing token spelling under different bindings.
+			return false
+		}
 	}
-	prefix, local, _ := strings.Cut(s, ":")
-	uri, ok = ns[prefix]
-	return uri, local, ok && uri != ""
+	return true
+}
+
+// Ignorable carries space-separated prefixes; unlike an ordinary simple
+// attribute value, every listed prefix must resolve in both inputs.
+func comparisonPrefixList(value string, left, right map[string]string) bool {
+	for _, prefix := range strings.Fields(value) {
+		if !localName(prefix) || left[prefix] == "" || left[prefix] != right[prefix] {
+			return false
+		}
+	}
+	return true
+}
+
+func comparisonSameScope(left, right map[string]string) bool {
+	if len(left) != len(right) {
+		return false
+	}
+	for k, v := range left {
+		if right[k] != v {
+			return false
+		}
+	}
+	return true
 }
 
 func comparisonQNameLike(s string) bool {
