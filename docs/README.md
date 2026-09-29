@@ -33,6 +33,11 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 259](../reports/batches/259.md) records direct v0.124 adoption:
+v0.123 credits Go's published root and nested element-removal refusal rows
+(two cases / six steps) from [Batch 258](../reports/batches/258.md);
+v0.124 adds only Python's implicit XML-prefix case (one case / five steps).
+This pin changes no Go runtime or binding.
 [Batch 257](../reports/batches/257.md) records direct v0.122 adoption:
 v0.121 credits Go's published two-target XML element removal custody case
 (one case / four steps) from [Batch 256](../reports/batches/256.md);
