@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.101.0`, commit
-`c110ab8a61a7c5c7c118c8c9b8b5a0b5fa4b7acf`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.102.0`, commit
+`a041e642b5afd9093c8d34773db90c40a27f8592`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -221,6 +221,13 @@ counts, byte spans, flags, direct-range axis and first coordinate, remaps,
 refusals and a finite 288-expression matrix. Formula evaluation, workbook
 edit/save and Office rendering were not tested; Go and Python remain planned.
 The Go selector and execution credit do not change.
+[Batch 232](../reports/batches/232.md) records v0.102 ledger credit for
+Go's two exact static XLSX direct-range IDs (13 cases / 45 steps, executed
+in [Batch 231](../reports/batches/231.md)) and Bun-only seven DOCX tracking
+settings IDs (24 cases / 101 steps). Go's other seven formula-reference IDs
+and all DOCX tracking IDs remain planned. No formula evaluation, workbook edit,
+Office rendering or cross-consumer execution is credited by this pin. The Go
+selector remains 363 cases / 1244 steps.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
