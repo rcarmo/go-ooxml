@@ -33,6 +33,11 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 257](../reports/batches/257.md) records direct v0.122 adoption:
+v0.121 credits Go's published two-target XML element removal custody case
+(one case / four steps) from [Batch 256](../reports/batches/256.md);
+v0.122 adds only Python's expanded XML attribute lookup case (one case /
+three steps). This pin changes no Go runtime or binding.
 [Batch 255](../reports/batches/255.md) records direct v0.120 adoption:
 v0.119 credits Go's published duplicate-attribute refusal (one case / three
 steps); v0.120 adds only Python stylesheet processing-instruction evidence
