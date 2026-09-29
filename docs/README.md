@@ -33,6 +33,10 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 282](../reports/batches/282.md) records v0.137 shared-ledger credit
+for Go's published exact OPC unrelated-payload preservation case from
+[Batch 281](../reports/batches/281.md): one case / four steps. The pin
+changes no Go runtime or acceptance binding.
 [Batch 280](../reports/batches/280.md) records v0.136 Python-only shared-ledger
 credit for the exact existing DOCX comment archive no-op: one case / three
 steps. Go and Bun credit are unchanged. The Go pin changes no runtime or
