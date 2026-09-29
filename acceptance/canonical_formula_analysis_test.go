@@ -82,7 +82,7 @@ func canonicalFormulaAnalysisSteps(sc *godog.ScenarioContext) {
 		source, refs, failure = "", nil, nil
 		return ctx, nil
 	})
-	sc.Step(`^the formula source is JSON (.+)$`, func(encoded string) error {
+	sc.Step(`^the formula source is JSON ("(?:\\.|[^"\\])*")$`, func(encoded string) error {
 		if err := json.Unmarshal([]byte(encoded), &source); err != nil {
 			return fmt.Errorf("decode formula source: %w", err)
 		}
@@ -91,6 +91,12 @@ func canonicalFormulaAnalysisSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^the static formula analyser reads the source$`, func() error {
 		refs, failure = formula.Analyze(source)
 		return nil
+	})
+	sc.Step(`^the analysis is (accepted without error|refused with zero references)$`, func(outcome string) error {
+		if outcome == "accepted without error" && failure == nil || outcome == "refused with zero references" && failure != nil && len(refs) == 0 {
+			return nil
+		}
+		return fmt.Errorf("formula %q: got %d refs, error %v; wanted %s", source, len(refs), failure, outcome)
 	})
 	sc.Step(`^it returns (\d+) reference records without error$`, func(count int) error {
 		if failure != nil || len(refs) != count {
