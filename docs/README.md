@@ -33,6 +33,10 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 248](../reports/batches/248.md) records the v0.114 pin and shared-ledger
+credit for Go's published Unicode QName case (one case / four steps) and Python's
+five package IDs (14 cases / 47 steps). It changes no Go runtime or binding.
+[Batch 247](../reports/batches/247.md) records the Go Unicode QName execution.
 [Batch 246](../reports/batches/246.md) records the v0.113 Python-only
 negative admission and ZIP32 descriptor evidence pin; Go gains no new credit.
 [Batch 245](../reports/batches/245.md) records v0.112 shared-ledger credit
