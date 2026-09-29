@@ -33,6 +33,11 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 271](../reports/batches/271.md) records v0.130 shared-ledger credit
+for Go's already published exact XML entity-values case from
+[Batch 270](../reports/batches/270.md): one case / four steps. Python alone
+receives pinned existing Word comment inspection credit (one case / four
+steps); Bun is unchanged. The pin changes no Go runtime or acceptance binding.
 [Batch 269](../reports/batches/269.md) records v0.129 shared-ledger credit
 for Go's published element-replacement refusal outline from
 [Batch 268](../reports/batches/268.md): three cases / twelve steps. Python
