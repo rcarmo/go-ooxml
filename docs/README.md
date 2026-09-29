@@ -33,7 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 199](../reports/batches/199.md) records the v0.71 Go/Bun body-insertion
+[Batch 200](../reports/batches/200.md) records the v0.72 Bun-only DOCX text-slice
+ledger pin; it adds no Go execution credit. [Batch 199](../reports/batches/199.md) records the v0.71 Go/Bun body-insertion
 ledger pin. [Batch 198](../reports/batches/198.md) records the exact Go in-memory
 body-order binding. [Batch 197](../reports/batches/197.md) records the v0.70 Go/Bun paragraph-value getter
 ledger pin. [Batch 196](../reports/batches/196.md) records the ten exact Go in-memory
