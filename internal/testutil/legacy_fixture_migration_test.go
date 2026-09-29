@@ -58,7 +58,7 @@ func TestLegacyFixtureMigrationBatch(t *testing.T) {
 	}
 	// These source rows describe the original v0.35 migration. Do not rewrite
 	// their identities when a later distribution retires a physical archive.
-	if ledger.Schema != 1 || ledger.ReferenceCommit != "7b7a2fa2610c421cdde9d7b1da9125c8f98b9dd8" || ledger.ReferenceTag != "v0.35.0" || identity.Tag != "v0.87.0" || len(ledger.Fixtures) != 38 || len(ledger.Specifications) != 2 {
+	if ledger.Schema != 1 || ledger.ReferenceCommit != "7b7a2fa2610c421cdde9d7b1da9125c8f98b9dd8" || ledger.ReferenceTag != "v0.35.0" || identity.Tag != "v0.88.0" || len(ledger.Fixtures) != 38 || len(ledger.Specifications) != 2 {
 		t.Fatal("historical migration or current pin differs from expected scope")
 	}
 	retired := readRetiredFixtures(t)
