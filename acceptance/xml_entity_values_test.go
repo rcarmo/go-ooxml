@@ -139,8 +139,8 @@ func xmlEntityValuesSteps(sc *godog.ScenarioContext) {
 		return ctx, nil
 	})
 	sc.Step(`^XML values input encoded as JSON (".*")$`, func(raw string) error {
-		if raw != xmlEntitySourceJSON {
-			return fmt.Errorf("XML entity-values source drift")
+		if raw != xmlEntitySourceJSON && raw != xmlStylesheetPISourceJSON {
+			return fmt.Errorf("XML values source drift")
 		}
 		var source string
 		if err := json.Unmarshal([]byte(raw), &source); err != nil {
@@ -148,8 +148,8 @@ func xmlEntityValuesSteps(sc *godog.ScenarioContext) {
 		}
 		caller = []byte(source)
 		original = bytes.Clone(caller)
-		if !bytes.Equal(caller, []byte(`<r a="&quot;&apos;">&#x41;&#65;&amp;&lt;&gt;</r>`)) {
-			return fmt.Errorf("XML entity-values decoded source drift")
+		if !bytes.Equal(caller, []byte(`<r a="&quot;&apos;">&#x41;&#65;&amp;&lt;&gt;</r>`)) && !bytes.Equal(caller, []byte(`<?xml-stylesheet href="style.xsl"?><r/>`)) {
+			return fmt.Errorf("XML values decoded source drift")
 		}
 		return nil
 	})
@@ -223,5 +223,8 @@ func xmlEntityValuesSteps(sc *godog.ScenarioContext) {
 			return fmt.Errorf("XML entity-values retry/caller drift")
 		}
 		return nil
+	})
+	sc.Step(`^the root qualified name equals r$`, func() error {
+		return assertStylesheetPI(caller, original, doc)
 	})
 }

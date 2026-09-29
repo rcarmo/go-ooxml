@@ -13,7 +13,7 @@ func goFeatureRoot() string {
 	return filepath.Join(testutil.ReferenceRoot(), "staging", "go", "features")
 }
 
-// Select only the exact entity-value decoding case; sibling parsing workflows stay planned.
+// Select only the entity-value and stylesheet-PI cases; sibling parsing workflows stay planned.
 func xmlParsingFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xml", "parsing.feature")
 }
