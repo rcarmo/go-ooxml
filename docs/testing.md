@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.80.0`, commit
-`5c871881e36d6a9c899b82d9ec5c97b1c47ff587`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.81.0`, commit
+`c765ddeec81efb6592f87d5e7d1662f01604b44b`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -116,6 +116,10 @@ planned for these cases; this pin adds no Go XML QName execution credit.
 for ten exact conservative XML comparison cases across five IDs: Boolean
 results and unchanged UTF-8 inputs. Go and Python remain planned for these
 cases; this pin adds no Go XML comparison execution credit.
+[Batch 210](../reports/batches/210.md) records v0.81 Bun-only evidence
+for 13 exact package-admission refusal cases across four ZIP/XML IDs. Go and
+Python remain planned; the physical-overlap case is separate. This pin adds
+no Go package-admission execution credit.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
