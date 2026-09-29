@@ -33,6 +33,11 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 263](../reports/batches/263.md) records v0.126 shared-ledger credit
+for Go's published child-insertion refusal case (one case / four steps) from
+[Batch 262](../reports/batches/262.md), plus Python-only XML whitespace
+serialization/reparse (one case / three steps). It changes no Go runtime or
+binding.
 [Batch 261](../reports/batches/261.md) records v0.125 shared-ledger credit
 for Go's published structured child-insertion custody case (one case / four
 steps) from [Batch 260](../reports/batches/260.md). It changes no Go runtime
