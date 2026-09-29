@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.74.0`, commit
-`39f6fd8b7e77273fd310ee56e217b15130a939c2`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.75.0`, commit
+`8789e30b55f34ff7c0b04b6a5c9fe538d5fe4f65`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -94,6 +94,10 @@ remain planned for those cases; this pin adds no Go creation execution credit.
 for seven DOCX table-authoring cases: saved table/cell readback and opaque-part
 custody, stale cell, and four atomic refusals. Go and Python remain planned;
 this pin adds no Go table-authoring execution credit.
+[Batch 203](../reports/batches/203.md) records v0.75 shared Bun-only evidence
+for the six-step saved/reopened DOCX direct-font-size case: setting 10.5pt
+produces one direct `w:sz` with value 21. Go and Python remain planned for
+this half-point case; the Go selector and its 349 cases are unchanged.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
