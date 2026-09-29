@@ -33,6 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 235](../reports/batches/235.md) records the v0.104 Bun-only DOCX
+final-section page-layout ledger pin; it adds no Go execution credit.
 [Batch 234](../reports/batches/234.md) records the v0.103 Bun-only DOCX
 effective-run formatting ledger pin; it adds no Go execution credit.
 [Batch 232](../reports/batches/232.md) records the v0.102 Go direct-range and
