@@ -33,6 +33,11 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 269](../reports/batches/269.md) records v0.129 shared-ledger credit
+for Go's published element-replacement refusal outline from
+[Batch 268](../reports/batches/268.md): three cases / twelve steps. Python
+alone receives styled-blank XLSX cell credit (one case / four steps); Bun is
+unchanged. The pin changes no Go runtime or acceptance binding.
 [Batch 267](../reports/batches/267.md) records v0.128 shared-ledger credit
 for Go's published element-replacement custody binding from
 [Batch 266](../reports/batches/266.md): one case / three steps. Python alone
