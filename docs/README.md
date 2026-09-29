@@ -33,6 +33,10 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 250](../reports/batches/250.md) records the v0.115 shared-ledger
+credit for Go's published immutable XML leaf seed (one case / four steps). It
+changes no Go runtime or binding. [Batch 249](../reports/batches/249.md)
+records the Go execution.
 [Batch 248](../reports/batches/248.md) records the v0.114 pin and shared-ledger
 credit for Go's published Unicode QName case (one case / four steps) and Python's
 five package IDs (14 cases / 47 steps). It changes no Go runtime or binding.

@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.114.0`, commit
-`fa08cdd9129049f76a265cb000d2fb86605b7eef`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.115.0`, commit
+`9e0883aa75d46a5c9ac709b7cb3503347c00310d`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -228,6 +228,11 @@ settings IDs (24 cases / 101 steps). Go's other seven formula-reference IDs
 and all DOCX tracking IDs remain planned. No formula evaluation, workbook edit,
 Office rendering or cross-consumer execution is credited by this pin. The Go
 selector remains 363 cases / 1244 steps.
+[Batch 250](../reports/batches/250.md) records the v0.115 shared-ledger credit
+for Go's published immutable XML leaf seed: one case / four steps at Go
+`0ca57e7`. This pin adds no Go execution; the selector stays 406 cases /
+1395 steps. The positive OPC-like XML case remains unselected.
+[Batch 249](../reports/batches/249.md) records the Go immutable-leaf binding.
 [Batch 248](../reports/batches/248.md) records the v0.114 pin and shared-ledger credit
 for Go's published Unicode QName case (one case / four steps) and Python's five
 package IDs (14 cases / 47 steps). The Go selector remains 405 cases / 1391
