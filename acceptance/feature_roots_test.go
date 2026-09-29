@@ -23,6 +23,11 @@ func xmlEditingFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xml", "editing.feature")
 }
 
+// Only the one exact edited-XML/unrelated-payload custody case is selected.
+func packagePreservationFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "preservation.feature")
+}
+
 // Only this single sealed canonical outcome is selected for native execution.
 func overlapFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "zip-admission.feature")
