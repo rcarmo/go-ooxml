@@ -33,6 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 242](../reports/batches/242.md) records the v0.110 Python-only XML
+Boolean negative evidence pin; it adds no Go XML execution credit.
 [Batch 241](../reports/batches/241.md) records the v0.109 correction of
 latent Go ZIP32 overlap execution credit; it adds no new Go code or selection.
 [Batch 240](../reports/batches/240.md) records the v0.108 Python-only bounded

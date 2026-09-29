@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.109.0`, commit
-`f95047f7302b2aec277bc54d8aaced5f8b4b1f65`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.110.0`, commit
+`3a1c1220fec98e3f8c1bd9902c723b8e3aceab19`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -228,6 +228,11 @@ settings IDs (24 cases / 101 steps). Go's other seven formula-reference IDs
 and all DOCX tracking IDs remain planned. No formula evaluation, workbook edit,
 Office rendering or cross-consumer execution is credited by this pin. The Go
 selector remains 363 cases / 1244 steps.
+[Batch 242](../reports/batches/242.md) records v0.110 Python-only credit
+for four exact XML Boolean negative IDs (nine cases / 36 steps). Go adds
+no XML binding, selected case or execution credit; its batch remains
+395 cases / 1351 steps. The positive OPC-like Relationships ID is planned
+because the input omits `Type`.
 [Batch 241](../reports/batches/241.md) records v0.109 correction
 of Go's latent exact seven-step `@id-zip-physical-member-overlap-refusal`
 execution, first selected at v0.41 and confirmed in the v0.108 published
