@@ -33,6 +33,10 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 277](../reports/batches/277.md) records v0.134 Python-only ledger credit
+for the existing DOCX comment-resolution restoration case: one case / six
+steps. Go and Bun credit are unchanged. The Go pin changes no runtime or
+acceptance binding.
 [Batch 276](../reports/batches/276.md) records v0.133 shared-ledger credit
 for Go's published implicit `xml` prefix case from
 [Batch 275](../reports/batches/275.md): one case / five steps. Bun and Python
