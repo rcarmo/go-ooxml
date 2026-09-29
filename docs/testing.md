@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.118.0`, commit
-`4bb1908f48c72c6f9ee401b36e8eaa96bf499cca`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.120.0`, commit
+`fe6862522c7d7df4836bd034b12a500986c3b63c`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -228,6 +228,12 @@ settings IDs (24 cases / 101 steps). Go's other seven formula-reference IDs
 and all DOCX tracking IDs remain planned. No formula evaluation, workbook edit,
 Office rendering or cross-consumer execution is credited by this pin. The Go
 selector remains 363 cases / 1244 steps.
+[Batch 255](../reports/batches/255.md) records direct adoption of v0.120:
+v0.119 credits Go's duplicate-attribute refusal (one case / three steps)
+published in Batch 254; v0.120 adds only Python's stylesheet processing-
+instruction case / three steps. Go selects 410 cases / 1407 steps; the positive
+OPC-like XML case remains unselected.
+[Batch 254](../reports/batches/254.md) records the Go refusal execution.
 [Batch 253](../reports/batches/253.md) records direct adoption of v0.118:
 v0.117 credits the three Go attribute-splice rows / nine steps published in
 Batch 252; v0.118 adds only the Python XML entity-values case / four steps.

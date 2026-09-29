@@ -33,6 +33,11 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 255](../reports/batches/255.md) records direct v0.120 adoption:
+v0.119 credits Go's published duplicate-attribute refusal (one case / three
+steps); v0.120 adds only Python stylesheet processing-instruction evidence
+(one case / three steps). The Go pin changes no runtime or binding.
+[Batch 254](../reports/batches/254.md) records the Go refusal execution.
 [Batch 253](../reports/batches/253.md) records direct v0.118 adoption:
 v0.117 credits three published Go attribute-splice rows / nine steps, and
 v0.118 adds only Python XML entity-values evidence (one case / four steps).
