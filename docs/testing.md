@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.89.0`, commit
-`57555eeed6204e0a8fa2266b29a4fed838a5bf8e`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.90.0`, commit
+`c511c5677d57423caf832319932974454c54a711`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -155,6 +155,11 @@ for three common OPC cases: 36 Go-origin plus 35 Python-origin no-op archives
 retain whole-archive bytes after reopen; a synthetic multi-part transaction
 rolls back; and an XML edit/reopen preserves unrelated binary bytes. Go and
 Python remain planned; no cross-producer equivalence follows from this pin.
+[Batch 219](../reports/batches/219.md) records v0.90 Bun-only evidence
+for seven OPC custody/save IDs (11 cases / 108 compiled steps): typed open
+refusals, detached bytes, UTF-16LE edit, synchronous transaction/thenable,
+existing-file and symlink save custody. Go and Python remain planned; Office
+schema and rendering were not tested by this pin.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
