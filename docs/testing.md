@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.100.0`, commit
-`ff43afe10044040f33b82513798c2019ba96942b`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.101.0`, commit
+`c110ab8a61a7c5c7c118c8c9b8b5a0b5fa4b7acf`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -215,6 +215,12 @@ distinct internal relationships and exact A2/A3 text. Five preservation-row
 and limited-number editor cases remain planned; VML editing, save/reopen and
 Office rendering were not tested. Go and Python remain planned. The Go selector
 and execution credit do not change.
+[Batch 230](../reports/batches/230.md) records v0.101 Bun-only evidence
+for nine static XLSX formula-reference API IDs (45 cases / 152 steps):
+counts, byte spans, flags, direct-range axis and first coordinate, remaps,
+refusals and a finite 288-expression matrix. Formula evaluation, workbook
+edit/save and Office rendering were not tested; Go and Python remain planned.
+The Go selector and execution credit do not change.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
