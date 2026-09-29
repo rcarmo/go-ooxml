@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.96.0`, commit
-`b4a74ce5659a14f5d67990f54de6af7822f5d83d`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.97.0`, commit
+`8718db461c552d17960ea8709c6ed67f1231bc86`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -192,6 +192,11 @@ for two PPTX positioned text-box IDs (23 cases / 77 steps): eight saved
 variants and 15 atomic refusals preserving package/version. Layout inheritance
 and Office rendering were not tested; Go and Python remain planned. The Go
 selector and execution credit do not change.
+[Batch 226](../reports/batches/226.md) records v0.97 Bun-only evidence
+for two PPTX slide-permutation IDs (21 cases / 70 steps): seven reordered
+or no-op variants with handle and unrelated-part custody, plus 14 atomic
+refusals. Unsupported composition and Office rendering were not tested; Go
+and Python remain planned. The Go selector and execution credit do not change.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
