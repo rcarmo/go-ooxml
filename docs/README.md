@@ -33,6 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 218](../reports/batches/218.md) records the v0.89 Bun-only
+common OPC preservation ledger pin; it adds no Go execution credit.
 [Batch 217](../reports/batches/217.md) records the v0.88 Bun-only
 negative admission-budget ledger pin; it adds no Go execution credit.
 [Batch 216](../reports/batches/216.md) records the v0.87 Bun-only
