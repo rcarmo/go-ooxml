@@ -33,6 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 222](../reports/batches/222.md) records the v0.93 Bun-only
+existing DOCX comment-thread ledger pin; it adds no Go execution credit.
 [Batch 221](../reports/batches/221.md) records the v0.92 Bun-only
 existing DOCX comment ledger pin; it adds no Go execution credit.
 [Batch 220](../reports/batches/220.md) records the v0.91 Bun-only
