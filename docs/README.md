@@ -33,6 +33,9 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 251](../reports/batches/251.md) records the v0.116 Python-only
+staged-DOCX OPC package-preservation evidence pin (one case / four steps).
+Go gains no credit or new selection.
 [Batch 250](../reports/batches/250.md) records the v0.115 shared-ledger
 credit for Go's published immutable XML leaf seed (one case / four steps). It
 changes no Go runtime or binding. [Batch 249](../reports/batches/249.md)
