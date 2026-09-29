@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.98.0`, commit
-`8c5ff348937951701da07b44a05acaf88fdada1a`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.99.0`, commit
+`279042ea89365318b03097bc7883e80148978090`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -203,6 +203,12 @@ workbook values and parts, independent worksheet IDs, prefixed B2, the
 maximum coordinate, row order, atomic invalid-parameter refusal and formatted
 fixture append/custody. Calculation and Office rendering were not tested; Go
 and Python remain planned. The Go selector and execution credit do not change.
+[Batch 228](../reports/batches/228.md) records v0.99 Bun-only evidence
+for two XLSX direct cell-style IDs (27 cases / 90 steps): nine saved
+selections preserving values, formulas, caches and unrelated bytes, plus 18
+atomic refusals. Style dependency closure, recalculation and Office rendering
+were not tested; Go and Python remain planned. The Go selector and execution
+credit do not change.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
