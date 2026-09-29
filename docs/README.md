@@ -33,6 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 240](../reports/batches/240.md) records the v0.108 Python-only bounded
+ZIP32 overlap-refusal evidence pin; it adds no Go execution credit.
 [Batch 239](../reports/batches/239.md) records the v0.107 shared-ledger credit
 for four Go static formula-reference IDs already published in Batch 238.
 [Batch 237](../reports/batches/237.md) records the v0.106 Bun-only DOCX

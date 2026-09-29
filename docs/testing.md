@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.107.0`, commit
-`1e3fe83514b97a5882cfcf52e0b6a921c4f8d8e4`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.108.0`, commit
+`33f291c4d3263fee760e614287c4415071d35cd1`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -228,6 +228,11 @@ settings IDs (24 cases / 101 steps). Go's other seven formula-reference IDs
 and all DOCX tracking IDs remain planned. No formula evaluation, workbook edit,
 Office rendering or cross-consumer execution is credited by this pin. The Go
 selector remains 363 cases / 1244 steps.
+[Batch 240](../reports/batches/240.md) records v0.108 shared-ledger
+credit for Python alone on one bounded ZIP32 STORED physical-member-overlap
+refusal (seven steps). Go remains planned for this exact ID. The pin adds no
+Go execution credit or broad overlap, ZIP64, ECMA or Office evidence; Go's
+selected batch stays at 395 cases / 1351 steps.
 [Batch 239](../reports/batches/239.md) records v0.107 shared-ledger
 credit for the four Go static formula-reference IDs (18 cases / 57 steps)
 already executed in [Batch 238](../reports/batches/238.md) and published
