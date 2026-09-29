@@ -69,6 +69,9 @@ const bodyInsertOrderCaseID = "@id-docx-go-body-insert-order"
 const directFontSizeCaseID = "@id-docx-direct-font-size-half-points"
 const directRangeParsingCaseID = "@id-xlsx-go-direct-range-parsing"
 const directRangeRefusalCaseID = "@id-xlsx-go-direct-range-refusal"
+const formulaAnalysisCountsCaseID = "@id-xlsx-go-formula-analysis-counts"
+const formulaQuotedSheetFlagsCaseID = "@id-xlsx-go-formula-quoted-sheet-flags"
+const formulaAnalysisRefusalCaseID = "@id-xlsx-go-formula-analysis-refusal"
 const retiredCacheCaseID = "@CACHE-001"
 
 func selectedRunFormattingID(id string) bool {
@@ -80,7 +83,7 @@ func selectedTableValueID(id string) bool {
 }
 
 func selectedCanonicalID(path, id string) bool {
-	return id == canonicalID(path) || (path == formulaReferenceFeaturePath() && id == directRangeRefusalCaseID) || (path == runEffectsFeaturePath() && selectedRunFormattingID(id)) || (path == tableMergeFeaturePath() && (selectedTableValueID(id) || id == roundtripTableTextCaseID)) || (path == paragraphFeaturePath() && (id == paragraphAlignmentCaseID || id == paragraphSpacingCaseID || id == paragraphTogglesCaseID || id == paragraphRunsCaseID || id == bodyInsertOrderCaseID))
+	return id == canonicalID(path) || (path == formulaReferenceFeaturePath() && (id == directRangeRefusalCaseID || id == formulaAnalysisCountsCaseID || id == formulaQuotedSheetFlagsCaseID || id == formulaAnalysisRefusalCaseID)) || (path == runEffectsFeaturePath() && selectedRunFormattingID(id)) || (path == tableMergeFeaturePath() && (selectedTableValueID(id) || id == roundtripTableTextCaseID)) || (path == paragraphFeaturePath() && (id == paragraphAlignmentCaseID || id == paragraphSpacingCaseID || id == paragraphTogglesCaseID || id == paragraphRunsCaseID || id == bodyInsertOrderCaseID))
 }
 
 func canonicalID(path string) string {
@@ -270,6 +273,9 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 	dimensionRows := map[string]bool{}
 	directRangeParseRows := map[string]bool{}
 	directRangeRefusalRows := map[string]bool{}
+	formulaCountsRows := map[string]bool{}
+	formulaRefusalRows := map[string]bool{}
+	formulaFlagsRows := map[string]bool{}
 	budgetRows := map[string]bool{}
 	paragraphRows := map[string]bool{}
 	alignmentRows := map[string]bool{}
@@ -298,6 +304,22 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 				}
 				if rows[p.Name] {
 					return fmt.Errorf("%s: duplicate direct-range row %q", path, p.Name)
+				}
+				rows[p.Name] = true
+			}
+			if id == formulaAnalysisCountsCaseID || id == formulaQuotedSheetFlagsCaseID || id == formulaAnalysisRefusalCaseID {
+				if err := guardCanonicalFormulaAnalysisCase(id, p, path); err != nil {
+					return err
+				}
+				rows := formulaCountsRows
+				switch id {
+				case formulaQuotedSheetFlagsCaseID:
+					rows = formulaFlagsRows
+				case formulaAnalysisRefusalCaseID:
+					rows = formulaRefusalRows
+				}
+				if rows[p.Name] {
+					return fmt.Errorf("%s: duplicate formula analysis row %q", path, p.Name)
 				}
 				rows[p.Name] = true
 			}
@@ -496,7 +518,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			expected[key] = expectedCase{key, p.Name, len(p.Steps)}
 		}
 	}
-	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == directRangeParsingCaseID && (canonicalCases != 13 || len(directRangeParseRows) != 6 || len(directRangeRefusalRows) != 7)) || (canonicalID(path) == directFontSizeCaseID && canonicalCases != 1) || (canonicalID(path) == paragraphTextGetterCaseID && (canonicalCases != 16 || len(paragraphRows) != 5 || len(alignmentRows) != 4 || len(spacingRows) != 4)) || (canonicalID(path) == corePropertiesCaseID && canonicalCases != 1) || (canonicalID(path) == sectionTitleBackgroundCaseID && canonicalCases != 1) || (canonicalID(path) == newEmptyBodyCaseID && canonicalCases != 1) || (canonicalID(path) == tableMergeCaseID && (canonicalCases != 13 || len(dimensionRows) != 8)) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 23 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
+	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == directRangeParsingCaseID && (canonicalCases != 27 || len(directRangeParseRows) != 6 || len(directRangeRefusalRows) != 7 || len(formulaCountsRows) != 6 || len(formulaFlagsRows) != 1 || len(formulaRefusalRows) != 7)) || (canonicalID(path) == directFontSizeCaseID && canonicalCases != 1) || (canonicalID(path) == paragraphTextGetterCaseID && (canonicalCases != 16 || len(paragraphRows) != 5 || len(alignmentRows) != 4 || len(spacingRows) != 4)) || (canonicalID(path) == corePropertiesCaseID && canonicalCases != 1) || (canonicalID(path) == sectionTitleBackgroundCaseID && canonicalCases != 1) || (canonicalID(path) == newEmptyBodyCaseID && canonicalCases != 1) || (canonicalID(path) == tableMergeCaseID && (canonicalCases != 13 || len(dimensionRows) != 8)) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 23 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
 		return fmt.Errorf("%s: selected canonical case count drift: %d", path, canonicalCases)
 	}
 	return nil
