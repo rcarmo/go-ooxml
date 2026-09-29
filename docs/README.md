@@ -33,6 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 229](../reports/batches/229.md) records the v0.100 Bun-only
+XLSX existing-comment/VML graph pin; it adds no Go execution credit.
 [Batch 228](../reports/batches/228.md) records the v0.99 Bun-only
 XLSX direct cell-style outcome pin; it adds no Go execution credit.
 [Batch 227](../reports/batches/227.md) records the v0.98 Bun-only
