@@ -33,6 +33,11 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 273](../reports/batches/273.md) records v0.131 shared-ledger credit
+for Go's published exact pre-root stylesheet-PI case from
+[Batch 272](../reports/batches/272.md): one case / three steps, accepting the
+literal PI with root `r`. Bun and Python are unchanged. The pin changes no Go
+runtime or acceptance binding; it adds no PI enumeration or general preservation.
 [Batch 271](../reports/batches/271.md) records v0.130 shared-ledger credit
 for Go's already published exact XML entity-values case from
 [Batch 270](../reports/batches/270.md): one case / four steps. Python alone
