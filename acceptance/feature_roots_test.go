@@ -18,6 +18,11 @@ func overlapFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "zip-admission.feature")
 }
 
+// Only four exact negative Boolean outcomes are selected; the OPC-like positive stays planned.
+func xmlComparisonFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xml", "comparison.feature")
+}
+
 // Only the negative-budget scenario outline in this canonical feature is selected.
 func negativeBudgetFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "admission-limit-configuration.feature")
