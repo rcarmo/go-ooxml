@@ -33,6 +33,10 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 261](../reports/batches/261.md) records v0.125 shared-ledger credit
+for Go's published structured child-insertion custody case (one case / four
+steps) from [Batch 260](../reports/batches/260.md). It changes no Go runtime
+or binding; Bun and Python remain planned for this case.
 [Batch 259](../reports/batches/259.md) records direct v0.124 adoption:
 v0.123 credits Go's published root and nested element-removal refusal rows
 (two cases / six steps) from [Batch 258](../reports/batches/258.md);
