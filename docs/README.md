@@ -33,6 +33,11 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 253](../reports/batches/253.md) records direct v0.118 adoption:
+v0.117 credits three published Go attribute-splice rows / nine steps, and
+v0.118 adds only Python XML entity-values evidence (one case / four steps).
+The Go pin changes no runtime or binding. [Batch 252](../reports/batches/252.md)
+records the Go execution.
 [Batch 251](../reports/batches/251.md) records the v0.116 Python-only
 staged-DOCX OPC package-preservation evidence pin (one case / four steps).
 Go gains no credit or new selection.

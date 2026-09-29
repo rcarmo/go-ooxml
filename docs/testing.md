@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.116.0`, commit
-`1e5a644ffaf82b010a5598ae3fdefa96c4331fcd`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.118.0`, commit
+`4bb1908f48c72c6f9ee401b36e8eaa96bf499cca`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -228,6 +228,12 @@ settings IDs (24 cases / 101 steps). Go's other seven formula-reference IDs
 and all DOCX tracking IDs remain planned. No formula evaluation, workbook edit,
 Office rendering or cross-consumer execution is credited by this pin. The Go
 selector remains 363 cases / 1244 steps.
+[Batch 253](../reports/batches/253.md) records direct adoption of v0.118:
+v0.117 credits the three Go attribute-splice rows / nine steps published in
+Batch 252; v0.118 adds only the Python XML entity-values case / four steps.
+Go selects 409 cases / 1404 steps, including attribute splice 3/9; the sibling
+refusal and positive OPC-like XML cases remain unselected.
+[Batch 252](../reports/batches/252.md) records the Go attribute-splice execution.
 [Batch 251](../reports/batches/251.md) records the v0.116 Python-only
 staged-DOCX OPC package-preservation ledger pin. Go gains no new credit or
 selected case; the selector stays 406 cases / 1395 steps. The positive OPC-like
