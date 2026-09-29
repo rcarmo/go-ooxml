@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.68.0`, commit
-`6ed911b4c547f7a74a58122b6564c11247bff9c1`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.69.0`, commit
+`df3950c79dc3c688027b1e715eb8557e541d4a7c`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -66,6 +66,12 @@ Title/Creator/Subject getters and first-section TitlePage/background getters.
 [Batch 193](../reports/batches/193.md) records v0.68 shared Go and Bun evidence
 for those exact cases; Python remains planned. Other supplied core fields are
 setup, without saved or broader setter credit.
+[Batch 194](../reports/batches/194.md) binds the five exact JSON rows of
+`@id-docx-go-paragraph-text-getter`: empty, Hello World, two-space wrapped,
+Japanese and XML punctuation. [Batch 195](../reports/batches/195.md) records
+v0.69 shared Go and Bun evidence for those in-memory getters; Python is planned.
+Other native text rows, sibling paragraph workflows and saved XML have no Go
+execution credit from this binding.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.

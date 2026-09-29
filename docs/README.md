@@ -33,7 +33,9 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 193](../reports/batches/193.md) records the v0.68 Go/Bun core and section
+[Batch 195](../reports/batches/195.md) records the v0.69 Go/Bun paragraph-text getter
+ledger pin. [Batch 194](../reports/batches/194.md) records the five exact Go in-memory
+paragraph text rows. [Batch 193](../reports/batches/193.md) records the v0.68 Go/Bun core and section
 getter ledger pin. [Batch 192](../reports/batches/192.md) records the bounded Go core-property and
 section/background getter bindings. [Batch 191](../reports/batches/191.md) records the v0.67 Go/Bun new-body and table-text
 readback ledger pin. [Batch 190](../reports/batches/190.md) records Go new-document empty-body and table-text
