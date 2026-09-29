@@ -11,7 +11,7 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/document"
 )
 
-// Only the five shared in-memory paragraph getter rows are selected.
+// The selected paragraph scenarios use a fresh in-memory document per case.
 func paragraphTextGetterSteps(sc *godog.ScenarioContext) {
 	var doc document.Document
 	var paragraph document.Paragraph
@@ -58,6 +58,7 @@ func paragraphTextGetterSteps(sc *godog.ScenarioContext) {
 		}
 		return checkParagraphText(paragraph, want)
 	})
+	paragraphValueSteps(sc, func() document.Paragraph { return paragraph })
 }
 
 func decodeParagraphTextJSON(raw string) (string, error) {
