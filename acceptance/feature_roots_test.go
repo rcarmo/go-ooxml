@@ -13,6 +13,11 @@ func goFeatureRoot() string {
 	return filepath.Join(testutil.ReferenceRoot(), "staging", "go", "features")
 }
 
+// Select the immutable leaf seed only; sibling XML editing workflows stay planned.
+func xmlEditingFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xml", "editing.feature")
+}
+
 // Only this single sealed canonical outcome is selected for native execution.
 func overlapFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "zip-admission.feature")
