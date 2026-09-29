@@ -33,6 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 237](../reports/batches/237.md) records the v0.106 Bun-only DOCX
+paragraph-style and Python-only XLSX comment/VML evidence pin; Go gains no credit.
 [Batch 236](../reports/batches/236.md) records the v0.105 shared-ledger credit
 for three already-executed Go static formula-analysis IDs, not new execution.
 [Batch 235](../reports/batches/235.md) records the v0.104 Bun-only DOCX
