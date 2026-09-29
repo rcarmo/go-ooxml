@@ -33,6 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 227](../reports/batches/227.md) records the v0.98 Bun-only
+XLSX creation and missing-cell outcome pin; it adds no Go execution credit.
 [Batch 226](../reports/batches/226.md) records the v0.97 Bun-only
 PPTX slide-permutation outcome pin; it adds no Go execution credit.
 [Batch 225](../reports/batches/225.md) records the v0.96 Bun-only
