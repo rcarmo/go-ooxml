@@ -33,6 +33,11 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 267](../reports/batches/267.md) records v0.128 shared-ledger credit
+for Go's published element-replacement custody binding from
+[Batch 266](../reports/batches/266.md): one case / three steps. Python alone
+receives staged file-publication OPC rollback credit. The pin changes no Go
+runtime or acceptance binding.
 [Batch 265](../reports/batches/265.md) records v0.127 shared-ledger credit
 for Go's published child-namespace matrix from
 [Batch 264](../reports/batches/264.md): one six-step case with 100 derived

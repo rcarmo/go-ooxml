@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.127.0`, commit
-`c327ce64d85c09f4a16c4e4114f937c525818e1a`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.128.0`, commit
+`6570b22e201fecf20c5b8cd393613ebc84fc7465`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -228,6 +228,14 @@ settings IDs (24 cases / 101 steps). Go's other seven formula-reference IDs
 and all DOCX tracking IDs remain planned. No formula evaluation, workbook edit,
 Office rendering or cross-consumer execution is credited by this pin. The Go
 selector remains 363 cases / 1244 steps.
+[Batch 267](../reports/batches/267.md) records v0.128 adoption: Go's
+published element-replacement custody binding from
+[Batch 266](../reports/batches/266.md) receives shared-ledger credit as one
+three-step case. Python alone receives staged FILE-PUBLICATION OPC rollback
+credit; the Go selector remains 417 cases / 1434 steps. This pin changes no Go
+runtime or acceptance binding. Replacement refusal, `CACHE-001`, positive
+OPC-like XML, PPTX, Office, PDF and general XML conformance stay outside this
+Go execution evidence.
 [Batch 265](../reports/batches/265.md) records v0.127 adoption: Go's
 published child-namespace matrix from [Batch 264](../reports/batches/264.md)
 receives shared-ledger credit as one six-step case covering 100 derived
