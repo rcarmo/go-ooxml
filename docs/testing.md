@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.112.0`, commit
-`ef1e20a4b9e142f9675eb9c79eee0f678bcb87c6`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.113.0`, commit
+`32d2a4f5d89f5832f01242bee7a5c8268387e7dd`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -228,6 +228,12 @@ settings IDs (24 cases / 101 steps). Go's other seven formula-reference IDs
 and all DOCX tracking IDs remain planned. No formula evaluation, workbook edit,
 Office rendering or cross-consumer execution is credited by this pin. The Go
 selector remains 363 cases / 1244 steps.
+[Batch 246](../reports/batches/246.md) records v0.113 Python-only
+credit for the exact two negative direct-admission budget cases / 12 steps
+and one unsigned ZIP32 descriptor-signature collision case / eight steps.
+Go's earlier execution credit, bindings and selector do not change: 404
+cases / 1387 steps. No positive-budget, broad descriptor, ZIP64, ECMA or
+Office evidence follows from this pin.
 [Batch 245](../reports/batches/245.md) records v0.112 shared-ledger
 credit for Go's four exact XML Boolean negative IDs (nine cases / 36 steps)
 already published in [Batch 244](../reports/batches/244.md). It adds no
