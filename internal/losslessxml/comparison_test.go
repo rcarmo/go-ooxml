@@ -18,6 +18,8 @@ func TestEquivalentControls(t *testing.T) {
 		{"different whitespace", `<a> x </a>`, `<a>x</a>`, false},
 		{"different attr value", `<a x="1"/>`, `<a x="2"/>`, false},
 		{"prefix attribute binding", `<a xmlns:p="urn:one" value="p:x"/>`, `<a xmlns:p="urn:two" value="p:x"/>`, false},
+		{"ordinary colon text spelling", `<a xmlns:p="urn:one" xmlns:q="urn:one">p:x</a>`, `<a xmlns:p="urn:one" xmlns:q="urn:one">q:x</a>`, false},
+		{"ordinary colon attribute spelling", `<a xmlns:p="urn:one" xmlns:q="urn:one" value="p:x"/>`, `<a xmlns:p="urn:one" xmlns:q="urn:one" value="q:x"/>`, false},
 		{"PI separator", `<?p  x?><a/>`, `<?p x?><a/>`, false},
 		{"PI data", `<?p old?><a/>`, `<?p new?><a/>`, false},
 		{"prefix alias with PI", `<?p x?><p:a xmlns:p="urn:one"/>`, `<?p x?><q:a xmlns:q="urn:one"/>`, true},

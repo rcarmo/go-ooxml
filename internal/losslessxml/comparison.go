@@ -54,7 +54,7 @@ func Equivalent(left, right []byte) bool {
 			as, bs = as[:len(as)-1], bs[:len(bs)-1]
 		case xml.CharData:
 			y, ok := bt.(xml.CharData)
-			if !ok || !comparisonValue(string(x), string(y), as[len(as)-1], bs[len(bs)-1]) {
+			if !ok || !bytes.Equal(x, y) {
 				return false
 			}
 		case xml.Comment:
@@ -112,20 +112,19 @@ func comparisonAttrs(left, right []xml.Attr, ln, rn map[string]string) bool {
 	return count == len(values)
 }
 
-// A single QName-like value can change meaning without changing its bytes.
-// Other values are compared lexically; no general attribute-type inference is made.
+// Attribute values retain lexical spelling. Identical QName-like values with
+// different or unbound prefix scopes are conservatively non-equivalent.
+// Attribute schema typing is unknown, so aliases in values cannot be normalised.
 func comparisonValue(left, right string, ln, rn map[string]string) bool {
-	lp, ll, lok := comparisonQName(left, ln)
-	rp, rl, rok := comparisonQName(right, rn)
-	if lok || rok {
-		return lok && rok && lp == rp && ll == rl
-	}
-	// An unresolved QName-like value is unsafe even when lexically identical.
-	// This conservative choice may also reject non-QName colon strings.
-	if comparisonQNameLike(left) || comparisonQNameLike(right) {
+	if left != right {
 		return false
 	}
-	return left == right
+	if !comparisonQNameLike(left) {
+		return true
+	}
+	lp, ll, lok := comparisonQName(left, ln)
+	rp, rl, rok := comparisonQName(right, rn)
+	return lok && rok && lp == rp && ll == rl
 }
 
 func comparisonQName(s string, ns map[string]string) (uri, local string, ok bool) {
