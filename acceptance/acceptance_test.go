@@ -103,6 +103,7 @@ func TestAcceptance(t *testing.T) {
 		attributeRefusalSteps(sc)
 		elementRemovalSteps(sc)
 		elementRemovalRefusalSteps(sc)
+		childInsertionCustodySteps(sc)
 		descriptorCollisionSteps(sc)
 		limitSteps(sc)
 		preservedSteps(sc)
@@ -190,6 +191,7 @@ func TestAcceptance(t *testing.T) {
 		{"go-ooxml-attribute-refusal", xmlEditingFeaturePath(), attributeRefusalCaseID},
 		{"go-ooxml-element-removal", xmlEditingFeaturePath(), elementRemovalCaseID},
 		{"go-ooxml-element-removal-refusal", xmlEditingFeaturePath(), elementRemovalRefusalCaseID},
+		{"go-ooxml-child-insertion-custody", xmlEditingFeaturePath(), childInsertionCustodyCaseID},
 		{"go-ooxml-xml-significant", xmlComparisonFeaturePath(), xmlSignificantCaseID},
 		{"go-ooxml-xml-prefix-binding", xmlComparisonFeaturePath(), xmlPrefixBindingCaseID},
 		{"go-ooxml-xml-unsafe", xmlComparisonFeaturePath(), xmlUnsafeCaseID},
@@ -276,7 +278,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == immutableLeafCaseID || tag == attributeSpliceCaseID || tag == attributeRefusalCaseID || tag == elementRemovalCaseID || tag == elementRemovalRefusalCaseID || tag == unicodeQNameCaseID || tag == xmlSignificantCaseID || tag == xmlPrefixBindingCaseID || tag == xmlUnsafeCaseID || tag == xmlMarkupCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == directRangeParsingCaseID || tag == directRangeRefusalCaseID || tag == formulaAnalysisCountsCaseID || tag == formulaQuotedSheetFlagsCaseID || tag == formulaAnalysisRefusalCaseID || tag == formulaLiteralPunctuationCaseID || tag == staticRemapExactCaseID || tag == staticRemapRefusalCaseID || tag == staticReferencePropertiesCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID || tag == corePropertiesCaseID || tag == sectionTitleBackgroundCaseID || tag == paragraphTextGetterCaseID || tag == paragraphAlignmentCaseID || tag == paragraphSpacingCaseID || tag == paragraphTogglesCaseID || tag == paragraphRunsCaseID || tag == bodyInsertOrderCaseID || tag == directFontSizeCaseID {
+		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == immutableLeafCaseID || tag == attributeSpliceCaseID || tag == attributeRefusalCaseID || tag == elementRemovalCaseID || tag == elementRemovalRefusalCaseID || tag == childInsertionCustodyCaseID || tag == unicodeQNameCaseID || tag == xmlSignificantCaseID || tag == xmlPrefixBindingCaseID || tag == xmlUnsafeCaseID || tag == xmlMarkupCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == directRangeParsingCaseID || tag == directRangeRefusalCaseID || tag == formulaAnalysisCountsCaseID || tag == formulaQuotedSheetFlagsCaseID || tag == formulaAnalysisRefusalCaseID || tag == formulaLiteralPunctuationCaseID || tag == staticRemapExactCaseID || tag == staticRemapRefusalCaseID || tag == staticReferencePropertiesCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID || tag == corePropertiesCaseID || tag == sectionTitleBackgroundCaseID || tag == paragraphTextGetterCaseID || tag == paragraphAlignmentCaseID || tag == paragraphSpacingCaseID || tag == paragraphTogglesCaseID || tag == paragraphRunsCaseID || tag == bodyInsertOrderCaseID || tag == directFontSizeCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}
