@@ -13,7 +13,12 @@ func goFeatureRoot() string {
 	return filepath.Join(testutil.ReferenceRoot(), "staging", "go", "features")
 }
 
-// Select the immutable leaf seed only; sibling XML editing workflows stay planned.
+// Select only the exact entity-value decoding case; sibling parsing workflows stay planned.
+func xmlParsingFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xml", "parsing.feature")
+}
+
+// Select named XML editing cases only; sibling workflows stay planned.
 func xmlEditingFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xml", "editing.feature")
 }

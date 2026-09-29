@@ -28,7 +28,7 @@ func inventoryCases() (map[caseID]expectedCase, []map[string]any, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	for _, path := range []string{overlapFeaturePath(), xmlComparisonFeaturePath(), xmlNamesFeaturePath(), xmlEditingFeaturePath(), negativeBudgetFeaturePath(), descriptorIntegrityFeaturePath(), ownedChainFeaturePath(), crossSheetCacheFeaturePath(), formulaReferenceFeaturePath(), runEffectsFeaturePath(), tableMergeFeaturePath(), creationFeaturePath(), corePropertiesFeaturePath(), pageLayoutFeaturePath(), paragraphFeaturePath(), directFontSizeFeaturePath()} {
+	for _, path := range []string{overlapFeaturePath(), xmlComparisonFeaturePath(), xmlNamesFeaturePath(), xmlEditingFeaturePath(), xmlParsingFeaturePath(), negativeBudgetFeaturePath(), descriptorIntegrityFeaturePath(), ownedChainFeaturePath(), crossSheetCacheFeaturePath(), formulaReferenceFeaturePath(), runEffectsFeaturePath(), tableMergeFeaturePath(), creationFeaturePath(), corePropertiesFeaturePath(), pageLayoutFeaturePath(), paragraphFeaturePath(), directFontSizeFeaturePath()} {
 		if err = inventoryFeature(path, nil, nil, expected, &inventory, seen, next, true); err != nil {
 			return nil, nil, err
 		}
@@ -100,13 +100,15 @@ func selectedTableValueID(id string) bool {
 }
 
 func selectedCanonicalID(path, id string) bool {
-	return (path == xmlEditingFeaturePath() && (id == attributeSpliceCaseID || id == attributeRefusalCaseID || id == elementRemovalCaseID || id == elementRemovalRefusalCaseID || id == elementReplacementCustodyCaseID || id == elementReplacementRefusalCaseID || id == childInsertionCustodyCaseID || id == childInsertionRefusalCaseID || id == childNamespaceMatrixCaseID)) || (path == xmlComparisonFeaturePath() && (id == xmlSignificantCaseID || id == xmlPrefixBindingCaseID || id == xmlUnsafeCaseID || id == xmlMarkupCaseID)) || id == canonicalID(path) || (path == formulaReferenceFeaturePath() && (id == directRangeRefusalCaseID || id == formulaAnalysisCountsCaseID || id == formulaQuotedSheetFlagsCaseID || id == formulaAnalysisRefusalCaseID || id == formulaLiteralPunctuationCaseID || id == staticRemapExactCaseID || id == staticRemapRefusalCaseID || id == staticReferencePropertiesCaseID)) || (path == runEffectsFeaturePath() && selectedRunFormattingID(id)) || (path == tableMergeFeaturePath() && (selectedTableValueID(id) || id == roundtripTableTextCaseID)) || (path == paragraphFeaturePath() && (id == paragraphAlignmentCaseID || id == paragraphSpacingCaseID || id == paragraphTogglesCaseID || id == paragraphRunsCaseID || id == bodyInsertOrderCaseID))
+	return (path == xmlParsingFeaturePath() && id == xmlEntityValuesCaseID) || (path == xmlEditingFeaturePath() && (id == attributeSpliceCaseID || id == attributeRefusalCaseID || id == elementRemovalCaseID || id == elementRemovalRefusalCaseID || id == elementReplacementCustodyCaseID || id == elementReplacementRefusalCaseID || id == childInsertionCustodyCaseID || id == childInsertionRefusalCaseID || id == childNamespaceMatrixCaseID)) || (path == xmlComparisonFeaturePath() && (id == xmlSignificantCaseID || id == xmlPrefixBindingCaseID || id == xmlUnsafeCaseID || id == xmlMarkupCaseID)) || id == canonicalID(path) || (path == formulaReferenceFeaturePath() && (id == directRangeRefusalCaseID || id == formulaAnalysisCountsCaseID || id == formulaQuotedSheetFlagsCaseID || id == formulaAnalysisRefusalCaseID || id == formulaLiteralPunctuationCaseID || id == staticRemapExactCaseID || id == staticRemapRefusalCaseID || id == staticReferencePropertiesCaseID)) || (path == runEffectsFeaturePath() && selectedRunFormattingID(id)) || (path == tableMergeFeaturePath() && (selectedTableValueID(id) || id == roundtripTableTextCaseID)) || (path == paragraphFeaturePath() && (id == paragraphAlignmentCaseID || id == paragraphSpacingCaseID || id == paragraphTogglesCaseID || id == paragraphRunsCaseID || id == bodyInsertOrderCaseID))
 }
 
 func canonicalID(path string) string {
 	switch path {
 	case xmlNamesFeaturePath():
 		return unicodeQNameCaseID
+	case xmlParsingFeaturePath():
+		return xmlEntityValuesCaseID
 	case xmlEditingFeaturePath():
 		return immutableLeafCaseID
 	case xmlComparisonFeaturePath():
@@ -195,7 +197,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 	collect = func(children []*messages.FeatureChild) error {
 		for _, c := range children {
 			if c.Rule != nil {
-				if !canonical || (path != xmlEditingFeaturePath() && path != crossSheetCacheFeaturePath() && path != formulaReferenceFeaturePath() && path != runEffectsFeaturePath() && path != tableMergeFeaturePath() && path != creationFeaturePath() && path != corePropertiesFeaturePath() && path != pageLayoutFeaturePath() && path != paragraphFeaturePath() && path != directFontSizeFeaturePath()) {
+				if !canonical || (path != xmlEditingFeaturePath() && path != xmlParsingFeaturePath() && path != crossSheetCacheFeaturePath() && path != formulaReferenceFeaturePath() && path != runEffectsFeaturePath() && path != tableMergeFeaturePath() && path != creationFeaturePath() && path != corePropertiesFeaturePath() && path != pageLayoutFeaturePath() && path != paragraphFeaturePath() && path != directFontSizeFeaturePath()) {
 					return fmt.Errorf("%s: Rules require explicit inventory support", path)
 				}
 				for _, child := range c.Rule.Children {
@@ -281,6 +283,11 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 	if err := collect(doc.Feature.Children); err != nil {
 		return err
 	}
+	if canonical && path == xmlParsingFeaturePath() {
+		if err := guardXMLEntityValuesRule(doc); err != nil {
+			return err
+		}
+	}
 	if canonical && seen[canonicalID(path)] == "" {
 		return fmt.Errorf("%s: selected canonical case missing", path)
 	}
@@ -332,6 +339,11 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 		id := ids[p.AstNodeIds[0]]
 		if canonical {
 			canonicalCases++
+			if path == xmlParsingFeaturePath() {
+				if err := guardXMLEntityValuesCase(id, p, line); err != nil {
+					return err
+				}
+			}
 			if path == xmlNamesFeaturePath() {
 				if err := guardUnicodeQNameCase(id, p); err != nil {
 					return err
@@ -647,7 +659,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			expected[key] = expectedCase{key, p.Name, len(p.Steps)}
 		}
 	}
-	if canonical && ((canonicalID(path) == immutableLeafCaseID && (canonicalCases != 15 || len(attributeSpliceRowsSeen) != 3 || len(removalRefusalRowsSeen) != 2 || len(replacementRefusalRowsSeen) != 3)) || (canonicalID(path) == unicodeQNameCaseID && canonicalCases != 1) || (canonicalID(path) == xmlSignificantCaseID && canonicalCases != 9) || (canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == directRangeParsingCaseID && (canonicalCases != 45 || len(directRangeParseRows) != 6 || len(directRangeRefusalRows) != 7 || len(formulaCountsRows) != 6 || len(formulaFlagsRows) != 1 || len(formulaRefusalRows) != 7 || len(formulaLiteralRows) != 5 || len(staticRemapExactRows) != 5 || len(staticRemapRefusalRows) != 7 || len(staticPropertiesRows) != 1)) || (canonicalID(path) == directFontSizeCaseID && canonicalCases != 1) || (canonicalID(path) == paragraphTextGetterCaseID && (canonicalCases != 16 || len(paragraphRows) != 5 || len(alignmentRows) != 4 || len(spacingRows) != 4)) || (canonicalID(path) == corePropertiesCaseID && canonicalCases != 1) || (canonicalID(path) == sectionTitleBackgroundCaseID && canonicalCases != 1) || (canonicalID(path) == newEmptyBodyCaseID && canonicalCases != 1) || (canonicalID(path) == tableMergeCaseID && (canonicalCases != 13 || len(dimensionRows) != 8)) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 23 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
+	if canonical && ((canonicalID(path) == immutableLeafCaseID && (canonicalCases != 15 || len(attributeSpliceRowsSeen) != 3 || len(removalRefusalRowsSeen) != 2 || len(replacementRefusalRowsSeen) != 3)) || (canonicalID(path) == unicodeQNameCaseID && canonicalCases != 1) || (canonicalID(path) == xmlEntityValuesCaseID && canonicalCases != 1) || (canonicalID(path) == xmlSignificantCaseID && canonicalCases != 9) || (canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == directRangeParsingCaseID && (canonicalCases != 45 || len(directRangeParseRows) != 6 || len(directRangeRefusalRows) != 7 || len(formulaCountsRows) != 6 || len(formulaFlagsRows) != 1 || len(formulaRefusalRows) != 7 || len(formulaLiteralRows) != 5 || len(staticRemapExactRows) != 5 || len(staticRemapRefusalRows) != 7 || len(staticPropertiesRows) != 1)) || (canonicalID(path) == directFontSizeCaseID && canonicalCases != 1) || (canonicalID(path) == paragraphTextGetterCaseID && (canonicalCases != 16 || len(paragraphRows) != 5 || len(alignmentRows) != 4 || len(spacingRows) != 4)) || (canonicalID(path) == corePropertiesCaseID && canonicalCases != 1) || (canonicalID(path) == sectionTitleBackgroundCaseID && canonicalCases != 1) || (canonicalID(path) == newEmptyBodyCaseID && canonicalCases != 1) || (canonicalID(path) == tableMergeCaseID && (canonicalCases != 13 || len(dimensionRows) != 8)) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 23 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
 		return fmt.Errorf("%s: selected canonical case count drift: %d", path, canonicalCases)
 	}
 	return nil
