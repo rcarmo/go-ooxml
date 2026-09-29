@@ -33,6 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 220](../reports/batches/220.md) records the v0.91 Bun-only
+PPTX/XLSX relationship expanded-name ledger pin; it adds no Go execution credit.
 [Batch 219](../reports/batches/219.md) records the v0.90 Bun-only
 OPC custody and save ledger pin; it adds no Go execution credit.
 [Batch 218](../reports/batches/218.md) records the v0.89 Bun-only
