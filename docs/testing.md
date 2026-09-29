@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.70.0`, commit
-`779415af623f7d7536a8bce5d4b3b7204193d653`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.71.0`, commit
+`e8ff3e752e19c8a935089c7efac0de57ec577fa5`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -76,6 +76,11 @@ binds four alignment rows (justify→both), four twip-spacing pairs, the three
 paragraph flags and three appended runs in memory. [Batch 197](../reports/batches/197.md)
 records v0.70 shared Go and Bun evidence for those ten cases; Python is planned.
 These getter checks do not test saved XML or Office layout.
+[Batch 198](../reports/batches/198.md) binds the four-step in-memory
+`@id-docx-go-body-insert-order` case, checking initial empty body, three
+operation counts and `First,Second,Third` paragraph order. [Batch 199](../reports/batches/199.md)
+records v0.71 shared Go and Bun evidence for that case; Python is planned.
+Saved XML and Office layout are outside this binding.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
