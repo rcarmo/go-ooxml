@@ -33,6 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 245](../reports/batches/245.md) records v0.112 shared-ledger credit
+for four bounded Go XML Boolean negative IDs already published in Batch 244.
 [Batch 243](../reports/batches/243.md) records v0.111 shared-ledger credit
 for two exact Go admission IDs already executed since v0.42 and v0.43.
 [Batch 242](../reports/batches/242.md) records the v0.110 Python-only XML
