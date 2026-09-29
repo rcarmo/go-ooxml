@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/binary"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"hash/crc32"
@@ -341,11 +342,36 @@ func bzipAdmissionSteps(sc *godog.ScenarioContext) {
 	var source, original []byte
 	var refusal error
 	var session *packaging.Preserved
+	var unsafePairs [][2]string
 	sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 		source, original = nil, nil
 		refusal = nil
 		session = nil
+		unsafePairs = nil
 		return ctx, nil
+	})
+	sc.Step(`^an ordered ZIP_STORED archive has member pairs encoded as JSON (.+)$`, func(input string) error {
+		var pairs [][2]string
+		if err := json.Unmarshal([]byte(input), &pairs); err != nil {
+			return err
+		}
+		selected := false
+		for _, row := range unsafeRows {
+			if samePairs(pairs, row.pairs) {
+				selected = true
+			}
+		}
+		if !selected {
+			return fmt.Errorf("unknown unsafe-member pairs")
+		}
+		var err error
+		source, err = rawStoredZIP(pairs)
+		if err != nil {
+			return err
+		}
+		original = bytes.Clone(source)
+		unsafePairs = pairs
+		return inspectStoredZIP(source, pairs)
 	})
 	sc.Step(`^a ZIP_BZIP2 archive contains a\.xml with UTF-8 text <a/>$`, func() error {
 		var err error
@@ -358,7 +384,7 @@ func bzipAdmissionSteps(sc *godog.ScenarioContext) {
 	})
 	sc.Step(`^the package admission guard checks the archive with default limits$`, func() error {
 		if len(source) == 0 || !bytes.Equal(source, original) {
-			return fmt.Errorf("missing/changed BZIP2 source")
+			return fmt.Errorf("missing/changed ZIP source")
 		}
 		session, refusal = realBZIPOpen(source)
 		return nil
@@ -366,6 +392,13 @@ func bzipAdmissionSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^package admission is refused$`, func() error {
 		if session != nil || refusal == nil || !bytes.Equal(source, original) {
 			return fmt.Errorf("admission did not refuse unchanged source: %v", refusal)
+		}
+		if unsafePairs != nil {
+			var typed *packaging.Refusal
+			op, part, detail := expectedUnsafeRefusal(unsafePairs)
+			if !errors.As(refusal, &typed) || typed.Kind != "invalid_package" || typed.Operation != op || typed.Part != part || !strings.Contains(typed.Detail, detail) {
+				return fmt.Errorf("wrong unsafe-member refusal: %v", refusal)
+			}
 		}
 		return nil
 	})

@@ -88,6 +88,11 @@ func openReader(r io.ReaderAt, size int64, limits Limits) (*Package, error) {
 			return nil, invalidPart("open", f.Name, "duplicate or case-colliding member with "+prior)
 		}
 		seen[key] = f.Name
+		// A directory is not an OPC part. Refuse declared payload bytes before
+		// the directory skip below can silently discard them.
+		if f.FileInfo().IsDir() && (f.UncompressedSize64 != 0 || f.CompressedSize64 != 0) {
+			return nil, invalidPart("open", f.Name, "directory entry has payload bytes")
+		}
 		if f.Flags&1 != 0 {
 			return nil, invalidPart("open", f.Name, "encrypted member")
 		}
