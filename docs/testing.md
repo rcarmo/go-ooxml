@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.76.0`, commit
-`a2f3ef721fe5bbb5c757b5a3dc2b1108c5f05971`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.77.0`, commit
+`2b536be951104422513d819e54ada017d93bbed9`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -102,7 +102,10 @@ saved/reopened Go six-step case. [Batch 205](../reports/batches/205.md) records
 v0.76 shared Go evidence for that case and Bun-only XML parser/refusal evidence
 for four other scenarios. Go and Python XML execution remain planned. The Go
 selector runs 350 cases; the half-point case does not test style inheritance
-or rendering.
+or rendering. [Batch 206](../reports/batches/206.md) records v0.77 Bun-only
+evidence for the four-step XML edit safety case: disjoint fragment and escaped
+text success, plus overlap, malformed and DTD refusals. Go and Python remain
+planned for that case; this pin adds no Go XML editing credit.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
