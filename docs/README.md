@@ -33,7 +33,9 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
-[Batch 203](../reports/batches/203.md) records the v0.75 Bun-only saved DOCX direct
+[Batch 205](../reports/batches/205.md) records the v0.76 Go direct-size and Bun-only
+XML parser/refusal evidence pin. [Batch 204](../reports/batches/204.md) records the
+Go six-step saved direct-size binding. [Batch 203](../reports/batches/203.md) records the v0.75 Bun-only saved DOCX direct
 half-point font-size ledger pin; it adds no Go execution credit. [Batch 202](../reports/batches/202.md) records the v0.74 Bun-only DOCX table-authoring
 ledger pin; it adds no Go execution credit. [Batch 201](../reports/batches/201.md) records the v0.73 Bun-only DOCX creation
 ledger pin; it adds no Go execution credit. [Batch 200](../reports/batches/200.md) records the v0.72 Bun-only DOCX text-slice
