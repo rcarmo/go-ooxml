@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.78.0`, commit
-`dd2984e9ad175261fd33d2c120b8cd2da8b4e881`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.79.0`, commit
+`492597abefbfe0d8c3f77f4ae98eb0f0e665a69f`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -109,6 +109,9 @@ planned for that case; this pin adds no Go XML editing credit.
 [Batch 207](../reports/batches/207.md) records v0.78 Bun-only evidence
 for eleven XML value, namespace and escaping cases across ten IDs. Go and
 Python remain planned for these cases; the Go selector remains at 350 cases.
+[Batch 208](../reports/batches/208.md) records v0.79 Bun-only evidence
+for six exact XML QName and NBSP cases across three IDs. Go and Python remain
+planned for these cases; this pin adds no Go XML QName execution credit.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.

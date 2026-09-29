@@ -33,6 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 208](../reports/batches/208.md) records the v0.79 Bun-only XML QName
+and NBSP ledger pin; it adds no Go execution credit.
 [Batch 207](../reports/batches/207.md) records the v0.78 Bun-only XML value,
 namespace and escaping ledger pin; it adds no Go execution credit.
 [Batch 206](../reports/batches/206.md) records the v0.77 Bun-only XML edit safety
