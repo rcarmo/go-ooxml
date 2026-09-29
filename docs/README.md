@@ -33,6 +33,10 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 276](../reports/batches/276.md) records v0.133 shared-ledger credit
+for Go's published implicit `xml` prefix case from
+[Batch 275](../reports/batches/275.md): one case / five steps. Bun and Python
+are unchanged. The pin changes no Go runtime or acceptance binding.
 [Batch 274](../reports/batches/274.md) records v0.132 Bun-only ledger credit
 for the exact caller-owned XML byte seed: one case / four steps from published
 Bun `c996c7d`. Go and Python credit are unchanged. The Go pin changes no
