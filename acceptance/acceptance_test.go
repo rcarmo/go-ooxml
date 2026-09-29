@@ -129,6 +129,7 @@ func TestAcceptance(t *testing.T) {
 		xmlConformanceSteps(sc)
 		officeLinkSteps(sc)
 		formulaSteps(sc)
+		directRangeSteps(sc)
 		cacheSteps(sc)
 		canonicalCacheSteps(sc)
 		runEffectsSteps(sc)
@@ -177,6 +178,8 @@ func TestAcceptance(t *testing.T) {
 		{"go-ooxml-descriptor-collision", descriptorIntegrityFeaturePath(), descriptorCollisionCaseID},
 		{"go-ooxml-owned-chain", ownedChainFeaturePath(), ownedChainCaseID},
 		{"go-ooxml-cross-sheet-cache", crossSheetCacheFeaturePath(), crossSheetCacheCaseID},
+		{"go-ooxml-direct-range-parsing", formulaReferenceFeaturePath(), directRangeParsingCaseID},
+		{"go-ooxml-direct-range-refusal", formulaReferenceFeaturePath(), directRangeRefusalCaseID},
 		{"go-ooxml-run-effects", runEffectsFeaturePath(), runEffectsCaseID},
 		{"go-ooxml-run-underline-style", runEffectsFeaturePath(), runUnderlineCaseID},
 		{"go-ooxml-run-font-name", runEffectsFeaturePath(), runFontNameCaseID},
@@ -228,7 +231,7 @@ func TestAcceptance(t *testing.T) {
 		t.Fatal(err)
 	}
 	writeJSON(t, filepath.Join(dir, "inventory.json"), inventory)
-	writeJSON(t, filepath.Join(dir, "environment.json"), map[string]any{"go": runtime.Version(), "fixture_sha256": w.fixtures, "scope": "implemented native except CHAIN-001 and CACHE-001, each replaced one-for-one by its exact canonical case, plus overlap, negative-budget, descriptor-collision and selected in-memory run-formatting and paragraph getter cases plus one direct font-size save-reopen case", "external_executed": false})
+	writeJSON(t, filepath.Join(dir, "environment.json"), map[string]any{"go": runtime.Version(), "fixture_sha256": w.fixtures, "scope": "implemented native except CHAIN-001 and CACHE-001, each replaced one-for-one by its exact canonical case, plus overlap, negative-budget, descriptor-collision and selected in-memory run-formatting and paragraph getter cases plus one direct font-size save-reopen case and 13 direct-range API cases", "external_executed": false})
 	if err := reconcile(expected, data); err != nil {
 		t.Error(err)
 	}
@@ -247,7 +250,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID || tag == corePropertiesCaseID || tag == sectionTitleBackgroundCaseID || tag == paragraphTextGetterCaseID || tag == paragraphAlignmentCaseID || tag == paragraphSpacingCaseID || tag == paragraphTogglesCaseID || tag == paragraphRunsCaseID || tag == bodyInsertOrderCaseID || tag == directFontSizeCaseID {
+		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == directRangeParsingCaseID || tag == directRangeRefusalCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID || tag == corePropertiesCaseID || tag == sectionTitleBackgroundCaseID || tag == paragraphTextGetterCaseID || tag == paragraphAlignmentCaseID || tag == paragraphSpacingCaseID || tag == paragraphTogglesCaseID || tag == paragraphRunsCaseID || tag == bodyInsertOrderCaseID || tag == directFontSizeCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}

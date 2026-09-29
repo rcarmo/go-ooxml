@@ -68,6 +68,11 @@ func tableMergeFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "tables.feature")
 }
 
+// Select only direct-range parsing and refusal; sibling formula workflows stay planned.
+func formulaReferenceFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xlsx", "formula-references.feature")
+}
+
 // The cross-sheet cache case replaces native CACHE-001 one-for-one.
 func crossSheetCacheFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xlsx", "formula-cache.feature")
