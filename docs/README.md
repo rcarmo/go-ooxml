@@ -33,6 +33,8 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 214](../reports/batches/214.md) records the v0.85 Bun-only broad
+ZIP32 unsafe-structure refusal pin; it adds no Go execution credit.
 [Batch 213](../reports/batches/213.md) records the v0.84 Bun-only positive
 ZIP32 read/write ledger pin; it adds no Go execution credit.
 [Batch 212](../reports/batches/212.md) records the v0.83 Bun-only ZIP32
