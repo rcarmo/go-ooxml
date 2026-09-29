@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.104.0`, commit
-`638c76b9d43430c49af260f12256cf307fb7d2e8`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.105.0`, commit
+`8312404125486650956807f940a1e5ab583f79c3`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -228,6 +228,12 @@ settings IDs (24 cases / 101 steps). Go's other seven formula-reference IDs
 and all DOCX tracking IDs remain planned. No formula evaluation, workbook edit,
 Office rendering or cross-consumer execution is credited by this pin. The Go
 selector remains 363 cases / 1244 steps.
+[Batch 236](../reports/batches/236.md) records v0.105 shared-ledger
+credit for the three Go static formula-analysis IDs (14 cases / 50 steps)
+already executed in Batch 233 and published at `9ff28dc`. Together with
+two direct-range IDs (13 cases / 45 steps), this is five formula IDs /
+27 cases / 95 steps. Four sibling IDs / 18 cases remain planned; no formula
+evaluation, workbook editing, Office or Python execution is credited.
 [Batch 235](../reports/batches/235.md) records v0.104 Bun-only evidence
 for two final-section DOCX page-layout IDs (22 cases / 74 steps): eight
 four-step bounded layouts and 14 three-step typed refusals with unchanged
