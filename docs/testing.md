@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.137.0`, commit
-`1eee21095f53ce30d76db6f04fc3f850b2c68290`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.138.0`, commit
+`2ab5f6c91cd3434d3d63fe0282a627d1ee628513`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -228,6 +228,12 @@ settings IDs (24 cases / 101 steps). Go's other seven formula-reference IDs
 and all DOCX tracking IDs remain planned. No formula evaluation, workbook edit,
 Office rendering or cross-consumer execution is credited by this pin. The Go
 selector remains 363 cases / 1244 steps.
+[Batch 284](../reports/batches/284.md) records v0.138 adoption: the shared
+ledger credits only Go's published detached OPC byte-custody binding,
+one case / five authored Scenario steps. Its five Background steps also
+execute; the selected Pickle passes ten steps. Go selects 426 cases /
+1475 executed steps. The pin changes no Go runtime or acceptance binding;
+adjacent OPC refusal/UTF-16 and transaction workflows stay unselected.
 [Batch 282](../reports/batches/282.md) records v0.137 adoption: the shared
 ledger credits only Go's published exact OPC unrelated-payload preservation
 binding, one case / four steps. Go selects 425 cases / 1465 steps. The pin

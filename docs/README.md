@@ -33,6 +33,11 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 284](../reports/batches/284.md) records v0.138 shared-ledger credit
+for Go's published detached OPC byte-custody case from
+[Batch 283](../reports/batches/283.md): one case / five authored steps.
+Its five Background steps also execute but add no case or ledger credit.
+The pin changes no Go runtime or acceptance binding.
 [Batch 282](../reports/batches/282.md) records v0.137 shared-ledger credit
 for Go's published exact OPC unrelated-payload preservation case from
 [Batch 281](../reports/batches/281.md): one case / four steps. The pin
