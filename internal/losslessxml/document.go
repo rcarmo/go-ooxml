@@ -249,6 +249,17 @@ func (e Element) Parent() (Element, bool) {
 	return Element{e.doc, p}, true
 }
 
+// SourceRange returns the original UTF-8 byte offsets [start, end) for this
+// element's complete markup. The range is valid only for its source snapshot.
+// An invalid handle returns (-1, -1).
+func (e Element) SourceRange() (start, end int) {
+	if !e.valid() {
+		return -1, -1
+	}
+	n := e.doc.nodes[e.index]
+	return n.start, n.end
+}
+
 // Raw returns a private copy of the complete original element markup.
 // It is evidence for conservative equality, never authority to splice elsewhere.
 // Namespaces returns copied in-scope bindings for conservative QName equality.

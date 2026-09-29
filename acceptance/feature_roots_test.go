@@ -18,6 +18,11 @@ func overlapFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "zip-admission.feature")
 }
 
+// Select only the exact Unicode QName and byte-offset case from the shared XML names feature.
+func xmlNamesFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xml", "names.feature")
+}
+
 // Only four exact negative Boolean outcomes are selected; the OPC-like positive stays planned.
 func xmlComparisonFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xml", "comparison.feature")
