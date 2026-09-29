@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.93.0`, commit
-`347011f9c49850e69d931655af4e0b5686326ae1`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.94.0`, commit
+`215b9c92b43b979c1a0f839bff31db7b27c9736c`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -176,6 +176,11 @@ nested and reordered inspection; resolve/reopen, no-op, nine refusals,
 rollback, encoding, unsupported cases and the 10001 limit. Missing-extension
 creation and arbitrary new threads are outside this evidence; Go and Python
 remain planned. The Go selector and execution credit do not change.
+[Batch 223](../reports/batches/223.md) records v0.94 Bun-only evidence
+for one exact six-step PPTX title-slide no-edit path/byte open-save case:
+Frankenstein text, byte-identical original after serialization/save/reopen,
+source custody and temporary-file cleanup. No rendering was tested; Go and
+Python remain planned. The Go selector and execution credit do not change.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
