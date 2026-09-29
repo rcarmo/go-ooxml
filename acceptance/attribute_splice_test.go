@@ -85,7 +85,7 @@ func attributeSpliceSteps(sc *godog.ScenarioContext) {
 		selected = name
 		return err
 	})
-	sc.Step(`^the complete output bytes equal (.*)$`, func(expected string) error {
+	sc.Step(`^the complete output bytes equal (<r xmlns:p="urn:p"><t .*)$`, func(expected string) error {
 		row, ok := attributeSpliceRows[selected]
 		if !ok || expected != row.output || !bytes.Equal(output, []byte(row.output)) || !bytes.Equal(caller, original) || !bytes.Equal(caller, []byte(attributeSpliceSource)) {
 			return fmt.Errorf("attribute-splice %s bytes or caller changed: %q", selected, output)
