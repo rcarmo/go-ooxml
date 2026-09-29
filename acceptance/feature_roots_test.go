@@ -43,7 +43,12 @@ func creationFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "creation.feature")
 }
 
-// Select only the five in-memory paragraph text getter rows, not sibling scenarios.
+// Select only the direct 10.5pt save-reopen half-point case.
+func directFontSizeFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "font-size.feature")
+}
+
+// Select only the paragraph getter and body insertion cases, not sibling scenarios.
 func paragraphFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "docx", "paragraphs.feature")
 }
