@@ -33,6 +33,11 @@ Specification material is © Ecma International and retains its own terms. See t
 [shared notices](../references/fixtures-ooxml/NOTICES.md). Vendor reference
 material is available in the [Open XML documentation](https://learn.microsoft.com/en-us/office/open-xml/).
 
+[Batch 265](../reports/batches/265.md) records v0.127 shared-ledger credit
+for Go's published child-namespace matrix from
+[Batch 264](../reports/batches/264.md): one six-step case with 100 derived
+combinations. Bun and Python remain planned. The pin changes no Go runtime or
+acceptance binding.
 [Batch 263](../reports/batches/263.md) records v0.126 shared-ledger credit
 for Go's published child-insertion refusal case (one case / four steps) from
 [Batch 262](../reports/batches/262.md), plus Python-only XML whitespace
