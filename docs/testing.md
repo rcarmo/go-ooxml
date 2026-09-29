@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.108.0`, commit
-`33f291c4d3263fee760e614287c4415071d35cd1`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.109.0`, commit
+`f95047f7302b2aec277bc54d8aaced5f8b4b1f65`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -228,6 +228,13 @@ settings IDs (24 cases / 101 steps). Go's other seven formula-reference IDs
 and all DOCX tracking IDs remain planned. No formula evaluation, workbook edit,
 Office rendering or cross-consumer execution is credited by this pin. The Go
 selector remains 363 cases / 1244 steps.
+[Batch 241](../reports/batches/241.md) records v0.109 correction
+of Go's latent exact seven-step `@id-zip-physical-member-overlap-refusal`
+execution, first selected at v0.41 and confirmed in the v0.108 published
+recursive-clone report. It adds no binding or selected case; Go remains at
+395 cases / 1351 steps. The ZIP32 STORED overlap refusal is a bounded
+admission policy, not a ZIP64 or ECMA conformance assertion. ECMA clauses
+were not verified and no PDFs were extracted, converted or read.
 [Batch 240](../reports/batches/240.md) records v0.108 shared-ledger
 credit for Python alone on one bounded ZIP32 STORED physical-member-overlap
 refusal (seven steps). Go remains planned for this exact ID. The pin adds no
