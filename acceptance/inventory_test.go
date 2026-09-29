@@ -65,6 +65,7 @@ const paragraphAlignmentCaseID = "@id-docx-go-paragraph-alignment-getter"
 const paragraphSpacingCaseID = "@id-docx-go-paragraph-spacing-getters"
 const paragraphTogglesCaseID = "@id-docx-go-paragraph-advanced-toggles"
 const paragraphRunsCaseID = "@id-docx-go-paragraph-multiple-runs"
+const bodyInsertOrderCaseID = "@id-docx-go-body-insert-order"
 const retiredCacheCaseID = "@CACHE-001"
 
 func selectedRunFormattingID(id string) bool {
@@ -76,7 +77,7 @@ func selectedTableValueID(id string) bool {
 }
 
 func selectedCanonicalID(path, id string) bool {
-	return id == canonicalID(path) || (path == runEffectsFeaturePath() && selectedRunFormattingID(id)) || (path == tableMergeFeaturePath() && (selectedTableValueID(id) || id == roundtripTableTextCaseID)) || (path == paragraphFeaturePath() && (id == paragraphAlignmentCaseID || id == paragraphSpacingCaseID || id == paragraphTogglesCaseID || id == paragraphRunsCaseID))
+	return id == canonicalID(path) || (path == runEffectsFeaturePath() && selectedRunFormattingID(id)) || (path == tableMergeFeaturePath() && (selectedTableValueID(id) || id == roundtripTableTextCaseID)) || (path == paragraphFeaturePath() && (id == paragraphAlignmentCaseID || id == paragraphSpacingCaseID || id == paragraphTogglesCaseID || id == paragraphRunsCaseID || id == bodyInsertOrderCaseID))
 }
 
 func canonicalID(path string) string {
@@ -361,6 +362,8 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 					err = guardParagraphSpacingRow(p.Name, steps, spacingRows)
 				case paragraphTogglesCaseID, paragraphRunsCaseID:
 					err = guardParagraphSingleCase(id, p.Name, steps)
+				case bodyInsertOrderCaseID:
+					err = guardBodyInsertOrderCase(p.Name, steps)
 				}
 				if err != nil {
 					return fmt.Errorf("%s: %w", path, err)
@@ -460,7 +463,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			expected[key] = expectedCase{key, p.Name, len(p.Steps)}
 		}
 	}
-	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == paragraphTextGetterCaseID && (canonicalCases != 15 || len(paragraphRows) != 5 || len(alignmentRows) != 4 || len(spacingRows) != 4)) || (canonicalID(path) == corePropertiesCaseID && canonicalCases != 1) || (canonicalID(path) == sectionTitleBackgroundCaseID && canonicalCases != 1) || (canonicalID(path) == newEmptyBodyCaseID && canonicalCases != 1) || (canonicalID(path) == tableMergeCaseID && (canonicalCases != 13 || len(dimensionRows) != 8)) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 23 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
+	if canonical && ((canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 1) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == paragraphTextGetterCaseID && (canonicalCases != 16 || len(paragraphRows) != 5 || len(alignmentRows) != 4 || len(spacingRows) != 4)) || (canonicalID(path) == corePropertiesCaseID && canonicalCases != 1) || (canonicalID(path) == sectionTitleBackgroundCaseID && canonicalCases != 1) || (canonicalID(path) == newEmptyBodyCaseID && canonicalCases != 1) || (canonicalID(path) == tableMergeCaseID && (canonicalCases != 13 || len(dimensionRows) != 8)) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 23 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
 		return fmt.Errorf("%s: selected canonical case count drift: %d", path, canonicalCases)
 	}
 	return nil

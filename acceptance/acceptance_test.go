@@ -138,6 +138,7 @@ func TestAcceptance(t *testing.T) {
 		documentCreationSteps(sc, tableReadback)
 		documentPropertyGetterSteps(sc, tableReadback)
 		paragraphTextGetterSteps(sc)
+		bodyInsertOrderSteps(sc)
 		tableTextReadbackSteps(sc, tableReadback)
 		runFormattingReadbackSteps(sc, readbackDir, tableReadback)
 		imageReplaceSteps(sc)
@@ -196,6 +197,7 @@ func TestAcceptance(t *testing.T) {
 		{"go-ooxml-paragraph-spacing", paragraphFeaturePath(), paragraphSpacingCaseID},
 		{"go-ooxml-paragraph-toggles", paragraphFeaturePath(), paragraphTogglesCaseID},
 		{"go-ooxml-paragraph-runs", paragraphFeaturePath(), paragraphRunsCaseID},
+		{"go-ooxml-body-insert-order", paragraphFeaturePath(), bodyInsertOrderCaseID},
 	} {
 		var output bytes.Buffer
 		suite := godog.TestSuite{Name: selection.name, Options: &godog.Options{Format: "cucumber", Output: &output, Paths: []string{selection.path}, Tags: selection.tags, Strict: true, Concurrency: 1}, ScenarioInitializer: initializer}
@@ -243,7 +245,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID || tag == corePropertiesCaseID || tag == sectionTitleBackgroundCaseID || tag == paragraphTextGetterCaseID || tag == paragraphAlignmentCaseID || tag == paragraphSpacingCaseID || tag == paragraphTogglesCaseID || tag == paragraphRunsCaseID {
+		if nativeIDPattern.MatchString(tag) || tag == overlapCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID || tag == corePropertiesCaseID || tag == sectionTitleBackgroundCaseID || tag == paragraphTextGetterCaseID || tag == paragraphAlignmentCaseID || tag == paragraphSpacingCaseID || tag == paragraphTogglesCaseID || tag == paragraphRunsCaseID || tag == bodyInsertOrderCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}

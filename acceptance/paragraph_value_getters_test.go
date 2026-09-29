@@ -331,9 +331,6 @@ func TestParagraphValueNegativeControls(t *testing.T) {
 		{"runs extra step", func() error {
 			return guardParagraphSingleCase(paragraphRunsCaseID, "Three added runs concatenate in paragraph text", []string{"a new Word paragraph", "runs containing Hello-space, World and exclamation are appended in order", "the paragraph has three runs and its text equals Hello World!", "the document is saved and reopened"})
 		}},
-		{"unselected body order", func() error {
-			return guardParagraphSingleCase("@id-docx-go-body-insert-order", "Insert a body paragraph between two existing paragraphs", nil)
-		}},
 	} {
 		if err := tc.check(); err == nil {
 			t.Errorf("%s passed exact guard", tc.name)
