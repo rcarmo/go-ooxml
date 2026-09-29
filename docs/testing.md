@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.131.0`, commit
-`70952ab86d0c6fff45cd489d3af3057ca98636ab`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.132.0`, commit
+`b52eb66eb61db88cb4288e26085f0929e6077f62`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -228,6 +228,12 @@ settings IDs (24 cases / 101 steps). Go's other seven formula-reference IDs
 and all DOCX tracking IDs remain planned. No formula evaluation, workbook edit,
 Office rendering or cross-consumer execution is credited by this pin. The Go
 selector remains 363 cases / 1244 steps.
+[Batch 274](../reports/batches/274.md) records v0.132 adoption: Bun alone
+receives shared-ledger credit for the published exact caller-owned XML byte
+seed (one case / four steps at Bun `c996c7d`). Go and Python credit are
+unchanged; Go selects 422 cases / 1453 steps. This pin changes no Go runtime
+or acceptance binding. `CACHE-001`, positive OPC-like XML with missing `Type`,
+PPTX, Office, PDF and general XML conformance remain outside this Go evidence.
 [Batch 273](../reports/batches/273.md) records v0.131 adoption: Go's
 published literal pre-root stylesheet-PI acceptance/root `r` case from
 [Batch 272](../reports/batches/272.md) receives shared-ledger credit as one
