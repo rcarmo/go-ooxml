@@ -139,7 +139,7 @@ func xmlEntityValuesSteps(sc *godog.ScenarioContext) {
 		return ctx, nil
 	})
 	sc.Step(`^XML values input encoded as JSON (".*")$`, func(raw string) error {
-		if raw != xmlEntitySourceJSON && raw != xmlStylesheetPISourceJSON && raw != xmlImplicitPrefixSourceJSON {
+		if raw != xmlEntitySourceJSON && raw != xmlStylesheetPISourceJSON && raw != xmlImplicitPrefixSourceJSON && raw != xmlExpandedAttributeSourceJSON {
 			return fmt.Errorf("XML values source drift")
 		}
 		var source string
@@ -148,7 +148,7 @@ func xmlEntityValuesSteps(sc *godog.ScenarioContext) {
 		}
 		caller = []byte(source)
 		original = bytes.Clone(caller)
-		if !bytes.Equal(caller, []byte(`<r a="&quot;&apos;">&#x41;&#65;&amp;&lt;&gt;</r>`)) && !bytes.Equal(caller, []byte(`<?xml-stylesheet href="style.xsl"?><r/>`)) && !bytes.Equal(caller, []byte(xmlImplicitPrefixInput)) {
+		if !bytes.Equal(caller, []byte(`<r a="&quot;&apos;">&#x41;&#65;&amp;&lt;&gt;</r>`)) && !bytes.Equal(caller, []byte(`<?xml-stylesheet href="style.xsl"?><r/>`)) && !bytes.Equal(caller, []byte(xmlImplicitPrefixInput)) && !bytes.Equal(caller, []byte(xmlExpandedAttributeInput)) {
 			return fmt.Errorf("XML values decoded source drift")
 		}
 		return nil
@@ -228,4 +228,5 @@ func xmlEntityValuesSteps(sc *godog.ScenarioContext) {
 		return assertStylesheetPI(caller, original, doc)
 	})
 	registerXMLImplicitPrefixSteps(sc, &caller, &original, &doc)
+	registerXMLExpandedAttributeSteps(sc, &caller, &original, &doc)
 }

@@ -13,7 +13,7 @@ func goFeatureRoot() string {
 	return filepath.Join(testutil.ReferenceRoot(), "staging", "go", "features")
 }
 
-// Select only entity values, stylesheet PI and implicit xml prefix; sibling parsing workflows stay planned.
+// Select entity values, stylesheet PI, implicit xml prefix and expanded attributes; siblings stay planned.
 func xmlParsingFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "xml", "parsing.feature")
 }
