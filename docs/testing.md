@@ -15,8 +15,8 @@ regular-file custody are checked before use. Shared workflow input records use
 
 ## Candidate and released references
 
-The gitlink and pin name annotated release `v0.86.0`, commit
-`0dc4e5e15e93d584b7cb65eee93afb1302db233b`. Initialise the recorded submodule and
+The gitlink and pin name annotated release `v0.87.0`, commit
+`2c7c0a74d172ed7da9b40c51c159a9d0c78e6776`. Initialise the recorded submodule and
 run the default batch without overrides:
 
 ```sh
@@ -140,6 +140,11 @@ and Go/Python execution remain planned; this pin adds no Go ZIP32 credit.
 for one three-step ZIP32 configured-bounds case: five typed thresholds precede
 invalid DEFLATE on the same declared expanded payload, with unchanged caller
 bytes. It does not measure allocator use. Go and Python remain planned.
+[Batch 216](../reports/batches/216.md) records v0.87 Bun-only evidence
+for one eight-step unsigned ZIP32 descriptor/signature-collision refusal:
+12-byte geometry, independent CRC, typed corrupt-payload refusal, no output
+and unchanged input. Go and Python remain planned; the source candidate stays
+distinct and this pin adds no Go descriptor credit.
 The v0.50 contract uses an explicit feature list (contract schema 2), selecting
 eight mutation IDs and 19 cases. The legacy single-feature schema 1 reader remains
 for older distributions; neither contract grants Go workflow execution credit.
