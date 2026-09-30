@@ -266,7 +266,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 					profile = tag.Name
 				} else if canonical && (path == creationFeaturePath() || path == corePropertiesFeaturePath() || path == pageLayoutFeaturePath() || path == paragraphFeaturePath()) && tag.Name == "@profile-document-value-api" && profile == "" {
 					profile = tag.Name
-				} else if canonical && path == tableMergeFeaturePath() && (tag.Name == "@profile-document-value-api" || tag.Name == "@profile-nullable-cell-api" || tag.Name == "@profile-table-text-readback") && profile == "" {
+				} else if canonical && path == tableMergeFeaturePath() && (tag.Name == "@profile-document-value-api" || tag.Name == "@profile-nullable-cell-api" || tag.Name == "@profile-bounded-cell-lookup" || tag.Name == "@profile-table-text-readback") && profile == "" {
 					profile = tag.Name
 				} else if canonical && path == runEffectsFeaturePath() && (tag.Name == "@profile-in-memory-effects-api" || tag.Name == "@profile-document-value-api" || tag.Name == "@profile-selected-formatting-readback") && profile == "" {
 					profile = tag.Name
@@ -277,7 +277,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			if canonical && !selectedCanonicalID(path, id) {
 				continue // Other shared workflows remain planned for Go.
 			}
-			if id == "" || (canonical && path == packagePreservationFeaturePath() && ((id == opcDetachedByteCaseID && profile != "@profile-opc-byte-custody") || ((id == opcPreserveUnrelatedCaseID || id == opcCorpusNoopCaseID) && profile != ""))) || (canonical && path == xmlEditingFeaturePath() && profile != "@profile-lexical-snapshot-api") || (canonical && path == formulaReferenceFeaturePath() && profile != "@profile-static-reference-api") || (canonical && path == directFontSizeFeaturePath() && profile != "") || (canonical && path == overlapFeaturePath() && ((id == overlapCaseID && profile != "@profile-physical-member-extents") || ((id == bzipAdmissionCaseID || id == unsafeMembersCaseID) && profile != ""))) || (canonical && (path == creationFeaturePath() || path == corePropertiesFeaturePath() || path == pageLayoutFeaturePath() || path == paragraphFeaturePath()) && profile != "@profile-document-value-api") || (canonical && path == tableMergeFeaturePath() && ((id == tableCellAccessCaseID && profile != "@profile-nullable-cell-api") || (id == roundtripTableTextCaseID && profile != "@profile-table-text-readback") || (id != tableCellAccessCaseID && id != roundtripTableTextCaseID && profile != "@profile-document-value-api"))) || (canonical && path == runEffectsFeaturePath() && ((id == runEffectsCaseID && profile != "@profile-in-memory-effects-api") || ((id == runRoundtripFormattingCaseID && profile != "@profile-selected-formatting-readback") || (id != runEffectsCaseID && id != runRoundtripFormattingCaseID && profile != "@profile-document-value-api")))) {
+			if id == "" || (canonical && path == packagePreservationFeaturePath() && ((id == opcDetachedByteCaseID && profile != "@profile-opc-byte-custody") || ((id == opcPreserveUnrelatedCaseID || id == opcCorpusNoopCaseID) && profile != ""))) || (canonical && path == xmlEditingFeaturePath() && profile != "@profile-lexical-snapshot-api") || (canonical && path == formulaReferenceFeaturePath() && profile != "@profile-static-reference-api") || (canonical && path == directFontSizeFeaturePath() && profile != "") || (canonical && path == overlapFeaturePath() && ((id == overlapCaseID && profile != "@profile-physical-member-extents") || ((id == bzipAdmissionCaseID || id == unsafeMembersCaseID) && profile != ""))) || (canonical && (path == creationFeaturePath() || path == corePropertiesFeaturePath() || path == pageLayoutFeaturePath() || path == paragraphFeaturePath()) && profile != "@profile-document-value-api") || (canonical && path == tableMergeFeaturePath() && ((id == tableCellAccessCaseID && profile != tableCellAccessProfile()) || (id == roundtripTableTextCaseID && profile != "@profile-table-text-readback") || (id != tableCellAccessCaseID && id != roundtripTableTextCaseID && profile != "@profile-document-value-api"))) || (canonical && path == runEffectsFeaturePath() && ((id == runEffectsCaseID && profile != "@profile-in-memory-effects-api") || ((id == runRoundtripFormattingCaseID && profile != "@profile-selected-formatting-readback") || (id != runEffectsCaseID && id != runRoundtripFormattingCaseID && profile != "@profile-document-value-api")))) {
 				return fmt.Errorf("%s: scenario missing or mismatched ID/profile", path)
 			}
 			if !canonical && id == retiredChainCaseID {
@@ -360,6 +360,11 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 	}
 	if canonical && path == xmlComparisonFeaturePath() && (seen[xmlPrefixBindingCaseID] == "" || seen[xmlUnsafeCaseID] == "" || seen[xmlMarkupCaseID] == "") {
 		return fmt.Errorf("%s: selected XML negative IDs missing", path)
+	}
+	if canonical && path == tableMergeFeaturePath() && boundedCellLookupCandidate() {
+		if err := guardBoundedCellLookupRule(doc); err != nil {
+			return err
+		}
 	}
 	if canonical && path == tableMergeFeaturePath() && (seen[roundtripTableTextCaseID] == "" || seen[tableDimensionsCaseID] == "" || seen[tableCellAccessCaseID] == "" || seen[tableCellTextCaseID] == "" || seen[tableRowCountsCaseID] == "") {
 		return fmt.Errorf("%s: selected table value cases missing", path)
@@ -617,8 +622,21 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 				var steps []string
 				switch id {
 				case tableCellAccessCaseID:
-					name = "A three-by-three table returns cells only at in-range coordinates"
-					steps = []string{"a new Word table with three rows and three columns", "its Cell getter is called for all nine coordinates from zero through two", "each of those nine calls returns a nonnil cell", "calls for row or column negative one or three at the tested boundary coordinates return nil"}
+					if boundedCellLookupCandidate() {
+						if err := guardBoundedCellLookupCase(id, p, line); err != nil {
+							return err
+						}
+						name = boundedCellLookupScenarioName
+						steps = []string{
+							"a new Word table has three rows and three columns with texts by row A1,B1,C1 then A2,B2,C2 then A3,B3,C3",
+							"cells are looked up at these zero-based coordinates",
+							"each lookup returns the listed presence and exact text without an exception",
+							"the table still has three rows and three columns with its original texts and unchanged document XML",
+						}
+					} else {
+						name = "A three-by-three table returns cells only at in-range coordinates"
+						steps = []string{"a new Word table with three rows and three columns", "its Cell getter is called for all nine coordinates from zero through two", "each of those nine calls returns a nonnil cell", "calls for row or column negative one or three at the tested boundary coordinates return nil"}
+					}
 				case tableCellTextCaseID:
 					name = "A two-by-two table reads four assigned texts and its first row"
 					steps = []string{"a new Word table with two rows and two columns", "its cells are set by row to A1, B1, A2 and B2", "the four cell text getters equal A1, B1, A2 and B2 in those positions", "FirstRowText returns exactly A1 and B1"}

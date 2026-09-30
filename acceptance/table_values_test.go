@@ -1,27 +1,43 @@
 package acceptance
 
 import (
+	"bytes"
 	"context"
+	"encoding/xml"
 	"fmt"
 	"strings"
 	"testing"
 
 	"github.com/cucumber/godog"
 	"github.com/rcarmo/go-ooxml/pkg/document"
+	"github.com/rcarmo/go-ooxml/pkg/ooxml/wml"
 )
 
 var tableDimensions = [][2]int{{1, 1}, {1, 5}, {5, 1}, {2, 2}, {3, 3}, {5, 5}, {10, 3}, {3, 10}}
 var cellTexts = [2][2]string{{"A1", "B1"}, {"A2", "B2"}}
 var boundaryCells = [][2]int{{-1, 0}, {0, -1}, {3, 0}, {0, 3}, {3, 3}}
+var boundedCellTexts = [3][3]string{{"A1", "B1", "C1"}, {"A2", "B2", "C2"}, {"A3", "B3", "C3"}}
 
 func tableValueSteps(sc *godog.ScenarioContext, tableReadback *tableTextReadbackState) {
 	var doc document.Document
 	var table document.Table
 	var rowCounts []int
 	var observedCells [3][3]document.Cell
+	var boundedObservations []boundedCellObservation
+	var originalDocumentXML []byte
+	var originalGrid []int64
+	documentXML := func() ([]byte, error) {
+		// The public Document interface does not expose XML; the native
+		// implementation supplies this read of the same live model.
+		xmlView, ok := doc.(interface{ XML() *wml.Document })
+		if !ok {
+			return nil, fmt.Errorf("Word document XML snapshot unavailable")
+		}
+		return xml.Marshal(xmlView.XML())
+	}
 	var deleteError error
 	sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
-		doc, table, rowCounts, observedCells, deleteError = nil, nil, nil, [3][3]document.Cell{}, nil
+		doc, table, rowCounts, observedCells, boundedObservations, originalDocumentXML, originalGrid, deleteError = nil, nil, nil, [3][3]document.Cell{}, nil, nil, nil, nil
 		return ctx, nil
 	})
 	sc.After(func(ctx context.Context, _ *godog.Scenario, err error) (context.Context, error) {
@@ -86,6 +102,86 @@ func tableValueSteps(sc *godog.ScenarioContext, tableReadback *tableTextReadback
 	})
 	sc.Step(`^calls for row or column negative one or three at the tested boundary coordinates return nil$`, func() error {
 		return checkCellAccess(table, false)
+	})
+	sc.Step(`^a new Word table has three rows and three columns with texts by row A1,B1,C1 then A2,B2,C2 then A3,B3,C3$`, func() error {
+		if err := newTable(3, 3); err != nil {
+			return err
+		}
+		for row := range boundedCellTexts {
+			for col, text := range boundedCellTexts[row] {
+				cell := table.Cell(row, col)
+				if cell == nil {
+					return fmt.Errorf("cannot initialize cell (%d,%d)", row, col)
+				}
+				cell.SetText(text)
+			}
+		}
+		grid := table.(interface{ XML() *wml.Tbl }).XML().TblGrid
+		if grid == nil || len(grid.GridCol) != 3 {
+			return fmt.Errorf("initial 3x3 table grid missing")
+		}
+		for _, col := range grid.GridCol {
+			originalGrid = append(originalGrid, col.W)
+		}
+		var err error
+		originalDocumentXML, err = documentXML()
+		return err
+	})
+	sc.Step(`^cells are looked up at these zero-based coordinates$`, func(rows *godog.Table) error {
+		if table == nil || originalDocumentXML == nil || !boundedCellLookupCandidate() {
+			return fmt.Errorf("missing bounded table snapshot")
+		}
+		if err := guardBoundedCellLookupRuntimeTable(rows); err != nil {
+			return err
+		}
+		boundedObservations = boundedObservations[:0]
+		for i, entry := range boundedCellLookupRows {
+			// Call the public API even for out-of-range positions. Do not clamp or
+			// short-circuit here: an aliased boundary must be observed and fail.
+			cell := table.Cell(entry.row, entry.col)
+			observation := boundedCellObservation{row: entry.row, col: entry.col, present: cell != nil}
+			if cell != nil {
+				observation.text = cell.Text()
+			}
+			boundedObservations = append(boundedObservations, observation)
+			if len(boundedObservations) != i+1 {
+				return fmt.Errorf("lost lookup observation at row %d", i)
+			}
+		}
+		return nil
+	})
+	sc.Step(`^each lookup returns the listed presence and exact text without an exception$`, func() error {
+		return checkBoundedCellObservations(boundedObservations)
+	})
+	sc.Step(`^the table still has three rows and three columns with its original texts and unchanged document XML$`, func() error {
+		if doc == nil || table == nil || len(boundedObservations) != len(boundedCellLookupRows) || len(originalDocumentXML) == 0 {
+			return fmt.Errorf("bounded lookup did not complete")
+		}
+		if err := checkTableDimensions(table, 3, 3); err != nil {
+			return err
+		}
+		grid := table.(interface{ XML() *wml.Tbl }).XML().TblGrid
+		if grid == nil || len(grid.GridCol) != 3 || len(originalGrid) != 3 {
+			return fmt.Errorf("table grid geometry changed")
+		}
+		for col, width := range originalGrid {
+			if grid.GridCol[col].W != width {
+				return fmt.Errorf("table grid column %d changed", col)
+			}
+		}
+		for row := range boundedCellTexts {
+			for col, text := range boundedCellTexts[row] {
+				cell := table.Cell(row, col)
+				if cell == nil || cell.Text() != text {
+					return fmt.Errorf("table custody cell (%d,%d) changed", row, col)
+				}
+			}
+		}
+		current, err := documentXML()
+		if err != nil || !bytes.Equal(current, originalDocumentXML) {
+			return fmt.Errorf("document XML changed after cell lookup: %v", err)
+		}
+		return nil
 	})
 	sc.Step(`^its cells are set by row to A1, B1, A2 and B2$`, func() error {
 		if table == nil {
