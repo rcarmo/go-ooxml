@@ -19,6 +19,7 @@ type Envelope struct {
 	source  []byte
 	entries []ZIP32Entry
 	deleted map[string]bool
+	changed map[string][]byte
 }
 
 // OpenEnvelope validates both ZIP structure and the supported OPC registries.
@@ -31,7 +32,7 @@ func OpenEnvelope(source []byte) (*Envelope, error) {
 	if err = validateEnvelope(entries, nil); err != nil {
 		return nil, err
 	}
-	return &Envelope{source: bytes.Clone(source), entries: entries, deleted: map[string]bool{}}, nil
+	return &Envelope{source: bytes.Clone(source), entries: entries, deleted: map[string]bool{}, changed: map[string][]byte{}}, nil
 }
 
 // DeletePart stages a deletion; SaveAs checks the resulting relationship graph
@@ -59,7 +60,7 @@ func (e *Envelope) SaveAs(destination string) error {
 	if destination == "" {
 		return fmt.Errorf("empty OPC destination")
 	}
-	if err := validateEnvelope(e.entries, e.deleted); err != nil {
+	if err := validateEnvelope(e.currentEntries(), nil); err != nil {
 		return err
 	}
 	pathName := filepath.Clean(destination)
@@ -74,13 +75,8 @@ func (e *Envelope) SaveAs(destination string) error {
 		return err
 	}
 	out := bytes.Clone(e.source)
-	if len(e.deleted) > 0 {
-		remaining := make([]ZIP32Entry, 0, len(e.entries))
-		for _, entry := range e.entries {
-			if !e.deleted[entry.Name] {
-				remaining = append(remaining, entry)
-			}
-		}
+	if len(e.deleted) > 0 || len(e.changed) > 0 {
+		remaining := e.currentEntries()
 		var err error
 		out, err = WriteZIP32(remaining)
 		if err != nil {
@@ -101,6 +97,112 @@ func (e *Envelope) SaveAs(destination string) error {
 		_, err = OpenEnvelope(data)
 		return err
 	})
+}
+
+func (e *Envelope) currentEntries() []ZIP32Entry {
+	out := make([]ZIP32Entry, 0, len(e.entries))
+	for _, entry := range e.entries {
+		if e.deleted[entry.Name] {
+			continue
+		}
+		data := entry.Data
+		if changed, ok := e.changed[entry.Name]; ok {
+			data = changed
+		}
+		out = append(out, ZIP32Entry{Name: entry.Name, Data: bytes.Clone(data)})
+	}
+	return out
+}
+
+// Part returns a private copy of an existing member payload.
+func (e *Envelope) Part(name string) ([]byte, error) {
+	if e == nil {
+		return nil, fmt.Errorf("nil OPC envelope")
+	}
+	for _, entry := range e.currentEntries() {
+		if entry.Name == name {
+			return entry.Data, nil
+		}
+	}
+	return nil, &ProfileError{Reason: "opc-relationship-target-missing", Part: name}
+}
+
+// SetPart replaces an existing payload without exposing caller storage.
+// A transaction stages this change on a private copy before commit.
+func (e *Envelope) SetPart(name string, data []byte) error {
+	if e == nil {
+		return fmt.Errorf("nil OPC envelope")
+	}
+	for _, entry := range e.entries {
+		if entry.Name == name && !e.deleted[name] {
+			e.changed[name] = bytes.Clone(data)
+			return nil
+		}
+	}
+	return &ProfileError{Reason: "opc-relationship-target-missing", Part: name}
+}
+
+// Bytes serializes the current snapshot; no partial archive escapes on error.
+func (e *Envelope) Bytes() ([]byte, error) {
+	if e == nil {
+		return nil, fmt.Errorf("nil OPC envelope")
+	}
+	current := e.currentEntries()
+	if err := validateEnvelope(current, nil); err != nil {
+		return nil, err
+	}
+	if len(e.deleted) == 0 && len(e.changed) == 0 {
+		return bytes.Clone(e.source), nil
+	}
+	return WriteZIP32(current)
+}
+
+// TransactionMode chooses an explicit Go execution mode, not a JavaScript
+// promise/thenable protocol.
+type TransactionMode string
+
+const (
+	TransactionImmediate TransactionMode = "immediate"
+	TransactionDeferred  TransactionMode = "deferred"
+)
+
+// Transaction runs immediate callbacks against an isolated working copy.
+// Deferred callbacks are rejected before invocation. The callback return is
+// opaque: it is never awaited, evaluated, or coerced and retains identity.
+// Callback and validation failures leave the current model unchanged.
+func (e *Envelope) Transaction(mode TransactionMode, callback func(*Envelope) (any, error)) (any, error) {
+	if e == nil {
+		return nil, fmt.Errorf("nil OPC envelope")
+	}
+	if mode == TransactionDeferred {
+		return nil, &ProfileError{Reason: "opc-deferred-transaction"}
+	}
+	if mode != TransactionImmediate {
+		return nil, fmt.Errorf("unknown transaction mode %q", mode)
+	}
+	if callback == nil {
+		return nil, fmt.Errorf("nil transaction callback")
+	}
+	working := &Envelope{source: bytes.Clone(e.source), entries: e.currentEntries(), deleted: map[string]bool{}, changed: map[string][]byte{}}
+	result, err := callback(working)
+	if err != nil {
+		return nil, err
+	}
+	if err := validateEnvelope(working.currentEntries(), nil); err != nil {
+		return nil, err
+	}
+	// Serialize before committing anything. A writer failure cannot leave a
+	// partially advanced session; callback-held working state remains inert.
+	committed := working.currentEntries()
+	archive, err := WriteZIP32(committed)
+	if err != nil {
+		return nil, err
+	}
+	e.entries = committed
+	e.source = archive
+	e.deleted = map[string]bool{}
+	e.changed = map[string][]byte{}
+	return result, nil
 }
 
 func validateEnvelope(entries []ZIP32Entry, deleted map[string]bool) error {

@@ -24,12 +24,14 @@ import (
 )
 
 const (
-	opcReasonOpenID    = "@id-bun-opc-open-refusal"
-	opcReasonSaveID    = "@id-bun-opc-save-invalid-target-custody"
-	opcReasonSymlinkID = "@id-bun-opc-symlink-destination-refusal"
-	zipReasonReaderID  = "@id-bun-zip32-reader-refusal"
-	zipReasonWriterID  = "@id-bun-zip32-writer-refusal"
-	zipReasonBoundsID  = "@id-bun-zip32-configured-bounds"
+	opcReasonOpenID          = "@id-bun-opc-open-refusal"
+	opcReasonSaveID          = "@id-bun-opc-save-invalid-target-custody"
+	opcReasonSymlinkID       = "@id-bun-opc-symlink-destination-refusal"
+	opcDeferredTransactionID = "@id-bun-opc-async-transaction-refusal"
+	opcOpaqueTransactionID   = "@id-bun-opc-thenable-transaction-result"
+	zipReasonReaderID        = "@id-bun-zip32-reader-refusal"
+	zipReasonWriterID        = "@id-bun-zip32-writer-refusal"
+	zipReasonBoundsID        = "@id-bun-zip32-configured-bounds"
 )
 
 type reasonRow struct{ variant, input, mutation, reason string }
@@ -70,10 +72,21 @@ var zipBudgetRows = []reasonRow{
 // This profile is opt-in only; the complete checkout is separately checked by
 // loadReferencePin, including HEAD, clean tree, tracked bytes and manifest seal.
 func packageSelectedReasonCases() int {
+	if portableTransactionCandidate() {
+		return 12
+	} // three prior + seven reasons + two transactions
 	if packageReasonsCandidate() {
 		return 10
-	} // three prior + 5 open + 2 save
+	} // three prior + five open + two save
 	return 3
+}
+
+func portableTransactionCandidate() bool {
+	if !packageReasonsCandidate() {
+		return false
+	}
+	b, err := os.ReadFile(packagePreservationFeaturePath())
+	return err == nil && bytes.Contains(b, []byte("@profile-portable-transactions @id-bun-opc-async-transaction-refusal")) && bytes.Contains(b, []byte("@profile-portable-transactions @id-bun-opc-thenable-transaction-result"))
 }
 func zipSelectedReasonCases() int {
 	if packageReasonsCandidate() {
@@ -109,7 +122,7 @@ func expectedProfileReason(err error, reason string) error {
 
 func guardReasonCase(p *messages.Pickle, id string, line int, profile, name string, steps []string) error {
 	if p == nil || p.Name != name || len(p.AstNodeIds) == 0 || len(p.Steps) != len(steps) || len(p.Tags) != 3 || p.Tags[0].Name != "@planned" || p.Tags[1].Name != profile || p.Tags[2].Name != id || line <= 0 {
-		return fmt.Errorf("reason case %s identity drift at %d: name=%q ast=%d steps=%d want=%d tags=%s,%s,%s", id, line, p.Name, len(p.AstNodeIds), len(p.Steps), len(steps), p.Tags[0].Name, p.Tags[1].Name, p.Tags[2].Name)
+		return fmt.Errorf("reason case %s identity drift at %d: name=%q ast=%d steps=%d want=%d", id, line, p.Name, len(p.AstNodeIds), len(p.Steps), len(steps))
 	}
 	for i, want := range steps {
 		if p.Steps[i].Text != want {
@@ -139,6 +152,26 @@ func guardReasonFeature(doc *messages.GherkinDocument, path string) error {
 
 func guardOPCReasonPickle(id string, p *messages.Pickle, line int) error {
 	profile := "@profile-package-refusal-reasons"
+	if id == opcDeferredTransactionID || id == opcOpaqueTransactionID {
+		profile = "@profile-portable-transactions"
+	}
+	switch id {
+	case opcDeferredTransactionID:
+		return guardReasonCase(p, id, line, profile, "Deferred transactions refuse before invoking the edit callback", append(append([]string{}, opcDetachedBackground...),
+			"the package editor has opened the base archive bytes",
+			"a deferred transaction is requested with a callback that would replace Alpha with Beta and set a ran flag",
+			"the transaction refuses with reason opc-deferred-transaction and no result",
+			"the ran flag is false and the document text still contains Alpha",
+			"the current package archive and caller source bytes remain unchanged"))
+	case opcOpaqueTransactionID:
+		return guardReasonCase(p, id, line, profile, "An immediate transaction returns its opaque token without evaluating it", append(append([]string{}, opcDetachedBackground...),
+			"the package editor has opened the base archive bytes",
+			"an opaque token has an evaluation hook that throws if invoked",
+			"an immediate transaction replaces Alpha with Beta and returns that token",
+			"the returned token has the original identity and its evaluation count is zero",
+			"saving and reopening reads Beta with every unrelated member payload unchanged"))
+	}
+
 	switch id {
 	case opcReasonOpenID:
 		for _, row := range opcReasonRows {
@@ -214,7 +247,7 @@ func TestPackageReasonGuardsAndNegativeControls(t *testing.T) {
 				if path == zip32FeaturePath() && (tag.Name == zipReasonReaderID || tag.Name == zipReasonWriterID || tag.Name == zipReasonBoundsID) {
 					guard = guardZIPReasonPickle
 				}
-				if path == packagePreservationFeaturePath() && (tag.Name == opcReasonOpenID || tag.Name == opcReasonSaveID || tag.Name == opcReasonSymlinkID) {
+				if path == packagePreservationFeaturePath() && (tag.Name == opcReasonOpenID || tag.Name == opcReasonSaveID || tag.Name == opcReasonSymlinkID || tag.Name == opcDeferredTransactionID || tag.Name == opcOpaqueTransactionID) {
 					guard = guardOPCReasonPickle
 				}
 				if guard == nil {
@@ -235,6 +268,10 @@ func TestPackageReasonGuardsAndNegativeControls(t *testing.T) {
 			}
 		}
 		want := map[string]int{opcReasonOpenID: 5, opcReasonSaveID: 1, opcReasonSymlinkID: 1, zipReasonReaderID: 12, zipReasonWriterID: 2, zipReasonBoundsID: 5}
+		if portableTransactionCandidate() {
+			want[opcDeferredTransactionID] = 1
+			want[opcOpaqueTransactionID] = 1
+		}
 		for id, n := range want {
 			if path == zip32FeaturePath() != strings.HasPrefix(id, "@id-bun-zip32-") {
 				continue
@@ -479,7 +516,14 @@ type packageReasonState struct {
 	destination, link                    string
 	tempDir                              string
 	saveSucceeded                        bool
+	callbackRan                          bool
+	transactionResult                    any
+	token                                *opaquePackageToken
 }
+
+type opaquePackageToken struct{ evaluations int }
+
+func (t *opaquePackageToken) Evaluate() any { t.evaluations++; panic("opaque token was evaluated") }
 
 func packageReasonSteps(sc *godog.ScenarioContext, s *packageReasonState) {
 	sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
@@ -552,7 +596,141 @@ func packageReasonSteps(sc *godog.ScenarioContext, s *packageReasonState) {
 		return s.packageResult.DeletePart("word/document.xml")
 	})
 	sc.Step(`^a symlink points to that file$`, func() error { s.link = s.destination + ".link"; return os.Symlink(s.destination, s.link) })
-	sc.Step(`^the package editor has opened the base archive bytes$`, func() error { var err error; s.packageResult, err = packaging.OpenEnvelope(s.archive); return err })
+	sc.Step(`^the package editor has opened the base archive bytes$`, func() error {
+		if s.archive == nil {
+			var err error
+			s.archive, err = reasonOPCArchiveControl()
+			if err != nil {
+				return err
+			}
+			s.original = bytes.Clone(s.archive)
+		}
+		var err error
+		s.packageResult, err = packaging.OpenEnvelope(s.archive)
+		return err
+	})
+	sc.Step(`^a deferred transaction is requested with a callback that would replace Alpha with Beta and set a ran flag$`, func() error {
+		if s.packageResult == nil {
+			return fmt.Errorf("missing OPC envelope")
+		}
+		s.callbackRan = false
+		s.transactionResult, s.err = s.packageResult.Transaction(packaging.TransactionDeferred, func(work *packaging.Envelope) (any, error) {
+			s.callbackRan = true
+			part, err := work.Part("word/document.xml")
+			if err != nil {
+				return nil, err
+			}
+			return nil, work.SetPart("word/document.xml", []byte(strings.Replace(string(part), "Alpha", "Beta", 1)))
+		})
+		return nil
+	})
+	sc.Step(`^the transaction refuses with reason opc-deferred-transaction and no result$`, func() error {
+		if s.transactionResult != nil {
+			return fmt.Errorf("deferred callback returned a result")
+		}
+		return expectedProfileReason(s.err, "opc-deferred-transaction")
+	})
+	sc.Step(`^the ran flag is false and the document text still contains Alpha$`, func() error {
+		if s.callbackRan {
+			return fmt.Errorf("deferred callback ran")
+		}
+		part, err := s.packageResult.Part("word/document.xml")
+		if err != nil || !bytes.Equal(part, []byte(opcDetachedMain)) {
+			return fmt.Errorf("deferred changed document: %v", err)
+		}
+		return nil
+	})
+	sc.Step(`^the current package archive and caller source bytes remain unchanged$`, func() error {
+		if !bytes.Equal(s.archive, s.original) {
+			return fmt.Errorf("caller archive changed")
+		}
+		current, err := s.packageResult.Bytes()
+		if err != nil || !bytes.Equal(current, s.original) {
+			return fmt.Errorf("current package archive changed: %v", err)
+		}
+		return nil
+	})
+	sc.Step(`^an opaque token has an evaluation hook that throws if invoked$`, func() error { s.token = &opaquePackageToken{}; return nil })
+	sc.Step(`^an immediate transaction replaces Alpha with Beta and returns that token$`, func() error {
+		if s.packageResult == nil || s.token == nil {
+			return fmt.Errorf("missing OPC editor/token")
+		}
+		s.transactionResult, s.err = s.packageResult.Transaction(packaging.TransactionImmediate, func(work *packaging.Envelope) (any, error) {
+			part, err := work.Part("word/document.xml")
+			if err != nil {
+				return nil, err
+			}
+			if !bytes.Equal(part, []byte(opcDetachedMain)) {
+				return nil, fmt.Errorf("original document text drift")
+			}
+			changed := []byte(strings.Replace(string(part), "Alpha", "Beta", 1))
+			if err = work.SetPart("word/document.xml", changed); err != nil {
+				return nil, err
+			}
+			return s.token, nil
+		})
+		return s.err
+	})
+	sc.Step(`^the returned token has the original identity and its evaluation count is zero$`, func() error {
+		if s.err != nil || s.token == nil || s.transactionResult != s.token || s.token.evaluations != 0 {
+			return fmt.Errorf("opaque token identity/evaluation drift: %v", s.err)
+		}
+		return nil
+	})
+	sc.Step(`^saving and reopening reads Beta with every unrelated member payload unchanged$`, func() error {
+		if s.packageResult == nil {
+			return fmt.Errorf("missing OPC editor")
+		}
+		dir, err := os.MkdirTemp("", "go-profile-transaction-*")
+		if err != nil {
+			return err
+		}
+		defer os.RemoveAll(dir)
+		dest := filepath.Join(dir, "edited.docx")
+		if err = s.packageResult.SaveAs(dest); err != nil {
+			return err
+		}
+		archive, err := os.ReadFile(dest)
+		if err != nil {
+			return err
+		}
+		reopened, err := packaging.OpenEnvelope(archive)
+		if err != nil {
+			return err
+		}
+		before, err := packaging.OpenEnvelope(s.original)
+		if err != nil {
+			return err
+		}
+		originalEntries, err := packaging.ReadZIP32(s.original, packaging.ZIP32Limits{})
+		if err != nil {
+			return err
+		}
+		newEntries, err := packaging.ReadZIP32(archive, packaging.ZIP32Limits{})
+		if err != nil || len(newEntries) != len(originalEntries) {
+			return fmt.Errorf("package inventory changed: %v", err)
+		}
+		for i, entry := range originalEntries {
+			if newEntries[i].Name != entry.Name {
+				return fmt.Errorf("member order/name changed")
+			}
+			if entry.Name == "word/document.xml" {
+				if !bytes.Equal(newEntries[i].Data, []byte(strings.Replace(opcDetachedMain, "Alpha", "Beta", 1))) {
+					return fmt.Errorf("saved Beta missing")
+				}
+				continue
+			}
+			b, e := before.Part(entry.Name)
+			if e != nil || !bytes.Equal(b, newEntries[i].Data) {
+				return fmt.Errorf("unrelated member changed: %s %v", entry.Name, e)
+			}
+		}
+		part, err := reopened.Part("word/document.xml")
+		if err != nil || !bytes.Equal(part, []byte(strings.Replace(opcDetachedMain, "Alpha", "Beta", 1))) || !bytes.Equal(s.archive, s.original) || s.token.evaluations != 0 {
+			return fmt.Errorf("reopened text/source/token custody: %v", err)
+		}
+		return nil
+	})
 	sc.Step(`^(?:the package is saved to the existing destination|the unchanged package is saved through the symlink path)$`, func() error {
 		if s.packageResult == nil {
 			return fmt.Errorf("missing OPC editor")
