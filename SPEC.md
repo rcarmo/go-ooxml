@@ -1890,6 +1890,6 @@ remain consumer-local, with generated-output guards against shared-root writes.
 The root manifest seals the mutation-safety feature and compact contract, with
 fixture bytes addressed by canonical asset IDs. Official Gherkin supplies expanded
 cases at verification; no wrapper or generated case inventory is read. The
-schema2 shared checkout is pinned to annotated v0.149.0; default batches require no
+schema2 shared checkout is pinned to annotated v0.150.0; default batches require no
 override. Exact commit/tag/root seal and full tracked-tree custody are checked.
 See docs/testing.md for candidate policy and current verification.
