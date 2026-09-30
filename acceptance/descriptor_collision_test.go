@@ -17,7 +17,7 @@ import (
 	"github.com/rcarmo/go-ooxml/pkg/packaging"
 )
 
-func descriptorCollisionSteps(sc *godog.ScenarioContext) {
+func descriptorCollisionSteps(sc *godog.ScenarioContext, reasons *packageReasonState) {
 	const signature = uint32(0x08074b50)
 	var source, snapshot []byte
 	var file *zip.File
@@ -120,6 +120,12 @@ func descriptorCollisionSteps(sc *godog.ScenarioContext) {
 		return nil
 	})
 	sc.Step(`^the caller's original archive bytes remain unchanged$`, func() error {
+		if reasons.archive != nil {
+			if len(reasons.archive) == 0 || !bytes.Equal(reasons.archive, reasons.original) {
+				return fmt.Errorf("profile caller bytes changed")
+			}
+			return nil
+		}
 		if !bytes.Equal(source, snapshot) {
 			return fmt.Errorf("caller bytes changed")
 		}

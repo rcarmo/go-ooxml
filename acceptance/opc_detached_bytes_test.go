@@ -19,6 +19,20 @@ import (
 )
 
 const opcDetachedByteCaseID = "@id-bun-opc-detached-byte-copies"
+
+func opcDetachedBackgroundLine() int {
+	if packageReasonsCandidate() {
+		return 34
+	}
+	return 33
+}
+func opcDetachedScenarioLine() int {
+	if packageReasonsCandidate() {
+		return 60
+	}
+	return 59
+}
+
 const opcDetachedMain = `<?xml version="1.0" encoding="UTF-8"?><document>Alpha</document>`
 const opcDetachedTypesNS = "http://schemas.openxmlformats.org/package/2006/content-types"
 const opcDetachedRelsNS = "http://schemas.openxmlformats.org/package/2006/relationships"
@@ -107,11 +121,11 @@ func guardOPCDetachedByteRule(doc *messages.GherkinDocument) error {
 		for _, member := range child.Rule.Children {
 			if bg := member.Background; bg != nil {
 				backgrounds++
-				if int(bg.Location.Line) != 33 || len(bg.Steps) != len(opcDetachedBackground) {
+				if int(bg.Location.Line) != opcDetachedBackgroundLine() || len(bg.Steps) != len(opcDetachedBackground) {
 					return fmt.Errorf("OPC detached-byte Background structure drift")
 				}
 				for i, step := range bg.Steps {
-					if step.Text != opcDetachedBackground[i] || int(step.Location.Line) != []int{34, 35, 36, 41, 42}[i] {
+					if step.Text != opcDetachedBackground[i] || int(step.Location.Line) != []int{opcDetachedBackgroundLine() + 1, opcDetachedBackgroundLine() + 2, opcDetachedBackgroundLine() + 3, opcDetachedBackgroundLine() + 8, opcDetachedBackgroundLine() + 9}[i] {
 						return fmt.Errorf("OPC detached-byte Background step %d drift", i+1)
 					}
 					if i == 2 {
@@ -125,11 +139,11 @@ func guardOPCDetachedByteRule(doc *messages.GherkinDocument) error {
 			}
 			if s := member.Scenario; s != nil && hasScenarioTag(s, opcDetachedByteCaseID) {
 				foundCase++
-				if int(s.Location.Line) != 59 || len(s.Tags) != 2 || s.Tags[0].Name != "@profile-opc-byte-custody" || s.Tags[1].Name != opcDetachedByteCaseID || int(s.Tags[0].Location.Line) != 58 || int(s.Tags[1].Location.Line) != 58 || s.Name != "Caller and returned byte arrays cannot modify an opened package" || len(s.Examples) != 0 || len(s.Steps) != len(opcDetachedSteps) {
+				if int(s.Location.Line) != opcDetachedScenarioLine() || len(s.Tags) != 2 || s.Tags[0].Name != "@profile-opc-byte-custody" || s.Tags[1].Name != opcDetachedByteCaseID || int(s.Tags[0].Location.Line) != opcDetachedScenarioLine()-1 || int(s.Tags[1].Location.Line) != opcDetachedScenarioLine()-1 || s.Name != "Caller and returned byte arrays cannot modify an opened package" || len(s.Examples) != 0 || len(s.Steps) != len(opcDetachedSteps) {
 					return fmt.Errorf("OPC detached-byte Scenario structure drift")
 				}
 				for i, step := range s.Steps {
-					if step.Text != opcDetachedSteps[i] || int(step.Location.Line) != 60+i || step.DataTable != nil || step.DocString != nil {
+					if step.Text != opcDetachedSteps[i] || int(step.Location.Line) != opcDetachedScenarioLine()+1+i || step.DataTable != nil || step.DocString != nil {
 						return fmt.Errorf("OPC detached-byte Scenario step %d drift", i+1)
 					}
 				}
@@ -146,7 +160,7 @@ func guardOPCDetachedByteRule(doc *messages.GherkinDocument) error {
 }
 
 func guardOPCDetachedByteCase(id string, p *messages.Pickle, line int) error {
-	if id != opcDetachedByteCaseID || line != 59 || p.Name != "Caller and returned byte arrays cannot modify an opened package" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(opcDetachedBackground)+len(opcDetachedSteps) {
+	if id != opcDetachedByteCaseID || line != opcDetachedScenarioLine() || p.Name != "Caller and returned byte arrays cannot modify an opened package" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(opcDetachedBackground)+len(opcDetachedSteps) {
 		return fmt.Errorf("OPC detached-byte Pickle drift")
 	}
 	if len(p.Tags) != 3 || p.Tags[0].Name != "@planned" || p.Tags[1].Name != "@profile-opc-byte-custody" || p.Tags[2].Name != opcDetachedByteCaseID {
@@ -198,7 +212,7 @@ func TestOPCDetachedByteGuardRejectsDrift(t *testing.T) {
 	if selected == nil {
 		t.Fatal("missing detached-byte Pickle")
 	}
-	if err := guardOPCDetachedByteCase(opcDetachedByteCaseID, selected, 59); err != nil {
+	if err := guardOPCDetachedByteCase(opcDetachedByteCaseID, selected, opcDetachedScenarioLine()); err != nil {
 		t.Fatal(err)
 	}
 	for i := range selected.Steps {
@@ -208,14 +222,14 @@ func TestOPCDetachedByteGuardRejectsDrift(t *testing.T) {
 			copyStep := *clone.Steps[i]
 			copyStep.Text += " drift"
 			clone.Steps[i] = &copyStep
-			if guardOPCDetachedByteCase(opcDetachedByteCaseID, &clone, 59) == nil {
+			if guardOPCDetachedByteCase(opcDetachedByteCaseID, &clone, opcDetachedScenarioLine()) == nil {
 				t.Fatal("step drift accepted")
 			}
 		})
 	}
 	clone := *selected
 	clone.Name += " drift"
-	if guardOPCDetachedByteCase(opcDetachedByteCaseID, &clone, 59) == nil || guardOPCDetachedByteCase(opcPreserveUnrelatedCaseID, selected, 59) == nil || guardOPCDetachedByteCase(opcDetachedByteCaseID, selected, 60) == nil {
+	if guardOPCDetachedByteCase(opcDetachedByteCaseID, &clone, opcDetachedScenarioLine()) == nil || guardOPCDetachedByteCase(opcPreserveUnrelatedCaseID, selected, opcDetachedScenarioLine()) == nil || guardOPCDetachedByteCase(opcDetachedByteCaseID, selected, opcDetachedScenarioLine()+1) == nil {
 		t.Fatal("identity drift accepted")
 	}
 	clone = *selected
@@ -233,7 +247,7 @@ func TestOPCDetachedByteGuardRejectsDrift(t *testing.T) {
 	copyArg.DataTable = &copyTable
 	copyStep.Argument = &copyArg
 	clone.Steps[2] = &copyStep
-	if guardOPCDetachedByteCase(opcDetachedByteCaseID, &clone, 59) == nil {
+	if guardOPCDetachedByteCase(opcDetachedByteCaseID, &clone, opcDetachedScenarioLine()) == nil {
 		t.Fatal("table drift accepted")
 	}
 	for _, tc := range []struct{ name, before, after string }{

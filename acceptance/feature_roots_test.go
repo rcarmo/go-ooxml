@@ -28,6 +28,11 @@ func packagePreservationFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "preservation.feature")
 }
 
+// Raw ZIP32 reason cases are opt-in against the sealed shared profile.
+func zip32FeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "zip32.feature")
+}
+
 // Only this single sealed canonical outcome is selected for native execution.
 func overlapFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "zip-admission.feature")
