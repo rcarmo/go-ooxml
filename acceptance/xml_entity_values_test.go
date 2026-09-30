@@ -13,6 +13,7 @@ import (
 	"github.com/cucumber/godog"
 	messages "github.com/cucumber/messages/go/v21"
 	"github.com/rcarmo/go-ooxml/internal/losslessxml"
+	"github.com/rcarmo/go-ooxml/pkg/xmlsnapshot"
 )
 
 const xmlEntityValuesCaseID = "@id-xml-entity-values"
@@ -131,15 +132,16 @@ func TestXMLEntityValuesGuardRejectsDrift(t *testing.T) {
 	}
 }
 
-func xmlEntityValuesSteps(sc *godog.ScenarioContext) {
+func xmlEntityValuesSteps(sc *godog.ScenarioContext, safety *xmlSafetyState) {
 	var caller, original, output []byte
 	var doc *losslessxml.Document
 	sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 		caller, original, output, doc = nil, nil, nil, nil
+		*safety = xmlSafetyState{}
 		return ctx, nil
 	})
 	sc.Step(`^XML values input encoded as JSON (".*")$`, func(raw string) error {
-		if raw != xmlEntitySourceJSON && raw != xmlStylesheetPISourceJSON && raw != xmlImplicitPrefixSourceJSON && raw != xmlExpandedAttributeSourceJSON {
+		if raw != xmlEntitySourceJSON && raw != xmlStylesheetPISourceJSON && raw != xmlImplicitPrefixSourceJSON && raw != xmlExpandedAttributeSourceJSON && raw != xmlPrototypeSourceJSON && raw != xmlNamespaceSourceJSON && raw != xmlMalformedSourceJSON {
 			return fmt.Errorf("XML values source drift")
 		}
 		var source string
@@ -148,14 +150,33 @@ func xmlEntityValuesSteps(sc *godog.ScenarioContext) {
 		}
 		caller = []byte(source)
 		original = bytes.Clone(caller)
-		if !bytes.Equal(caller, []byte(`<r a="&quot;&apos;">&#x41;&#65;&amp;&lt;&gt;</r>`)) && !bytes.Equal(caller, []byte(`<?xml-stylesheet href="style.xsl"?><r/>`)) && !bytes.Equal(caller, []byte(xmlImplicitPrefixInput)) && !bytes.Equal(caller, []byte(xmlExpandedAttributeInput)) {
+		if !bytes.Equal(caller, []byte(`<r a="&quot;&apos;">&#x41;&#65;&amp;&lt;&gt;</r>`)) && !bytes.Equal(caller, []byte(`<?xml-stylesheet href="style.xsl"?><r/>`)) && !bytes.Equal(caller, []byte(xmlImplicitPrefixInput)) && !bytes.Equal(caller, []byte(xmlExpandedAttributeInput)) && !bytes.Equal(caller, []byte(xmlPrototypeInput)) && !bytes.Equal(caller, []byte(xmlNamespaceInput)) && !bytes.Equal(caller, []byte(xmlMalformedInput)) {
 			return fmt.Errorf("XML values decoded source drift")
+		}
+		if raw == xmlPrototypeSourceJSON || raw == xmlNamespaceSourceJSON || raw == xmlMalformedSourceJSON {
+			safety.caller, safety.original = caller, original
 		}
 		return nil
 	})
 	sc.Step(`^the XML values input is parsed$`, func() error {
 		if caller == nil || !bytes.Equal(caller, original) {
 			return fmt.Errorf("missing caller-owned XML values source")
+		}
+		if safety.caller != nil {
+			safety.doc, safety.err = xmlsnapshot.Parse(caller)
+			if !bytes.Equal(caller, original) {
+				return fmt.Errorf("public XML snapshot changed caller source")
+			}
+			if bytes.Equal(caller, []byte(xmlMalformedInput)) {
+				if safety.doc != nil || safety.err == nil {
+					return fmt.Errorf("malformed XML did not return error and nil result")
+				}
+				return nil
+			}
+			if safety.err != nil || safety.doc == nil {
+				return fmt.Errorf("public XML snapshot parse: %v", safety.err)
+			}
+			return nil
 		}
 		var err error
 		doc, err = losslessxml.Parse(caller)

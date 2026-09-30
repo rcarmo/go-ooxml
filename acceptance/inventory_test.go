@@ -108,8 +108,15 @@ func selectedTableValueID(id string) bool {
 	return id == tableDimensionsCaseID || id == tableCellAccessCaseID || id == tableCellTextCaseID || id == tableRowCountsCaseID
 }
 
+func xmlSelectedParsingCases() int {
+	if xmlSafetyCandidate() {
+		return 8
+	}
+	return 5
+}
+
 func selectedCanonicalID(path, id string) bool {
-	return (path == overlapFeaturePath() && (id == bzipAdmissionCaseID || id == unsafeMembersCaseID)) || (path == packagePreservationFeaturePath() && (id == opcDetachedByteCaseID || id == opcCorpusNoopCaseID)) || (path == xmlParsingFeaturePath() && (id == xmlEntityValuesCaseID || id == xmlStylesheetPICaseID || id == xmlImplicitPrefixCaseID || id == xmlExpandedAttributeCaseID || id == xmlWhitespaceCaseID)) || (path == xmlEditingFeaturePath() && (id == attributeSpliceCaseID || id == attributeRefusalCaseID || id == elementRemovalCaseID || id == elementRemovalRefusalCaseID || id == elementReplacementCustodyCaseID || id == elementReplacementRefusalCaseID || id == childInsertionCustodyCaseID || id == childInsertionRefusalCaseID || id == childNamespaceMatrixCaseID)) || (path == xmlComparisonFeaturePath() && (id == xmlSignificantCaseID || id == xmlPrefixBindingCaseID || id == xmlUnsafeCaseID || id == xmlMarkupCaseID)) || id == canonicalID(path) || (path == formulaReferenceFeaturePath() && (id == directRangeRefusalCaseID || id == formulaAnalysisCountsCaseID || id == formulaQuotedSheetFlagsCaseID || id == formulaAnalysisRefusalCaseID || id == formulaLiteralPunctuationCaseID || id == staticRemapExactCaseID || id == staticRemapRefusalCaseID || id == staticReferencePropertiesCaseID)) || (path == runEffectsFeaturePath() && selectedRunFormattingID(id)) || (path == tableMergeFeaturePath() && (selectedTableValueID(id) || id == roundtripTableTextCaseID)) || (path == paragraphFeaturePath() && (id == paragraphAlignmentCaseID || id == paragraphSpacingCaseID || id == paragraphTogglesCaseID || id == paragraphRunsCaseID || id == bodyInsertOrderCaseID))
+	return (path == overlapFeaturePath() && (id == bzipAdmissionCaseID || id == unsafeMembersCaseID)) || (path == packagePreservationFeaturePath() && (id == opcDetachedByteCaseID || id == opcCorpusNoopCaseID)) || (path == xmlParsingFeaturePath() && (id == xmlEntityValuesCaseID || id == xmlStylesheetPICaseID || id == xmlImplicitPrefixCaseID || id == xmlExpandedAttributeCaseID || id == xmlWhitespaceCaseID || (xmlSafetyCandidate() && (id == xmlPrototypeCaseID || id == xmlNamespaceCaseID || id == xmlMalformedCaseID)))) || (path == xmlEditingFeaturePath() && (id == attributeSpliceCaseID || id == attributeRefusalCaseID || id == elementRemovalCaseID || id == elementRemovalRefusalCaseID || id == elementReplacementCustodyCaseID || id == elementReplacementRefusalCaseID || id == childInsertionCustodyCaseID || id == childInsertionRefusalCaseID || id == childNamespaceMatrixCaseID)) || (path == xmlComparisonFeaturePath() && (id == xmlSignificantCaseID || id == xmlPrefixBindingCaseID || id == xmlUnsafeCaseID || id == xmlMarkupCaseID)) || id == canonicalID(path) || (path == formulaReferenceFeaturePath() && (id == directRangeRefusalCaseID || id == formulaAnalysisCountsCaseID || id == formulaQuotedSheetFlagsCaseID || id == formulaAnalysisRefusalCaseID || id == formulaLiteralPunctuationCaseID || id == staticRemapExactCaseID || id == staticRemapRefusalCaseID || id == staticReferencePropertiesCaseID)) || (path == runEffectsFeaturePath() && selectedRunFormattingID(id)) || (path == tableMergeFeaturePath() && (selectedTableValueID(id) || id == roundtripTableTextCaseID)) || (path == paragraphFeaturePath() && (id == paragraphAlignmentCaseID || id == paragraphSpacingCaseID || id == paragraphTogglesCaseID || id == paragraphRunsCaseID || id == bodyInsertOrderCaseID))
 }
 
 func canonicalID(path string) string {
@@ -314,6 +321,11 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 		if err := guardXMLWhitespaceRule(doc); err != nil {
 			return err
 		}
+		if xmlSafetyCandidate() {
+			if err := guardXMLSafetyRule(doc); err != nil {
+				return err
+			}
+		}
 	}
 	if canonical && path == overlapFeaturePath() {
 		if err := guardUnsafeMembersFeature(doc); err != nil {
@@ -424,6 +436,8 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 					err = guardXMLExpandedAttributeCase(id, p, line)
 				case xmlWhitespaceCaseID:
 					err = guardXMLWhitespaceCase(id, p, line)
+				case xmlPrototypeCaseID, xmlNamespaceCaseID, xmlMalformedCaseID:
+					err = guardXMLSafetyCase(id, p, line)
 				default:
 					err = fmt.Errorf("unexpected selected XML parsing ID %s", id)
 				}
@@ -746,7 +760,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			expected[key] = expectedCase{key, p.Name, len(p.Steps)}
 		}
 	}
-	if canonical && ((canonicalID(path) == immutableLeafCaseID && (canonicalCases != 15 || len(attributeSpliceRowsSeen) != 3 || len(removalRefusalRowsSeen) != 2 || len(replacementRefusalRowsSeen) != 3)) || (canonicalID(path) == unicodeQNameCaseID && canonicalCases != 1) || (canonicalID(path) == xmlEntityValuesCaseID && canonicalCases != 5) || (canonicalID(path) == xmlSignificantCaseID && canonicalCases != 9) || (canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 7) || (canonicalID(path) == opcPreserveUnrelatedCaseID && canonicalCases != 3) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == directRangeParsingCaseID && (canonicalCases != 45 || len(directRangeParseRows) != 6 || len(directRangeRefusalRows) != 7 || len(formulaCountsRows) != 6 || len(formulaFlagsRows) != 1 || len(formulaRefusalRows) != 7 || len(formulaLiteralRows) != 5 || len(staticRemapExactRows) != 5 || len(staticRemapRefusalRows) != 7 || len(staticPropertiesRows) != 1)) || (canonicalID(path) == directFontSizeCaseID && canonicalCases != 1) || (canonicalID(path) == paragraphTextGetterCaseID && (canonicalCases != 16 || len(paragraphRows) != 5 || len(alignmentRows) != 4 || len(spacingRows) != 4)) || (canonicalID(path) == corePropertiesCaseID && canonicalCases != 1) || (canonicalID(path) == sectionTitleBackgroundCaseID && canonicalCases != 1) || (canonicalID(path) == newEmptyBodyCaseID && canonicalCases != 1) || (canonicalID(path) == tableMergeCaseID && (canonicalCases != 13 || len(dimensionRows) != 8)) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 23 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
+	if canonical && ((canonicalID(path) == immutableLeafCaseID && (canonicalCases != 15 || len(attributeSpliceRowsSeen) != 3 || len(removalRefusalRowsSeen) != 2 || len(replacementRefusalRowsSeen) != 3)) || (canonicalID(path) == unicodeQNameCaseID && canonicalCases != 1) || (canonicalID(path) == xmlEntityValuesCaseID && canonicalCases != xmlSelectedParsingCases()) || (canonicalID(path) == xmlSignificantCaseID && canonicalCases != 9) || (canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == overlapCaseID && canonicalCases != 7) || (canonicalID(path) == opcPreserveUnrelatedCaseID && canonicalCases != 3) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == directRangeParsingCaseID && (canonicalCases != 45 || len(directRangeParseRows) != 6 || len(directRangeRefusalRows) != 7 || len(formulaCountsRows) != 6 || len(formulaFlagsRows) != 1 || len(formulaRefusalRows) != 7 || len(formulaLiteralRows) != 5 || len(staticRemapExactRows) != 5 || len(staticRemapRefusalRows) != 7 || len(staticPropertiesRows) != 1)) || (canonicalID(path) == directFontSizeCaseID && canonicalCases != 1) || (canonicalID(path) == paragraphTextGetterCaseID && (canonicalCases != 16 || len(paragraphRows) != 5 || len(alignmentRows) != 4 || len(spacingRows) != 4)) || (canonicalID(path) == corePropertiesCaseID && canonicalCases != 1) || (canonicalID(path) == sectionTitleBackgroundCaseID && canonicalCases != 1) || (canonicalID(path) == newEmptyBodyCaseID && canonicalCases != 1) || (canonicalID(path) == tableMergeCaseID && (canonicalCases != 13 || len(dimensionRows) != 8)) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 23 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
 		return fmt.Errorf("%s: selected canonical case count drift: %d", path, canonicalCases)
 	}
 	return nil

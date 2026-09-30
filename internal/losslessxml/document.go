@@ -18,6 +18,7 @@ const xmlnsNS = "http://www.w3.org/2000/xmlns/"
 type node struct {
 	name                                 xml.Name
 	attrs                                []xml.Attr
+	attrNamespaces                       map[string]string
 	start, contentStart, contentEnd, end int
 	parent                               int
 	leaf, selfClosing                    bool
@@ -38,6 +39,17 @@ type TextEdit struct {
 	Target Element
 	Text   string
 }
+
+// MismatchedTagError identifies a mismatched closing QName in a parsed source.
+// Other parse failures retain their original errors and are not assigned this type.
+type MismatchedTagError struct {
+	Offset int64
+}
+
+func (e *MismatchedTagError) Error() string {
+	return fmt.Sprintf("XML offset %d: end tag QName differs from start", e.Offset)
+}
+
 type frame struct {
 	index int
 	raw   xml.Name
@@ -119,6 +131,7 @@ func Parse(source []byte) (*Document, error) {
 				return fail(err.Error())
 			}
 			attrs := []xml.Attr{}
+			attrNamespaces := map[string]string{}
 			seen := map[xml.Name]bool{}
 			for _, a := range t.Attr {
 				if a.Name.Space == "xmlns" || (a.Name.Space == "" && a.Name.Local == "xmlns") {
@@ -133,10 +146,15 @@ func Parse(source []byte) (*Document, error) {
 				}
 				seen[resolved] = true
 				attrs = append(attrs, xml.Attr{Name: resolved, Value: a.Value})
+				qualified := a.Name.Local
+				if a.Name.Space != "" {
+					qualified = a.Name.Space + ":" + qualified
+				}
+				attrNamespaces[qualified] = resolved.Space
 			}
 			self := after-before >= 2 && bytes.HasSuffix(d.source[before:after], []byte("/>"))
 			i := len(d.nodes)
-			d.nodes = append(d.nodes, node{name: name, attrs: attrs, start: before, contentStart: after, parent: parent, leaf: true, selfClosing: self, ns: ns})
+			d.nodes = append(d.nodes, node{name: name, attrs: attrs, attrNamespaces: attrNamespaces, start: before, contentStart: after, parent: parent, leaf: true, selfClosing: self, ns: ns})
 			stack = append(stack, &frame{index: i, raw: t.Name, ns: ns})
 		case xml.EndElement:
 			if len(stack) == 0 {
@@ -144,7 +162,7 @@ func Parse(source []byte) (*Document, error) {
 			}
 			f := stack[len(stack)-1]
 			if f.raw != t.Name {
-				return fail("end tag QName differs from start")
+				return nil, &MismatchedTagError{Offset: decoder.InputOffset()}
 			}
 			n := &d.nodes[f.index]
 			n.contentEnd = before
@@ -237,6 +255,18 @@ func (e Element) Attributes() []xml.Attr {
 		return nil
 	}
 	return append([]xml.Attr(nil), e.doc.nodes[e.index].attrs...)
+}
+
+// AttributeNamespaces returns a detached qualified-name to namespace-URI map.
+// Mutation cannot change later reads from this parsed snapshot.
+func (e Element) AttributeNamespaces() map[string]string {
+	out := map[string]string{}
+	if e.valid() {
+		for k, v := range e.doc.nodes[e.index].attrNamespaces {
+			out[k] = v
+		}
+	}
+	return out
 }
 func (e Element) Parent() (Element, bool) {
 	if !e.valid() {

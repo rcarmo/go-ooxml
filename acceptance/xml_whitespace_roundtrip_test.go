@@ -19,6 +19,13 @@ import (
 const xmlWhitespaceCaseID = "@id-xml-escaping-whitespace-roundtrip"
 const xmlWhitespaceJSON = `"x\r\n\ty"`
 
+func xmlWhitespaceLine() int {
+	if xmlSafetyCandidate() {
+		return 113
+	}
+	return 111
+}
+
 var xmlWhitespaceSteps = []string{
 	"an XML escaping value encoded as JSON " + xmlWhitespaceJSON,
 	"the value is escaped separately as text and as an attribute and both are parsed",
@@ -59,11 +66,11 @@ func guardXMLWhitespaceRule(doc *messages.GherkinDocument) error {
 				}
 				found++
 				s := member.Scenario
-				if rule.Name != "XML values, namespace lookup and safe escaping" || len(rule.Tags) != 0 || len(s.Tags) != 1 || int(tag.Location.Line) != 110 || int(s.Location.Line) != 111 || s.Keyword != "Scenario" || s.Name != "Escaped whitespace survives text and attribute parsing" || len(s.Examples) != 0 || len(s.Steps) != 3 {
+				if rule.Name != "XML values, namespace lookup and safe escaping" || len(rule.Tags) != 0 || len(s.Tags) != 1 || int(tag.Location.Line) != xmlWhitespaceLine()-1 || int(s.Location.Line) != xmlWhitespaceLine() || s.Keyword != "Scenario" || s.Name != "Escaped whitespace survives text and attribute parsing" || len(s.Examples) != 0 || len(s.Steps) != 3 {
 					return fmt.Errorf("XML whitespace scenario structure drift")
 				}
 				for i, keyword := range []string{"Given ", "When ", "Then "} {
-					if s.Steps[i].Keyword != keyword || int(s.Steps[i].Location.Line) != 112+i || s.Steps[i].Text != xmlWhitespaceSteps[i] || s.Steps[i].DocString != nil || s.Steps[i].DataTable != nil {
+					if s.Steps[i].Keyword != keyword || int(s.Steps[i].Location.Line) != xmlWhitespaceLine()+1+i || s.Steps[i].Text != xmlWhitespaceSteps[i] || s.Steps[i].DocString != nil || s.Steps[i].DataTable != nil {
 						return fmt.Errorf("XML whitespace authored step %d drift", i+1)
 					}
 				}
@@ -77,7 +84,7 @@ func guardXMLWhitespaceRule(doc *messages.GherkinDocument) error {
 }
 
 func guardXMLWhitespaceCase(id string, p *messages.Pickle, line int) error {
-	if id != xmlWhitespaceCaseID || p == nil || line != 111 || p.Name != "Escaped whitespace survives text and attribute parsing" || len(p.AstNodeIds) != 1 || len(p.Tags) != 2 || p.Tags[0].Name != "@planned" || p.Tags[1].Name != id || len(p.Steps) != len(xmlWhitespaceSteps) {
+	if id != xmlWhitespaceCaseID || p == nil || line != xmlWhitespaceLine() || p.Name != "Escaped whitespace survives text and attribute parsing" || len(p.AstNodeIds) != 1 || len(p.Tags) != 2 || p.Tags[0].Name != "@planned" || p.Tags[1].Name != id || len(p.Steps) != len(xmlWhitespaceSteps) {
 		return fmt.Errorf("XML whitespace pickle identity drift")
 	}
 	for i, step := range xmlWhitespaceSteps {
@@ -112,7 +119,7 @@ func TestXMLWhitespaceGuardRejectsDrift(t *testing.T) {
 			}
 		}
 	}
-	if err := guardXMLWhitespaceCase(xmlWhitespaceCaseID, selected, 111); err != nil {
+	if err := guardXMLWhitespaceCase(xmlWhitespaceCaseID, selected, xmlWhitespaceLine()); err != nil {
 		t.Fatal(err)
 	}
 	for _, tc := range []struct {
@@ -142,12 +149,12 @@ func TestXMLWhitespaceGuardRejectsDrift(t *testing.T) {
 				p.Steps[i] = &copy
 			}
 			tc.change(&p)
-			if guardXMLWhitespaceCase(xmlWhitespaceCaseID, &p, 111) == nil {
+			if guardXMLWhitespaceCase(xmlWhitespaceCaseID, &p, xmlWhitespaceLine()) == nil {
 				t.Fatal("accepted canonical drift")
 			}
 		})
 	}
-	if guardXMLWhitespaceCase(xmlWhitespaceCaseID, selected, 112) == nil {
+	if guardXMLWhitespaceCase(xmlWhitespaceCaseID, selected, xmlWhitespaceLine()+1) == nil {
 		t.Fatal("accepted moved scenario")
 	}
 	for _, tc := range []struct {
