@@ -18,6 +18,13 @@ const xmlImplicitPrefixSourceJSON = `"<r xml:lang=\"en\"/>"`
 const xmlImplicitPrefixInput = `<r xml:lang="en"/>`
 const xmlImplicitPrefixURI = "http://www.w3.org/XML/1998/namespace"
 
+func xmlImplicitPrefixLine() int {
+	if xmlLexicalCandidate() {
+		return 99
+	}
+	return 72
+}
+
 func guardXMLImplicitPrefixCase(id string, p *messages.Pickle, line int) error {
 	steps := []string{
 		"XML values input encoded as JSON " + xmlImplicitPrefixSourceJSON,
@@ -26,7 +33,7 @@ func guardXMLImplicitPrefixCase(id string, p *messages.Pickle, line int) error {
 		`the root attribute xml:lang equals JSON "en"`,
 		"the implicit xml namespace URI is " + xmlImplicitPrefixURI,
 	}
-	if id != xmlImplicitPrefixCaseID || line != 72 || p.Name != "The xml prefix is bound without a namespace declaration" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
+	if id != xmlImplicitPrefixCaseID || line != xmlImplicitPrefixLine() || p.Name != "The xml prefix is bound without a namespace declaration" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
 		return fmt.Errorf("unexpected implicit xml prefix case %s %q at %d", id, p.Name, line)
 	}
 	for i, want := range steps {
@@ -55,7 +62,7 @@ func guardXMLImplicitPrefixRule(doc *messages.GherkinDocument) error {
 			}
 			for _, tag := range member.Scenario.Tags {
 				if tag.Name == xmlImplicitPrefixCaseID {
-					if len(member.Scenario.Tags) != 1 || int(tag.Location.Line) != 71 || len(member.Scenario.Examples) != 0 || len(member.Scenario.Steps) != 5 || int(member.Scenario.Location.Line) != 72 {
+					if len(member.Scenario.Tags) != 1 || int(tag.Location.Line) != xmlImplicitPrefixLine()-1 || len(member.Scenario.Examples) != 0 || len(member.Scenario.Steps) != 5 || int(member.Scenario.Location.Line) != xmlImplicitPrefixLine() {
 						return fmt.Errorf("implicit xml prefix canonical structure drift")
 					}
 					found++
@@ -93,7 +100,7 @@ func TestXMLImplicitPrefixGuardRejectsDrift(t *testing.T) {
 			}
 		}
 	}
-	if selected == nil || guardXMLImplicitPrefixCase(xmlImplicitPrefixCaseID, selected, 72) != nil {
+	if selected == nil || guardXMLImplicitPrefixCase(xmlImplicitPrefixCaseID, selected, xmlImplicitPrefixLine()) != nil {
 		t.Fatal("canonical implicit xml prefix case guard failed")
 	}
 	for _, tc := range []struct {
@@ -118,12 +125,12 @@ func TestXMLImplicitPrefixGuardRejectsDrift(t *testing.T) {
 				clone.Steps[i] = &copyStep
 			}
 			tc.mutate(&clone)
-			if guardXMLImplicitPrefixCase(xmlImplicitPrefixCaseID, &clone, 72) == nil {
+			if guardXMLImplicitPrefixCase(xmlImplicitPrefixCaseID, &clone, xmlImplicitPrefixLine()) == nil {
 				t.Fatal("guard accepted implicit xml prefix drift")
 			}
 		})
 	}
-	if guardXMLImplicitPrefixCase(xmlEntityValuesCaseID, selected, 72) == nil || guardXMLImplicitPrefixCase(xmlImplicitPrefixCaseID, selected, 71) == nil || guardXMLImplicitPrefixCase(xmlImplicitPrefixCaseID, selected, 52) == nil {
+	if guardXMLImplicitPrefixCase(xmlEntityValuesCaseID, selected, xmlImplicitPrefixLine()) == nil || guardXMLImplicitPrefixCase(xmlImplicitPrefixCaseID, selected, xmlImplicitPrefixLine()-1) == nil || guardXMLImplicitPrefixCase(xmlImplicitPrefixCaseID, selected, 52) == nil {
 		t.Fatal("guard accepted implicit xml prefix ID or line drift")
 	}
 }

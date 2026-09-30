@@ -20,6 +20,9 @@ const xmlWhitespaceCaseID = "@id-xml-escaping-whitespace-roundtrip"
 const xmlWhitespaceJSON = `"x\r\n\ty"`
 
 func xmlWhitespaceLine() int {
+	if xmlLexicalCandidate() {
+		return 140
+	}
 	if xmlSafetyCandidate() {
 		return 113
 	}
@@ -329,7 +332,7 @@ func xmlWhitespaceRoundtripSteps(sc *godog.ScenarioContext) {
 		result = whitespaceValue{}
 		return ctx, nil
 	})
-	sc.Step(`^an XML escaping value encoded as JSON (.+)$`, func(raw string) error {
+	sc.Step(`^an XML escaping value encoded as JSON ("x\\r\\n\\ty")$`, func(raw string) error {
 		if raw != xmlWhitespaceJSON {
 			return fmt.Errorf("unexpected canonical JSON input %q", raw)
 		}

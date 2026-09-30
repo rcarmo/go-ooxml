@@ -17,13 +17,20 @@ const xmlStylesheetPISourceJSON = `"<?xml-stylesheet href=\"style.xsl\"?><r/>"`
 const xmlStylesheetPIInput = `<?xml-stylesheet href="style.xsl"?><r/>`
 const xmlStylesheetPIRoot = `<r/>`
 
+func xmlStylesheetLine() int {
+	if xmlLexicalCandidate() {
+		return 79
+	}
+	return 52
+}
+
 func guardXMLStylesheetPICase(id string, p *messages.Pickle, line int) error {
 	steps := []string{
 		"XML values input encoded as JSON " + xmlStylesheetPISourceJSON,
 		"the XML values input is parsed",
 		"the root qualified name equals r",
 	}
-	if id != xmlStylesheetPICaseID || line != 52 || p.Name != "Accept a stylesheet processing instruction before the root" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
+	if id != xmlStylesheetPICaseID || line != xmlStylesheetLine() || p.Name != "Accept a stylesheet processing instruction before the root" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
 		return fmt.Errorf("unexpected XML stylesheet PI case %s %q at %d", id, p.Name, line)
 	}
 	for i, want := range steps {
@@ -52,7 +59,7 @@ func guardXMLStylesheetPIRule(doc *messages.GherkinDocument) error {
 			}
 			for _, tag := range member.Scenario.Tags {
 				if tag.Name == xmlStylesheetPICaseID {
-					if len(member.Scenario.Tags) != 1 || int(tag.Location.Line) != 51 || len(member.Scenario.Examples) != 0 || len(member.Scenario.Steps) != 3 || int(member.Scenario.Location.Line) != 52 {
+					if len(member.Scenario.Tags) != 1 || int(tag.Location.Line) != xmlStylesheetLine()-1 || len(member.Scenario.Examples) != 0 || len(member.Scenario.Steps) != 3 || int(member.Scenario.Location.Line) != xmlStylesheetLine() {
 						return fmt.Errorf("XML stylesheet PI canonical structure drift")
 					}
 					found++
@@ -90,7 +97,7 @@ func TestXMLStylesheetPIGuardRejectsDrift(t *testing.T) {
 			}
 		}
 	}
-	if selected == nil || guardXMLStylesheetPICase(xmlStylesheetPICaseID, selected, 52) != nil {
+	if selected == nil || guardXMLStylesheetPICase(xmlStylesheetPICaseID, selected, xmlStylesheetLine()) != nil {
 		t.Fatal("canonical XML stylesheet PI case guard failed")
 	}
 	for _, tc := range []struct {
@@ -113,12 +120,12 @@ func TestXMLStylesheetPIGuardRejectsDrift(t *testing.T) {
 				clone.Steps[i] = &copyStep
 			}
 			tc.mutate(&clone)
-			if guardXMLStylesheetPICase(xmlStylesheetPICaseID, &clone, 52) == nil {
+			if guardXMLStylesheetPICase(xmlStylesheetPICaseID, &clone, xmlStylesheetLine()) == nil {
 				t.Fatal("guard accepted XML stylesheet PI drift")
 			}
 		})
 	}
-	if guardXMLStylesheetPICase(xmlEntityValuesCaseID, selected, 52) == nil || guardXMLStylesheetPICase(xmlStylesheetPICaseID, selected, 51) == nil || guardXMLStylesheetPICase(xmlStylesheetPICaseID, selected, 45) == nil {
+	if guardXMLStylesheetPICase(xmlEntityValuesCaseID, selected, xmlStylesheetLine()) == nil || guardXMLStylesheetPICase(xmlStylesheetPICaseID, selected, xmlStylesheetLine()-1) == nil || guardXMLStylesheetPICase(xmlStylesheetPICaseID, selected, 45) == nil {
 		t.Fatal("guard accepted XML stylesheet PI ID or line drift")
 	}
 }

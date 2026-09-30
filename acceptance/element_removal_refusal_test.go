@@ -12,7 +12,8 @@ import (
 )
 
 func guardElementRemovalRefusalCase(id string, p *messages.Pickle, line int) (string, error) {
-	rows := map[int]string{85: "root", 86: "p:a and its nested p:b"}
+	base := lexicalEditingLine(85, 94)
+	rows := map[int]string{base: "root", base + 1: "p:a and its nested p:b"}
 	selection, ok := rows[line]
 	if id != elementRemovalRefusalCaseID || !ok || len(p.AstNodeIds) != 2 || p.Name != "A "+selection+" removal refuses" || len(p.Steps) != 3 {
 		return "", fmt.Errorf("unexpected element-removal refusal case %s %q at %d", id, p.Name, line)

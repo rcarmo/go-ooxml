@@ -33,7 +33,11 @@ func guardAttributeSpliceCase(id string, p *messages.Pickle, line int) (string, 
 		if p.Steps[1].Text != "a lexical edit sets the attribute "+name+" of the first t element to "+row.value {
 			continue
 		}
-		rowLine := map[string]int{"a": 27, "p:n": 28, "fresh": 29}[name]
+		base := 27
+		if xmlLexicalCandidate() {
+			base = 36
+		}
+		rowLine := map[string]int{"a": base, "p:n": base + 1, "fresh": base + 2}[name]
 		if line != rowLine {
 			return "", fmt.Errorf("attribute-splice row %s moved to %d", name, line)
 		}

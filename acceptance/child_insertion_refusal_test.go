@@ -18,7 +18,7 @@ func guardChildInsertionRefusalCase(id string, p *messages.Pickle, line int) err
 		"the insertion returns an error",
 		"a separate empty insertion batch returns the exact original source bytes",
 	}
-	if id != childInsertionRefusalCaseID || line != 45 || p.Name != "Overlapping insertion targets refuse and a separate no-op preserves bytes" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
+	if id != childInsertionRefusalCaseID || line != lexicalEditingLine(45, 54) || p.Name != "Overlapping insertion targets refuse and a separate no-op preserves bytes" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
 		return fmt.Errorf("unexpected child-insertion refusal case %s %q at %d", id, p.Name, line)
 	}
 	for i, step := range steps {

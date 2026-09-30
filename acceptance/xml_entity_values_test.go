@@ -21,6 +21,13 @@ const xmlEntitySourceJSON = `"<r a=\"&quot;&apos;\">&#x41;&#65;&amp;&lt;&gt;</r>
 const xmlEntityAttributeJSON = `"\"'"`
 const xmlEntityTextJSON = `"AA&<>"`
 
+func xmlEntityValuesLine() int {
+	if xmlLexicalCandidate() {
+		return 72
+	}
+	return 45
+}
+
 func guardXMLEntityValuesCase(id string, p *messages.Pickle, line int) error {
 	steps := []string{
 		"XML values input encoded as JSON " + xmlEntitySourceJSON,
@@ -28,7 +35,7 @@ func guardXMLEntityValuesCase(id string, p *messages.Pickle, line int) error {
 		"the root attribute a equals JSON " + xmlEntityAttributeJSON,
 		"the root text equals JSON " + xmlEntityTextJSON,
 	}
-	if id != xmlEntityValuesCaseID || line != 45 || p.Name != "Decode predefined entities and decimal and hexadecimal references" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
+	if id != xmlEntityValuesCaseID || line != xmlEntityValuesLine() || p.Name != "Decode predefined entities and decimal and hexadecimal references" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
 		return fmt.Errorf("unexpected XML entity-values case %s %q at %d", id, p.Name, line)
 	}
 	for i, want := range steps {
@@ -61,7 +68,7 @@ func guardXMLEntityValuesRule(doc *messages.GherkinDocument) error {
 			}
 			for _, tag := range member.Scenario.Tags {
 				if tag.Name == xmlEntityValuesCaseID {
-					if len(member.Scenario.Tags) != 1 || int(tag.Location.Line) != 44 || len(member.Scenario.Examples) != 0 || len(member.Scenario.Steps) != 4 || int(member.Scenario.Location.Line) != 45 {
+					if len(member.Scenario.Tags) != 1 || int(tag.Location.Line) != xmlEntityValuesLine()-1 || len(member.Scenario.Examples) != 0 || len(member.Scenario.Steps) != 4 || int(member.Scenario.Location.Line) != xmlEntityValuesLine() {
 						return fmt.Errorf("XML entity-values canonical scenario structure drift")
 					}
 					found++
@@ -99,7 +106,7 @@ func TestXMLEntityValuesGuardRejectsDrift(t *testing.T) {
 			}
 		}
 	}
-	if selected == nil || guardXMLEntityValuesCase(xmlEntityValuesCaseID, selected, 45) != nil {
+	if selected == nil || guardXMLEntityValuesCase(xmlEntityValuesCaseID, selected, xmlEntityValuesLine()) != nil {
 		t.Fatal("canonical XML entity-values case guard failed")
 	}
 	for _, tc := range []struct {
@@ -122,12 +129,12 @@ func TestXMLEntityValuesGuardRejectsDrift(t *testing.T) {
 				clone.Steps[i] = &copyStep
 			}
 			tc.mutate(&clone)
-			if guardXMLEntityValuesCase(xmlEntityValuesCaseID, &clone, 45) == nil {
+			if guardXMLEntityValuesCase(xmlEntityValuesCaseID, &clone, xmlEntityValuesLine()) == nil {
 				t.Fatal("guard accepted XML entity-values drift")
 			}
 		})
 	}
-	if guardXMLEntityValuesCase("@id-xml-stylesheet-processing-instruction", selected, 45) == nil || guardXMLEntityValuesCase(xmlEntityValuesCaseID, selected, 46) == nil {
+	if guardXMLEntityValuesCase("@id-xml-stylesheet-processing-instruction", selected, xmlEntityValuesLine()) == nil || guardXMLEntityValuesCase(xmlEntityValuesCaseID, selected, xmlEntityValuesLine()+1) == nil {
 		t.Fatal("guard accepted XML entity-values ID or line drift")
 	}
 }
@@ -185,7 +192,7 @@ func xmlEntityValuesSteps(sc *godog.ScenarioContext, safety *xmlSafetyState) {
 		}
 		return nil
 	})
-	sc.Step(`^the root attribute a equals JSON (".*")$`, func(raw string) error {
+	sc.Step(`^the root attribute a equals JSON ("\\\"'")$`, func(raw string) error {
 		var expected string
 		if err := json.Unmarshal([]byte(raw), &expected); err != nil {
 			return err

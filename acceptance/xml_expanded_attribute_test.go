@@ -29,13 +29,20 @@ var xmlExpandedAttributeRows = [][4]string{
 	{"child", "lang", "http://www.w3.org/XML/1998/namespace", `"en"`},
 }
 
+func xmlExpandedAttributeLine() int {
+	if xmlLexicalCandidate() {
+		return 85
+	}
+	return 58
+}
+
 func guardXMLExpandedAttributeCase(id string, p *messages.Pickle, line int) error {
 	steps := []string{
 		"XML values input encoded as JSON " + xmlExpandedAttributeSourceJSON,
 		"the XML values input is parsed",
 		"expanded attribute lookups return these JSON values",
 	}
-	if id != xmlExpandedAttributeCaseID || line != 58 || p.Name != "Attribute lookup respects local prefix rebinding and unqualified names" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
+	if id != xmlExpandedAttributeCaseID || line != xmlExpandedAttributeLine() || p.Name != "Attribute lookup respects local prefix rebinding and unqualified names" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
 		return fmt.Errorf("unexpected expanded-attribute case %s %q at %d", id, p.Name, line)
 	}
 	for i, want := range steps {
@@ -89,7 +96,7 @@ func guardXMLExpandedAttributeRule(doc *messages.GherkinDocument) error {
 			}
 			for _, tag := range member.Scenario.Tags {
 				if tag.Name == xmlExpandedAttributeCaseID {
-					if len(member.Scenario.Tags) != 1 || int(tag.Location.Line) != 57 || len(member.Scenario.Examples) != 0 || len(member.Scenario.Steps) != 3 || int(member.Scenario.Location.Line) != 58 {
+					if len(member.Scenario.Tags) != 1 || int(tag.Location.Line) != xmlExpandedAttributeLine()-1 || len(member.Scenario.Examples) != 0 || len(member.Scenario.Steps) != 3 || int(member.Scenario.Location.Line) != xmlExpandedAttributeLine() {
 						return fmt.Errorf("expanded-attribute canonical structure drift")
 					}
 					found++
@@ -130,7 +137,7 @@ func TestXMLExpandedAttributeGuardRejectsDrift(t *testing.T) {
 			}
 		}
 	}
-	if selected == nil || guardXMLExpandedAttributeCase(xmlExpandedAttributeCaseID, selected, 58) != nil {
+	if selected == nil || guardXMLExpandedAttributeCase(xmlExpandedAttributeCaseID, selected, xmlExpandedAttributeLine()) != nil {
 		t.Fatal("canonical expanded-attribute case guard failed")
 	}
 	copyCase := func() *messages.Pickle {
@@ -162,12 +169,12 @@ func TestXMLExpandedAttributeGuardRejectsDrift(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			p := copyCase()
 			tc.mutate(p)
-			if guardXMLExpandedAttributeCase(xmlExpandedAttributeCaseID, p, 58) == nil {
+			if guardXMLExpandedAttributeCase(xmlExpandedAttributeCaseID, p, xmlExpandedAttributeLine()) == nil {
 				t.Fatal("guard accepted expanded-attribute drift")
 			}
 		})
 	}
-	if guardXMLExpandedAttributeCase(xmlEntityValuesCaseID, selected, 58) == nil || guardXMLExpandedAttributeCase(xmlExpandedAttributeCaseID, selected, 57) == nil {
+	if guardXMLExpandedAttributeCase(xmlEntityValuesCaseID, selected, xmlExpandedAttributeLine()) == nil || guardXMLExpandedAttributeCase(xmlExpandedAttributeCaseID, selected, xmlExpandedAttributeLine()-1) == nil {
 		t.Fatal("guard accepted expanded-attribute ID or line drift")
 	}
 }

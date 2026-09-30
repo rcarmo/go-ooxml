@@ -5,6 +5,7 @@ package losslessxml
 import (
 	"bytes"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io"
 	"sort"
@@ -17,6 +18,7 @@ const xmlnsNS = "http://www.w3.org/2000/xmlns/"
 
 type node struct {
 	name                                 xml.Name
+	qualified                            string
 	attrs                                []xml.Attr
 	attrNamespaces                       map[string]string
 	start, contentStart, contentEnd, end int
@@ -29,6 +31,25 @@ type Document struct {
 	source []byte
 	nodes  []node
 }
+
+// Limits are optional ceilings for an untrusted XML parse. Parse retains its
+// historical defaults; callers of ParseWithLimits provide positive ceilings.
+type Limits struct {
+	MaxBytes       int
+	MaxNodes       int
+	MaxDepth       int
+	MaxSourceUnits int // UTF-16 source units, before any parse allocation
+}
+
+// Refusal carries the parser's own failure category, not a classification of
+// diagnostic message text. Cause may be inspected with errors.As.
+type Refusal struct {
+	Category string
+	Cause    error
+}
+
+func (r *Refusal) Error() string { return r.Cause.Error() }
+func (r *Refusal) Unwrap() error { return r.Cause }
 
 // Element is an immutable handle valid only against its originating snapshot.
 type Element struct {
@@ -57,16 +78,62 @@ type frame struct {
 	text  strings.Builder
 }
 
-func Parse(source []byte) (*Document, error) {
+func Parse(source []byte) (*Document, error) { return parse(source, Limits{}, false) }
+
+// ParseWithLimits checks input size before copying source bytes and node/depth
+// ceilings during scanning, before admitting the next element into the model.
+func ParseWithLimits(source []byte, limits Limits) (*Document, error) {
+	return parse(source, limits, true)
+}
+
+func parse(source []byte, limits Limits, bounded bool) (*Document, error) {
+	refuse := func(category, reason string) (*Document, error) {
+		return nil, &Refusal{Category: category, Cause: fmt.Errorf("%s", reason)}
+	}
+	if bounded && (limits.MaxNodes <= 0 || limits.MaxDepth <= 0 || limits.MaxSourceUnits <= 0 || limits.MaxBytes < 0) {
+		return refuse("invalid-limit", "XML limits must be positive")
+	}
+	if limits.MaxBytes > 0 && len(source) > limits.MaxBytes {
+		return refuse("input-too-large", "XML input length limit exceeded")
+	}
 	if !utf8.Valid(source) {
-		return nil, fmt.Errorf("XML input must be UTF-8")
+		return refuse("invalid-character", "XML input must be UTF-8")
+	}
+	if limits.MaxSourceUnits > 0 {
+		units := 0
+		remaining := source
+		for len(remaining) > 0 {
+			r, width := utf8.DecodeRune(remaining)
+			if r > 0xffff {
+				units += 2
+			} else {
+				units++
+			}
+			if units > limits.MaxSourceUnits {
+				return refuse("input-too-large", "XML source-unit limit exceeded")
+			}
+			remaining = remaining[width:]
+		}
+	}
+	depth := 512
+	if bounded {
+		depth = limits.MaxDepth
 	}
 	d := &Document{source: bytes.Clone(source)}
-	decoder := xml.NewDecoder(bytes.NewReader(d.source))
+	decoderSource := d.source
+	restoreName := func(n xml.Name) xml.Name { return n }
+	if bounded {
+		var err error
+		decoderSource, restoreName, err = decoderNameCompatibility(d.source)
+		if err != nil {
+			return nil, err
+		}
+	}
+	decoder := xml.NewDecoder(bytes.NewReader(decoderSource))
 	var stack []*frame
 	roots := 0
-	fail := func(reason string) (*Document, error) {
-		return nil, fmt.Errorf("XML offset %d: %s", decoder.InputOffset(), reason)
+	fail := func(category, reason string) (*Document, error) {
+		return refuse(category, fmt.Sprintf("XML offset %d: %s", decoder.InputOffset(), reason))
 	}
 	for {
 		before := int(decoder.InputOffset())
@@ -76,16 +143,32 @@ func Parse(source []byte) (*Document, error) {
 			break
 		}
 		if err != nil {
+			if bounded {
+				return nil, classifyDecoderFailure(err, d.source[before:after])
+			}
 			return nil, err
 		}
 		switch t := token.(type) {
 		case xml.StartElement:
+			t.Name = restoreName(t.Name)
+			for i := range t.Attr {
+				t.Attr[i].Name = restoreName(t.Attr[i].Name)
+			}
+			if bounded && !lexicalAttributeSpacing(d.source[before:after]) {
+				return fail("malformed-xml", "attribute whitespace missing")
+			}
 			t.Attr, err = normalizeAttributeValues(d.source[before:after], t.Attr)
 			if err != nil {
+				if bounded {
+					return fail("malformed-xml", err.Error())
+				}
 				return nil, err
 			}
-			if len(stack) >= 512 {
-				return fail("nesting limit exceeded")
+			if len(stack) >= depth {
+				return fail("depth-limit", "nesting limit exceeded")
+			}
+			if limits.MaxNodes > 0 && len(d.nodes) >= limits.MaxNodes {
+				return fail("node-limit", "node limit exceeded")
 			}
 			ns := map[string]string{"xml": xmlNS}
 			parent := -1
@@ -99,7 +182,7 @@ func Parse(source []byte) (*Document, error) {
 			} else {
 				roots++
 				if roots > 1 {
-					return fail("multiple roots")
+					return fail("malformed-xml", "multiple roots")
 				}
 			}
 			declared := map[string]bool{}
@@ -115,20 +198,24 @@ func Parse(source []byte) (*Document, error) {
 					continue
 				}
 				if prefix != "" && !localName(prefix) {
-					return fail("invalid namespace prefix")
+					return fail("malformed-xml", "invalid namespace prefix")
 				}
 				if declared[prefix] {
-					return fail("duplicate namespace declaration")
+					return fail("duplicate-attribute", "duplicate namespace declaration")
 				}
 				declared[prefix] = true
 				if prefix == "xmlns" || a.Value == xmlnsNS || (prefix == "xml" && a.Value != xmlNS) || (prefix != "xml" && a.Value == xmlNS) || (prefix != "" && a.Value == "") {
-					return fail("invalid reserved namespace binding")
+					return fail("malformed-xml", "invalid reserved namespace binding")
 				}
 				ns[prefix] = a.Value
 			}
 			name, err := expanded(t.Name, ns, false)
 			if err != nil {
-				return fail(err.Error())
+				category := "malformed-xml"
+				if errors.Is(err, errUnboundPrefix) {
+					category = "unbound-prefix"
+				}
+				return fail(category, err.Error())
 			}
 			attrs := []xml.Attr{}
 			attrNamespaces := map[string]string{}
@@ -139,10 +226,14 @@ func Parse(source []byte) (*Document, error) {
 				}
 				resolved, err := expanded(a.Name, ns, true)
 				if err != nil {
-					return fail(err.Error())
+					category := "malformed-xml"
+					if errors.Is(err, errUnboundPrefix) {
+						category = "unbound-prefix"
+					}
+					return fail(category, err.Error())
 				}
 				if seen[resolved] {
-					return fail("duplicate expanded attribute")
+					return fail("duplicate-attribute", "duplicate expanded attribute")
 				}
 				seen[resolved] = true
 				attrs = append(attrs, xml.Attr{Name: resolved, Value: a.Value})
@@ -154,11 +245,16 @@ func Parse(source []byte) (*Document, error) {
 			}
 			self := after-before >= 2 && bytes.HasSuffix(d.source[before:after], []byte("/>"))
 			i := len(d.nodes)
-			d.nodes = append(d.nodes, node{name: name, attrs: attrs, attrNamespaces: attrNamespaces, start: before, contentStart: after, parent: parent, leaf: true, selfClosing: self, ns: ns})
+			qualified := t.Name.Local
+			if t.Name.Space != "" {
+				qualified = t.Name.Space + ":" + qualified
+			}
+			d.nodes = append(d.nodes, node{name: name, qualified: qualified, attrs: attrs, attrNamespaces: attrNamespaces, start: before, contentStart: after, parent: parent, leaf: true, selfClosing: self, ns: ns})
 			stack = append(stack, &frame{index: i, raw: t.Name, ns: ns})
 		case xml.EndElement:
+			t.Name = restoreName(t.Name)
 			if len(stack) == 0 {
-				return fail("end tag without start")
+				return fail("malformed-xml", "end tag without start")
 			}
 			f := stack[len(stack)-1]
 			if f.raw != t.Name {
@@ -179,7 +275,7 @@ func Parse(source []byte) (*Document, error) {
 				// references and CDATA, which are not legal here even when
 				// their decoded content is empty or whitespace.
 				if !xmlWhitespace(d.source[before:after]) {
-					return fail("non-literal whitespace outside root")
+					return fail("malformed-xml", "non-literal whitespace outside root")
 				}
 			} else {
 				stack[len(stack)-1].text.Write(t)
@@ -191,18 +287,25 @@ func Parse(source []byte) (*Document, error) {
 		case xml.ProcInst:
 			if strings.EqualFold(t.Target, "xml") {
 				if t.Target != "xml" || before != 0 || roots != 0 {
-					return fail("misplaced XML declaration")
+					return fail("malformed-xml", "misplaced XML declaration")
 				}
-				// Let the ordinary decoder enforce XML version/encoding declarations too.
-			} else if len(stack) > 0 {
-				d.nodes[stack[len(stack)-1].index].leaf = false
+				if bounded && !validXMLDeclaration(t.Inst) {
+					return fail("malformed-xml", "invalid XML declaration")
+				}
+			} else {
+				if bounded && bytes.HasSuffix(d.source[before:after], []byte("/?>")) {
+					return fail("malformed-xml", "invalid processing instruction")
+				}
+				if len(stack) > 0 {
+					d.nodes[stack[len(stack)-1].index].leaf = false
+				}
 			}
 		case xml.Directive:
-			return fail("XML directives are unsupported")
+			return fail("dtd-forbidden", "XML directives are unsupported")
 		}
 	}
 	if roots != 1 || len(stack) != 0 {
-		return fail("expected one complete root")
+		return fail("malformed-xml", "expected one complete root")
 	}
 	return d, nil
 }
@@ -217,7 +320,7 @@ func expanded(raw xml.Name, ns map[string]string, attribute bool) (xml.Name, err
 	if raw.Space != "" {
 		uri, ok := ns[raw.Space]
 		if !ok || uri == "" {
-			return xml.Name{}, fmt.Errorf("undeclared prefix %s", raw.Space)
+			return xml.Name{}, unboundPrefix(raw.Space)
 		}
 		return xml.Name{Space: uri, Local: raw.Local}, nil
 	}
@@ -244,6 +347,12 @@ func (e Element) Ordinal() int {
 	return e.index
 }
 
+func (e Element) QualifiedName() string {
+	if !e.valid() {
+		return ""
+	}
+	return e.doc.nodes[e.index].qualified
+}
 func (e Element) Name() xml.Name {
 	if !e.valid() {
 		return xml.Name{}
@@ -288,6 +397,20 @@ func (e Element) SourceRange() (start, end int) {
 	}
 	n := e.doc.nodes[e.index]
 	return n.start, n.end
+}
+
+// ContentRange is the original UTF-8 byte interval inside the element tags.
+// For a self-closing element it is empty at the start of the closing slash.
+func (e Element) ContentRange() (start, end int) {
+	if !e.valid() {
+		return -1, -1
+	}
+	n := e.doc.nodes[e.index]
+	return n.contentStart, n.contentEnd
+}
+
+func (e Element) SelfClosing() bool {
+	return e.valid() && e.doc.nodes[e.index].selfClosing
 }
 
 // Raw returns a private copy of the complete original element markup.

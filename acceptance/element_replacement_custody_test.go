@@ -24,7 +24,7 @@ func guardElementReplacementCustodyCase(id string, p *messages.Pickle, line int)
 		"the XML editor replaces p:old with a bound-namespace new element containing value and an empty-namespace plain element",
 		"the complete output bytes equal " + elementReplacementOutput,
 	}
-	if id != elementReplacementCustodyCaseID || line != 89 || p.Name != "Replace one subtree using its surviving parent namespace scope" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
+	if id != elementReplacementCustodyCaseID || line != lexicalEditingLine(89, 98) || p.Name != "Replace one subtree using its surviving parent namespace scope" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
 		return fmt.Errorf("unexpected element-replacement custody case %s %q at %d", id, p.Name, line)
 	}
 	for i, want := range steps {
@@ -59,7 +59,7 @@ func TestElementReplacementCustodyGuardRejectsDrift(t *testing.T) {
 			}
 		}
 	}
-	if selected == nil || guardElementReplacementCustodyCase(elementReplacementCustodyCaseID, selected, 89) != nil {
+	if selected == nil || guardElementReplacementCustodyCase(elementReplacementCustodyCaseID, selected, lexicalEditingLine(89, 98)) != nil {
 		t.Fatal("canonical element-replacement custody guard failed")
 	}
 	for _, tc := range []struct {
@@ -82,12 +82,12 @@ func TestElementReplacementCustodyGuardRejectsDrift(t *testing.T) {
 				clone.Steps[i] = &copyStep
 			}
 			tc.mutate(&clone)
-			if guardElementReplacementCustodyCase(elementReplacementCustodyCaseID, &clone, 89) == nil {
+			if guardElementReplacementCustodyCase(elementReplacementCustodyCaseID, &clone, lexicalEditingLine(89, 98)) == nil {
 				t.Fatal("guard accepted canonical drift")
 			}
 		})
 	}
-	if guardElementReplacementCustodyCase("@id-xml-go-element-replacement-refusal", selected, 89) == nil || guardElementReplacementCustodyCase(elementReplacementCustodyCaseID, selected, 90) == nil {
+	if guardElementReplacementCustodyCase("@id-xml-go-element-replacement-refusal", selected, lexicalEditingLine(89, 98)) == nil || guardElementReplacementCustodyCase(elementReplacementCustodyCaseID, selected, lexicalEditingLine(89, 98)+1) == nil {
 		t.Fatal("guard accepted ID or line drift")
 	}
 }

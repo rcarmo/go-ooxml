@@ -19,7 +19,7 @@ func guardAttributeRefusalCase(id string, p *messages.Pickle, line int) error {
 		"one lexical edit batch sets a of the first t element to x and to y",
 		"the edit returns an error instead of accepting that batch",
 	}
-	if id != attributeRefusalCaseID || line != 32 || p.Name != "Duplicate edits to one attribute refuse the batch" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
+	if id != attributeRefusalCaseID || line != lexicalEditingLine(32, 41) || p.Name != "Duplicate edits to one attribute refuse the batch" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
 		return fmt.Errorf("unexpected attribute-refusal canonical case %s %q at %d", id, p.Name, line)
 	}
 	for i, step := range steps {

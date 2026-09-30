@@ -35,7 +35,7 @@ func guardChildNamespaceMatrixCase(id string, p *messages.Pickle, line int) erro
 		`the grandchild text equals JSON "x\ry\nz" for every choice`,
 		"a separate empty edit returns each exact original root source",
 	}
-	if id != childNamespaceMatrixCaseID || line != 52 || p.Name != "Inserted element and attribute meanings survive a bounded namespace matrix" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
+	if id != childNamespaceMatrixCaseID || line != lexicalEditingLine(52, 61) || p.Name != "Inserted element and attribute meanings survive a bounded namespace matrix" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
 		return fmt.Errorf("unexpected child-namespace matrix case %s %q at %d", id, p.Name, line)
 	}
 	for i, step := range steps {
@@ -89,7 +89,7 @@ func TestChildNamespaceMatrixGuardRejectsDrift(t *testing.T) {
 			}
 		}
 	}
-	if selected == nil || guardChildNamespaceMatrixCase(childNamespaceMatrixCaseID, selected, 52) != nil {
+	if selected == nil || guardChildNamespaceMatrixCase(childNamespaceMatrixCaseID, selected, lexicalEditingLine(52, 61)) != nil {
 		t.Fatal("canonical matrix guard failed")
 	}
 	copyCase := func() *messages.Pickle {
@@ -117,12 +117,12 @@ func TestChildNamespaceMatrixGuardRejectsDrift(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			p := copyCase()
 			tc.mutate(p)
-			if err := guardChildNamespaceMatrixCase(childNamespaceMatrixCaseID, p, 52); err == nil {
+			if err := guardChildNamespaceMatrixCase(childNamespaceMatrixCaseID, p, lexicalEditingLine(52, 61)); err == nil {
 				t.Fatal("guard accepted canonical drift")
 			}
 		})
 	}
-	if guardChildNamespaceMatrixCase("@id-xml-go-child-insertion-custody", selected, 52) == nil || guardChildNamespaceMatrixCase(childNamespaceMatrixCaseID, selected, 53) == nil {
+	if guardChildNamespaceMatrixCase("@id-xml-go-child-insertion-custody", selected, lexicalEditingLine(52, 61)) == nil || guardChildNamespaceMatrixCase(childNamespaceMatrixCaseID, selected, lexicalEditingLine(52, 61)+1) == nil {
 		t.Fatal("guard accepted ID or line drift")
 	}
 }

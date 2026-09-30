@@ -20,7 +20,7 @@ func guardChildInsertionCustodyCase(id string, p *messages.Pickle, line int) err
 		"reparsing finds expanded element names new/x and empty-namespace plain",
 		"the unedited sibling bytes <b>keep</b> remain in the output",
 	}
-	if id != childInsertionCustodyCaseID || line != 38 || p.Name != "Insert a child with independently scoped element and attribute names" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
+	if id != childInsertionCustodyCaseID || line != lexicalEditingLine(38, 47) || p.Name != "Insert a child with independently scoped element and attribute names" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
 		return fmt.Errorf("unexpected child-insertion canonical case %s %q at %d", id, p.Name, line)
 	}
 	for i, step := range steps {

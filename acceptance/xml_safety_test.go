@@ -33,6 +33,13 @@ type xmlSafetyState struct {
 	metadata         map[string]string
 }
 
+func xmlSafetyLine(id string) int {
+	if xmlLexicalCandidate() {
+		return map[string]int{xmlPrototypeCaseID: 107, xmlNamespaceCaseID: 115, xmlMalformedCaseID: 146}[id]
+	}
+	return map[string]int{xmlPrototypeCaseID: 80, xmlNamespaceCaseID: 88, xmlMalformedCaseID: 119}[id]
+}
+
 func guardXMLSafetyCase(id string, p *messages.Pickle, line int) error {
 	var name string
 	var steps []string
@@ -67,7 +74,7 @@ func guardXMLSafetyCase(id string, p *messages.Pickle, line int) error {
 	default:
 		return fmt.Errorf("unexpected XML safety ID %s", id)
 	}
-	if line != map[string]int{xmlPrototypeCaseID: 80, xmlNamespaceCaseID: 88, xmlMalformedCaseID: 119}[id] || p.Name != name || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
+	if line != xmlSafetyLine(id) || p.Name != name || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
 		return fmt.Errorf("XML safety scenario %s %q at line %d drift", id, p.Name, line)
 	}
 	for i, want := range steps {
@@ -100,14 +107,15 @@ func guardXMLSafetyRule(doc *messages.GherkinDocument) error {
 				var expectedTagLine, expectedLine, expectedSteps int
 				switch tag.Name {
 				case xmlPrototypeCaseID:
-					id, expectedTagLine, expectedLine, expectedSteps = tag.Name, 79, 80, 5
+					id, expectedLine, expectedSteps = tag.Name, xmlSafetyLine(tag.Name), 5
 				case xmlNamespaceCaseID:
-					id, expectedTagLine, expectedLine, expectedSteps = tag.Name, 87, 88, 6
+					id, expectedLine, expectedSteps = tag.Name, xmlSafetyLine(tag.Name), 6
 				case xmlMalformedCaseID:
-					id, expectedTagLine, expectedLine, expectedSteps = tag.Name, 118, 119, 4
+					id, expectedLine, expectedSteps = tag.Name, xmlSafetyLine(tag.Name), 4
 				default:
 					continue
 				}
+				expectedTagLine = expectedLine - 1
 				if seen[id] || len(s.Tags) != 2 || s.Tags[0].Name != map[string]string{xmlMalformedCaseID: "@profile-xml-failure-category", xmlPrototypeCaseID: "@profile-xml-model-safety", xmlNamespaceCaseID: "@profile-xml-model-safety"}[id] || int(tag.Location.Line) != expectedTagLine || int(s.Location.Line) != expectedLine || len(s.Examples) != 0 || len(s.Steps) != expectedSteps {
 					return fmt.Errorf("XML safety structure drift: %s tags=%s,%s tagLine=%d scenarioLine=%d examples=%d steps=%d", id, s.Tags[0].Name, s.Tags[1].Name, tag.Location.Line, s.Location.Line, len(s.Examples), len(s.Steps))
 				}
@@ -150,7 +158,7 @@ func TestXMLSafetyGuardRejectsDrift(t *testing.T) {
 	seen := map[string]bool{}
 	for _, p := range gherkin.Pickles(*doc, path, next) {
 		for _, tag := range p.Tags {
-			line := map[string]int{xmlPrototypeCaseID: 80, xmlNamespaceCaseID: 88, xmlMalformedCaseID: 119}[tag.Name]
+			line := xmlSafetyLine(tag.Name)
 			if line == 0 {
 				continue
 			}
