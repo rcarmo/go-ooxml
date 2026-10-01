@@ -181,6 +181,9 @@ func TestAcceptance(t *testing.T) {
 		if pptxManipulationCandidate() {
 			pptxManipulationSteps(sc)
 		}
+		if formattingCandidate() {
+			formattingSteps(sc)
+		}
 		sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 			w.source = nil
 			w.pkg = nil
@@ -215,6 +218,19 @@ func TestAcceptance(t *testing.T) {
 			expected[key] = item
 		}
 		inventory = append(inventory, pptxInventory...)
+	}
+	if formattingCandidate() {
+		more, entries, err := formattingInventory()
+		if err != nil {
+			t.Fatal(err)
+		}
+		for key, item := range more {
+			if _, exists := expected[key]; exists {
+				t.Fatalf("formatting case conflicts: %+v", key)
+			}
+			expected[key] = item
+		}
+		inventory = append(inventory, entries...)
 	}
 	if batch2Candidate() {
 		batchExpected, batchInventory, err := batch2Inventory()
@@ -315,6 +331,15 @@ func TestAcceptance(t *testing.T) {
 			selections = append(selections, struct{ name, path, tags string }{"go-pptx-manipulation-" + strings.TrimPrefix(id, "@"), testutil.ReferencePath(filepath.FromSlash(record.Feature)), id})
 		}
 	}
+	if formattingCandidate() {
+		records, err := formattingRecords()
+		if err != nil {
+			t.Fatal(err)
+		}
+		for id, record := range records {
+			selections = append(selections, struct{ name, path, tags string }{"go-pptx-formatting-" + strings.TrimPrefix(id, "@"), testutil.ReferencePath(filepath.FromSlash(record.Feature)), id})
+		}
+	}
 	if batch2Candidate() {
 		for relative, ids := range batch2Paths {
 			for _, id := range ids {
@@ -402,6 +427,9 @@ func TestAcceptance(t *testing.T) {
 	if pptxManipulationCandidate() {
 		scope += "; explicit sealed PPTX manipulation candidate: 20 selected cases/179 steps (within aggregate 498 cases/1924 steps), not inherited batch-2 execution credit"
 	}
+	if formattingCandidate() {
+		scope += "; explicit sealed PPTX formatting candidate: 20 selected cases/182 steps, separate from prior manipulation 20/179; aggregate reconciled by exact case IDs"
+	}
 	writeJSON(t, filepath.Join(dir, "environment.json"), map[string]any{"go": runtime.Version(), "fixture_sha256": w.fixtures, "scope": scope, "external_executed": false})
 	if err := reconcile(expected, data); err != nil {
 		t.Error(err)
@@ -421,7 +449,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if nativeIDPattern.MatchString(tag) || (batch2Candidate() && batch2SelectedID(tag)) || (pptxManipulationCandidate() && pptxManipulationSelectedID(tag)) || tag == overlapCaseID || tag == bzipAdmissionCaseID || tag == unsafeMembersCaseID || tag == opcPreserveUnrelatedCaseID || tag == opcCorpusNoopCaseID || tag == opcDetachedByteCaseID || tag == opcReasonOpenID || tag == opcReasonSaveID || tag == opcReasonSymlinkID || tag == opcDeferredTransactionID || tag == opcOpaqueTransactionID || tag == zipReasonReaderID || tag == zipReasonWriterID || tag == zipReasonBoundsID || tag == immutableLeafCaseID || tag == attributeSpliceCaseID || tag == attributeRefusalCaseID || tag == elementRemovalCaseID || tag == elementRemovalRefusalCaseID || tag == elementReplacementCustodyCaseID || tag == elementReplacementRefusalCaseID || tag == childInsertionCustodyCaseID || tag == childInsertionRefusalCaseID || tag == childNamespaceMatrixCaseID || tag == xmlEntityValuesCaseID || tag == xmlPrototypeCaseID || tag == xmlNamespaceCaseID || tag == xmlMalformedCaseID || tag == xmlWhitespaceCaseID || tag == xmlStylesheetPICaseID || tag == xmlImplicitPrefixCaseID || tag == xmlExpandedAttributeCaseID || tag == unicodeQNameCaseID || ((xmlLexicalCandidate() || postBatch2Reference()) && slices.Contains(xmlLexicalIDs, tag)) || tag == xmlSignificantCaseID || tag == xmlPrefixBindingCaseID || tag == xmlUnsafeCaseID || tag == xmlMarkupCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == directRangeParsingCaseID || tag == directRangeRefusalCaseID || tag == formulaAnalysisCountsCaseID || tag == formulaQuotedSheetFlagsCaseID || tag == formulaAnalysisRefusalCaseID || tag == formulaLiteralPunctuationCaseID || tag == staticRemapExactCaseID || tag == staticRemapRefusalCaseID || tag == staticReferencePropertiesCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID || tag == corePropertiesCaseID || tag == sectionTitleBackgroundCaseID || tag == paragraphTextGetterCaseID || tag == paragraphAlignmentCaseID || tag == paragraphSpacingCaseID || tag == paragraphTogglesCaseID || tag == paragraphRunsCaseID || tag == bodyInsertOrderCaseID || tag == directFontSizeCaseID {
+		if nativeIDPattern.MatchString(tag) || (batch2Candidate() && batch2SelectedID(tag)) || (pptxManipulationCandidate() && pptxManipulationSelectedID(tag)) || (formattingCandidate() && strings.HasPrefix(tag, "@id-pptx-formatting-")) || tag == overlapCaseID || tag == bzipAdmissionCaseID || tag == unsafeMembersCaseID || tag == opcPreserveUnrelatedCaseID || tag == opcCorpusNoopCaseID || tag == opcDetachedByteCaseID || tag == opcReasonOpenID || tag == opcReasonSaveID || tag == opcReasonSymlinkID || tag == opcDeferredTransactionID || tag == opcOpaqueTransactionID || tag == zipReasonReaderID || tag == zipReasonWriterID || tag == zipReasonBoundsID || tag == immutableLeafCaseID || tag == attributeSpliceCaseID || tag == attributeRefusalCaseID || tag == elementRemovalCaseID || tag == elementRemovalRefusalCaseID || tag == elementReplacementCustodyCaseID || tag == elementReplacementRefusalCaseID || tag == childInsertionCustodyCaseID || tag == childInsertionRefusalCaseID || tag == childNamespaceMatrixCaseID || tag == xmlEntityValuesCaseID || tag == xmlPrototypeCaseID || tag == xmlNamespaceCaseID || tag == xmlMalformedCaseID || tag == xmlWhitespaceCaseID || tag == xmlStylesheetPICaseID || tag == xmlImplicitPrefixCaseID || tag == xmlExpandedAttributeCaseID || tag == unicodeQNameCaseID || ((xmlLexicalCandidate() || postBatch2Reference()) && slices.Contains(xmlLexicalIDs, tag)) || tag == xmlSignificantCaseID || tag == xmlPrefixBindingCaseID || tag == xmlUnsafeCaseID || tag == xmlMarkupCaseID || tag == negativeBudgetCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == directRangeParsingCaseID || tag == directRangeRefusalCaseID || tag == formulaAnalysisCountsCaseID || tag == formulaQuotedSheetFlagsCaseID || tag == formulaAnalysisRefusalCaseID || tag == formulaLiteralPunctuationCaseID || tag == staticRemapExactCaseID || tag == staticRemapRefusalCaseID || tag == staticReferencePropertiesCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID || tag == corePropertiesCaseID || tag == sectionTitleBackgroundCaseID || tag == paragraphTextGetterCaseID || tag == paragraphAlignmentCaseID || tag == paragraphSpacingCaseID || tag == paragraphTogglesCaseID || tag == paragraphRunsCaseID || tag == bodyInsertOrderCaseID || tag == directFontSizeCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}
