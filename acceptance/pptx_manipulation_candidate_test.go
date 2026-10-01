@@ -65,7 +65,7 @@ func pptxManipulationRecords() (map[string]pptxManipulationRecord, error) {
 // The newer sealed PPTX checkout includes the batch-2 spelling/layout of
 // historical shared cases. It does not select or rerun batch-2's added lane.
 func postBatch2Reference() bool {
-	return batch2Candidate() || pptxManipulationCandidate() || formattingCandidate() || retainedCandidate()
+	return batch2Candidate() || pptxManipulationCandidate() || formattingCandidate() || retainedCandidate() || tableCandidate()
 }
 
 func pptxManipulationSelectedID(id string) bool {
