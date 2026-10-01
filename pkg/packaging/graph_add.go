@@ -35,7 +35,9 @@ func (p *Preserved) planGraphAdditions(change GraphMutation, graph Graph, plan *
 			}
 			seen[identity] = true
 			if addition.Source != "" && !p.hasPart(addition.Source) {
-				return graphEditError("missing_target", addition.Source, "relationship owner absent")
+				if _, pending := plan.additions[addition.Source]; !pending {
+					return graphEditError("missing_target", addition.Source, "relationship owner absent")
+				}
 			}
 			if err := graphPartName(addition.TargetPart); err != nil {
 				return err

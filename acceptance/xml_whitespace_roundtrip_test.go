@@ -20,7 +20,7 @@ const xmlWhitespaceCaseID = "@id-xml-escaping-whitespace-roundtrip"
 const xmlWhitespaceJSON = `"x\r\n\ty"`
 
 func xmlWhitespaceLine() int {
-	if xmlLexicalCandidate() || batch2Candidate() {
+	if xmlLexicalCandidate() || postBatch2Reference() {
 		return 140
 	}
 	if xmlSafetyCandidate() {

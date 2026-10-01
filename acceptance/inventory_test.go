@@ -113,7 +113,7 @@ func selectedTableValueID(id string) bool {
 }
 
 func xmlSelectedParsingCases() int {
-	if xmlLexicalCandidate() || batch2Candidate() {
+	if xmlLexicalCandidate() || postBatch2Reference() {
 		return 15
 	}
 	if xmlSafetyCandidate() {
@@ -123,7 +123,7 @@ func xmlSelectedParsingCases() int {
 }
 
 func selectedCanonicalID(path, id string) bool {
-	if (xmlLexicalCandidate() || batch2Candidate()) && lexicalSelectedID(path, id) {
+	if (xmlLexicalCandidate() || postBatch2Reference()) && lexicalSelectedID(path, id) {
 		return true
 	}
 	return (path == overlapFeaturePath() && (id == bzipAdmissionCaseID || id == unsafeMembersCaseID)) || (path == packagePreservationFeaturePath() && (id == opcDetachedByteCaseID || id == opcCorpusNoopCaseID || (packageReasonsCandidate() && (id == opcReasonOpenID || id == opcReasonSaveID || id == opcReasonSymlinkID)) || (portableTransactionCandidate() && (id == opcDeferredTransactionID || id == opcOpaqueTransactionID)))) || (path == zip32FeaturePath() && packageReasonsCandidate() && (id == zipReasonReaderID || id == zipReasonWriterID || id == zipReasonBoundsID)) || (path == xmlParsingFeaturePath() && (id == xmlEntityValuesCaseID || id == xmlStylesheetPICaseID || id == xmlImplicitPrefixCaseID || id == xmlExpandedAttributeCaseID || id == xmlWhitespaceCaseID || (xmlSafetyCandidate() && (id == xmlPrototypeCaseID || id == xmlNamespaceCaseID || id == xmlMalformedCaseID)))) || (path == xmlEditingFeaturePath() && (id == attributeSpliceCaseID || id == attributeRefusalCaseID || id == elementRemovalCaseID || id == elementRemovalRefusalCaseID || id == elementReplacementCustodyCaseID || id == elementReplacementRefusalCaseID || id == childInsertionCustodyCaseID || id == childInsertionRefusalCaseID || id == childNamespaceMatrixCaseID)) || (path == xmlComparisonFeaturePath() && (id == xmlSignificantCaseID || id == xmlPrefixBindingCaseID || id == xmlUnsafeCaseID || id == xmlMarkupCaseID)) || id == canonicalID(path) || (path == formulaReferenceFeaturePath() && (id == directRangeRefusalCaseID || id == formulaAnalysisCountsCaseID || id == formulaQuotedSheetFlagsCaseID || id == formulaAnalysisRefusalCaseID || id == formulaLiteralPunctuationCaseID || id == staticRemapExactCaseID || id == staticRemapRefusalCaseID || id == staticReferencePropertiesCaseID)) || (path == runEffectsFeaturePath() && selectedRunFormattingID(id)) || (path == tableMergeFeaturePath() && (selectedTableValueID(id) || id == roundtripTableTextCaseID)) || (path == paragraphFeaturePath() && (id == paragraphAlignmentCaseID || id == paragraphSpacingCaseID || id == paragraphTogglesCaseID || id == paragraphRunsCaseID || id == bodyInsertOrderCaseID))
@@ -279,7 +279,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 					profile = tag.Name
 				} else if canonical && path == zip32FeaturePath() && packageReasonsCandidate() && tag.Name == "@profile-zip32-refusal-reasons" && profile == "" {
 					profile = tag.Name
-				} else if canonical && path == xmlParsingFeaturePath() && (xmlLexicalCandidate() || batch2Candidate()) && tag.Name == "@profile-xml-escaping-api" && profile == "" {
+				} else if canonical && path == xmlParsingFeaturePath() && (xmlLexicalCandidate() || postBatch2Reference()) && tag.Name == "@profile-xml-escaping-api" && profile == "" {
 					profile = tag.Name
 				} else if canonical && path == xmlEditingFeaturePath() && tag.Name == "@profile-lexical-snapshot-api" && profile == "" {
 					profile = tag.Name
@@ -373,7 +373,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 	if canonical && seen[canonicalID(path)] == "" {
 		return fmt.Errorf("%s: selected canonical case missing", path)
 	}
-	if canonical && (xmlLexicalCandidate() || batch2Candidate()) && (path == xmlParsingFeaturePath() || path == xmlNamesFeaturePath() || path == xmlEditingFeaturePath()) {
+	if canonical && (xmlLexicalCandidate() || postBatch2Reference()) && (path == xmlParsingFeaturePath() || path == xmlNamesFeaturePath() || path == xmlEditingFeaturePath()) {
 		if err := guardLexicalFeature(doc, path); err != nil {
 			return err
 		}
@@ -480,7 +480,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 				case xmlPrototypeCaseID, xmlNamespaceCaseID, xmlMalformedCaseID:
 					err = guardXMLSafetyCase(id, p, line)
 				default:
-					if xmlLexicalCandidate() || batch2Candidate() {
+					if xmlLexicalCandidate() || postBatch2Reference() {
 						err = guardLexicalCase(id, p, line)
 					} else {
 						err = fmt.Errorf("unexpected selected XML parsing ID %s", id)
@@ -492,7 +492,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			}
 			if path == xmlNamesFeaturePath() {
 				var err error
-				if xmlLexicalCandidate() || batch2Candidate() {
+				if xmlLexicalCandidate() || postBatch2Reference() {
 					err = guardLexicalCase(id, p, line)
 				} else {
 					err = guardUnicodeQNameCase(id, p)
@@ -553,7 +553,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 						return fmt.Errorf("%s: duplicate attribute-splice row %s", path, row)
 					}
 					attributeSpliceRowsSeen[row] = true
-				} else if id == xmlApplyEditsID && (xmlLexicalCandidate() || batch2Candidate()) {
+				} else if id == xmlApplyEditsID && (xmlLexicalCandidate() || postBatch2Reference()) {
 					if err := guardLexicalCase(id, p, line); err != nil {
 						return err
 					}

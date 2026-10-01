@@ -19,7 +19,7 @@ const xmlImplicitPrefixInput = `<r xml:lang="en"/>`
 const xmlImplicitPrefixURI = "http://www.w3.org/XML/1998/namespace"
 
 func xmlImplicitPrefixLine() int {
-	if xmlLexicalCandidate() || batch2Candidate() {
+	if xmlLexicalCandidate() || postBatch2Reference() {
 		return 99
 	}
 	return 72

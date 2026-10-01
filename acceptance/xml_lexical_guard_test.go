@@ -25,20 +25,20 @@ const (
 )
 
 func lexicalEditingLine(defaultLine, candidateLine int) int {
-	if xmlLexicalCandidate() || batch2Candidate() {
+	if xmlLexicalCandidate() || postBatch2Reference() {
 		return candidateLine
 	}
 	return defaultLine
 }
 
 func xmlSelectedEditingCases() int {
-	if xmlLexicalCandidate() || batch2Candidate() {
+	if xmlLexicalCandidate() || postBatch2Reference() {
 		return 16
 	}
 	return 15
 }
 func xmlSelectedNamesCases() int {
-	if xmlLexicalCandidate() || batch2Candidate() {
+	if xmlLexicalCandidate() || postBatch2Reference() {
 		return 6
 	}
 	return 1

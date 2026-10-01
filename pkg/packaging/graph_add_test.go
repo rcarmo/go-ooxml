@@ -88,6 +88,51 @@ func TestGraphAdditionAndEffectiveTypeFamily(t *testing.T) {
 	}
 }
 
+func TestGraphAdditionPendingOwnerAtomic(t *testing.T) {
+	p := graphEditPackage(t)
+	before := serializeGraphEdit(t, p)
+	addition := PartAddition{Name: "custom/owner.xml", ContentType: "application/vnd.test.owner+xml", Data: []byte(`<owner/>`)}
+	change := GraphMutation{Additions: []PartAddition{addition}, Relationships: []RelationshipAddition{
+		{Source: "word/document.xml", ID: "rIdOwner", Type: "urn:test/owner", TargetPart: addition.Name},
+		{Source: addition.Name, ID: "rIdChild", Type: "urn:test/child", TargetPart: "word/document.xml"},
+	}}
+	plan, err := p.PlanGraphMutation(change)
+	if err != nil || plan == nil {
+		t.Fatalf("joint new owner plan: %v", err)
+	}
+	if !bytes.Equal(before, serializeGraphEdit(t, p)) {
+		t.Fatal("planning mutated session")
+	}
+	// A pending owner does not permit a dangling edge or an unowned registry.
+	for _, invalid := range []GraphMutation{
+		{Additions: []PartAddition{addition}, Relationships: []RelationshipAddition{{Source: addition.Name, ID: "rIdBad", Type: "urn:test/child", TargetPart: "missing.xml"}}},
+		{Relationships: []RelationshipAddition{{Source: "custom/missing.xml", ID: "rIdBad", Type: "urn:test/child", TargetPart: "word/document.xml"}}},
+	} {
+		if bad, err := p.PlanGraphMutation(invalid); bad != nil || err == nil {
+			t.Fatalf("invalid new-owner graph accepted: %v", err)
+		}
+		if !bytes.Equal(before, serializeGraphEdit(t, p)) {
+			t.Fatal("refusal mutated session")
+		}
+	}
+	if err := p.ApplyGraphPlan(plan); err != nil {
+		t.Fatal(err)
+	}
+	g, err := p.Graph()
+	if err != nil {
+		t.Fatal(err)
+	}
+	found := false
+	for _, edge := range g.Edges {
+		if edge.Source == addition.Name && edge.ID == "rIdChild" && edge.ResolvedPart == "word/document.xml" {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatal("new owner relationship missing after atomic apply")
+	}
+}
+
 func TestGraphTypeOnlyChangeAndRefusals(t *testing.T) {
 	first := graphEditPackage(t)
 	second := graphEditPackage(t)

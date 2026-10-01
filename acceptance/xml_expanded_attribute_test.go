@@ -30,7 +30,7 @@ var xmlExpandedAttributeRows = [][4]string{
 }
 
 func xmlExpandedAttributeLine() int {
-	if xmlLexicalCandidate() || batch2Candidate() {
+	if xmlLexicalCandidate() || postBatch2Reference() {
 		return 85
 	}
 	return 58

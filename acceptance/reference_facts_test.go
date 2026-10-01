@@ -10,10 +10,56 @@ import (
 	"go/types"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/rcarmo/go-ooxml/internal/testutil"
 )
+
+// A sealed workflow may retain historical prose evidence or the newer list
+// form (empty for planned cases). Reject all other JSON types explicitly.
+func workflowEvidencePresent(raw json.RawMessage) (bool, error) {
+	if len(raw) == 0 || strings.TrimSpace(string(raw)) == "null" {
+		return false, fmt.Errorf("workflow evidence missing or null")
+	}
+	var prose string
+	if err := json.Unmarshal(raw, &prose); err == nil {
+		return len(strings.TrimSpace(prose)) > 0, nil
+	}
+	var entries []string
+	if err := json.Unmarshal(raw, &entries); err != nil || entries == nil {
+		return false, fmt.Errorf("workflow evidence must be string or string array")
+	}
+	for _, e := range entries {
+		if strings.TrimSpace(e) == "" {
+			return false, fmt.Errorf("workflow evidence has empty item")
+		}
+	}
+	return len(entries) > 0, nil
+}
+
+func TestWorkflowEvidenceTypes(t *testing.T) {
+	for _, tc := range []struct {
+		input            string
+		present, invalid bool
+	}{
+		{`"historical source"`, true, false}, {`[]`, false, false}, {`["source","receipt"]`, true, false},
+		{`" "`, false, false}, {`[""]`, false, true}, {`null`, false, true}, {`{}`, false, true}, {`42`, false, true}, {`[3]`, false, true}, {``, false, true},
+	} {
+		got, err := workflowEvidencePresent(json.RawMessage(tc.input))
+		if (err != nil) != tc.invalid || (!tc.invalid && got != tc.present) {
+			t.Errorf("evidence %q present=%v error=%v", tc.input, got, err)
+		}
+	}
+	present, err := workflowEvidencePresent(json.RawMessage(`[]`))
+	if err != nil || present {
+		t.Fatalf("planned empty evidence: %v %v", present, err)
+	}
+	present, err = workflowEvidencePresent(json.RawMessage(`" "`))
+	if err != nil || present {
+		t.Fatalf("implemented empty evidence accepted: %v %v", present, err)
+	}
+}
 
 type referenceFact struct {
 	ID       string   `json:"id"`
@@ -142,8 +188,8 @@ func TestSharedWorkflowRegistry(t *testing.T) {
 			Facts     []string `json:"factIds"`
 			Expected  []string `json:"expectedOutcomes"`
 			Consumers map[string]struct {
-				State    string `json:"status"`
-				Evidence string `json:"evidence"`
+				State    string          `json:"status"`
+				Evidence json.RawMessage `json:"evidence"`
 			} `json:"consumers"`
 		} `json:"workflows"`
 	}
@@ -192,10 +238,14 @@ func TestSharedWorkflowRegistry(t *testing.T) {
 		if !ok {
 			t.Fatalf("missing Go accounting %s", w.ID)
 		}
+		hasEvidence, evidenceErr := workflowEvidencePresent(goState.Evidence)
+		if evidenceErr != nil {
+			t.Fatalf("invalid Go evidence %s: %v", w.ID, evidenceErr)
+		}
 		switch goState.State {
 		case "planned", "unmapped": // Explicitly no local execution credit.
 		case "implemented":
-			if goState.Evidence == "" {
+			if !hasEvidence {
 				t.Fatalf("missing claimed Go evidence %s", w.ID)
 			}
 		default:
