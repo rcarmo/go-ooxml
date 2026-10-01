@@ -34,7 +34,7 @@ type xmlSafetyState struct {
 }
 
 func xmlSafetyLine(id string) int {
-	if xmlLexicalCandidate() {
+	if xmlLexicalCandidate() || batch2Candidate() {
 		return map[string]int{xmlPrototypeCaseID: 107, xmlNamespaceCaseID: 115, xmlMalformedCaseID: 146}[id]
 	}
 	return map[string]int{xmlPrototypeCaseID: 80, xmlNamespaceCaseID: 88, xmlMalformedCaseID: 119}[id]

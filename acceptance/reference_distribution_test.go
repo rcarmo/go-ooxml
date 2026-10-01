@@ -49,6 +49,11 @@ func loadReferencePin(t *testing.T) referencePin {
 	if candidate && os.Getenv("OOXML_FIXTURES_ROOT") == "" {
 		t.Fatal("candidate reference pin requires explicit candidate root")
 	}
+	if batch2PinMatches(p) {
+		if err := batch2RootAllowed(os.Getenv("OOXML_FIXTURES_ROOT")); err != nil {
+			t.Fatal(err)
+		}
+	}
 	if err := testutil.VerifyReferenceCheckout(testutil.ReferenceRoot(), testutil.ReferenceIdentity{Schema: p.Schema, Commit: p.Commit, Tag: p.Tag, TagObject: p.TagObject, Manifest: p.Manifest, Pack: p.Pack}, candidate); err != nil {
 		t.Fatal(err)
 	}

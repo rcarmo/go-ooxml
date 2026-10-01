@@ -18,7 +18,7 @@ const xmlStylesheetPIInput = `<?xml-stylesheet href="style.xsl"?><r/>`
 const xmlStylesheetPIRoot = `<r/>`
 
 func xmlStylesheetLine() int {
-	if xmlLexicalCandidate() {
+	if xmlLexicalCandidate() || batch2Candidate() {
 		return 79
 	}
 	return 52

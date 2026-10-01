@@ -34,7 +34,7 @@ func guardAttributeSpliceCase(id string, p *messages.Pickle, line int) (string, 
 			continue
 		}
 		base := 27
-		if xmlLexicalCandidate() {
+		if xmlLexicalCandidate() || batch2Candidate() {
 			base = 36
 		}
 		rowLine := map[string]int{"a": base, "p:n": base + 1, "fresh": base + 2}[name]

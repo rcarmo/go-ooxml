@@ -20,15 +20,22 @@ import (
 
 const opcDetachedByteCaseID = "@id-bun-opc-detached-byte-copies"
 
+func opcDetachedRuleLine() int {
+	if batch2Candidate() {
+		return 28
+	}
+	return 27
+}
+
 func opcDetachedBackgroundLine() int {
-	if packageReasonsCandidate() {
-		return 34
+	if packageReasonsCandidate() || batch2Candidate() {
+		return 35
 	}
 	return 33
 }
 func opcDetachedScenarioLine() int {
-	if packageReasonsCandidate() {
-		return 60
+	if packageReasonsCandidate() || batch2Candidate() {
+		return 61
 	}
 	return 59
 }
@@ -114,7 +121,7 @@ func guardOPCDetachedByteRule(doc *messages.GherkinDocument) error {
 			continue
 		}
 		foundRule++
-		if len(child.Rule.Tags) != 0 || int(child.Rule.Location.Line) != 27 || len(child.Rule.Children) == 0 || child.Rule.Children[0].Background == nil {
+		if len(child.Rule.Tags) != 0 || int(child.Rule.Location.Line) != opcDetachedRuleLine() || len(child.Rule.Children) == 0 || child.Rule.Children[0].Background == nil {
 			return fmt.Errorf("OPC detached-byte Rule structure drift")
 		}
 		backgrounds := 0

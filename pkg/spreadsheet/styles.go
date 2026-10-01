@@ -109,10 +109,10 @@ func defaultStyleSheet() *sml.StyleSheet {
 	return &sml.StyleSheet{
 		Fonts: &sml.Fonts{
 			Font: []*sml.Font{{
-				Name: &sml.FontName{Val: "Calibri"},
+				Name:   &sml.FontName{Val: "Calibri"},
 				Family: &sml.FontFamily{Val: 2},
-				Sz:   &sml.FontSize{Val: 11},
-				Color: &sml.Color{Theme: intPtr(1)},
+				Sz:     &sml.FontSize{Val: 11},
+				Color:  &sml.Color{Theme: intPtr(1)},
 				Scheme: &sml.FontScheme{Val: "minor"},
 			}},
 		},
@@ -124,10 +124,10 @@ func defaultStyleSheet() *sml.StyleSheet {
 		},
 		Borders: &sml.Borders{
 			Border: []*sml.Border{{
-				Left: &sml.BorderSide{},
-				Right: &sml.BorderSide{},
-				Top: &sml.BorderSide{},
-				Bottom: &sml.BorderSide{},
+				Left:     &sml.BorderSide{},
+				Right:    &sml.BorderSide{},
+				Top:      &sml.BorderSide{},
+				Bottom:   &sml.BorderSide{},
 				Diagonal: &sml.BorderSide{},
 			}},
 		},
@@ -290,6 +290,22 @@ func (cs *cellStyleImpl) SetVerticalAlignment(a Alignment) CellStyle {
 		cs.xf.Alignment = &sml.Alignment{}
 	}
 	cs.xf.Alignment.Vertical = string(a)
+	cs.xf.ApplyAlignment = boolPtr(true)
+	return cs
+}
+
+// WrapText reports the direct OOXML alignment wrap flag on this style.
+func (cs *cellStyleImpl) WrapText() bool {
+	return cs != nil && cs.xf != nil && cs.xf.Alignment != nil && cs.xf.Alignment.WrapText != nil && *cs.xf.Alignment.WrapText
+}
+
+// SetWrapText changes only this editable style. Cell.SetStyle commits a new XF;
+// legacy CellStyle interfaces remain unchanged for compatibility.
+func (cs *cellStyleImpl) SetWrapText(value bool) *cellStyleImpl {
+	if cs.xf.Alignment == nil {
+		cs.xf.Alignment = &sml.Alignment{}
+	}
+	cs.xf.Alignment.WrapText = boolPtr(value)
 	cs.xf.ApplyAlignment = boolPtr(true)
 	return cs
 }

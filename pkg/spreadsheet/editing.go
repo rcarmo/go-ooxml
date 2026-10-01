@@ -109,7 +109,7 @@ func OpenEditing(source []byte, limits packaging.Limits) (*EditSession, error) {
 		}
 		part := rels[rid]
 		if sheet == "" || part == "" || sheets[sheet] != "" || parts[part] || types[part] != packaging.ContentTypeWorksheet {
-			return nil, editRefusal("ambiguous_target", "ambiguous sheet identity")
+			return nil, &packaging.Refusal{Kind: "xlsx-workbook-invalid", Operation: "workbook_open", Part: main, Detail: "ambiguous or wrong-URI sheet relationship"}
 		}
 		sheets[sheet] = part
 		parts[part] = true

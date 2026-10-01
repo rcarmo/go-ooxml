@@ -220,6 +220,7 @@ func ReadZIP32(source []byte, limits ZIP32Limits) ([]ZIP32Entry, error) {
 		return nil, zipReason("zip-structure-invalid", "")
 	}
 	lenPayloads := 0
+	files := make([]ZIP32Entry, 0, count)
 	for i, f := range zr.File {
 		if f.Name != entries[i].Name {
 			return nil, zipReason("zip-structure-invalid", f.Name)
@@ -254,9 +255,9 @@ func ReadZIP32(source []byte, limits ZIP32Limits) ([]ZIP32Entry, error) {
 			return nil, zipReason("zip-size-mismatch", f.Name)
 		}
 		lenPayloads += len(data)
-		entries[i].Data = data
+		files = append(files, ZIP32Entry{Name: entries[i].Name, Data: data})
 	}
-	return entries, nil
+	return files, nil
 }
 
 // WriteZIP32 emits ordered, detached ZIP entries. It never returns partial

@@ -25,6 +25,13 @@ const opcMainBeta = `<document>Beta</document>`
 
 var opcOpaqueBytes = []byte{0, 42, 128, 255, 10, 0}
 
+func opcPreserveUnrelatedLine() int {
+	if batch2Candidate() {
+		return 22
+	}
+	return 21
+}
+
 var opcPreserveSteps = []string{
 	"a valid OPC package with a main XML part and an unrelated binary payload",
 	"the main XML part text is changed and the package is reopened",
@@ -33,10 +40,19 @@ var opcPreserveSteps = []string{
 }
 
 func guardOPCPreserveUnrelatedCase(id string, p *messages.Pickle, line int) error {
-	if id != opcPreserveUnrelatedCaseID || line != 21 || p.Name != "Changing one part preserves unrelated payload after reopen" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(opcPreserveSteps) {
+	if id != opcPreserveUnrelatedCaseID || line != opcPreserveUnrelatedLine() || p.Name != "Changing one part preserves unrelated payload after reopen" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(opcPreserveSteps) {
 		return fmt.Errorf("OPC preserve-unrelated case drift: %s %q at %d", id, p.Name, line)
 	}
-	for i, want := range opcPreserveSteps {
+	steps := opcPreserveSteps
+	if batch2Candidate() {
+		steps = []string{
+			"the custody envelope contains main XML part doc/main.xml with decoded text Original and opaque custom/data.bin payload hexadecimal 00FF01FE02FD",
+			"a production text edit sets doc/main.xml value text to JSON \"Updated <value>\" and saves then reopens the package",
+			"doc/main.xml decodes to JSON \"Updated <value>\" and custom/data.bin is exactly 00FF01FE02FD",
+			"the member-name set is unchanged, every other member payload is unchanged and the caller's original archive bytes remain unchanged",
+		}
+	}
+	for i, want := range steps {
 		if p.Steps[i].Text != want || p.Steps[i].Argument != nil {
 			return fmt.Errorf("OPC preserve-unrelated step %d drift", i+1)
 		}
@@ -65,7 +81,7 @@ func guardOPCPreserveUnrelatedRule(doc *messages.GherkinDocument) error {
 			}
 			for _, tag := range member.Scenario.Tags {
 				if tag.Name == opcPreserveUnrelatedCaseID {
-					if len(member.Scenario.Tags) != 1 || int(tag.Location.Line) != 20 || int(member.Scenario.Location.Line) != 21 || len(member.Scenario.Examples) != 0 || len(member.Scenario.Steps) != 4 {
+					if len(member.Scenario.Tags) != 1 || int(tag.Location.Line) != opcPreserveUnrelatedLine()-1 || int(member.Scenario.Location.Line) != opcPreserveUnrelatedLine() || len(member.Scenario.Examples) != 0 || len(member.Scenario.Steps) != 4 {
 						return fmt.Errorf("OPC preserve-unrelated structure drift")
 					}
 					found++
@@ -103,7 +119,7 @@ func TestOPCPreserveUnrelatedGuardRejectsDrift(t *testing.T) {
 			}
 		}
 	}
-	if selected == nil || guardOPCPreserveUnrelatedCase(opcPreserveUnrelatedCaseID, selected, 21) != nil {
+	if selected == nil || guardOPCPreserveUnrelatedCase(opcPreserveUnrelatedCaseID, selected, opcPreserveUnrelatedLine()) != nil {
 		t.Fatal("OPC preserve-unrelated case guard failed")
 	}
 	for _, tc := range []struct {
@@ -127,12 +143,12 @@ func TestOPCPreserveUnrelatedGuardRejectsDrift(t *testing.T) {
 				clone.Steps[i] = &copyStep
 			}
 			tc.change(&clone)
-			if guardOPCPreserveUnrelatedCase(opcPreserveUnrelatedCaseID, &clone, 21) == nil {
+			if guardOPCPreserveUnrelatedCase(opcPreserveUnrelatedCaseID, &clone, opcPreserveUnrelatedLine()) == nil {
 				t.Fatal("guard accepted OPC preservation drift")
 			}
 		})
 	}
-	if guardOPCPreserveUnrelatedCase("@id-opc-package-corpus-noop", selected, 21) == nil || guardOPCPreserveUnrelatedCase(opcPreserveUnrelatedCaseID, selected, 22) == nil {
+	if guardOPCPreserveUnrelatedCase("@id-opc-package-corpus-noop", selected, opcPreserveUnrelatedLine()) == nil || guardOPCPreserveUnrelatedCase(opcPreserveUnrelatedCaseID, selected, opcPreserveUnrelatedLine()+1) == nil {
 		t.Fatal("guard accepted ID or line drift")
 	}
 }

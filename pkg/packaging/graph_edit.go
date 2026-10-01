@@ -23,17 +23,27 @@ type PartAddition struct {
 // Source is empty for the package root; TargetPart is never a URI or external URL.
 type RelationshipRetarget struct{ Source, ID, TargetPart string }
 
+// RelationshipAddition creates a new internal edge to an existing or jointly
+// added part. Source is empty for the package root.
+type RelationshipAddition struct{ Source, ID, Type, TargetPart string }
+
+// ContentTypeChange changes the effective MIME of one existing part by a
+// scoped Override, leaving the payload unchanged.
+type ContentTypeChange struct{ Part, ContentType string }
+
 // PartDeletion requires a current payload fingerprint; only detached leaf parts may be removed.
 type PartDeletion struct{ Name, ExpectedSHA256 string }
 
 // RelationshipRemoval removes a selected edge; format adapters must prove its owner has no live reference.
 type RelationshipRemoval struct{ Source, ID string }
 type GraphMutation struct {
-	Deletions    []PartDeletion
-	Removals     []RelationshipRemoval
-	Replacements []Replacement
-	Additions    []PartAddition
-	Retargets    []RelationshipRetarget
+	Relationships []RelationshipAddition
+	ContentTypes  []ContentTypeChange
+	Deletions     []PartDeletion
+	Removals      []RelationshipRemoval
+	Replacements  []Replacement
+	Additions     []PartAddition
+	Retargets     []RelationshipRetarget
 }
 
 // GraphPlan owns private payloads and is bound to a single session generation.
@@ -101,7 +111,7 @@ func retargetURI(source, target, original string) string {
 // refuse. Callers must prove format-specific ownership before applying the plan.
 func (p *Preserved) PlanGraphMutation(change GraphMutation) (*GraphPlan, error) {
 	plan := &GraphPlan{owner: p, generation: p.generation, additions: map[string][]byte{}, patches: map[string][]byte{}, deletions: map[string]bool{}}
-	if len(change.Additions) == 0 && len(change.Retargets) == 0 && len(change.Deletions) == 0 && len(change.Removals) == 0 && len(change.Replacements) == 0 {
+	if len(change.Additions) == 0 && len(change.Retargets) == 0 && len(change.Deletions) == 0 && len(change.Removals) == 0 && len(change.Replacements) == 0 && len(change.Relationships) == 0 && len(change.ContentTypes) == 0 {
 		return plan, nil
 	}
 	if p.signed {
@@ -231,8 +241,37 @@ func (p *Preserved) PlanGraphMutation(change GraphMutation) (*GraphPlan, error) 
 		}
 		plan.patches[name] = data
 	}
+	if err = p.planGraphAdditions(change, graph, plan); err != nil {
+		return nil, err
+	}
 	if err = p.planGraphRemovals(change, plan); err != nil {
 		return nil, err
+	}
+	// Distinguish a surviving inbound edge from other registry errors. The
+	// original graph has already been validated; only explicitly removed or
+	// retargeted edges cease to reference the deleted part.
+	removed := map[edgeKey]bool{}
+	retargeted := map[edgeKey]string{}
+	for _, r := range change.Removals {
+		removed[edgeKey{r.Source, r.ID}] = true
+	}
+	for _, r := range change.Retargets {
+		retargeted[edgeKey{r.Source, r.ID}] = r.TargetPart
+	}
+	for _, e := range graph.Edges {
+		if !plan.deletions[e.ResolvedPart] || e.External {
+			continue
+		}
+		key := edgeKey{e.Source, e.ID}
+		if removed[key] || retargeted[key] != "" && retargeted[key] != e.ResolvedPart {
+			continue
+		}
+		return nil, graphEditError("opc-part-referenced", e.ResolvedPart, "part still has an inbound relationship")
+	}
+	for _, e := range change.Relationships {
+		if plan.deletions[e.TargetPart] {
+			return nil, graphEditError("opc-part-referenced", e.TargetPart, "added relationship references deleted part")
+		}
 	}
 	// Validate the complete candidate registry graph before exposing a plan.
 	candidate := &Preserved{parts: p.currentParts()}

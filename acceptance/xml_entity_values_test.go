@@ -22,7 +22,7 @@ const xmlEntityAttributeJSON = `"\"'"`
 const xmlEntityTextJSON = `"AA&<>"`
 
 func xmlEntityValuesLine() int {
-	if xmlLexicalCandidate() {
+	if xmlLexicalCandidate() || batch2Candidate() {
 		return 72
 	}
 	return 45

@@ -96,7 +96,7 @@ func OpenEditing(source []byte, limits packaging.Limits) (*EditSession, error) {
 		}
 		part, ok := rels[rid]
 		if !ok || ids[rid] || slides[part] || types[part] != packaging.ContentTypeSlide {
-			return nil, editRefusal("relationship_policy", "ambiguous slide identity")
+			return nil, &packaging.Refusal{Kind: "PPTX_PRESENTATION_INVALID", Operation: "presentation_open", Part: main, Detail: "ambiguous or wrong-URI slide relationship"}
 		}
 		ids[rid] = true
 		slides[part] = true
@@ -224,7 +224,13 @@ func (s *EditSession) Replace(target *TextTarget, text string) error {
 		if e.Name() == name(packaging.NSDrawingML, "spLocks") {
 			for ancestor, ok := e.Parent(); ok; ancestor, ok = ancestor.Parent() {
 				if ancestor == shape {
-					return editRefusal("protected_operation", "locked shape requires explicit policy")
+					// noGrp is grouping-only; it does not prohibit text edits.
+					// Unknown or text-affecting locks still refuse conservatively.
+					attrs := e.Attributes()
+					if len(attrs) != 1 || attrs[0].Name != (xml.Name{Local: "noGrp"}) || attrs[0].Value != "1" {
+						return editRefusal("protected_operation", "locked shape requires explicit policy")
+					}
+					break
 				}
 			}
 		}

@@ -22,6 +22,32 @@ func Equivalent(left, right []byte) bool {
 	if _, err := Parse(right); err != nil {
 		return false
 	}
+	// OPC relationship entries are identified by Id, not document order.
+	// Use this narrower path only when both validated roots have the package
+	// Relationships expanded name; unexpected markup fails closed.
+	const relationshipNamespace = "http://schemas.openxmlformats.org/package/2006/relationships"
+	root := xml.Name{Space: relationshipNamespace, Local: "Relationships"}
+	ld, _ := Parse(left)
+	rd, _ := Parse(right)
+	if ld.Elements()[0].Name() == root || rd.Elements()[0].Name() == root {
+		if ld.Elements()[0].Name() != root || rd.Elements()[0].Name() != root {
+			return false
+		}
+		la, ok := comparisonRelationships(left, relationshipNamespace)
+		if !ok {
+			return false
+		}
+		ra, ok := comparisonRelationships(right, relationshipNamespace)
+		if !ok || len(la) != len(ra) {
+			return false
+		}
+		for id, entry := range la {
+			if ra[id] != entry {
+				return false
+			}
+		}
+		return true
+	}
 	a, b := xml.NewDecoder(bytes.NewReader(left)), xml.NewDecoder(bytes.NewReader(right))
 	as, bs := []map[string]string{{"xml": xmlNS}}, []map[string]string{{"xml": xmlNS}}
 	for {
@@ -73,6 +99,82 @@ func Equivalent(left, right []byte) bool {
 			return false // directives and unsupported token types fail closed
 		}
 	}
+}
+
+// Only ordinary OPC relationship entries are reorderable. Require all three
+// attributes and unique IDs; comments, processing instructions, mixed content,
+// extensions and duplicate/unknown attributes cannot be erased by sorting.
+func comparisonRelationships(source []byte, namespace string) (map[string][3]string, bool) {
+	d := xml.NewDecoder(bytes.NewReader(source))
+	entries := map[string][3]string{}
+	depth := 0
+	seenRoot := false
+	for {
+		token, err := d.Token()
+		if err == io.EOF {
+			return entries, seenRoot && depth == 0
+		}
+		if err != nil {
+			return nil, false
+		}
+		switch x := token.(type) {
+		case xml.StartElement:
+			depth++
+			if depth == 1 {
+				if seenRoot || x.Name != (xml.Name{Space: namespace, Local: "Relationships"}) {
+					return nil, false
+				}
+				seenRoot = true
+				for _, a := range x.Attr {
+					if !comparisonNamespaceDeclaration(a) {
+						return nil, false
+					}
+				}
+				continue
+			}
+			if depth != 2 || x.Name != (xml.Name{Space: namespace, Local: "Relationship"}) {
+				return nil, false
+			}
+			values := map[string]string{}
+			for _, a := range x.Attr {
+				if comparisonNamespaceDeclaration(a) {
+					continue
+				}
+				if a.Name.Space != "" || (a.Name.Local != "Id" && a.Name.Local != "Type" && a.Name.Local != "Target" && a.Name.Local != "TargetMode") {
+					return nil, false
+				}
+				if _, exists := values[a.Name.Local]; exists {
+					return nil, false
+				}
+				values[a.Name.Local] = a.Value
+			}
+			id, hasID := values["Id"]
+			_, hasType := values["Type"]
+			_, hasTarget := values["Target"]
+			if !hasID || id == "" || !hasType || values["Type"] == "" || !hasTarget || values["Target"] == "" {
+				return nil, false
+			}
+			if _, exists := entries[id]; exists {
+				return nil, false
+			}
+			entries[id] = [3]string{values["Type"], values["Target"], values["TargetMode"]}
+		case xml.EndElement:
+			depth--
+			if depth < 0 {
+				return nil, false
+			}
+		case xml.CharData:
+			if len(x) != 0 {
+				return nil, false
+			}
+		default:
+			return nil, false
+		}
+	}
+}
+
+func comparisonNamespaceDeclaration(a xml.Attr) bool {
+	return a.Name.Space == "xmlns" || a.Name.Space == "" && a.Name.Local == "xmlns"
 }
 
 func comparisonScope(parent map[string]string, attrs []xml.Attr) map[string]string {

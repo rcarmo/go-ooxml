@@ -4,16 +4,16 @@ import "encoding/xml"
 
 // StyleSheet represents the styles part.
 type StyleSheet struct {
-	XMLName       xml.Name       `xml:"http://schemas.openxmlformats.org/spreadsheetml/2006/main styleSheet"`
-	NumFmts       *NumFmts       `xml:"numFmts,omitempty"`
-	Fonts         *Fonts         `xml:"fonts,omitempty"`
-	Fills         *Fills         `xml:"fills,omitempty"`
-	Borders       *Borders       `xml:"borders,omitempty"`
-	CellStyleXfs  *CellStyleXfs  `xml:"cellStyleXfs,omitempty"`
-	CellXfs       *CellXfs       `xml:"cellXfs,omitempty"`
-	CellStyles    *CellStyles    `xml:"cellStyles,omitempty"`
-	TableStyles   *TableStyles   `xml:"tableStyles,omitempty"`
-	Colors        *Colors        `xml:"colors,omitempty"`
+	XMLName      xml.Name      `xml:"http://schemas.openxmlformats.org/spreadsheetml/2006/main styleSheet"`
+	NumFmts      *NumFmts      `xml:"numFmts,omitempty"`
+	Fonts        *Fonts        `xml:"fonts,omitempty"`
+	Fills        *Fills        `xml:"fills,omitempty"`
+	Borders      *Borders      `xml:"borders,omitempty"`
+	CellStyleXfs *CellStyleXfs `xml:"cellStyleXfs,omitempty"`
+	CellXfs      *CellXfs      `xml:"cellXfs,omitempty"`
+	CellStyles   *CellStyles   `xml:"cellStyles,omitempty"`
+	TableStyles  *TableStyles  `xml:"tableStyles,omitempty"`
+	Colors       *Colors       `xml:"colors,omitempty"`
 }
 
 // NumFmts represents number formats.
@@ -146,11 +146,12 @@ type Xf struct {
 type Alignment struct {
 	Horizontal string `xml:"horizontal,attr,omitempty"`
 	Vertical   string `xml:"vertical,attr,omitempty"`
+	WrapText   *bool  `xml:"wrapText,attr,omitempty"`
 }
 
 // CellStyles represents named styles.
 type CellStyles struct {
-	Count     int         `xml:"count,attr,omitempty"`
+	Count     int          `xml:"count,attr,omitempty"`
 	CellStyle []*CellStyle `xml:"cellStyle,omitempty"`
 }
 
@@ -164,9 +165,9 @@ type CellStyle struct {
 
 // TableStyles represents table styles.
 type TableStyles struct {
-	Count              int    `xml:"count,attr,omitempty"`
-	DefaultTableStyle  string `xml:"defaultTableStyle,attr,omitempty"`
-	DefaultPivotStyle  string `xml:"defaultPivotStyle,attr,omitempty"`
+	Count             int    `xml:"count,attr,omitempty"`
+	DefaultTableStyle string `xml:"defaultTableStyle,attr,omitempty"`
+	DefaultPivotStyle string `xml:"defaultPivotStyle,attr,omitempty"`
 }
 
 // Colors represents colors collection.
