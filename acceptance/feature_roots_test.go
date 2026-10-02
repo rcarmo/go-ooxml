@@ -53,6 +53,11 @@ func negativeBudgetFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "admission-limit-configuration.feature")
 }
 
+// Only retained input structure is selected; the Office-positive stays planned.
+func retainedVisibilityFeaturePath() string {
+	return filepath.Join(testutil.ReferenceRoot(), "workflows", "pptx", "slide-visibility.feature")
+}
+
 // The unsigned-descriptor collision is selected without enabling sibling workflows.
 func descriptorIntegrityFeaturePath() string {
 	return filepath.Join(testutil.ReferenceRoot(), "workflows", "package", "data-descriptor-integrity.feature")
