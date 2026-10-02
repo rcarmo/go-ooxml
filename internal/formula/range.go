@@ -14,14 +14,20 @@ type StaticRange struct {
 	WholeRows, WholeColumns bool
 }
 
-func ParseRange(source string) (StaticRange, error) {
+func ParseRange(source string) (StaticRange, error) { return parseRange(source, false) }
+
+// ParseRangeUniform preserves the legacy direct-range API while requiring the
+// uniform profile's Unicode sheet-token and qualifier grammar.
+func ParseRangeUniform(source string) (StaticRange, error) { return parseRange(source, true) }
+
+func parseRange(source string, uniform bool) (StaticRange, error) {
 	fail := func() (StaticRange, error) {
 		return StaticRange{}, fmt.Errorf("expected one direct static cell/row/column range")
 	}
 	if len(source) == 0 || len(source) > 1<<20 {
 		return fail()
 	}
-	tokens, err := lex(source)
+	tokens, err := lexMode(source, uniform)
 	if err != nil {
 		return StaticRange{}, err
 	}
@@ -29,7 +35,7 @@ func ParseRange(source string) (StaticRange, error) {
 	out := StaticRange{}
 	if len(tokens) >= 2 && tokens[1].kind == "punct" && tokens[1].text == "!" {
 		sheet := tokens[0]
-		if (sheet.kind != "word" && sheet.kind != "sheet") || sheet.text == "" || strings.ContainsAny(sheet.text, "[]:*?/\\") {
+		if (sheet.kind != "word" && sheet.kind != "sheet") || sheet.text == "" || (uniform && sheet.kind == "word" && !UniformSimpleSheet(sheet.text)) || strings.ContainsAny(sheet.text, "[]:*?/\\") {
 			return fail()
 		}
 		out.Sheet = sheet.text

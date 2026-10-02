@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 // Insertion describes a structural row/column insertion in one known worksheet.
@@ -19,6 +20,20 @@ type Insertion struct {
 // do not prevent structural shifts (they affect copying, not sheet insertion).
 // Ranges spanning the insertion expand; strings and foreign sheets stay exact.
 func InsertReferences(source, formulaSheet string, change Insertion) (string, error) {
+	return insertReferences(source, formulaSheet, change, false)
+}
+
+// InsertReferencesUniform applies the stricter uniform lexical profile while
+// retaining the legacy entry point's comparison and unchanged endpoint spelling.
+func InsertReferencesUniform(source, formulaSheet string, change Insertion) (string, error) {
+	return insertReferences(source, formulaSheet, change, true)
+}
+
+func simpleLower(s string) string {
+	return strings.Map(unicode.ToLower, s)
+}
+
+func insertReferences(source, formulaSheet string, change Insertion, uniform bool) (string, error) {
 	limit := 1048576
 	if change.Axis == "column" {
 		limit = 16384
@@ -28,7 +43,13 @@ func InsertReferences(source, formulaSheet string, change Insertion) (string, er
 	if formulaSheet == "" || change.Sheet == "" || change.At < 1 || change.At > limit || change.Count < 1 || change.Count > limit {
 		return "", fmt.Errorf("invalid insertion bounds or worksheet")
 	}
-	refs, err := Analyze(source)
+	var refs []Reference
+	var err error
+	if uniform {
+		refs, err = AnalyzeUniform(source)
+	} else {
+		refs, err = Analyze(source)
+	}
 	if err != nil {
 		return "", err
 	}
@@ -59,7 +80,11 @@ func InsertReferences(source, formulaSheet string, change Insertion) (string, er
 		if sheet == "" {
 			sheet = formulaSheet
 		}
-		if !strings.EqualFold(sheet, change.Sheet) {
+		if uniform {
+			if simpleLower(sheet) != simpleLower(change.Sheet) {
+				continue
+			}
+		} else if !strings.EqualFold(sheet, change.Sheet) {
 			continue
 		}
 		first, err := shift(ref.First)
@@ -91,11 +116,11 @@ func InsertReferences(source, formulaSheet string, change Insertion) (string, er
 			left, right = coordinates[:colon], coordinates[colon+1:]
 		}
 		mappedLeft := left
-		if first != ref.First {
+		if uniform || first != ref.First {
 			mappedLeft = cellString(first)
 		}
 		mappedRight := right
-		if colon >= 0 && last != ref.Last {
+		if colon >= 0 && (uniform || last != ref.Last) {
 			mappedRight = cellString(last)
 		}
 		text := prefix + mappedLeft

@@ -163,6 +163,9 @@ func TestAcceptance(t *testing.T) {
 		canonicalFormulaAnalysisSteps(sc)
 		remainingFormulaSteps(sc)
 		directRangeSteps(sc)
+		if uniformAPI18Candidate() {
+			uniformAPI18Steps(sc)
+		}
 		cacheSteps(sc)
 		canonicalCacheSteps(sc)
 		runEffectsSteps(sc)

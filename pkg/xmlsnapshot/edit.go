@@ -33,9 +33,16 @@ type ElementReplacement struct {
 	Nodes  []NewElement
 }
 
+// ForeignTargetError preserves the native diagnostic and identifies ownership
+// refusal to callers without interpreting diagnostic text.
+type ForeignTargetError struct{ Cause error }
+
+func (e *ForeignTargetError) Error() string { return e.Cause.Error() }
+func (e *ForeignTargetError) Unwrap() error { return e.Cause }
+
 func (d *Document) owned(e Element) (losslessxml.Element, error) {
 	if d == nil || d.doc == nil || e.doc != d.doc || e.element.Ordinal() < 0 {
-		return losslessxml.Element{}, fmt.Errorf("foreign or invalid XML snapshot target")
+		return losslessxml.Element{}, &ForeignTargetError{Cause: fmt.Errorf("foreign or invalid XML snapshot target")}
 	}
 	return e.element, nil
 }

@@ -10,6 +10,12 @@ import (
 	"unicode/utf8"
 )
 
+// LimitError identifies a parser resource refusal without classifying message text.
+// Legacy error spelling remains unchanged for callers that display it.
+type LimitError struct{ Reason string }
+
+func (e *LimitError) Error() string { return e.Reason }
+
 type Cell struct {
 	Row, Column                 int
 	AbsoluteRow, AbsoluteColumn bool
@@ -27,6 +33,7 @@ type parser struct {
 	tokens    []token
 	at, depth int
 	refs      []Reference
+	uniform   bool
 }
 
 // Analyze returns static scalar/range references and exact UTF-8 byte offsets.
@@ -34,14 +41,30 @@ type parser struct {
 // functions are accepted. Names, UDFs, external/3D/structured/dynamic references,
 // arrays, spills, intersections and unknown syntax refuse with no partial result.
 func Analyze(source string) ([]Reference, error) {
-	if !utf8.ValidString(source) || len(source) > 1<<20 {
+	return analyze(source, false)
+}
+
+// AnalyzeUniform counts root expression depth as zero. The legacy analyser
+// retains its original recursion boundary for existing consumers.
+func AnalyzeUniform(source string) ([]Reference, error) {
+	return analyze(source, true)
+}
+
+func analyze(source string, uniform bool) ([]Reference, error) {
+	if !utf8.ValidString(source) {
 		return nil, fmt.Errorf("invalid or excessive formula text")
 	}
-	tokens, err := lex(source)
+	if len(source) > 1<<20 {
+		return nil, &LimitError{Reason: "invalid or excessive formula text"}
+	}
+	tokens, err := lexMode(source, uniform)
 	if err != nil {
 		return nil, err
 	}
-	p := parser{tokens: tokens, refs: []Reference{}}
+	p := parser{tokens: tokens, refs: []Reference{}, uniform: uniform}
+	if uniform {
+		p.depth = -1
+	}
 	if p.peek().kind == "punct" && p.peek().text == "=" {
 		p.at++
 	}
@@ -53,7 +76,9 @@ func Analyze(source string) ([]Reference, error) {
 	}
 	return p.refs, nil
 }
-func lex(s string) ([]token, error) {
+func lex(s string) ([]token, error) { return lexMode(s, false) }
+
+func lexMode(s string, uniform bool) ([]token, error) {
 	out := []token{}
 	for at := 0; at < len(s); {
 		r, n := utf8.DecodeRuneInString(s[at:])
@@ -118,7 +143,7 @@ func lex(s string) ([]token, error) {
 			at += n
 			for at < len(s) {
 				rr, nn := utf8.DecodeRuneInString(s[at:])
-				if !unicode.IsLetter(rr) && !unicode.IsDigit(rr) && rr != '_' && rr != '.' && rr != '$' {
+				if !unicode.IsLetter(rr) && !(uniform && unicode.IsNumber(rr)) && !unicode.IsDigit(rr) && rr != '_' && rr != '.' && rr != '$' {
 					break
 				}
 				at += nn
@@ -135,7 +160,7 @@ func lex(s string) ([]token, error) {
 			out = append(out, token{"punct", s[start:at], start, at})
 		}
 		if len(out) > 100000 {
-			return nil, fmt.Errorf("formula token budget exceeded")
+			return nil, &LimitError{Reason: "formula token budget exceeded"}
 		}
 	}
 	out = append(out, token{"end", "", len(s), len(s)})
@@ -168,7 +193,7 @@ func (p *parser) expression(min int) error {
 	p.depth++
 	defer func() { p.depth-- }()
 	if p.depth > 128 {
-		return fmt.Errorf("formula depth limit")
+		return &LimitError{Reason: "formula depth limit"}
 	}
 	if err := p.primary(); err != nil {
 		return err
@@ -216,7 +241,7 @@ func (p *parser) primary() error {
 	}
 	p.at++
 	if p.take("!") {
-		if t.text == "" || strings.ContainsAny(t.text, "[]:*?/\\") {
+		if t.text == "" || p.uniform && t.kind == "word" && !UniformSimpleSheet(t.text) || strings.ContainsAny(t.text, "[]:*?/\\") {
 			return fmt.Errorf("invalid or external sheet reference")
 		}
 		first := p.peek()
@@ -259,6 +284,25 @@ func (p *parser) primary() error {
 		return nil
 	}
 	return p.reference("", t.start, t)
+}
+
+// UniformSimpleSheet validates an unquoted sheet identifier. Unicode letters
+// or '_' start it; following characters may also be Unicode numbers. Quoted
+// names have a separate grammar and may contain '$' and spaces.
+func UniformSimpleSheet(s string) bool {
+	if s == "" {
+		return false
+	}
+	for i, r := range s {
+		if i == 0 {
+			if !unicode.IsLetter(r) && r != '_' {
+				return false
+			}
+		} else if !unicode.IsLetter(r) && !unicode.IsNumber(r) && r != '_' {
+			return false
+		}
+	}
+	return true
 }
 
 var functions = map[string][2]int{"SUM": {1, 255}, "AVERAGE": {1, 255}, "MIN": {1, 255}, "MAX": {1, 255}, "COUNT": {1, 255}, "COUNTA": {1, 255}, "PRODUCT": {1, 255}, "IF": {2, 3}, "IFERROR": {2, 2}, "AND": {1, 255}, "OR": {1, 255}, "NOT": {1, 1}, "ABS": {1, 1}, "ROUND": {2, 2}, "ROUNDUP": {2, 2}, "ROUNDDOWN": {2, 2}, "INT": {1, 1}, "MOD": {2, 2}, "POWER": {2, 2}, "SQRT": {1, 1}, "LOG10": {1, 1}}

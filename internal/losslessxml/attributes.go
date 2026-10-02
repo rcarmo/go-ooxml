@@ -9,6 +9,13 @@ import (
 	"unicode/utf8"
 )
 
+// UnboundAttributeNamespaceError preserves the legacy diagnostic while allowing
+// uniform callers to classify an authored namespace refusal without message text.
+type UnboundAttributeNamespaceError struct{ Cause error }
+
+func (e *UnboundAttributeNamespaceError) Error() string { return e.Cause.Error() }
+func (e *UnboundAttributeNamespaceError) Unwrap() error { return e.Cause }
+
 // AttributeEdit changes or adds one non-namespace attribute by expanded name.
 // A new prefixed attribute requires an already in-scope namespace binding.
 type AttributeEdit struct {
@@ -108,7 +115,7 @@ func (d *Document) Edit(texts []TextEdit, attributes []AttributeEdit) ([]byte, e
 			}
 			sort.Strings(prefixes)
 			if len(prefixes) == 0 {
-				return nil, fmt.Errorf("attribute namespace has no in-scope prefix")
+				return nil, &UnboundAttributeNamespaceError{Cause: fmt.Errorf("attribute namespace has no in-scope prefix")}
 			}
 			qname = prefixes[0] + ":" + qname
 		}
@@ -138,6 +145,14 @@ func (d *Document) Edit(texts []TextEdit, attributes []AttributeEdit) ([]byte, e
 	}
 	return out.Bytes(), nil
 }
+
+// ValidAuthoredName checks the existing structured edit name and value grammar.
+// Exporting the validator lets bounded profiles classify refusal before rendering.
+func ValidAuthoredName(name xml.Name, attribute bool) bool {
+	return localName(name.Local) && name.Space != xmlnsNS && (!attribute || name.Local != "xmlns") && validText(name.Space)
+}
+
+func ValidAuthoredText(s string) bool { return validText(s) }
 
 // XML 1.0 fifth-edition NCName productions (Name without colon).
 func localName(s string) bool {

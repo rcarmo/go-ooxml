@@ -33,9 +33,25 @@ func inventoryCases() (map[caseID]expectedCase, []map[string]any, error) {
 		paths = append(paths, zip32FeaturePath())
 	}
 	for _, path := range paths {
+		if uniformAPI18Candidate() && path == formulaReferenceFeaturePath() {
+			continue // All nine formula IDs are compiled against the stronger ledger below.
+		}
 		if err = inventoryFeature(path, nil, nil, expected, &inventory, seen, next, true); err != nil {
 			return nil, nil, err
 		}
+	}
+	if uniformAPI18Candidate() {
+		more, entries, err := uniformInventory()
+		if err != nil {
+			return nil, nil, err
+		}
+		for key, item := range more {
+			if _, exists := expected[key]; exists {
+				return nil, nil, fmt.Errorf("uniform API case conflicts with earlier selection: %+v", key)
+			}
+			expected[key] = item
+		}
+		inventory = append(inventory, entries...)
 	}
 	return expected, inventory, nil
 }
@@ -229,6 +245,13 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 	}
 	lines := map[string]int{}
 	ids := map[string]string{}
+	uniformIDs := map[string]bool{}
+	if canonical && uniformAPI18Candidate() && path == xmlEditingFeaturePath() {
+		uniformIDs, err = uniformSelection()
+		if err != nil {
+			return err
+		}
+	}
 	var collect func([]*messages.FeatureChild) error
 	collect = func(children []*messages.FeatureChild) error {
 		for _, c := range children {
@@ -296,8 +319,8 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 					return fmt.Errorf("%s: unsupported scenario tag %s", path, tag.Name)
 				}
 			}
-			if canonical && !selectedCanonicalID(path, id) {
-				continue // Other shared workflows remain planned for Go.
+			if canonical && (!selectedCanonicalID(path, id) || uniformIDs[id]) {
+				continue // Stronger uniform IDs are inventoried separately, not through historic guards.
 			}
 			if id == "" || (canonical && path == zip32FeaturePath() && packageReasonsCandidate() && profile != "@profile-zip32-refusal-reasons") || (canonical && path == packagePreservationFeaturePath() && ((id == opcDetachedByteCaseID && profile != "@profile-opc-byte-custody") || ((id == opcReasonOpenID || id == opcReasonSaveID || id == opcReasonSymlinkID) && profile != "@profile-package-refusal-reasons") || ((id == opcDeferredTransactionID || id == opcOpaqueTransactionID) && profile != "@profile-portable-transactions") || ((id == opcPreserveUnrelatedCaseID || id == opcCorpusNoopCaseID) && profile != ""))) || (canonical && path == xmlEditingFeaturePath() && profile != "@profile-lexical-snapshot-api" && id != xmlApplyEditsID) || (canonical && path == xmlParsingFeaturePath() && xmlLexicalCandidate() && id == xmlEscapingValuesID && profile != "@profile-xml-escaping-api") || (canonical && path == formulaReferenceFeaturePath() && profile != "@profile-static-reference-api") || (canonical && path == directFontSizeFeaturePath() && profile != "") || (canonical && path == overlapFeaturePath() && ((id == overlapCaseID && profile != "@profile-physical-member-extents") || ((id == bzipAdmissionCaseID || id == unsafeMembersCaseID) && profile != ""))) || (canonical && (path == creationFeaturePath() || path == corePropertiesFeaturePath() || path == pageLayoutFeaturePath() || path == paragraphFeaturePath()) && profile != "@profile-document-value-api") || (canonical && path == tableMergeFeaturePath() && ((id == tableCellAccessCaseID && profile != tableCellAccessProfile()) || (id == roundtripTableTextCaseID && profile != "@profile-table-text-readback") || (id != tableCellAccessCaseID && id != roundtripTableTextCaseID && profile != "@profile-document-value-api"))) || (canonical && path == runEffectsFeaturePath() && ((id == runEffectsCaseID && profile != "@profile-in-memory-effects-api") || ((id == runRoundtripFormattingCaseID && profile != "@profile-selected-formatting-readback") || (id != runEffectsCaseID && id != runRoundtripFormattingCaseID && profile != "@profile-document-value-api")))) {
 				return fmt.Errorf("%s: scenario missing or mismatched ID/profile", path)
@@ -373,7 +396,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			return err
 		}
 	}
-	if canonical && seen[canonicalID(path)] == "" {
+	if canonical && !(uniformAPI18Candidate() && path == xmlEditingFeaturePath()) && seen[canonicalID(path)] == "" {
 		return fmt.Errorf("%s: selected canonical case missing", path)
 	}
 	if canonical && (xmlLexicalCandidate() || postBatch2Reference()) && (path == xmlParsingFeaturePath() || path == xmlNamesFeaturePath() || path == xmlEditingFeaturePath()) {
@@ -381,10 +404,10 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			return err
 		}
 	}
-	if canonical && path == xmlEditingFeaturePath() && seen[elementReplacementRefusalCaseID] == "" {
+	if canonical && path == xmlEditingFeaturePath() && !uniformAPI18Candidate() && seen[elementReplacementRefusalCaseID] == "" {
 		return fmt.Errorf("%s: element-replacement refusal ID missing", path)
 	}
-	if canonical && path == xmlEditingFeaturePath() && seen[elementReplacementCustodyCaseID] == "" {
+	if canonical && path == xmlEditingFeaturePath() && !uniformAPI18Candidate() && seen[elementReplacementCustodyCaseID] == "" {
 		return fmt.Errorf("%s: element-replacement custody ID missing", path)
 	}
 	if canonical && path == xmlEditingFeaturePath() && seen[childNamespaceMatrixCaseID] == "" {
@@ -836,7 +859,7 @@ func inventoryFeature(path string, d os.DirEntry, err error, expected map[caseID
 			expected[key] = expectedCase{key, p.Name, len(p.Steps)}
 		}
 	}
-	if canonical && ((canonicalID(path) == immutableLeafCaseID && (canonicalCases != xmlSelectedEditingCases() || len(attributeSpliceRowsSeen) != 3 || len(removalRefusalRowsSeen) != 2 || len(replacementRefusalRowsSeen) != 3)) || (canonicalID(path) == unicodeQNameCaseID && canonicalCases != xmlSelectedNamesCases()) || (canonicalID(path) == xmlEntityValuesCaseID && canonicalCases != xmlSelectedParsingCases()) || (canonicalID(path) == xmlSignificantCaseID && canonicalCases != 9) || (canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == retainedVisibilityEvidenceCaseID && canonicalCases != 1) || (canonicalID(path) == overlapCaseID && canonicalCases != 7) || (canonicalID(path) == opcPreserveUnrelatedCaseID && canonicalCases != packageSelectedReasonCases()) || (path == zip32FeaturePath() && packageReasonsCandidate() && canonicalCases != zipSelectedReasonCases()) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == directRangeParsingCaseID && (canonicalCases != 45 || len(directRangeParseRows) != 6 || len(directRangeRefusalRows) != 7 || len(formulaCountsRows) != 6 || len(formulaFlagsRows) != 1 || len(formulaRefusalRows) != 7 || len(formulaLiteralRows) != 5 || len(staticRemapExactRows) != 5 || len(staticRemapRefusalRows) != 7 || len(staticPropertiesRows) != 1)) || (canonicalID(path) == directFontSizeCaseID && canonicalCases != 1) || (canonicalID(path) == paragraphTextGetterCaseID && (canonicalCases != 16 || len(paragraphRows) != 5 || len(alignmentRows) != 4 || len(spacingRows) != 4)) || (canonicalID(path) == corePropertiesCaseID && canonicalCases != 1) || (canonicalID(path) == sectionTitleBackgroundCaseID && canonicalCases != 1) || (canonicalID(path) == newEmptyBodyCaseID && canonicalCases != 1) || (canonicalID(path) == tableMergeCaseID && (canonicalCases != 13 || len(dimensionRows) != 8)) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 23 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
+	if canonical && ((canonicalID(path) == immutableLeafCaseID && !(uniformAPI18Candidate() && path == xmlEditingFeaturePath()) && (canonicalCases != xmlSelectedEditingCases() || len(attributeSpliceRowsSeen) != 3 || len(removalRefusalRowsSeen) != 2 || len(replacementRefusalRowsSeen) != 3)) || (canonicalID(path) == unicodeQNameCaseID && canonicalCases != xmlSelectedNamesCases()) || (canonicalID(path) == xmlEntityValuesCaseID && canonicalCases != xmlSelectedParsingCases()) || (canonicalID(path) == xmlSignificantCaseID && canonicalCases != 9) || (canonicalID(path) == negativeBudgetCaseID && (canonicalCases != 2 || len(budgetRows) != 2)) || (canonicalID(path) == retainedVisibilityEvidenceCaseID && canonicalCases != 1) || (canonicalID(path) == overlapCaseID && canonicalCases != 7) || (canonicalID(path) == opcPreserveUnrelatedCaseID && canonicalCases != packageSelectedReasonCases()) || (path == zip32FeaturePath() && packageReasonsCandidate() && canonicalCases != zipSelectedReasonCases()) || (canonicalID(path) == descriptorCollisionCaseID && canonicalCases != 1) || (canonicalID(path) == ownedChainCaseID && canonicalCases != 1) || (canonicalID(path) == crossSheetCacheCaseID && canonicalCases != 1) || (canonicalID(path) == directRangeParsingCaseID && (canonicalCases != 45 || len(directRangeParseRows) != 6 || len(directRangeRefusalRows) != 7 || len(formulaCountsRows) != 6 || len(formulaFlagsRows) != 1 || len(formulaRefusalRows) != 7 || len(formulaLiteralRows) != 5 || len(staticRemapExactRows) != 5 || len(staticRemapRefusalRows) != 7 || len(staticPropertiesRows) != 1)) || (canonicalID(path) == directFontSizeCaseID && canonicalCases != 1) || (canonicalID(path) == paragraphTextGetterCaseID && (canonicalCases != 16 || len(paragraphRows) != 5 || len(alignmentRows) != 4 || len(spacingRows) != 4)) || (canonicalID(path) == corePropertiesCaseID && canonicalCases != 1) || (canonicalID(path) == sectionTitleBackgroundCaseID && canonicalCases != 1) || (canonicalID(path) == newEmptyBodyCaseID && canonicalCases != 1) || (canonicalID(path) == tableMergeCaseID && (canonicalCases != 13 || len(dimensionRows) != 8)) || (canonicalID(path) == runEffectsCaseID && (canonicalCases != 23 || len(underlineRows) != 6 || len(fontNameRows) != 6 || len(colorRows) != 3 || len(highlightRows) != 5))) {
 		return fmt.Errorf("%s: selected canonical case count drift: %d", path, canonicalCases)
 	}
 	return nil

@@ -24,7 +24,12 @@ func guardElementReplacementCustodyCase(id string, p *messages.Pickle, line int)
 		"the XML editor replaces p:old with a bound-namespace new element containing value and an empty-namespace plain element",
 		"the complete output bytes equal " + elementReplacementOutput,
 	}
-	if id != elementReplacementCustodyCaseID || line != lexicalEditingLine(89, 98) || p.Name != "Replace one subtree using its surviving parent namespace scope" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
+	wantLine := lexicalEditingLine(89, 98)
+	if uniformAPI18Candidate() {
+		wantLine = 105
+		steps = append(steps, "the uniform profile result, refusal category and immutable input custody match the sealed API contract")
+	}
+	if id != elementReplacementCustodyCaseID || line != wantLine || p.Name != "Replace one subtree using its surviving parent namespace scope" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
 		return fmt.Errorf("unexpected element-replacement custody case %s %q at %d", id, p.Name, line)
 	}
 	for i, want := range steps {
@@ -59,7 +64,11 @@ func TestElementReplacementCustodyGuardRejectsDrift(t *testing.T) {
 			}
 		}
 	}
-	if selected == nil || guardElementReplacementCustodyCase(elementReplacementCustodyCaseID, selected, lexicalEditingLine(89, 98)) != nil {
+	wantLine := lexicalEditingLine(89, 98)
+	if uniformAPI18Candidate() {
+		wantLine = 105
+	}
+	if selected == nil || guardElementReplacementCustodyCase(elementReplacementCustodyCaseID, selected, wantLine) != nil {
 		t.Fatal("canonical element-replacement custody guard failed")
 	}
 	for _, tc := range []struct {
@@ -68,6 +77,20 @@ func TestElementReplacementCustodyGuardRejectsDrift(t *testing.T) {
 	}{
 		{"source", func(p *messages.Pickle) { p.Steps[0].Text += " " }},
 		{"whole output", func(p *messages.Pickle) { p.Steps[2].Text += " " }},
+		{"uniform assertion", func(p *messages.Pickle) {
+			if uniformAPI18Candidate() {
+				p.Steps[3].Text += " changed"
+			} else {
+				p.Steps[2].Text += " changed"
+			}
+		}},
+		{"missing uniform step", func(p *messages.Pickle) {
+			if uniformAPI18Candidate() {
+				p.Steps = p.Steps[:3]
+			} else {
+				p.Steps = p.Steps[:2]
+			}
+		}},
 		{"action", func(p *messages.Pickle) { p.Steps[1].Text += " changed" }},
 		{"scenario name", func(p *messages.Pickle) { p.Name += " changed" }},
 		{"example expansion", func(p *messages.Pickle) { p.AstNodeIds = append(p.AstNodeIds, "unexpected") }},
@@ -82,12 +105,12 @@ func TestElementReplacementCustodyGuardRejectsDrift(t *testing.T) {
 				clone.Steps[i] = &copyStep
 			}
 			tc.mutate(&clone)
-			if guardElementReplacementCustodyCase(elementReplacementCustodyCaseID, &clone, lexicalEditingLine(89, 98)) == nil {
+			if guardElementReplacementCustodyCase(elementReplacementCustodyCaseID, &clone, wantLine) == nil {
 				t.Fatal("guard accepted canonical drift")
 			}
 		})
 	}
-	if guardElementReplacementCustodyCase("@id-xml-go-element-replacement-refusal", selected, lexicalEditingLine(89, 98)) == nil || guardElementReplacementCustodyCase(elementReplacementCustodyCaseID, selected, lexicalEditingLine(89, 98)+1) == nil {
+	if guardElementReplacementCustodyCase("@id-xml-go-element-replacement-refusal", selected, wantLine) == nil || guardElementReplacementCustodyCase(elementReplacementCustodyCaseID, selected, wantLine+1) == nil {
 		t.Fatal("guard accepted ID or line drift")
 	}
 }
