@@ -94,6 +94,11 @@ graphics-group-quality: ## Run optional LibreOffice grouped-child save/reopen or
 	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/group-outputs)" $(MAKE) graphics-test
 	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/shape-group-uno.py
 
+.PHONY: graphics-group-transform-quality
+graphics-group-transform-quality: ## Run optional LibreOffice group-frame save/reopen oracle
+	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/group-transform-outputs)" $(MAKE) graphics-test
+	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/group-transform-uno.py
+
 .PHONY: shared-pack-check
 shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
 	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...

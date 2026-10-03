@@ -77,6 +77,14 @@ All seventeen shared cases pass, including shared relationships/media, other-own
 
 All sixteen shared cases pass with exact receipts, identity-frame coordinates, literal child/outer XML reconstruction, typed refusals and saved picture ancestry. Full root/acceptance and isolated related-package batches pass. `make graphics-group-quality` checks four success variants through LibreOffice save/reopen: one group with two children, the child's text and raster identity survive. Raster geometry drift is at most 0.01 mm; general visual fidelity is not measured.
 
+### Group transforms and point mapping
+
+`GetGroupTransform`/`PatchGroupTransform` inspect and splice direct group frames while preserving child XML and scalar spelling. Pure `MapGroupPoint`/`UnmapGroupPoint` and outer-to-inner chain helpers support scale/translation, centre reflections and clockwise rotation; quarter turns use exact constants. Invalid/singular/unbounded frames and intermediates refuse.
+
+All twenty-one shared cases pass. A separate 216-trial polar-reference matrix measures forward median 0, p95 3.64e-12, maximum 1.09e-11 EMUs; inverse median 0, p95 4.27e-14, maximum 1.71e-13 EMUs. Shared tolerances remain 1e-5 EMUs absolute plus relative 1e-12; serialized frames use exact integers.
+
+`make graphics-group-transform-quality` checks six variants in LibreOffice, preserving one group and its picture child after export/reopen. Five have at most 0.01 mm geometry drift; the changed child-frame case has 0.02 mm position drift and 0.01 mm extent drift. Its parent/child coordinate composition accumulates two separately quantised 0.01 mm UNO positions. The application check therefore admits 0.02 mm for composed positions, without changing native mapping/serialization tolerances. The extreme contract probe projects its large source picture beyond practical slide bounds; visual fidelity is outside this oracle. Full root/acceptance and isolated related-package gates pass.
+
 ## Remaining slices
 
-Group transform/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+Connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
