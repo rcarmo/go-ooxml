@@ -111,6 +111,12 @@ The packaging graph-plan API can atomically install absent part-owned relationsh
 
 All eight synthetic copy cases, both sealed-source copies and native source refusal controls pass with source/destination custody, identity/edge consistency and save/reopen. Full root/acceptance and isolated related-package gates pass. `make graphics-smartart-quality` verifies the sealed source and both copies in LibreOffice: one diagram group for source/cross-presentation copy, two for same-slide copy, six children each, no interaction request, and group geometry drift at most 0.01 mm. All three also pass the optional SDK check. Synthetic schema-invalid graphs keep their prior limitation; general SmartArt editing/layout is not implemented.
 
+### Editable AutoShapes
+
+`AddAutoShape` authors rect/ellipse/triangle/diamond/roundRect presets with bounded positive geometry, optional text/style and explicit roundRect adjustment guides. Default roundRect adjustment is 16667; fixed presets reject adjustments. Only the appended direct shape XML changes; names, line/fill colours and text remain editable.
+
+All eighteen shared cases pass with exact receipts, preset/guide values, literal labels and removed-span custody. Full root/acceptance and isolated related-package batches pass. `make graphics-autoshapes-quality` edits the label in all eight successful preset variants through LibreOffice, saves/reopens them and checks retained shape/text. Existing raster drift is at most 0.01 mm; full preset guide/render comparison is outside this oracle.
+
 ## Remaining slices
 
-AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+Freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.

@@ -114,6 +114,11 @@ graphics-smartart-quality: ## Run optional LibreOffice sealed-source SmartArt or
 	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/smartart-outputs)" $(MAKE) graphics-test
 	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/smartart-uno.py
 
+.PHONY: graphics-autoshapes-quality
+graphics-autoshapes-quality: ## Run optional LibreOffice AutoShape label-edit oracle
+	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/autoshapes-outputs)" $(MAKE) graphics-test
+	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/autoshapes-uno.py
+
 .PHONY: shared-pack-check
 shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
 	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...
