@@ -85,6 +85,12 @@ All twenty-one shared cases pass. A separate 216-trial polar-reference matrix me
 
 `make graphics-group-transform-quality` checks six variants in LibreOffice, preserving one group and its picture child after export/reopen. Five have at most 0.01 mm geometry drift; the changed child-frame case has 0.02 mm position drift and 0.01 mm extent drift. Its parent/child coordinate composition accumulates two separately quantised 0.01 mm UNO positions. The application check therefore admits 0.02 mm for composed positions, without changing native mapping/serialization tolerances. The extreme contract probe projects its large source picture beyond practical slide bounds; visual fidelity is outside this oracle. Full root/acceptance and isolated related-package gates pass.
 
+### Attached rectangle connectors
+
+`AddConnector` appends an editable straight connector between distinct exact direct rectangle IDs/sites. It validates ordinary unrotated/unflipped geometry, locks/placeholders and bounded computed sites. Sites top/left/bottom/right use floor midpoints; direction controls explicit flip flags. Only the selected new connector span is appended, with exact line colour/width and fresh shape identity.
+
+All fifteen shared cases pass with exact receipt/endpoints/geometry, attachment XML and full original-slide recovery. Full root/acceptance and isolated related-package gates pass. `make graphics-connectors-quality` imports/saves/reopens six variants in LibreOffice, retaining one attached connector and its endpoint names and glue-point indices. Existing raster geometry drift is at most 0.01 mm; routing/visual quality is not independently compared.
+
 ## Remaining slices
 
-Connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+Diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.

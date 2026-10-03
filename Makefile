@@ -99,6 +99,11 @@ graphics-group-transform-quality: ## Run optional LibreOffice group-frame save/r
 	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/group-transform-outputs)" $(MAKE) graphics-test
 	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/group-transform-uno.py
 
+.PHONY: graphics-connectors-quality
+graphics-connectors-quality: ## Run optional LibreOffice connector attachment oracle
+	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/connectors-outputs)" $(MAKE) graphics-test
+	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/connectors-uno.py
+
 .PHONY: shared-pack-check
 shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
 	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...
