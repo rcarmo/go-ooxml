@@ -139,6 +139,11 @@ graphics-opacity-quality: ## Run optional LibreOffice shape/picture alpha oracle
 	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/opacity-outputs)" $(MAKE) graphics-test
 	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/opacity-uno.py
 
+.PHONY: graphics-outlines-quality
+graphics-outlines-quality: ## Run optional LibreOffice direct outline scalar oracle
+	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/outlines-outputs)" $(MAKE) graphics-test
+	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/outlines-uno.py
+
 .PHONY: shared-pack-check
 shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
 	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...

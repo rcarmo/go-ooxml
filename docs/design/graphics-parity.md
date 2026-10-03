@@ -141,6 +141,12 @@ Shape opacity is direct colour alpha; picture transparency is `100000 - alphaMod
 
 All twenty-four shared cases pass with literal scalars, refusal custody and save/reopen. Full root/acceptance and isolated related-package gates pass. `make graphics-opacity-quality` checks eleven unlinked outputs: LibreOffice imports requested scalar values and retains them on save/reopen except the fully transparent solid fill, which exports as `noFill` (effective fill remains absent). This normalisation is recorded separately. The linked sample is native-only to avoid fetching; visual fidelity is not measured.
 
-## Remaining slices
+### Direct outline decorations
 
-Outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+`GetOutlineStyle`/`PatchOutlineStyle` inspect existing direct shape/connector lines and patch cap, compound, join and arrowhead values. Explicit null removes decorations; omitted fields retain them. Existing scalar attributes use lossless splices, order is bounded and unselected fills/dashes/extensions remain literal. Missing/inherited/grouped lines, malformed values and duplicate grammar refuse.
+
+All twenty-one shared cases pass with exact decoded records, detached returns, typed refusals and saved readback. Full root/acceptance and isolated related-package gates pass. `make graphics-outlines-quality` checks ten outputs through LibreOffice and retains inspected cap/join/arrow names/line scalars after save/reopen. Full compound-line semantics and visual fidelity are outside the oracle.
+
+## Final reconciliation
+
+All twenty slices and the three sealed-source SmartArt cases are implemented in the graphics candidate tests. Final case reconciliation and combined fresh/full quality evidence are recorded separately before parity closure. Shared lifecycle remains planned and the default released pin is unchanged.
