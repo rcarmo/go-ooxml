@@ -65,6 +65,12 @@ All sixteen shared cases pass, including odd/fractional rounding, large rational
 
 All eleven shared cases pass with exact paired receipts, payload/graph custody, rejected executable/reference SVG and saved readback. The full root/acceptance and isolated related-package batches pass. `make graphics-svg-quality` checks both PNG/JPEG fallback variants in LibreOffice; picture names/counts persist through save/reopen with at most 0.01 mm geometry drift. This does not compare the visual content of SVG and fallback.
 
+### Deletion and conservative collection
+
+`DeletePicture` removes one exact picture span, retaining dependencies by default. Collection checks every remaining slide attribute and opaque lexical barrier before removing owner edges, then scans the complete package graph for incoming references before removing only PNG/JPEG/SVG media leaves. Connected picture endpoints refuse. One graph plan owns slide, relationship and content-type removals.
+
+All seventeen shared cases pass, including shared relationships/media, other-owner references, grouped/link/SVG pairs and opaque reference/comment/text conservation. Tests assert exact removed-span XML, literal unrelated payloads, receipts, complete graph and save/reopen records. Full root/acceptance and isolated related-package batches pass. `make graphics-delete-quality` loads/saves/reopens ten unlinked success outputs in LibreOffice and checks target absence and retained imported picture names/counts. The remaining source vector image is converted into a shape; this measures deletion acceptance, not complete rendering equivalence.
+
 ## Remaining slices
 
-Deletion, groups/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+Groups/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.

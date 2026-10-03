@@ -32,6 +32,7 @@ type graphicsOperation struct {
 	Before string `json:"before"`
 	After  string `json:"after"`
 	From   string `json:"from"`
+	Value  string `json:"value"`
 }
 type graphicsPictureCase struct {
 	ScenarioID string              `json:"scenarioId"`
@@ -214,6 +215,13 @@ func graphicsInput(t *testing.T, source []byte, operations []graphicsOperation) 
 	}
 	parts := graphicsMembers(t, source)
 	for _, op := range operations {
+		if op.Kind == "add-literal-member" {
+			if _, exists := parts[op.Part]; exists {
+				t.Fatal("literal added member collision")
+			}
+			parts[op.Part] = []byte(op.Value)
+			continue
+		}
 		if op.Kind == "copy-member" {
 			b, ok := parts[op.From]
 			_, occupied := parts[op.Part]

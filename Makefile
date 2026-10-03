@@ -84,6 +84,11 @@ graphics-svg-quality: ## Run optional LibreOffice paired SVG save/reopen oracle
 	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/svg-outputs)" $(MAKE) graphics-test
 	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/picture-svg-uno.py
 
+.PHONY: graphics-delete-quality
+graphics-delete-quality: ## Run optional LibreOffice deletion save/reopen oracle
+	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/delete-outputs)" $(MAKE) graphics-test
+	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/picture-delete-uno.py
+
 .PHONY: shared-pack-check
 shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
 	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...
