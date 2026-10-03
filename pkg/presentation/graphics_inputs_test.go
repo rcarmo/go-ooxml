@@ -31,6 +31,7 @@ type graphicsOperation struct {
 	Part   string `json:"part"`
 	Before string `json:"before"`
 	After  string `json:"after"`
+	From   string `json:"from"`
 }
 type graphicsPictureCase struct {
 	ScenarioID string              `json:"scenarioId"`
@@ -153,6 +154,15 @@ func graphicsInput(t *testing.T, source []byte, operations []graphicsOperation) 
 	}
 	parts := graphicsMembers(t, source)
 	for _, op := range operations {
+		if op.Kind == "copy-member" {
+			b, ok := parts[op.From]
+			_, occupied := parts[op.Part]
+			if !ok || occupied {
+				t.Fatal("invalid copy-member recipe")
+			}
+			parts[op.Part] = bytes.Clone(b)
+			continue
+		}
 		if op.Kind != "replace-literal-once" {
 			t.Fatal("unsupported recipe", op.Kind)
 		}

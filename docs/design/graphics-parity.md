@@ -26,6 +26,19 @@ All twelve shared cases across six IDs pass, including five successful input pro
 
 The existing root/acceptance baseline and the full candidate-enabled `make test-batch` pass. An isolated local clone with the unchanged released gitlink passes the graphics-related presentation, packaging and lossless XML package batch. This inspection slice does not generate changed graphics for a new LibreOffice rendering check.
 
+### PNG/JPEG insertion
+
+`EditSession.AddPicture(slidePart, payload, PictureGeometry, PictureOptions)` appends a signature-checked PNG/JPEG with explicit signed positions and positive extents. It allocates collision-free shape/media/relationship identities, retains existing default content types and relationships, and appends before terminal extensions. A validated graph plan commits the slide, payload and registries together; refusals retain session generation and original members. Native Go field types exclude accessor/non-byte values; strict recipe decoding tests fractional and unknown-field refusals.
+
+All eighteen shared cases pass, including twelve typed refusals and six successful variants. Additional controls cover oversized payloads, negative/out-of-range extents, invalid description text, default metadata and signed-package late-plan refusal. Tests verify complete receipt/geometry/media metadata, defensive copying, exact appended-node removal, existing relationships, package membership and save/reopen custody.
+
+```sh
+# Requires LibreOffice and system python3-uno; no external programs in runtime APIs.
+GOMAXPROCS=2 GOFLAGS=-count=1 make graphics-insertion-quality
+```
+
+LibreOffice 24.2.7.2 loads, saves and reopens all six outputs without interaction requests. Inserted raster counts and names survive, with position/extent drift at most 0.01 mm. All six render as one-page PDFs and pass optional SDK structural validation. The pre-existing vector image in the source is converted into a shape by LibreOffice; this oracle counts imported raster objects separately and does not establish visual fidelity.
+
 ## Remaining slices
 
-Raster insertion/replacement/placement/crop/transforms, SVG fallback, deletion, groups/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+Picture replacement/placement/crop/transforms, SVG fallback, deletion, groups/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.

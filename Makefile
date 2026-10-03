@@ -59,6 +59,11 @@ GRAPHICS_ROOT ?= $(abspath ../fixtures-ooxml)
 graphics-test: ## Run graphics-related packages against the sealed shared candidate
 	OOXML_GRAPHICS_ROOT="$(GRAPHICS_ROOT)" GOMAXPROCS=2 $(GO) test -p $(TEST_JOBS) ./pkg/presentation ./pkg/packaging ./internal/losslessxml
 
+.PHONY: graphics-insertion-quality
+graphics-insertion-quality: ## Run optional LibreOffice insertion save/reopen oracle
+	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/insertion-outputs)" $(MAKE) graphics-test
+	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/picture-insertion-uno.py
+
 .PHONY: shared-pack-check
 shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
 	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...
