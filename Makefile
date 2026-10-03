@@ -53,6 +53,12 @@ acceptance: ## Run strict native Gherkin and report reconciliation
 
 test-batch: test acceptance ## Run library and acceptance modules
 
+# Bounded graphics candidate tests; never advance the released reference pin.
+GRAPHICS_ROOT ?= $(abspath ../fixtures-ooxml)
+.PHONY: graphics-test
+graphics-test: ## Run graphics-related packages against the sealed shared candidate
+	OOXML_GRAPHICS_ROOT="$(GRAPHICS_ROOT)" GOMAXPROCS=2 $(GO) test -p $(TEST_JOBS) ./pkg/presentation ./pkg/packaging ./internal/losslessxml
+
 .PHONY: shared-pack-check
 shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
 	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...
