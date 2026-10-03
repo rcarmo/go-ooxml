@@ -71,6 +71,12 @@ All eleven shared cases pass with exact paired receipts, payload/graph custody, 
 
 All seventeen shared cases pass, including shared relationships/media, other-owner references, grouped/link/SVG pairs and opaque reference/comment/text conservation. Tests assert exact removed-span XML, literal unrelated payloads, receipts, complete graph and save/reopen records. Full root/acceptance and isolated related-package batches pass. `make graphics-delete-quality` loads/saves/reopens ten unlinked success outputs in LibreOffice and checks target absence and retained imported picture names/counts. The remaining source vector image is converted into a shape; this measures deletion acceptance, not complete rendering equivalence.
 
+### Editable shape groups
+
+`GroupShapes` selects 2–100 contiguous direct shapes/pictures in source order, validates placeholder/lock/connector constraints and wraps their exact lexical slice with an identity parent/child rectangle. Wrapper namespace prefixes never shadow original bindings. Only the slide payload changes; no assets or relationships are copied.
+
+All sixteen shared cases pass with exact receipts, identity-frame coordinates, literal child/outer XML reconstruction, typed refusals and saved picture ancestry. Full root/acceptance and isolated related-package batches pass. `make graphics-group-quality` checks four success variants through LibreOffice save/reopen: one group with two children, the child's text and raster identity survive. Raster geometry drift is at most 0.01 mm; general visual fidelity is not measured.
+
 ## Remaining slices
 
-Groups/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+Group transform/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
