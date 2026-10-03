@@ -53,6 +53,12 @@ All seventeen crop and eighteen orientation recipe cases pass, including exact n
 
 `make graphics-metadata-quality` imports, saves and reopens fourteen embedded successful variants in LibreOffice; linked outputs are excluded to avoid external fetching. Raster object counts/names, rotation, mirror/crop properties survive; position/extent drift is at most 0.01 mm. General visual fidelity is not measured.
 
+### Explicit contain/cover/stretch placement
+
+`CalculatePicturePlacement` is a pure native calculator; `AddFittedPicture` authors its geometry/crop and media in the insertion graph plan. It uses caller-supplied intrinsic integer dimensions, floor-scaled contain extents and floor-centred offsets, with exact cross-products and big-integer cover rounding. No DPI or pixel-size inference occurs.
+
+All sixteen shared cases pass, including odd/fractional rounding, large rational inputs and overflow/empty-region refusals. Saved inspection retains the exact calculated integer geometry/crop. `make graphics-placement-quality` checks eight practical successful cases in LibreOffice: raster names/counts, orientation/mirror/crop properties survive save/reopen with geometry drift at most 0.01 mm. The native large-rational stress case is excluded from the application gate because its near-2^31 extents are not practical slide dimensions. Full root/acceptance and isolated related-package gates pass.
+
 ## Remaining slices
 
-Picture placement, SVG fallback, deletion, groups/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+SVG fallback, deletion, groups/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.

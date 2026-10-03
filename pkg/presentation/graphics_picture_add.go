@@ -182,6 +182,9 @@ func graphicsShapeAppend(source []byte) (uint32, int, error) {
 
 // AddPicture appends explicit PNG/JPEG bytes in one validated graph commit.
 func (s *EditSession) AddPicture(part string, payload []byte, g PictureGeometry, o PictureOptions) (PictureReceipt, error) {
+	return s.addPicture(part, payload, g, o, PictureCrop{})
+}
+func (s *EditSession) addPicture(part string, payload []byte, g PictureGeometry, o PictureOptions, crop PictureCrop) (PictureReceipt, error) {
 	var none PictureReceipt
 	if len(payload) == 0 || len(payload) > 64*1024*1024 {
 		return none, graphicsUnsupported("payload length")
@@ -266,6 +269,10 @@ func (s *EditSession) AddPicture(part string, payload []byte, g PictureGeometry,
 		description = ` descr="` + v + `"`
 	}
 	picture := fmt.Sprintf(`<p:pic xmlns:p="%s" xmlns:a="%s" xmlns:r="%s"><p:nvPicPr><p:cNvPr id="%d" name="%s"%s/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="%s"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="%d" y="%d"/><a:ext cx="%d" cy="%d"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>`, packaging.NSPresentationML, packaging.NSDrawingML, packaging.NSDocumentRelationships, id, escaped, description, rid, g.X, g.Y, g.Width, g.Height)
+	if crop != (PictureCrop{}) {
+		node := fmt.Sprintf(`<a:srcRect l="%d" t="%d" r="%d" b="%d"/>`, crop.Left, crop.Top, crop.Right, crop.Bottom)
+		picture = strings.Replace(picture, "<a:stretch>", node+"<a:stretch>", 1)
+	}
 	next := append(append(append([]byte{}, source[:at]...), []byte(picture)...), source[at:]...)
 	plan, err := s.pkg.PlanGraphMutation(packaging.GraphMutation{Additions: []packaging.PartAddition{{Name: media, ContentType: o.ContentType, Data: payload}}, Relationships: []packaging.RelationshipAddition{{Source: part, ID: rid, Type: packaging.RelTypeImage, TargetPart: media}}, Replacements: []packaging.Replacement{{Part: part, ExpectedSHA256: hash, Data: next}}})
 	if err != nil {
