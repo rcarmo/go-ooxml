@@ -27,6 +27,14 @@ type RelationshipRetarget struct{ Source, ID, TargetPart string }
 // added part. Source is empty for the package root.
 type RelationshipAddition struct{ Source, ID, Type, TargetPart string }
 
+// RelationshipRegistryAddition installs one absent part-owned registry verbatim.
+// Its owner and complete internal target closure must exist in the resulting graph.
+// This never fetches external targets or replaces an existing registry.
+type RelationshipRegistryAddition struct {
+	Owner string
+	Data  []byte
+}
+
 // ContentTypeChange changes the effective MIME of one existing part by a
 // scoped Override, leaving the payload unchanged.
 type ContentTypeChange struct{ Part, ContentType string }
@@ -38,6 +46,7 @@ type PartDeletion struct{ Name, ExpectedSHA256 string }
 type RelationshipRemoval struct{ Source, ID string }
 type GraphMutation struct {
 	Relationships []RelationshipAddition
+	Registries    []RelationshipRegistryAddition
 	ContentTypes  []ContentTypeChange
 	Deletions     []PartDeletion
 	Removals      []RelationshipRemoval
@@ -111,7 +120,7 @@ func retargetURI(source, target, original string) string {
 // refuse. Callers must prove format-specific ownership before applying the plan.
 func (p *Preserved) PlanGraphMutation(change GraphMutation) (*GraphPlan, error) {
 	plan := &GraphPlan{owner: p, generation: p.generation, additions: map[string][]byte{}, patches: map[string][]byte{}, deletions: map[string]bool{}}
-	if len(change.Additions) == 0 && len(change.Retargets) == 0 && len(change.Deletions) == 0 && len(change.Removals) == 0 && len(change.Replacements) == 0 && len(change.Relationships) == 0 && len(change.ContentTypes) == 0 {
+	if len(change.Additions) == 0 && len(change.Retargets) == 0 && len(change.Deletions) == 0 && len(change.Removals) == 0 && len(change.Replacements) == 0 && len(change.Relationships) == 0 && len(change.ContentTypes) == 0 && len(change.Registries) == 0 {
 		return plan, nil
 	}
 	if p.signed {
@@ -142,7 +151,7 @@ func (p *Preserved) PlanGraphMutation(change GraphMutation) (*GraphPlan, error) 
 		}
 		names[fold] = true
 		typ, params, e := mime.ParseMediaType(a.ContentType)
-		if e != nil || len(params) != 0 || !strings.Contains(typ, "/") || a.ContentType != typ {
+		if e != nil || len(params) != 0 || !strings.Contains(typ, "/") || !strings.EqualFold(a.ContentType, typ) {
 			return nil, graphEditError("relationship_policy", a.Name, "canonical parameter-free MIME type required")
 		}
 		data := bytes.Clone(a.Data)
@@ -240,6 +249,32 @@ func (p *Preserved) PlanGraphMutation(change GraphMutation) (*GraphPlan, error) 
 			return nil, graphEditError("relationship_policy", name, e.Error())
 		}
 		plan.patches[name] = data
+	}
+	for _, item := range change.Registries {
+		if err = graphPartName(item.Owner); err != nil {
+			return nil, err
+		}
+		if !p.hasPart(item.Owner) {
+			if _, ok := plan.additions[item.Owner]; !ok {
+				return nil, graphEditError("missing_target", item.Owner, "registry owner absent")
+			}
+		}
+		name := RelationshipsPathForPart(item.Owner)
+		if p.hasPart(name) {
+			return nil, graphEditError("ambiguous_target", name, "registry already exists")
+		}
+		if _, ok := plan.additions[name]; ok {
+			return nil, graphEditError("ambiguous_target", name, "duplicate registry addition")
+		}
+		for _, edge := range change.Relationships {
+			if edge.Source == item.Owner {
+				return nil, graphEditError("ambiguous_target", name, "registry/addition overlap")
+			}
+		}
+		if _, err = registry(item.Data, relNS, "Relationships"); err != nil {
+			return nil, graphEditError("relationship_policy", name, err.Error())
+		}
+		plan.additions[name] = bytes.Clone(item.Data)
 	}
 	if err = p.planGraphAdditions(change, graph, plan); err != nil {
 		return nil, err

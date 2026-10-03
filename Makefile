@@ -109,6 +109,11 @@ graphics-diagrams-quality: ## Run optional LibreOffice diagram edit and attachme
 	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/diagrams-outputs)" $(MAKE) graphics-test
 	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/diagrams-uno.py
 
+.PHONY: graphics-smartart-quality
+graphics-smartart-quality: ## Run optional LibreOffice sealed-source SmartArt oracle
+	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/smartart-outputs)" $(MAKE) graphics-test
+	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/smartart-uno.py
+
 .PHONY: shared-pack-check
 shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
 	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...

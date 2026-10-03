@@ -126,7 +126,7 @@ func (p *Preserved) planGraphAdditions(change GraphMutation, graph Graph, plan *
 				return graphEditError("missing_target", change.Part, "content-type target absent")
 			}
 			typ, params, e := mime.ParseMediaType(change.ContentType)
-			if e != nil || len(params) != 0 || typ != change.ContentType || !strings.Contains(typ, "/") {
+			if e != nil || len(params) != 0 || !strings.EqualFold(typ, change.ContentType) || !strings.Contains(typ, "/") {
 				return graphEditError("relationship_policy", change.Part, "canonical MIME type required")
 			}
 			if existingEntry, ok := existing[change.Part]; ok {
