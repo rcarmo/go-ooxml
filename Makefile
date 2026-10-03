@@ -119,6 +119,11 @@ graphics-autoshapes-quality: ## Run optional LibreOffice AutoShape label-edit or
 	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/autoshapes-outputs)" $(MAKE) graphics-test
 	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/autoshapes-uno.py
 
+.PHONY: graphics-freeform-quality
+graphics-freeform-quality: ## Run optional LibreOffice custom-vector oracle
+	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/freeform-outputs)" $(MAKE) graphics-test
+	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/freeform-uno.py
+
 .PHONY: shared-pack-check
 shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
 	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...

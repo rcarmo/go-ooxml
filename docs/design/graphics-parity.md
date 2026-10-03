@@ -117,6 +117,12 @@ All eight synthetic copy cases, both sealed-source copies and native source refu
 
 All eighteen shared cases pass with exact receipts, preset/guide values, literal labels and removed-span custody. Full root/acceptance and isolated related-package batches pass. `make graphics-autoshapes-quality` edits the label in all eight successful preset variants through LibreOffice, saves/reopens them and checks retained shape/text. Existing raster drift is at most 0.01 mm; full preset guide/render comparison is outside this oracle.
 
+### Move/line/close freeforms
+
+`AddFreeform` authors editable custom vector geometry with 2–256 bounded commands, explicit local coordinate extents, polygonal close validation and closed filled subpaths. Curves, unknown commands, repeated vertices, missing points and unsupported path topology refuse. Receipt command coordinates are copied, and only the appended shape XML changes.
+
+All fifteen shared cases pass with exact path receipts, command order, original-slide reconstruction and save/reopen custody. Full root/acceptance and isolated related-package batches pass. `make graphics-freeform-quality` checks five variants in LibreOffice: the newly authored vector object retains its name/type after save/reopen; existing raster drift is at most 0.01 mm. Path evaluation and independent visual fidelity are not checked.
+
 ## Remaining slices
 
-Freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+Graphical order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
