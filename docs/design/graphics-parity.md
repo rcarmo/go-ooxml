@@ -123,6 +123,12 @@ All eighteen shared cases pass with exact receipts, preset/guide values, literal
 
 All fifteen shared cases pass with exact path receipts, command order, original-slide reconstruction and save/reopen custody. Full root/acceptance and isolated related-package batches pass. `make graphics-freeform-quality` checks five variants in LibreOffice: the newly authored vector object retains its name/type after save/reopen; existing raster drift is at most 0.01 mm. Path evaluation and independent visual fidelity are not checked.
 
+### Graphical z-order
+
+`GetShapeOrder`/`ReorderShapes` operate on root or explicit group siblings. Selected spans are permuted only within their original occupied slots; unselected metadata, nodes and gaps stay literal. Empty/equal selections are exact no-ops. Duplicate/missing/cross-parent/metadata identities and lexical barriers refuse.
+
+All fifteen shared cases pass, including opaque mixed graphical spans, inverse permutation recovery and saved order. Full root/acceptance and isolated related-package gates pass. `make graphics-order-quality` checks six original-content outputs in LibreOffice and preserves imported names/order through save/reopen. The synthetic empty mixed-frame case is native-only; overlap or visual quality is not inferred.
+
 ## Remaining slices
 
-Graphical order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+Gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.

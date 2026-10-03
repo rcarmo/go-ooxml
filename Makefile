@@ -124,6 +124,11 @@ graphics-freeform-quality: ## Run optional LibreOffice custom-vector oracle
 	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/freeform-outputs)" $(MAKE) graphics-test
 	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/freeform-uno.py
 
+.PHONY: graphics-order-quality
+graphics-order-quality: ## Run optional LibreOffice graphical-order oracle
+	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/z-order-outputs)" $(MAKE) graphics-test
+	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/z-order-uno.py
+
 .PHONY: shared-pack-check
 shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
 	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...
