@@ -129,6 +129,12 @@ All fifteen shared cases pass with exact path receipts, command order, original-
 
 All fifteen shared cases pass, including opaque mixed graphical spans, inverse permutation recovery and saved order. Full root/acceptance and isolated related-package gates pass. `make graphics-order-quality` checks six original-content outputs in LibreOffice and preserves imported names/order through save/reopen. The synthetic empty mixed-frame case is native-only; overlap or visual quality is not inferred.
 
+### Linear gradients
+
+`GetLinearGradient`/`SetLinearGradient` inspect and replace one bounded direct fill, retaining colour-reference classes and supported transforms with exact stop positions/angle/scaling. Require two to sixteen strictly ascending stops including both boundaries. Unsupported fill grammar, duplicate/unknown transforms and malformed targets refuse; equivalent decoded requests preserve lexical bytes and versions.
+
+All eighteen shared cases pass with literal values and save/reopen, including RGB/theme stops and aliased no-ops. Full root/acceptance and isolated related-package gates pass. `make graphics-gradients-quality` checks six outputs in LibreOffice: targets import as gradient fill and inspected gradient scalar properties survive save/reopen. Full theme-stop/visual equivalence is not compared.
+
 ## Remaining slices
 
-Gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+Opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
