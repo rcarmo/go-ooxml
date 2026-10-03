@@ -182,9 +182,9 @@ func graphicsShapeAppend(source []byte) (uint32, int, error) {
 
 // AddPicture appends explicit PNG/JPEG bytes in one validated graph commit.
 func (s *EditSession) AddPicture(part string, payload []byte, g PictureGeometry, o PictureOptions) (PictureReceipt, error) {
-	return s.addPicture(part, payload, g, o, PictureCrop{})
+	return s.addPicture(part, payload, g, o, PictureCrop{}, nil)
 }
-func (s *EditSession) addPicture(part string, payload []byte, g PictureGeometry, o PictureOptions, crop PictureCrop) (PictureReceipt, error) {
+func (s *EditSession) addPicture(part string, payload []byte, g PictureGeometry, o PictureOptions, crop PictureCrop, svg *graphicsSVGPair) (PictureReceipt, error) {
 	var none PictureReceipt
 	if len(payload) == 0 || len(payload) > 64*1024*1024 {
 		return none, graphicsUnsupported("payload length")
@@ -258,6 +258,25 @@ func (s *EditSession) addPicture(part string, payload []byte, g PictureGeometry,
 			break
 		}
 	}
+	if svg != nil {
+		for i := 1; i <= len(used)+1; i++ {
+			candidate := fmt.Sprintf("ppt/media/image%d.svg", i)
+			if !used[strings.ToLower(candidate)] {
+				svg.media = candidate
+				break
+			}
+		}
+		svg.relationship = rid
+		relIDs[rid] = true
+		rid = ""
+		for i := 1; i <= len(relIDs)+1; i++ {
+			candidate := "rId" + strconv.Itoa(i)
+			if !relIDs[candidate] {
+				rid = candidate
+				break
+			}
+		}
+	}
 	label := fmt.Sprintf("Picture %d", id)
 	if o.Name != nil {
 		label = *o.Name
@@ -269,12 +288,23 @@ func (s *EditSession) addPicture(part string, payload []byte, g PictureGeometry,
 		description = ` descr="` + v + `"`
 	}
 	picture := fmt.Sprintf(`<p:pic xmlns:p="%s" xmlns:a="%s" xmlns:r="%s"><p:nvPicPr><p:cNvPr id="%d" name="%s"%s/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="%s"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="%d" y="%d"/><a:ext cx="%d" cy="%d"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>`, packaging.NSPresentationML, packaging.NSDrawingML, packaging.NSDocumentRelationships, id, escaped, description, rid, g.X, g.Y, g.Width, g.Height)
+	if svg != nil {
+		blip := `<a:blip r:embed="` + rid + `"/>`
+		paired := `<a:blip r:embed="` + rid + `"><a:extLst><a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}"><asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="` + svg.relationship + `"/></a:ext></a:extLst></a:blip>`
+		picture = strings.Replace(picture, blip, paired, 1)
+	}
 	if crop != (PictureCrop{}) {
 		node := fmt.Sprintf(`<a:srcRect l="%d" t="%d" r="%d" b="%d"/>`, crop.Left, crop.Top, crop.Right, crop.Bottom)
 		picture = strings.Replace(picture, "<a:stretch>", node+"<a:stretch>", 1)
 	}
 	next := append(append(append([]byte{}, source[:at]...), []byte(picture)...), source[at:]...)
-	plan, err := s.pkg.PlanGraphMutation(packaging.GraphMutation{Additions: []packaging.PartAddition{{Name: media, ContentType: o.ContentType, Data: payload}}, Relationships: []packaging.RelationshipAddition{{Source: part, ID: rid, Type: packaging.RelTypeImage, TargetPart: media}}, Replacements: []packaging.Replacement{{Part: part, ExpectedSHA256: hash, Data: next}}})
+	additions := []packaging.PartAddition{{Name: media, ContentType: o.ContentType, Data: payload}}
+	relationships := []packaging.RelationshipAddition{{Source: part, ID: rid, Type: packaging.RelTypeImage, TargetPart: media}}
+	if svg != nil {
+		additions = append(additions, packaging.PartAddition{Name: svg.media, ContentType: "image/svg+xml", Data: svg.data})
+		relationships = append(relationships, packaging.RelationshipAddition{Source: part, ID: svg.relationship, Type: packaging.RelTypeImage, TargetPart: svg.media})
+	}
+	plan, err := s.pkg.PlanGraphMutation(packaging.GraphMutation{Additions: additions, Relationships: relationships, Replacements: []packaging.Replacement{{Part: part, ExpectedSHA256: hash, Data: next}}})
 	if err != nil {
 		return none, err
 	}

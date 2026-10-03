@@ -78,7 +78,7 @@ func (s *EditSession) AddFittedPicture(part string, payload []byte, box PictureG
 	if err != nil {
 		return FittedPictureReceipt{}, err
 	}
-	receipt, err := s.addPicture(part, payload, placement.Geometry, options.PictureOptions, placement.Crop)
+	receipt, err := s.addPicture(part, payload, placement.Geometry, options.PictureOptions, placement.Crop, nil)
 	if err != nil {
 		return FittedPictureReceipt{}, err
 	}

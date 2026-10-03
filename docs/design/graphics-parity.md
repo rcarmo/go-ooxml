@@ -59,6 +59,12 @@ All seventeen crop and eighteen orientation recipe cases pass, including exact n
 
 All sixteen shared cases pass, including odd/fractional rounding, large rational inputs and overflow/empty-region refusals. Saved inspection retains the exact calculated integer geometry/crop. `make graphics-placement-quality` checks eight practical successful cases in LibreOffice: raster names/counts, orientation/mirror/crop properties survive save/reopen with geometry drift at most 0.01 mm. The native large-rational stress case is excluded from the application gate because its near-2^31 extents are not practical slide dimensions. Full root/acceptance and isolated related-package gates pass.
 
+### Passive SVG with caller raster fallback
+
+`AddSvgPicture` admits bounded passive UTF-8 SVG with an element/attribute/paint allowlist and a signature-checked PNG/JPEG supplied by the caller. It never rasterises or fetches references. One graph plan owns two new payloads, two image relationships and the picture's SVG extension/fallback reference. Both payload arrays are defensively copied; ordinary replacement refuses paired extensions.
+
+All eleven shared cases pass with exact paired receipts, payload/graph custody, rejected executable/reference SVG and saved readback. The full root/acceptance and isolated related-package batches pass. `make graphics-svg-quality` checks both PNG/JPEG fallback variants in LibreOffice; picture names/counts persist through save/reopen with at most 0.01 mm geometry drift. This does not compare the visual content of SVG and fallback.
+
 ## Remaining slices
 
-SVG fallback, deletion, groups/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+Deletion, groups/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
