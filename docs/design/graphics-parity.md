@@ -45,6 +45,14 @@ LibreOffice 24.2.7.2 loads, saves and reopens all six outputs without interactio
 
 All fourteen shared cases pass with literal XML restoration, old-edge/media custody, defensive bytes and save/reopen metadata. The full candidate batch and isolated related-package batch pass. `make graphics-replacement-quality` checks all six successful variants through LibreOffice load/save/reopen, with retained raster names/counts and geometry drift at most 0.01 mm. Their PDF conversions and optional SDK checks pass. Image fidelity and the converted pre-existing vector picture are outside the measured quality scope.
 
+### Bounded crop and direct orientation
+
+`GetPictureCrop`/`SetPictureCrop` read or set all four bounded source sides. `PatchPictureTransform` uses optional pointer fields for rotation and flips and never synthesises missing placement. Both support grouped/linked metadata without fetching, preserve unchanged lexical scalar spellings, return a changed count, and leave versions unchanged on no-op. Negative retained crop/rotation values remain inspectable but refuse bounded editing.
+
+All seventeen crop and eighteen orientation recipe cases pass, including exact no-ops, unsupported grammar and typed refusals. Tests mask only the selected crop node or transform opening tag, compare remaining slide XML, preserve every unrelated member and compare saved/reopened records. Full root/acceptance and isolated related-package batches pass.
+
+`make graphics-metadata-quality` imports, saves and reopens fourteen embedded successful variants in LibreOffice; linked outputs are excluded to avoid external fetching. Raster object counts/names, rotation, mirror/crop properties survive; position/extent drift is at most 0.01 mm. General visual fidelity is not measured.
+
 ## Remaining slices
 
-Picture placement/crop/transforms, SVG fallback, deletion, groups/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+Picture placement, SVG fallback, deletion, groups/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.

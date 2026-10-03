@@ -69,6 +69,11 @@ graphics-replacement-quality: ## Run optional LibreOffice replacement save/reope
 	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/replacement-outputs)" $(MAKE) graphics-test
 	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/picture-replacement-uno.py
 
+.PHONY: graphics-metadata-quality
+graphics-metadata-quality: ## Run optional LibreOffice crop/transform save/reopen oracle
+	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/metadata-outputs)" $(MAKE) graphics-test
+	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/picture-metadata-uno.py
+
 .PHONY: shared-pack-check
 shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
 	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...
