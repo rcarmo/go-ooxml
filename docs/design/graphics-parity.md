@@ -135,6 +135,12 @@ All fifteen shared cases pass, including opaque mixed graphical spans, inverse p
 
 All eighteen shared cases pass with literal values and save/reopen, including RGB/theme stops and aliased no-ops. Full root/acceptance and isolated related-package gates pass. `make graphics-gradients-quality` checks six outputs in LibreOffice: targets import as gradient fill and inspected gradient scalar properties survive save/reopen. Full theme-stop/visual equivalence is not compared.
 
+### Shape opacity and picture transparency
+
+Shape opacity is direct colour alpha; picture transparency is `100000 - alphaModFix`. Dedicated getters/setters validate their distinct grammars, splice or insert only the selected effect, and preserve no-op scalar spelling/versions. Gradient/no-fill shapes and competing picture effects refuse; linked metadata never fetches.
+
+All twenty-four shared cases pass with literal scalars, refusal custody and save/reopen. Full root/acceptance and isolated related-package gates pass. `make graphics-opacity-quality` checks eleven unlinked outputs: LibreOffice imports requested scalar values and retains them on save/reopen except the fully transparent solid fill, which exports as `noFill` (effective fill remains absent). This normalisation is recorded separately. The linked sample is native-only to avoid fetching; visual fidelity is not measured.
+
 ## Remaining slices
 
-Opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+Outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.

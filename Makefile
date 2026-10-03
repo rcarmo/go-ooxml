@@ -134,6 +134,11 @@ graphics-gradients-quality: ## Run optional LibreOffice gradient readback oracle
 	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/gradients-outputs)" $(MAKE) graphics-test
 	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/gradients-uno.py
 
+.PHONY: graphics-opacity-quality
+graphics-opacity-quality: ## Run optional LibreOffice shape/picture alpha oracle
+	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/opacity-outputs)" $(MAKE) graphics-test
+	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/opacity-uno.py
+
 .PHONY: shared-pack-check
 shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
 	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...
