@@ -147,6 +147,66 @@ func graphicsArchive(t *testing.T, parts map[string][]byte) []byte {
 	}
 	return buf.Bytes()
 }
+
+// Output oracle artifacts cannot escape into either shared root through symlinks.
+func graphicsWriteOutput(t *testing.T, root, name string, data []byte) {
+	t.Helper()
+	output := os.Getenv("OOXML_GRAPHICS_OUTPUT")
+	if output == "" {
+		return
+	}
+	if !filepath.IsLocal(name) || filepath.Base(name) != name {
+		t.Fatal("unsafe graphics output name")
+	}
+	dir, err := filepath.Abs(output)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ancestor := dir
+	var suffix []string
+	for {
+		if _, err = os.Lstat(ancestor); err == nil {
+			break
+		}
+		if !os.IsNotExist(err) {
+			t.Fatal(err)
+		}
+		suffix = append(suffix, filepath.Base(ancestor))
+		next := filepath.Dir(ancestor)
+		if next == ancestor {
+			t.Fatal("unresolvable output")
+		}
+		ancestor = next
+	}
+	resolved, err := filepath.EvalSymlinks(ancestor)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i := len(suffix) - 1; i >= 0; i-- {
+		resolved = filepath.Join(resolved, suffix[i])
+	}
+	shared, err := filepath.EvalSymlinks(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rel, err := filepath.Rel(shared, resolved)
+	if err != nil || rel == "." || rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		t.Fatal("graphics output inside shared root")
+	}
+	path := filepath.Join(dir, name)
+	if err = testutil.CheckReferenceOutput(path); err != nil {
+		t.Fatal(err)
+	}
+	if info, e := os.Lstat(path); e == nil && info.Mode()&os.ModeSymlink != 0 {
+		t.Fatal("graphics output symlink")
+	}
+	if err = os.MkdirAll(dir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err = os.WriteFile(path, data, 0600); err != nil {
+		t.Fatal(err)
+	}
+}
 func graphicsInput(t *testing.T, source []byte, operations []graphicsOperation) []byte {
 	t.Helper()
 	if len(operations) == 0 {

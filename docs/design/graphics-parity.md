@@ -39,6 +39,12 @@ GOMAXPROCS=2 GOFLAGS=-count=1 make graphics-insertion-quality
 
 LibreOffice 24.2.7.2 loads, saves and reopens all six outputs without interaction requests. Inserted raster counts and names survive, with position/extent drift at most 0.01 mm. All six render as one-page PDFs and pass optional SDK structural validation. The pre-existing vector image in the source is converted into a shape by LibreOffice; this oracle counts imported raster objects separately and does not establish visual fidelity.
 
+### Isolated picture replacement
+
+`EditSession.ReplacePicture(slidePart, shapeID, payload, PictureReplacementOptions)` replaces only the selected expanded-name embed attribute through a lossless splice. It allocates fresh media and a fresh relationship and retains every previous dependency, so shared relationships/media and grouped pictures are isolated. Linked, dual and paired-extension assets refuse. Protection and inspection errors retain the shared semantic categories. A graph plan commits payload, registries and the selected attribute together.
+
+All fourteen shared cases pass with literal XML restoration, old-edge/media custody, defensive bytes and save/reopen metadata. The full candidate batch and isolated related-package batch pass. `make graphics-replacement-quality` checks all six successful variants through LibreOffice load/save/reopen, with retained raster names/counts and geometry drift at most 0.01 mm. Their PDF conversions and optional SDK checks pass. Image fidelity and the converted pre-existing vector picture are outside the measured quality scope.
+
 ## Remaining slices
 
-Picture replacement/placement/crop/transforms, SVG fallback, deletion, groups/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+Picture placement/crop/transforms, SVG fallback, deletion, groups/mapping, connectors/diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.

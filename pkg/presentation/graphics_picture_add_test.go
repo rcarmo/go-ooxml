@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"strings"
 
 	"github.com/rcarmo/go-ooxml/internal/losslessxml"
 	"testing"
@@ -233,22 +232,7 @@ func TestGraphicsPictureInsertionRecipes(t *testing.T) {
 				if c.CaseID == "conflicting-MIME" && !bytes.Contains(after[packaging.ContentTypesPath], []byte(`Extension="png" ContentType="application/octet-stream"`)) {
 					t.Fatal("conflicting default was rewritten")
 				}
-				if output := os.Getenv("OOXML_GRAPHICS_OUTPUT"); output != "" {
-					dir, e := filepath.Abs(output)
-					if e != nil {
-						t.Fatal(e)
-					}
-					rel, e := filepath.Rel(root, dir)
-					if e != nil || rel == "." || rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
-						t.Fatal("output inside shared root")
-					}
-					if e = os.MkdirAll(dir, 0755); e != nil {
-						t.Fatal(e)
-					}
-					if e = os.WriteFile(filepath.Join(dir, "picture-insertion-"+c.CaseID+".pptx"), saved, 0600); e != nil {
-						t.Fatal(e)
-					}
-				}
+				graphicsWriteOutput(t, root, "picture-insertion-"+c.CaseID+".pptx", saved)
 				reopened, err := OpenEditing(saved, packaging.Limits{})
 				if err != nil {
 					t.Fatal(err)
