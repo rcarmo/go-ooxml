@@ -25,7 +25,7 @@ func guardElementReplacementCustodyCase(id string, p *messages.Pickle, line int)
 		"the complete output bytes equal " + elementReplacementOutput,
 	}
 	wantLine := lexicalEditingLine(89, 98)
-	if uniformAPI18Candidate() {
+	if uniformAPI18Candidate() || contract20Candidate() {
 		wantLine = 105
 		steps = append(steps, "the uniform profile result, refusal category and immutable input custody match the sealed API contract")
 	}
@@ -65,7 +65,7 @@ func TestElementReplacementCustodyGuardRejectsDrift(t *testing.T) {
 		}
 	}
 	wantLine := lexicalEditingLine(89, 98)
-	if uniformAPI18Candidate() {
+	if uniformAPI18Candidate() || contract20Candidate() {
 		wantLine = 105
 	}
 	if selected == nil || guardElementReplacementCustodyCase(elementReplacementCustodyCaseID, selected, wantLine) != nil {
@@ -78,14 +78,14 @@ func TestElementReplacementCustodyGuardRejectsDrift(t *testing.T) {
 		{"source", func(p *messages.Pickle) { p.Steps[0].Text += " " }},
 		{"whole output", func(p *messages.Pickle) { p.Steps[2].Text += " " }},
 		{"uniform assertion", func(p *messages.Pickle) {
-			if uniformAPI18Candidate() {
+			if uniformAPI18Candidate() || contract20Candidate() {
 				p.Steps[3].Text += " changed"
 			} else {
 				p.Steps[2].Text += " changed"
 			}
 		}},
 		{"missing uniform step", func(p *messages.Pickle) {
-			if uniformAPI18Candidate() {
+			if uniformAPI18Candidate() || contract20Candidate() {
 				p.Steps = p.Steps[:3]
 			} else {
 				p.Steps = p.Steps[:2]

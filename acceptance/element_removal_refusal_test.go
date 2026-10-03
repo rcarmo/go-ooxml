@@ -12,10 +12,10 @@ import (
 )
 
 func guardElementRemovalRefusalCase(id string, p *messages.Pickle, line int) (string, error) {
-	base := lexicalEditingLine(85, 94)
+	base := historicalEditingLine(85, 94, 101)
 	rows := map[int]string{base: "root", base + 1: "p:a and its nested p:b"}
 	selection, ok := rows[line]
-	if id != elementRemovalRefusalCaseID || !ok || len(p.AstNodeIds) != 2 || p.Name != "A "+selection+" removal refuses" || len(p.Steps) != 3 {
+	if id != elementRemovalRefusalCaseID || !ok || len(p.AstNodeIds) != 2 || p.Name != "A "+selection+" removal refuses" || !historicalStepCount(p, 3) {
 		return "", fmt.Errorf("unexpected element-removal refusal case %s %q at %d", id, p.Name, line)
 	}
 	steps := []string{

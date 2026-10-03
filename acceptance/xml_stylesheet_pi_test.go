@@ -18,7 +18,7 @@ const xmlStylesheetPIInput = `<?xml-stylesheet href="style.xsl"?><r/>`
 const xmlStylesheetPIRoot = `<r/>`
 
 func xmlStylesheetLine() int {
-	if xmlLexicalCandidate() || postBatch2Reference() {
+	if xmlLexicalCandidate() || historicalAPI18Shape() {
 		return 79
 	}
 	return 52

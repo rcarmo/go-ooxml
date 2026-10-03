@@ -14,13 +14,13 @@ import (
 const elementReplacementRefusalCaseID = "@id-xml-go-element-replacement-refusal"
 
 func elementReplacementRefusalRows() map[int]string {
-	base := lexicalEditingLine(102, 111)
+	base := historicalEditingLine(102, 111, 120)
 	return map[int]string{base: "root", base + 1: "p:old twice", base + 2: "p:old and its nested p:child"}
 }
 
 func guardElementReplacementRefusalCase(id string, p *messages.Pickle, line int) (string, error) {
 	selection, ok := elementReplacementRefusalRows()[line]
-	if id != elementReplacementRefusalCaseID || !ok || len(p.AstNodeIds) != 2 || p.Name != "A "+selection+" subtree replacement refuses without output" || len(p.Steps) != 4 {
+	if id != elementReplacementRefusalCaseID || !ok || len(p.AstNodeIds) != 2 || p.Name != "A "+selection+" subtree replacement refuses without output" || !historicalStepCount(p, 4) {
 		return "", fmt.Errorf("unexpected element-replacement refusal case %s %q at %d", id, p.Name, line)
 	}
 	steps := []string{

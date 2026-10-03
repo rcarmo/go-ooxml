@@ -58,7 +58,7 @@ func guardRemainingFormulaCase(id string, p *messages.Pickle, path string) error
 			steps = []string{"cell tokens A1, $B2, C$3 and $XFD$9", "optional prefixes empty, Main! and 'Input Data'! with operators +, -, *, /, & and >=", "the static analyser checks all 3 by 4 by 4 by 6 source expressions", "every expression has two references whose source slices each parse as one matching reference", "inserting one row at 100 on Main leaves each original expression byte-identical", "wrapping each expression in SUM preserves its references after adjusting their byte spans"}
 		}
 	}
-	if len(steps) == 0 || len(p.Steps) != len(steps) {
+	if len(steps) == 0 || !historicalNormalizedFormulaSteps(id, p, len(steps)) {
 		return fmt.Errorf("%s: unexpected canonical formula row %s %q", path, id, p.Name)
 	}
 	for i, step := range steps {

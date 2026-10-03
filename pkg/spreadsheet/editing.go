@@ -30,6 +30,22 @@ type NumberTarget struct {
 	consumed         bool
 }
 
+// CurrentNumber observes a held target without creating a new selection or
+// bypassing freshness checks. It does not interpret formula cached values.
+func (s *EditSession) CurrentNumber(target *NumberTarget) (float64, error) {
+	if target == nil || target.session != s || target.generation != s.generation || target.consumed {
+		return 0, editRefusal("stale_target", "stale, foreign or consumed numeric target")
+	}
+	_, hash, err := s.pkg.Part(target.part)
+	if err != nil {
+		return 0, err
+	}
+	if hash != target.hash {
+		return 0, editRefusal("stale_target", "part fingerprint changed")
+	}
+	return strconv.ParseFloat(target.text, 64)
+}
+
 func editRefusal(kind, detail string) error {
 	return &packaging.Refusal{Kind: kind, Operation: "spreadsheet_edit", Detail: detail}
 }
@@ -171,6 +187,9 @@ func (s *EditSession) FindNumber(sheet, cell string) (*NumberTarget, error) {
 	for _, e := range d.Elements() {
 		p, ok := e.Parent()
 		if ok && p == c {
+			if e.Name() == expanded("f") {
+				return nil, editRefusal("unsupported_structure", "cell contains formula or extension")
+			}
 			if e.Name() != expanded("v") {
 				return nil, editRefusal("unsupported_structure", "cell contains formula or extension")
 			}
@@ -187,8 +206,87 @@ func (s *EditSession) FindNumber(sheet, cell string) (*NumberTarget, error) {
 	}
 	return &NumberTarget{session: s, generation: s.generation, doc: d, element: values[0], part: part, hash: hash, text: text}, nil
 }
+
+// SetNumberAt is an opt-in direct numeric write. A formula cell is selected
+// by its literal bounded address before its attributed topology is classified.
+// The legacy FindNumber contract remains formula-free; no target is forged.
+func (s *EditSession) SetNumberAt(sheet, address string, value float64) error {
+	ref, err := utils.ParseCellRef(address)
+	if err != nil || !strictCell.MatchString(address) || ref.Row > 1048576 || ref.Col > 16384 {
+		return editRefusal("unsupported_structure", "expected exact bounded A1 address")
+	}
+	part := s.sheets[sheet]
+	if part == "" {
+		return editRefusal("missing_target", "sheet absent")
+	}
+	data, _, err := s.pkg.Part(part)
+	if err != nil {
+		return err
+	}
+	doc, err := losslessxml.Parse(data)
+	if err != nil {
+		return err
+	}
+	if doc.Elements()[0].Name() != expanded("worksheet") {
+		return editRefusal("unsupported_structure", "worksheet root required")
+	}
+	var cell losslessxml.Element
+	count := 0
+	for _, e := range doc.Elements() {
+		if e.Name() == expanded("c") && attr(e, "r") == address {
+			cell = e
+			count++
+		}
+	}
+	if count != 1 {
+		if count == 0 {
+			return editRefusal("missing_target", "cell absent")
+		}
+		return editRefusal("ambiguous_target", "duplicate cell address")
+	}
+	row, ok := cell.Parent()
+	if !ok || row.Name() != expanded("row") {
+		return editRefusal("unsupported_structure", "cell owner is not row")
+	}
+	sheetData, ok := row.Parent()
+	if !ok || sheetData.Name() != expanded("sheetData") {
+		return editRefusal("unsupported_structure", "row owner is not sheetData")
+	}
+	root, ok := sheetData.Parent()
+	if !ok || root != doc.Elements()[0] {
+		return editRefusal("unsupported_structure", "unknown sheetData owner")
+	}
+	for _, e := range doc.Elements() {
+		if parent, ok := e.Parent(); ok && parent == cell && e.Name() == expanded("f") {
+			return attributedFormulaRefusal(e)
+		}
+	}
+	target, err := s.FindNumber(sheet, address)
+	if err != nil {
+		return err
+	}
+	return s.SetNumber(target, value)
+}
+
+// The formula topology is read directly from the selected cell, not inferred
+// from an error string or from formula parsing. Refusal leaves the session and
+// all unrelated held targets usable.
+func attributedFormulaRefusal(formula losslessxml.Element) error {
+	switch attr(formula, "t") {
+	case "shared":
+		return editRefusal("xlsx-shared-formula-edit-unsupported", "direct shared-formula overwrite")
+	case "array":
+		return editRefusal("xlsx-array-formula-edit-unsupported", "direct array-formula overwrite")
+	default:
+		return editRefusal("unsupported_structure", "cell contains formula or extension")
+	}
+}
+
 func (s *EditSession) guard() error { return s.guardMode(false) }
 func (s *EditSession) guardMode(allowStaticFormulas bool) error {
+	return s.guardModeWithOpaque(allowStaticFormulas, false)
+}
+func (s *EditSession) guardModeWithOpaque(allowStaticFormulas, sealedOpaque bool) error {
 	if err := s.ValidateStyles(); err != nil {
 		return err
 	}
@@ -209,6 +307,9 @@ func (s *EditSession) guardMode(allowStaticFormulas bool) error {
 		}
 	}
 	for _, p := range g.Parts {
+		if sealedOpaque && (p.Name == "xl/charts/cache-boundary.xml" || p.Name == "xl/externalLinks/cache-boundary.xml") {
+			continue
+		}
 		if strings.HasPrefix(p.Name, "xl/") && (strings.Contains(p.Name, "/charts/") || strings.Contains(p.Name, "/pivot") || strings.Contains(p.Name, "/external") || strings.Contains(p.Name, "/tables/") || strings.Contains(p.Name, "/connections") || (!allowStaticFormulas && strings.EqualFold(p.Name, "xl/calcChain.xml"))) {
 			return editRefusal("unsupported_structure", "unproved chart/pivot/table/external dependency")
 		}

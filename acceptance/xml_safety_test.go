@@ -34,7 +34,7 @@ type xmlSafetyState struct {
 }
 
 func xmlSafetyLine(id string) int {
-	if xmlLexicalCandidate() || postBatch2Reference() {
+	if xmlLexicalCandidate() || historicalAPI18Shape() {
 		return map[string]int{xmlPrototypeCaseID: 107, xmlNamespaceCaseID: 115, xmlMalformedCaseID: 146}[id]
 	}
 	return map[string]int{xmlPrototypeCaseID: 80, xmlNamespaceCaseID: 88, xmlMalformedCaseID: 119}[id]

@@ -13,9 +13,11 @@ import (
 // Mutable sessions are single-owner. Layout, theme, table, group and field edits
 // require later adapters and are not implied by this initial API.
 type EditSession struct {
-	pkg        *packaging.Preserved
-	slides     map[string]bool
-	generation uint64
+	pkg                *packaging.Preserved
+	slides             map[string]bool
+	generation         uint64
+	contractTableCells map[*ContractTableCellTarget]struct{}
+	contractTitles     map[*ContractTitleAnchor]struct{}
 }
 type TextTarget struct {
 	session          *EditSession

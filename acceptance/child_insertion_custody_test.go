@@ -20,11 +20,17 @@ func guardChildInsertionCustodyCase(id string, p *messages.Pickle, line int) err
 		"reparsing finds expanded element names new/x and empty-namespace plain",
 		"the unedited sibling bytes <b>keep</b> remain in the output",
 	}
-	if id != childInsertionCustodyCaseID || line != lexicalEditingLine(38, 47) || p.Name != "Insert a child with independently scoped element and attribute names" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
+	if contract20Candidate() {
+		steps = append(steps[:3], append([]string{
+			`the authored attribute expanded name is other/a with JSON value "value" and the plain grandchild text is JSON "text"`,
+		}, steps[3:]...)...)
+		steps = append(steps, uniformHistoricalAssertion)
+	}
+	if id != childInsertionCustodyCaseID || line != historicalEditingLine(38, 47, 49) || p.Name != "Insert a child with independently scoped element and attribute names" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
 		return fmt.Errorf("unexpected child-insertion canonical case %s %q at %d", id, p.Name, line)
 	}
 	for i, step := range steps {
-		if p.Steps[i].Text != step {
+		if p.Steps[i].Text != step || (contract20Candidate() && p.Steps[i].Argument != nil) {
 			return fmt.Errorf("child-insertion canonical step %d drift", i+1)
 		}
 	}
@@ -34,9 +40,16 @@ func guardChildInsertionCustodyCase(id string, p *messages.Pickle, line int) err
 func childInsertionNode() losslessxml.NewElement {
 	return losslessxml.NewElement{
 		Name:       xml.Name{Space: "new", Local: "x"},
-		Attributes: []xml.Attr{{Name: xml.Name{Space: "other", Local: "a"}, Value: "v"}},
+		Attributes: []xml.Attr{{Name: xml.Name{Space: "other", Local: "a"}, Value: childInsertionAttributeValue()}},
 		Children:   []losslessxml.NewElement{{Name: xml.Name{Local: "plain"}, Text: "text"}},
 	}
+}
+
+func childInsertionAttributeValue() string {
+	if contract20Candidate() {
+		return "value"
+	}
+	return "v"
 }
 
 func checkChildInsertionResult(output []byte) error {
@@ -61,7 +74,7 @@ func checkChildInsertionResult(output []byte) error {
 		}
 	}
 	attrs := es[2].Attributes()
-	if len(attrs) != 1 || attrs[0].Name != (xml.Name{Space: "other", Local: "a"}) || attrs[0].Value != "v" {
+	if len(attrs) != 1 || attrs[0].Name != (xml.Name{Space: "other", Local: "a"}) || attrs[0].Value != childInsertionAttributeValue() {
 		return fmt.Errorf("inserted attribute drift: %+v", attrs)
 	}
 	if text, leaf := es[3].Text(); !leaf || text != "text" {

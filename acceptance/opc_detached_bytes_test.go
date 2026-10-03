@@ -21,20 +21,20 @@ import (
 const opcDetachedByteCaseID = "@id-bun-opc-detached-byte-copies"
 
 func opcDetachedRuleLine() int {
-	if postBatch2Reference() {
+	if historicalAPI18Shape() {
 		return 28
 	}
 	return 27
 }
 
 func opcDetachedBackgroundLine() int {
-	if packageReasonsCandidate() || postBatch2Reference() {
+	if packageReasonsCandidate() || historicalAPI18Shape() {
 		return 35
 	}
 	return 33
 }
 func opcDetachedScenarioLine() int {
-	if packageReasonsCandidate() || postBatch2Reference() {
+	if packageReasonsCandidate() || historicalAPI18Shape() {
 		return 61
 	}
 	return 59

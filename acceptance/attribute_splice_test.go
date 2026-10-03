@@ -26,7 +26,7 @@ var attributeSpliceRows = map[string]struct {
 // The feature is a Scenario Outline; bind only these exact three expanded rows.
 func guardAttributeSpliceCase(id string, p *messages.Pickle, line int) (string, error) {
 	const scenario = "Update one attribute without reserialising its neighbours"
-	if id != attributeSpliceCaseID || p.Name != scenario || len(p.Steps) != 3 || len(p.AstNodeIds) != 2 {
+	if id != attributeSpliceCaseID || p.Name != scenario || !historicalStepCount(p, 3) || len(p.AstNodeIds) != 2 {
 		return "", fmt.Errorf("unexpected attribute-splice case %s %q", id, p.Name)
 	}
 	for name, row := range attributeSpliceRows {
@@ -36,6 +36,9 @@ func guardAttributeSpliceCase(id string, p *messages.Pickle, line int) (string, 
 		base := 27
 		if xmlLexicalCandidate() || postBatch2Reference() {
 			base = 36
+		}
+		if contract20Candidate() {
+			base = 37
 		}
 		rowLine := map[string]int{"a": base, "p:n": base + 1, "fresh": base + 2}[name]
 		if line != rowLine {

@@ -32,7 +32,7 @@ func lexicalEditingLine(defaultLine, candidateLine int) int {
 }
 
 func xmlSelectedEditingCases() int {
-	if xmlLexicalCandidate() || postBatch2Reference() {
+	if xmlLexicalCandidate() || historicalAPI18Shape() {
 		return 16
 	}
 	return 15

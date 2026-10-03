@@ -27,7 +27,7 @@ var childNamespaceSources = []string{
 var childNamespaceURIs = []string{"", "u", "v", "fresh", "http://www.w3.org/XML/1998/namespace"}
 
 func childNamespaceMatrixLine() int {
-	if uniformAPI18Candidate() {
+	if uniformAPI18Candidate() || contract20Candidate() {
 		return 66
 	} // Excluded matrix unchanged after 18 strengthened profiles.
 	return lexicalEditingLine(52, 61)

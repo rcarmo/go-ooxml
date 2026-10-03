@@ -105,7 +105,7 @@ func TestAcceptance(t *testing.T) {
 		retainedVisibilityEvidenceSteps(sc)
 		xmlComparisonSteps(sc)
 		unicodeQNameSteps(sc)
-		if xmlLexicalCandidate() || postBatch2Reference() {
+		if xmlLexicalCandidate() || historicalAPI18Shape() {
 			lexicalXMLSteps(sc)
 		}
 		immutableLeafSteps(sc)
@@ -163,7 +163,7 @@ func TestAcceptance(t *testing.T) {
 		canonicalFormulaAnalysisSteps(sc)
 		remainingFormulaSteps(sc)
 		directRangeSteps(sc)
-		if uniformAPI18Candidate() {
+		if uniformAPI18Candidate() || contract20Candidate() {
 			uniformAPI18Steps(sc)
 		}
 		cacheSteps(sc)
@@ -405,6 +405,11 @@ func TestAcceptance(t *testing.T) {
 			}
 		}
 	}
+	if contract20Candidate() {
+		// This existing editing case belongs to the historical inventory, not
+		// to the additional lexical execution lane below.
+		selections = append(selections, struct{ name, path, tags string }{"go-ooxml-xml-apply-edits", xmlEditingFeaturePath(), xmlApplyEditsID})
+	}
 	if xmlLexicalCandidate() || postBatch2Reference() {
 		for _, item := range []struct{ name, path, id string }{
 			{"xml-offsets", xmlParsingFeaturePath(), xmlParseOffsetsID}, {"xml-line-endings", xmlParsingFeaturePath(), xmlLineEndingsID},
@@ -446,7 +451,7 @@ func TestAcceptance(t *testing.T) {
 	for _, selection := range selections {
 		var output bytes.Buffer
 		steps := initializer
-		if postBatch2Reference() && selection.tags == opcPreserveUnrelatedCaseID {
+		if historicalAPI18Shape() && selection.tags == opcPreserveUnrelatedCaseID {
 			steps = batch2Steps
 		}
 		if strings.HasPrefix(selection.name, "go-batch2-") {
@@ -510,7 +515,7 @@ func writeJSON(t *testing.T, path string, value any) {
 func stableID(tags []string) (string, error) {
 	id := ""
 	for _, tag := range tags {
-		if nativeIDPattern.MatchString(tag) || (batch2Candidate() && batch2SelectedID(tag)) || (pptxManipulationCandidate() && pptxManipulationSelectedID(tag)) || (formattingCandidate() && strings.HasPrefix(tag, "@id-pptx-formatting-")) || (retainedCandidate() && (strings.HasPrefix(tag, "@id-pptx-retained-") || strings.HasPrefix(tag, "@id-docx-retained-"))) || (tableCandidate() && (strings.HasPrefix(tag, "@id-pptx-table-properties-") || strings.HasPrefix(tag, "@id-docx-table-properties-"))) || tag == overlapCaseID || tag == bzipAdmissionCaseID || tag == unsafeMembersCaseID || tag == opcPreserveUnrelatedCaseID || tag == opcCorpusNoopCaseID || tag == opcDetachedByteCaseID || tag == opcReasonOpenID || tag == opcReasonSaveID || tag == opcReasonSymlinkID || tag == opcDeferredTransactionID || tag == opcOpaqueTransactionID || tag == zipReasonReaderID || tag == zipReasonWriterID || tag == zipReasonBoundsID || tag == immutableLeafCaseID || tag == attributeSpliceCaseID || tag == attributeRefusalCaseID || tag == elementRemovalCaseID || tag == elementRemovalRefusalCaseID || tag == elementReplacementCustodyCaseID || tag == elementReplacementRefusalCaseID || tag == childInsertionCustodyCaseID || tag == childInsertionRefusalCaseID || tag == childNamespaceMatrixCaseID || tag == xmlEntityValuesCaseID || tag == xmlPrototypeCaseID || tag == xmlNamespaceCaseID || tag == xmlMalformedCaseID || tag == xmlWhitespaceCaseID || tag == xmlStylesheetPICaseID || tag == xmlImplicitPrefixCaseID || tag == xmlExpandedAttributeCaseID || tag == unicodeQNameCaseID || ((xmlLexicalCandidate() || postBatch2Reference()) && slices.Contains(xmlLexicalIDs, tag)) || tag == xmlSignificantCaseID || tag == xmlPrefixBindingCaseID || tag == xmlUnsafeCaseID || tag == xmlMarkupCaseID || tag == negativeBudgetCaseID || tag == retainedVisibilityEvidenceCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == directRangeParsingCaseID || tag == directRangeRefusalCaseID || tag == formulaAnalysisCountsCaseID || tag == formulaQuotedSheetFlagsCaseID || tag == formulaAnalysisRefusalCaseID || tag == formulaLiteralPunctuationCaseID || tag == staticRemapExactCaseID || tag == staticRemapRefusalCaseID || tag == staticReferencePropertiesCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID || tag == corePropertiesCaseID || tag == sectionTitleBackgroundCaseID || tag == paragraphTextGetterCaseID || tag == paragraphAlignmentCaseID || tag == paragraphSpacingCaseID || tag == paragraphTogglesCaseID || tag == paragraphRunsCaseID || tag == bodyInsertOrderCaseID || tag == directFontSizeCaseID {
+		if nativeIDPattern.MatchString(tag) || (contract20Candidate() && (contract20SelectedID(tag) || tag == xmlApplyEditsID)) || (batch2Candidate() && batch2SelectedID(tag)) || (pptxManipulationCandidate() && pptxManipulationSelectedID(tag)) || (formattingCandidate() && strings.HasPrefix(tag, "@id-pptx-formatting-")) || (retainedCandidate() && (strings.HasPrefix(tag, "@id-pptx-retained-") || strings.HasPrefix(tag, "@id-docx-retained-"))) || (tableCandidate() && (strings.HasPrefix(tag, "@id-pptx-table-properties-") || strings.HasPrefix(tag, "@id-docx-table-properties-"))) || tag == overlapCaseID || tag == bzipAdmissionCaseID || tag == unsafeMembersCaseID || tag == opcPreserveUnrelatedCaseID || tag == opcCorpusNoopCaseID || tag == opcDetachedByteCaseID || tag == opcReasonOpenID || tag == opcReasonSaveID || tag == opcReasonSymlinkID || tag == opcDeferredTransactionID || tag == opcOpaqueTransactionID || tag == zipReasonReaderID || tag == zipReasonWriterID || tag == zipReasonBoundsID || tag == immutableLeafCaseID || tag == attributeSpliceCaseID || tag == attributeRefusalCaseID || tag == elementRemovalCaseID || tag == elementRemovalRefusalCaseID || tag == elementReplacementCustodyCaseID || tag == elementReplacementRefusalCaseID || tag == childInsertionCustodyCaseID || tag == childInsertionRefusalCaseID || tag == childNamespaceMatrixCaseID || tag == xmlEntityValuesCaseID || tag == xmlPrototypeCaseID || tag == xmlNamespaceCaseID || tag == xmlMalformedCaseID || tag == xmlWhitespaceCaseID || tag == xmlStylesheetPICaseID || tag == xmlImplicitPrefixCaseID || tag == xmlExpandedAttributeCaseID || tag == unicodeQNameCaseID || ((xmlLexicalCandidate() || postBatch2Reference()) && slices.Contains(xmlLexicalIDs, tag)) || tag == xmlSignificantCaseID || tag == xmlPrefixBindingCaseID || tag == xmlUnsafeCaseID || tag == xmlMarkupCaseID || tag == negativeBudgetCaseID || tag == retainedVisibilityEvidenceCaseID || tag == descriptorCollisionCaseID || tag == ownedChainCaseID || tag == crossSheetCacheCaseID || tag == directRangeParsingCaseID || tag == directRangeRefusalCaseID || tag == formulaAnalysisCountsCaseID || tag == formulaQuotedSheetFlagsCaseID || tag == formulaAnalysisRefusalCaseID || tag == formulaLiteralPunctuationCaseID || tag == staticRemapExactCaseID || tag == staticRemapRefusalCaseID || tag == staticReferencePropertiesCaseID || tag == runEffectsCaseID || tag == runUnderlineCaseID || tag == runFontNameCaseID || tag == runColorCaseID || tag == runHighlightCaseID || tag == runVerticalAlignCaseID || tag == runRoundtripFormattingCaseID || tag == tableMergeCaseID || tag == tableDimensionsCaseID || tag == tableCellAccessCaseID || tag == tableCellTextCaseID || tag == tableRowCountsCaseID || tag == newEmptyBodyCaseID || tag == roundtripTableTextCaseID || tag == corePropertiesCaseID || tag == sectionTitleBackgroundCaseID || tag == paragraphTextGetterCaseID || tag == paragraphAlignmentCaseID || tag == paragraphSpacingCaseID || tag == paragraphTogglesCaseID || tag == paragraphRunsCaseID || tag == bodyInsertOrderCaseID || tag == directFontSizeCaseID {
 			if id != "" {
 				return "", fmt.Errorf("multiple IDs: %v", tags)
 			}

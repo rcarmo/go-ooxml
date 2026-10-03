@@ -26,7 +26,7 @@ const opcMainBeta = `<document>Beta</document>`
 var opcOpaqueBytes = []byte{0, 42, 128, 255, 10, 0}
 
 func opcPreserveUnrelatedLine() int {
-	if postBatch2Reference() {
+	if historicalAPI18Shape() {
 		return 22
 	}
 	return 21
@@ -44,7 +44,7 @@ func guardOPCPreserveUnrelatedCase(id string, p *messages.Pickle, line int) erro
 		return fmt.Errorf("OPC preserve-unrelated case drift: %s %q at %d", id, p.Name, line)
 	}
 	steps := opcPreserveSteps
-	if postBatch2Reference() {
+	if historicalAPI18Shape() {
 		steps = []string{
 			"the custody envelope contains main XML part doc/main.xml with decoded text Original and opaque custom/data.bin payload hexadecimal 00FF01FE02FD",
 			"a production text edit sets doc/main.xml value text to JSON \"Updated <value>\" and saves then reopens the package",

@@ -53,7 +53,7 @@ func guardCanonicalFormulaAnalysisCase(id string, p *messages.Pickle, path strin
 			}
 		}
 	}
-	if !matched || len(p.Steps) != len(steps) {
+	if !matched || !historicalNormalizedFormulaSteps(id, p, len(steps)) {
 		return fmt.Errorf("%s: unexpected canonical formula row %s %q", path, id, p.Name)
 	}
 	for i, step := range steps {

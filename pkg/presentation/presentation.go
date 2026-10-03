@@ -22,8 +22,8 @@ import (
 // Standard slide sizes in EMUs (English Metric Units).
 const (
 	// Standard 4:3 slide dimensions
-	SlideWidth4x3  int64 = 9144000  // 10 inches
-	SlideHeight4x3 int64 = 6858000  // 7.5 inches
+	SlideWidth4x3  int64 = 9144000 // 10 inches
+	SlideHeight4x3 int64 = 6858000 // 7.5 inches
 
 	// Widescreen 16:9 slide dimensions
 	SlideWidth16x9  int64 = 12192000 // 13.333 inches
@@ -39,24 +39,25 @@ var defaultTemplate []byte
 
 // Presentation represents a PowerPoint presentation.
 type presentationImpl struct {
-	pkg          *packaging.Package
-	presentation *pml.Presentation
-	slides       []*slideImpl
-	path         string
-	nextSlideID  int
-	nextChartID  int
-	nextDiagramID int
-	commentAuthors *pml.AuthorList
-	notesMaster  *pml.NotesMaster
-	notesMasterPath string
-	notesMasterRelID string
-	notesMasterTheme []byte
+	pkg                  *packaging.Package
+	presentation         *pml.Presentation
+	slides               []*slideImpl
+	path                 string
+	nextSlideID          int
+	nextChartID          int
+	nextDiagramID        int
+	commentAuthors       *pml.AuthorList
+	notesMaster          *pml.NotesMaster
+	notesMasterPath      string
+	notesMasterRelID     string
+	notesMasterTheme     []byte
 	notesMasterThemePath string
-	masters       []*slideMasterImpl
-	layouts       []*slideLayoutImpl
-	nextImageID   int
-	themeParts    map[string][]byte
-	extraParts    map[string]*packaging.Part
+	masters              []*slideMasterImpl
+	layouts              []*slideLayoutImpl
+	nextImageID          int
+	themeParts           map[string][]byte
+	extraParts           map[string]*packaging.Part
+	boundedCreation      bool
 }
 
 // New creates a new empty presentation with standard 4:3 dimensions.
@@ -176,13 +177,13 @@ func newEmptyPresentation(width, height int64) (*presentationImpl, error) {
 			},
 			SldIdLst: &pml.SldIdLst{},
 		},
-		slides:      make([]*slideImpl, 0),
-		nextSlideID: 256, // PowerPoint typically starts slide IDs at 256
-		nextChartID: 1,
+		slides:        make([]*slideImpl, 0),
+		nextSlideID:   256, // PowerPoint typically starts slide IDs at 256
+		nextChartID:   1,
 		nextDiagramID: 1,
-		nextImageID: 1,
-		themeParts:  make(map[string][]byte),
-		extraParts:  make(map[string]*packaging.Part),
+		nextImageID:   1,
+		themeParts:    make(map[string][]byte),
+		extraParts:    make(map[string]*packaging.Part),
 	}
 
 	if err := p.initPackage(); err != nil {
@@ -194,16 +195,16 @@ func newEmptyPresentation(width, height int64) (*presentationImpl, error) {
 
 func openFromPackage(pkg *packaging.Package) (*presentationImpl, error) {
 	p := &presentationImpl{
-		pkg:         pkg,
-		slides:      make([]*slideImpl, 0),
-		nextSlideID: 256,
-		nextChartID: 1,
+		pkg:           pkg,
+		slides:        make([]*slideImpl, 0),
+		nextSlideID:   256,
+		nextChartID:   1,
 		nextDiagramID: 1,
-		nextImageID: 1,
-		masters:     make([]*slideMasterImpl, 0),
-		layouts:     make([]*slideLayoutImpl, 0),
-		themeParts:  make(map[string][]byte),
-		extraParts:  make(map[string]*packaging.Part),
+		nextImageID:   1,
+		masters:       make([]*slideMasterImpl, 0),
+		layouts:       make([]*slideLayoutImpl, 0),
+		themeParts:    make(map[string][]byte),
+		extraParts:    make(map[string]*packaging.Part),
 	}
 
 	// Parse presentation.xml
@@ -671,10 +672,10 @@ func (p *presentationImpl) parseNotesMaster() {
 	if err != nil {
 		return
 	}
-		notesMaster := &pml.NotesMaster{}
-		if err := utils.UnmarshalXML(data, notesMaster); err != nil {
-			return
-		}
+	notesMaster := &pml.NotesMaster{}
+	if err := utils.UnmarshalXML(data, notesMaster); err != nil {
+		return
+	}
 	p.notesMaster = notesMaster
 	p.notesMasterPath = target
 	p.notesMasterRelID = rel.ID
@@ -1024,10 +1025,10 @@ func (p *presentationImpl) ensureCommentAuthor(name string) string {
 		userID = "{1770738359177556256}"
 	}
 	author := &pml.Author{
-		ID:        authorID,
-		Name:      name,
-		Initials:  initials(name),
-		UserID:    userID,
+		ID:         authorID,
+		Name:       name,
+		Initials:   initials(name),
+		UserID:     userID,
 		ProviderID: "copilot",
 	}
 	p.commentAuthors.Author = append(p.commentAuthors.Author, author)
@@ -1107,8 +1108,10 @@ func (l *slideLayoutImpl) Path() string {
 }
 
 func (p *presentationImpl) updatePackage() error {
-	if err := p.ensureNotesMaster(); err != nil {
-		return err
+	if !p.boundedCreation {
+		if err := p.ensureNotesMaster(); err != nil {
+			return err
+		}
 	}
 	for _, slide := range p.slides {
 		if slide != nil && slide.notes != nil {
@@ -1500,7 +1503,7 @@ func createBlankSlide() *pml.Sld {
 		CSld: &pml.CSld{
 			SpTree: &pml.SpTree{
 				NvGrpSpPr: &pml.NvGrpSpPr{
-					CNvPr: &pml.CNvPr{ID: 1, Name: ""},
+					CNvPr:      &pml.CNvPr{ID: 1, Name: ""},
 					CNvGrpSpPr: &pml.CNvGrpSpPr{},
 					NvPr:       &pml.NvPr{},
 				},

@@ -20,7 +20,7 @@ func guardImmutableLeafCase(id string, p *messages.Pickle) error {
 		"the caller input bytes still equal the original XML source",
 		"the empty edit returns the exact original source bytes",
 	}
-	if id != immutableLeafCaseID || p.Name != "A seeded immutable parse and no-op leave the caller bytes and parsed snapshot intact" || len(p.Steps) != len(steps) {
+	if id != immutableLeafCaseID || p.Name != "A seeded immutable parse and no-op leave the caller bytes and parsed snapshot intact" || !historicalStepCount(p, len(steps)) {
 		return fmt.Errorf("unexpected immutable-leaf canonical case %s %q", id, p.Name)
 	}
 	for i, step := range steps {

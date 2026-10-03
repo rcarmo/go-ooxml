@@ -47,7 +47,7 @@ func guardDirectRangeCase(id string, p *messages.Pickle, path string) error {
 			}
 		}
 	}
-	if !valid || len(p.Steps) != len(steps) {
+	if !valid || !historicalNormalizedFormulaSteps(id, p, len(steps)) {
 		return fmt.Errorf("%s: unexpected direct-range row %s %q", path, id, p.Name)
 	}
 	for i, step := range steps {

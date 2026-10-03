@@ -147,6 +147,26 @@ func tablePatchNode(raw []byte, node losslessxml.Element, repl []byte, offset in
 }
 
 func (s *EditSession) FindRetainedTable(part string, frameID uint32, row, column int) (*RetainedTableTarget, error) {
+	return s.findRetainedTable(part, frameID, row, column, true)
+}
+
+// FindContractTableCell selects a directly owned table cell without treating
+// unsupported merge topology as an invalid package. The edit, not selection,
+// must classify a merged or malformed table; this never weakens legacy edits.
+func (s *EditSession) FindContractTableCell(part string, frameID uint32, row, column int) (*ContractTableCellTarget, error) {
+	selected, err := s.findRetainedTable(part, frameID, row, column, false)
+	if err != nil {
+		return nil, err
+	}
+	issued := &ContractTableCellTarget{selected: selected}
+	if s.contractTableCells == nil {
+		s.contractTableCells = make(map[*ContractTableCellTarget]struct{})
+	}
+	s.contractTableCells[issued] = struct{}{}
+	return issued, nil
+}
+
+func (s *EditSession) findRetainedTable(part string, frameID uint32, row, column int, requireOrdinaryTable bool) (*RetainedTableTarget, error) {
 	if frameID == 0 || row < 0 || column < 0 {
 		return nil, tableRefuse("missing_target", "table selector")
 	}
@@ -235,10 +255,16 @@ func (s *EditSession) FindRetainedTable(part string, frameID uint32, row, column
 	if len(rows) == 0 || len(cols) == 0 || row >= len(rows) || column >= len(cols) {
 		return nil, tableRefuse("missing_target", "row/column")
 	}
-	if e = tableAdmit(d, source, frame, tbl, rows, cols); e != nil {
-		return nil, e
+	if requireOrdinaryTable {
+		if e = tableAdmit(d, source, frame, tbl, rows, cols); e != nil {
+			return nil, e
+		}
 	}
-	cell := tableChildren(d, rows[row], packaging.NSDrawingML, "tc")[column]
+	cells := tableChildren(d, rows[row], packaging.NSDrawingML, "tc")
+	if column >= len(cells) {
+		return nil, tableRefuse("missing_target", "selected table cell")
+	}
+	cell := cells[column]
 	return &RetainedTableTarget{session: s, generation: s.generation, part: part, hash: hash, frameID: frameID, doc: d, frame: frame, table: tbl, cell: cell}, nil
 }
 func (s *EditSession) tableCurrent(t *RetainedTableTarget) error {

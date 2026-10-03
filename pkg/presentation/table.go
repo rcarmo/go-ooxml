@@ -23,7 +23,11 @@ func newTable(rows, cols int, width, height int64) *tableImpl {
 
 	grid := &dml.TblGrid{}
 	for i := 0; i < cols; i++ {
-		grid.GridCol = append(grid.GridCol, &dml.GridCol{W: colWidth})
+		widthForColumn := colWidth
+		if i == cols-1 {
+			widthForColumn = width - colWidth*int64(cols-1)
+		}
+		grid.GridCol = append(grid.GridCol, &dml.GridCol{W: widthForColumn})
 	}
 
 	tbl := &dml.Tbl{
@@ -34,7 +38,11 @@ func newTable(rows, cols int, width, height int64) *tableImpl {
 	}
 
 	for r := 0; r < rows; r++ {
-		tr := &dml.Tr{H: rowHeight}
+		heightForRow := rowHeight
+		if r == rows-1 {
+			heightForRow = height - rowHeight*int64(rows-1)
+		}
+		tr := &dml.Tr{H: heightForRow}
 		for c := 0; c < cols; c++ {
 			tr.Tc = append(tr.Tc, &dml.Tc{
 				TxBody: &dml.TxBody{

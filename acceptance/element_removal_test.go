@@ -21,7 +21,7 @@ func guardElementRemovalCase(id string, p *messages.Pickle, line int) error {
 		"the complete output bytes equal " + elementRemovalResult,
 		"a separate empty removal returns the exact original source bytes",
 	}
-	if id != elementRemovalCaseID || line != lexicalEditingLine(72, 81) || p.Name != "Remove two disjoint children without rewriting a comment or gap" || len(p.AstNodeIds) != 1 || len(p.Steps) != len(steps) {
+	if id != elementRemovalCaseID || line != historicalEditingLine(72, 81, 86) || p.Name != "Remove two disjoint children without rewriting a comment or gap" || len(p.AstNodeIds) != 1 || !historicalStepCount(p, len(steps)) {
 		return fmt.Errorf("unexpected element-removal canonical case %s %q at %d", id, p.Name, line)
 	}
 	for i, step := range steps {

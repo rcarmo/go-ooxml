@@ -107,6 +107,13 @@ func (c *cellImpl) String() string {
 		return c.worksheet.workbook.getSharedString(idx)
 	case sml.CellTypeInlineString:
 		if c.cell.Is != nil {
+			if len(c.cell.Is.R) > 0 {
+				var visible string
+				for _, run := range c.cell.Is.R {
+					visible += run.T
+				}
+				return visible
+			}
 			return c.cell.Is.T
 		}
 		return ""

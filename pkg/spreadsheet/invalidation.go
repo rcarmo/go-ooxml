@@ -41,6 +41,27 @@ type formulaSheet struct {
 // reference subset. Affected caches clear in the same multi-part transaction as
 // the input and recalculation metadata. No formulas are evaluated.
 func (s *EditSession) SetNumberWithInvalidation(target *NumberTarget, value float64) (CalculationEffect, error) {
+	return s.setNumberWithInvalidation(target, value, false, false)
+}
+
+// SetNumberWithAllCachesInvalidated is an opt-in retained-edit profile: after
+// a changed numeric input, every ordinary formula cache is invalidated, even
+// when the formula is independent of that input. It never evaluates formulas.
+// The existing dependency-scoped method retains its original contract.
+func (s *EditSession) SetNumberWithAllCachesInvalidated(target *NumberTarget, value float64) (CalculationEffect, error) {
+	return s.setNumberWithInvalidation(target, value, true, false)
+}
+
+// SetNumberWithSealedOpaqueCaches retains only the exact, inert Contract20
+// root cache edges. It is not permission for chart/external dependency edits.
+func (s *EditSession) SetNumberWithSealedOpaqueCaches(target *NumberTarget, value float64) (CalculationEffect, error) {
+	if err := s.sealedOpaqueCachePreflight(); err != nil {
+		return CalculationEffect{State: "unchanged", Invalidated: []string{}}, err
+	}
+	return s.setNumberWithInvalidation(target, value, true, true)
+}
+
+func (s *EditSession) setNumberWithInvalidation(target *NumberTarget, value float64, allCaches, sealedOpaque bool) (CalculationEffect, error) {
 	result := CalculationEffect{State: "unchanged", Invalidated: []string{}}
 	if target == nil || target.session != s || target.generation != s.generation || target.consumed {
 		return result, editRefusal("stale_target", "stale, foreign or consumed numeric target")
@@ -55,7 +76,19 @@ func (s *EditSession) SetNumberWithInvalidation(target *NumberTarget, value floa
 	if current != target.hash {
 		return result, editRefusal("stale_target", "numeric source changed")
 	}
-	if err = s.guardMode(true); err != nil {
+	// A no-op on this held numeric target cannot change any formula cache.
+	// This is deliberately before attributed-formula topology preflight; a
+	// changed input still traverses that preflight and refuses atomically.
+	if allCaches {
+		old, parseErr := strconv.ParseFloat(target.text, 64)
+		if parseErr != nil {
+			return result, editRefusal("stale_target", "invalid held numeric value")
+		}
+		if old == value {
+			return result, nil
+		}
+	}
+	if err = s.guardModeWithOpaque(true, sealedOpaque); err != nil {
 		return result, err
 	}
 	mainData, mainHash, err := s.pkg.Part(s.main)
@@ -236,6 +269,9 @@ func (s *EditSession) SetNumberWithInvalidation(target *NumberTarget, value floa
 				return result, editRefusal("unsupported_structure", "duplicate formula/cache")
 			}
 			if len(f.Attributes()) != 0 {
+				if allCaches && (attr(f, "t") == "shared" || attr(f, "t") == "array" || attr(f, "t") == "dataTable") {
+					return result, editRefusal("xlsx-cache-topology-unsupported", "attributed shared/array/dataTable result range")
+				}
 				return result, editRefusal("unsupported_structure", "shared/array/formula metadata not supported")
 			}
 			for _, child := range children[e] {
@@ -304,6 +340,11 @@ func (s *EditSession) SetNumberWithInvalidation(target *NumberTarget, value floa
 	}
 	dirty := []changedCell{{target.part, coord.Row, coord.Column}}
 	affected := map[int]bool{}
+	if allCaches {
+		for i := range formulas {
+			affected[i] = true
+		}
+	}
 	// Finite fixed-point propagation supports cycles without looping forever.
 	for cursor := 0; cursor < len(dirty); cursor++ {
 		c := dirty[cursor]
@@ -321,6 +362,7 @@ func (s *EditSession) SetNumberWithInvalidation(target *NumberTarget, value floa
 		}
 	}
 	edits := map[string][]losslessxml.TextEdit{}
+	cacheRemovals := map[string][]losslessxml.Element{}
 	inputSheet := sheets[target.part]
 	inputCell, ok := inputSheet.cells[address]
 	if !ok {
@@ -346,7 +388,9 @@ func (s *EditSession) SetNumberWithInvalidation(target *NumberTarget, value floa
 			if !leaf || len(f.cache.Attributes()) != 0 {
 				return CalculationEffect{}, editRefusal("unsupported_structure", "unsupported cached-value structure")
 			}
-			if cache != "" {
+			if allCaches {
+				cacheRemovals[f.part] = append(cacheRemovals[f.part], f.cache)
+			} else if cache != "" {
 				edits[f.part] = append(edits[f.part], losslessxml.TextEdit{Target: f.cache, Text: ""})
 			}
 		}
@@ -354,13 +398,49 @@ func (s *EditSession) SetNumberWithInvalidation(target *NumberTarget, value floa
 	sort.Strings(result.Invalidated)
 	replacements := []packaging.Replacement{}
 	parts := []string{}
+	partSet := map[string]bool{}
 	for part := range edits {
+		partSet[part] = true
+	}
+	for part := range cacheRemovals {
+		partSet[part] = true
+	}
+	for part := range partSet {
 		parts = append(parts, part)
 	}
 	sort.Strings(parts)
 	for _, part := range parts {
 		sheet := sheets[part]
-		data, err := sheet.doc.Edit(edits[part], nil)
+		var data []byte
+		if allCaches && len(cacheRemovals[part]) != 0 {
+			data, err = sheet.doc.RemoveElements(cacheRemovals[part])
+			if err == nil && part == target.part {
+				// Re-select the input leaf from the private post-removal snapshot.
+				// No package mutation occurs until every sheet and graph plan validates.
+				var current *losslessxml.Document
+				current, err = losslessxml.Parse(data)
+				if err == nil {
+					var valueLeaf losslessxml.Element
+					count := 0
+					for _, e := range current.Elements() {
+						if e.Name() != expanded("v") {
+							continue
+						}
+						cell, ok := e.Parent()
+						if ok && cell.Name() == expanded("c") && attr(cell, "r") == address {
+							valueLeaf = e
+							count++
+						}
+					}
+					if count != 1 {
+						return CalculationEffect{}, editRefusal("stale_target", "input leaf missing after cache removal")
+					}
+					data, err = current.Edit([]losslessxml.TextEdit{{Target: valueLeaf, Text: strconv.FormatFloat(value, 'g', -1, 64)}}, nil)
+				}
+			}
+		} else {
+			data, err = sheet.doc.Edit(edits[part], nil)
+		}
 		if err != nil {
 			return CalculationEffect{}, editRefusal("unsupported_structure", err.Error())
 		}
