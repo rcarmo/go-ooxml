@@ -91,6 +91,12 @@ All twenty-one shared cases pass. A separate 216-trial polar-reference matrix me
 
 All fifteen shared cases pass with exact receipt/endpoints/geometry, attachment XML and full original-slide recovery. Full root/acceptance and isolated related-package gates pass. `make graphics-connectors-quality` imports/saves/reopens six variants in LibreOffice, retaining one attached connector and its endpoint names and glue-point indices. Existing raster geometry drift is at most 0.01 mm; routing/visual quality is not independently compared.
 
+### Editable node-and-edge diagrams
+
+`AddDiagram` validates 1–32 unique ordered keys/labels and up to 64 directed edges, computes bounded row/column placements and plans nodes then attached connectors before a single payload commit. Cycles/reverse edges are allowed; self/duplicate/missing edges refuse. Node XML remains editable through the existing native text and retained-style APIs.
+
+All fourteen shared cases pass with exact receipts, node-label/attachment custody, original-slide reconstruction and save/reopen. Native text and fill edits succeed on each generated positive graph. Full root/acceptance and isolated related-package gates pass. `make graphics-diagrams-quality` checks four contract probes plus a practical-sized sample in LibreOffice, preserving three node labels and connector endpoints/site indices. The practical sample's input label is edited through UNO, then saved/reopened and exported to PDF. The source raster drift is at most 0.01 mm; routing/visual equivalence is outside the oracle.
+
 ## Remaining slices
 
-Diagrams, SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.
+SmartArt, AutoShapes/freeforms/order and gradient/opacity/outline editing are not yet at Bun parity. Each slice needs native recipe assertions, atomic refusals, save/reopen custody and bounded application checks where it generates visible output. Preserve legacy APIs and unrelated XML/media.

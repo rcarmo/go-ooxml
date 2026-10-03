@@ -104,6 +104,11 @@ graphics-connectors-quality: ## Run optional LibreOffice connector attachment or
 	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/connectors-outputs)" $(MAKE) graphics-test
 	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/connectors-uno.py
 
+.PHONY: graphics-diagrams-quality
+graphics-diagrams-quality: ## Run optional LibreOffice diagram edit and attachment oracle
+	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/diagrams-outputs)" $(MAKE) graphics-test
+	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/diagrams-uno.py
+
 .PHONY: shared-pack-check
 shared-pack-check: ## Verify shared distribution and native readbacks in a complete batch
 	cd acceptance && $(GO) test -p $(TEST_JOBS) ./...
