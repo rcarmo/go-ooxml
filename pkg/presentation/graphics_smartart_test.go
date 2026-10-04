@@ -120,26 +120,57 @@ func TestGraphicsSmartArtSealedSourceInspection(t *testing.T) {
 	if e := json.Unmarshal(graphicsReadAsset(t, root, assets, "ledgers/pptx-smartart-office-source.json"), &r); e != nil {
 		t.Fatal(e)
 	}
-	input := graphicsReadAsset(t, root, assets, r.FixtureID)
-	s, e := OpenEditing(input, packaging.Limits{})
-	if e != nil {
-		t.Fatal(e)
-	}
-	info, e := s.InspectSmartArt("ppt/slides/slide1.xml")
-	if e != nil {
-		t.Fatal(e)
-	}
-	if len(info) != 1 || info[0].ShapeID != r.ShapeID || info[0].Name != r.Name || len(info[0].Roots) != 4 || len(info[0].Parts) != 5 {
-		t.Fatalf("Office source graph %#v", info)
-	}
-	names := []string{}
-	for _, p := range info[0].Parts {
-		names = append(names, p.PartName)
-	}
-	if !reflect.DeepEqual(names, r.Expected.PartNames) {
-		t.Fatal("source closure parts")
-	}
-	if len(info[0].Edges) != 1 || info[0].Edges[0].Owner != "ppt/slides/slide1.xml" || info[0].Edges[0].RelationshipID != "rId6" {
-		t.Fatal("slide-owned drawing metadata edge")
-	}
+	graphicsReadAsset(t, root, assets, "workflows/pptx/smartart-office-source.feature")
+	graphicsReadAsset(t, root, assets, "contracts/pptx-smartart-office-source.md")
+	t.Run("@id-pptx-smartart-office-source-inspection [inspection]", func(t *testing.T) {
+		input := graphicsReadAsset(t, root, assets, r.FixtureID)
+		original := bytes.Clone(input)
+		s, e := OpenEditing(input, packaging.Limits{})
+		if e != nil {
+			t.Fatal(e)
+		}
+		before, version := graphicsSessionMembers(t, s), s.generation
+		info, e := s.InspectSmartArt("ppt/slides/slide1.xml")
+		if e != nil {
+			t.Fatal(e)
+		}
+		if len(info) != 1 || info[0].ShapeID != r.ShapeID || info[0].Name != r.Name || len(info[0].Roots) != 4 || len(info[0].Parts) != 5 {
+			t.Fatalf("Office source graph %#v", info)
+		}
+		names := []string{}
+		for _, p := range info[0].Parts {
+			names = append(names, p.PartName)
+		}
+		if !reflect.DeepEqual(names, r.Expected.PartNames) {
+			t.Fatal("source closure parts")
+		}
+		if len(info[0].Edges) != 1 || info[0].Edges[0].Owner != "ppt/slides/slide1.xml" || info[0].Edges[0].RelationshipID != "rId6" {
+			t.Fatal("slide-owned drawing metadata edge")
+		}
+		info[0].Roots[0].PartName = "caller mutation"
+		info[0].Parts[0].PartName = "caller mutation"
+		info[0].Edges[0].Owner = "caller mutation"
+		if info[0].Edges[0].PartName != nil {
+			*info[0].Edges[0].PartName = "caller mutation"
+		}
+		read, e := s.InspectSmartArt("ppt/slides/slide1.xml")
+		if e != nil || read[0].Roots[0].PartName == "caller mutation" || read[0].Parts[0].PartName == "caller mutation" || read[0].Edges[0].Owner == "caller mutation" {
+			t.Fatal("sealed inspection return alias", e)
+		}
+		var saved bytes.Buffer
+		if e = s.pkg.WriteTo(&saved); e != nil {
+			t.Fatal(e)
+		}
+		if s.generation != version || !reflect.DeepEqual(before, graphicsMembers(t, saved.Bytes())) || !bytes.Equal(input, original) {
+			t.Fatal("sealed inspection byte/generation custody")
+		}
+		reopened, e := OpenEditing(saved.Bytes(), packaging.Limits{})
+		if e != nil {
+			t.Fatal(e)
+		}
+		got, e := reopened.InspectSmartArt("ppt/slides/slide1.xml")
+		if e != nil || !reflect.DeepEqual(got, read) {
+			t.Fatal("sealed inspection saved readback", e)
+		}
+	})
 }

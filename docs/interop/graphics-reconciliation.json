@@ -1,0 +1,2494 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "sharedCommit": "0cf83c156c8e9433347e446e58c415db011b17be",
+  "sharedManifestSHA256": "05d39331f9b832b54716139e57c7f5a324a0a083eab6a12de3d61f4fe74b1967",
+  "originalCases": 320,
+  "originalIDs": 54,
+  "sealedSourceCases": 3,
+  "sealedSourceIDs": 2,
+  "sealedAssets": [
+    {
+      "id": "asset-4d3001af7b835352b8e732bd14ed4d7e189321bcdcd1444efd6af2fc0f53fd13",
+      "path": "contracts/pptx-autoshapes.md",
+      "bytes": 2326,
+      "sha256": "4d3001af7b835352b8e732bd14ed4d7e189321bcdcd1444efd6af2fc0f53fd13"
+    },
+    {
+      "id": "asset-7302ed8da7a8c591a802a6b54e6ac4ffd4237a6cd50bcff21066a17e32c789d3",
+      "path": "contracts/pptx-connectors.md",
+      "bytes": 2916,
+      "sha256": "7302ed8da7a8c591a802a6b54e6ac4ffd4237a6cd50bcff21066a17e32c789d3"
+    },
+    {
+      "id": "asset-0b3ee7418fc617f6df612191e8f6a2383221c283947ec9e9b2186b1fab9168a6",
+      "path": "contracts/pptx-diagrams.md",
+      "bytes": 2524,
+      "sha256": "0b3ee7418fc617f6df612191e8f6a2383221c283947ec9e9b2186b1fab9168a6"
+    },
+    {
+      "id": "asset-bd113c272f6e2efff9a145219beb920c7ba96da6918e51ee0f59c865c19afa4e",
+      "path": "contracts/pptx-freeform.md",
+      "bytes": 2289,
+      "sha256": "bd113c272f6e2efff9a145219beb920c7ba96da6918e51ee0f59c865c19afa4e"
+    },
+    {
+      "id": "asset-64b51506a4c09f05e124bcb2f897204a8df1909f37fafa9de52bc7d14be9811a",
+      "path": "contracts/pptx-gradients.md",
+      "bytes": 2725,
+      "sha256": "64b51506a4c09f05e124bcb2f897204a8df1909f37fafa9de52bc7d14be9811a"
+    },
+    {
+      "id": "asset-654c183487d16d6040abdad299b363e5598cd80eeed9dad840d3eaf87305a19d",
+      "path": "contracts/pptx-group-transform.md",
+      "bytes": 3388,
+      "sha256": "654c183487d16d6040abdad299b363e5598cd80eeed9dad840d3eaf87305a19d"
+    },
+    {
+      "id": "asset-f8695834a68459e177f61cfd3f91b7c12c240000e6a549181aa57a3c14a1b177",
+      "path": "contracts/pptx-opacity.md",
+      "bytes": 2520,
+      "sha256": "f8695834a68459e177f61cfd3f91b7c12c240000e6a549181aa57a3c14a1b177"
+    },
+    {
+      "id": "asset-5e4fb83f40030496157873f4205057a59acd12fbd5b04a5ed3c42515a6f6a581",
+      "path": "contracts/pptx-outlines.md",
+      "bytes": 2358,
+      "sha256": "5e4fb83f40030496157873f4205057a59acd12fbd5b04a5ed3c42515a6f6a581"
+    },
+    {
+      "id": "asset-23a45cc3a53c3e003f8f3bbca6bd6c60b996eece4c333caa42b2b7e024af3b0e",
+      "path": "contracts/pptx-picture-crop.md",
+      "bytes": 2342,
+      "sha256": "23a45cc3a53c3e003f8f3bbca6bd6c60b996eece4c333caa42b2b7e024af3b0e"
+    },
+    {
+      "id": "asset-409366d71a4f847f929c7a57446227088476f3187cffae5ab97a2c407229aced",
+      "path": "contracts/pptx-picture-delete.md",
+      "bytes": 3479,
+      "sha256": "409366d71a4f847f929c7a57446227088476f3187cffae5ab97a2c407229aced"
+    },
+    {
+      "id": "asset-0b1560f8884273320efc4129c399d025982e9e0498f87542df4efc9709251452",
+      "path": "contracts/pptx-picture-insertion.md",
+      "bytes": 3639,
+      "sha256": "0b1560f8884273320efc4129c399d025982e9e0498f87542df4efc9709251452"
+    },
+    {
+      "id": "asset-e43c942cb39ca2b9a4501c75791ff15b14410664b4d7238529f071a7872951c1",
+      "path": "contracts/pptx-picture-placement.md",
+      "bytes": 3036,
+      "sha256": "e43c942cb39ca2b9a4501c75791ff15b14410664b4d7238529f071a7872951c1"
+    },
+    {
+      "id": "asset-84ffb09c85d1650474935170ae686f288c71438437cc69e8cb6177529f9b7140",
+      "path": "contracts/pptx-picture-replacement.md",
+      "bytes": 2666,
+      "sha256": "84ffb09c85d1650474935170ae686f288c71438437cc69e8cb6177529f9b7140"
+    },
+    {
+      "id": "asset-ec281371f6356697fd13d20ddc57492ed23d81b17457b2232f17e7600ebce0b8",
+      "path": "contracts/pptx-picture-svg.md",
+      "bytes": 3440,
+      "sha256": "ec281371f6356697fd13d20ddc57492ed23d81b17457b2232f17e7600ebce0b8"
+    },
+    {
+      "id": "asset-ceadd96e3e0c225a27c367bd61e280b56655a0c6ac648e40f855e0cbd33ca68c",
+      "path": "contracts/pptx-picture-transform.md",
+      "bytes": 2396,
+      "sha256": "ceadd96e3e0c225a27c367bd61e280b56655a0c6ac648e40f855e0cbd33ca68c"
+    },
+    {
+      "id": "asset-48af44c6d18ff94e56601e725afff098582724f785c308354de253ae8e62cba4",
+      "path": "contracts/pptx-pictures.md",
+      "bytes": 3299,
+      "sha256": "48af44c6d18ff94e56601e725afff098582724f785c308354de253ae8e62cba4"
+    },
+    {
+      "id": "asset-b42f592dcbd862287390bc9ff7e4740bc792b68d1c59266117137f0bb0974b3b",
+      "path": "contracts/pptx-shape-group.md",
+      "bytes": 2854,
+      "sha256": "b42f592dcbd862287390bc9ff7e4740bc792b68d1c59266117137f0bb0974b3b"
+    },
+    {
+      "id": "asset-a3baac8d69f62dbcf71d59723e151538396cc10b872cb9046ce7cf1cd417dab9",
+      "path": "contracts/pptx-smartart-copy.md",
+      "bytes": 3211,
+      "sha256": "a3baac8d69f62dbcf71d59723e151538396cc10b872cb9046ce7cf1cd417dab9"
+    },
+    {
+      "id": "asset-e3592f8ac7813f88bea8b64adb86f209397fc6a9a2b0a5b9bacedf589ad0017f",
+      "path": "contracts/pptx-smartart-inspection.md",
+      "bytes": 3132,
+      "sha256": "e3592f8ac7813f88bea8b64adb86f209397fc6a9a2b0a5b9bacedf589ad0017f"
+    },
+    {
+      "id": "asset-0c16b87d5f8cfe41ac4b6d73a3a7749005f391c9366e1c264be27711009a2faa",
+      "path": "contracts/pptx-smartart-office-source.md",
+      "bytes": 2149,
+      "sha256": "0c16b87d5f8cfe41ac4b6d73a3a7749005f391c9366e1c264be27711009a2faa"
+    },
+    {
+      "id": "asset-a9f21acc37baea048f6964d6798331c7a77e54e01c37ef01d5e6756770905287",
+      "path": "contracts/pptx-z-order.md",
+      "bytes": 2223,
+      "sha256": "a9f21acc37baea048f6964d6798331c7a77e54e01c37ef01d5e6756770905287"
+    },
+    {
+      "id": "fixture-792277d2c358c5bd7c8a4053078a5594fa07bfb55a06b0bb30f2813c151ea459",
+      "path": "fixtures/pptx/media/images-792277d2c358.pptx",
+      "bytes": 974357,
+      "sha256": "792277d2c358c5bd7c8a4053078a5594fa07bfb55a06b0bb30f2813c151ea459"
+    },
+    {
+      "id": "fixture-b97e4c6d2ee1dd4094f50f9043820610268dd452d7717c537f5456636adcc353",
+      "path": "fixtures/pptx/smartart/office-smartart.pptx",
+      "bytes": 41382,
+      "sha256": "b97e4c6d2ee1dd4094f50f9043820610268dd452d7717c537f5456636adcc353"
+    },
+    {
+      "id": "asset-4291ddff983cd8926e0bbefa04df61824110e7e3391ea403231934b6e8d3ac3a",
+      "path": "ledgers/pptx-autoshapes.json",
+      "bytes": 14741,
+      "sha256": "4291ddff983cd8926e0bbefa04df61824110e7e3391ea403231934b6e8d3ac3a"
+    },
+    {
+      "id": "asset-c0c27bfcfcf1a26c2f19dd9346ec892c2b15743c9074a20d10c76d84f9df70ee",
+      "path": "ledgers/pptx-connectors.json",
+      "bytes": 22813,
+      "sha256": "c0c27bfcfcf1a26c2f19dd9346ec892c2b15743c9074a20d10c76d84f9df70ee"
+    },
+    {
+      "id": "asset-54248971a9317864eb35d6b26a74d32747ade9e4d1f22d7f4636b42a400bd6fd",
+      "path": "ledgers/pptx-diagrams.json",
+      "bytes": 20112,
+      "sha256": "54248971a9317864eb35d6b26a74d32747ade9e4d1f22d7f4636b42a400bd6fd"
+    },
+    {
+      "id": "asset-0f5753d6c19bb5dfa635701cef3deacab83e3df4b569608ba4dfa35b0abb9326",
+      "path": "ledgers/pptx-freeform.json",
+      "bytes": 45105,
+      "sha256": "0f5753d6c19bb5dfa635701cef3deacab83e3df4b569608ba4dfa35b0abb9326"
+    },
+    {
+      "id": "asset-ca4b7b8c0329cacf473de02514dc6f9ad3c832ef96594fa37ad24bf05a485048",
+      "path": "ledgers/pptx-gradients.json",
+      "bytes": 41805,
+      "sha256": "ca4b7b8c0329cacf473de02514dc6f9ad3c832ef96594fa37ad24bf05a485048"
+    },
+    {
+      "id": "asset-76264a7d2e2cd3bfab3c2f9f6a79b7d631b50f002803122fda3eceedeea34c45",
+      "path": "ledgers/pptx-group-transform.json",
+      "bytes": 66027,
+      "sha256": "76264a7d2e2cd3bfab3c2f9f6a79b7d631b50f002803122fda3eceedeea34c45"
+    },
+    {
+      "id": "asset-c1df64a8e68c6245591b2ebe95bd85c0d39fd42c549a9958366e26111b7e54a3",
+      "path": "ledgers/pptx-opacity.json",
+      "bytes": 25367,
+      "sha256": "c1df64a8e68c6245591b2ebe95bd85c0d39fd42c549a9958366e26111b7e54a3"
+    },
+    {
+      "id": "asset-2fc1982104f0b29d2dd1506ffb99bd68de78411de83ec206fed44d7de17d823e",
+      "path": "ledgers/pptx-outlines.json",
+      "bytes": 37079,
+      "sha256": "2fc1982104f0b29d2dd1506ffb99bd68de78411de83ec206fed44d7de17d823e"
+    },
+    {
+      "id": "asset-6ba57f6a88a5cb2d84d6f9b5211fb3eb24bd04c6a0b7dd2da8f2e29ea4f40a03",
+      "path": "ledgers/pptx-picture-crop.json",
+      "bytes": 15548,
+      "sha256": "6ba57f6a88a5cb2d84d6f9b5211fb3eb24bd04c6a0b7dd2da8f2e29ea4f40a03"
+    },
+    {
+      "id": "asset-d13cc630335b3b94894a0b1751f03c9fedea7a820b6e5a35f6dba22e52ca0c00",
+      "path": "ledgers/pptx-picture-delete.json",
+      "bytes": 16451,
+      "sha256": "d13cc630335b3b94894a0b1751f03c9fedea7a820b6e5a35f6dba22e52ca0c00"
+    },
+    {
+      "id": "asset-8ce714221e55ea533a450fd43f93b7c7801b40506e05de4288be253e201915bb",
+      "path": "ledgers/pptx-picture-insertion.json",
+      "bytes": 22707,
+      "sha256": "8ce714221e55ea533a450fd43f93b7c7801b40506e05de4288be253e201915bb"
+    },
+    {
+      "id": "asset-7fdba30c19711ffd3a574d76ee35c9499f1b7b6bd69e6886e2d27074a4da0f78",
+      "path": "ledgers/pptx-picture-inspection.json",
+      "bytes": 25668,
+      "sha256": "7fdba30c19711ffd3a574d76ee35c9499f1b7b6bd69e6886e2d27074a4da0f78"
+    },
+    {
+      "id": "asset-e5ed04fa51fed848bcb7b31d3df6eb6d41e655cc4f9cd8cef5b98c45424d53fa",
+      "path": "ledgers/pptx-picture-placement.json",
+      "bytes": 19034,
+      "sha256": "e5ed04fa51fed848bcb7b31d3df6eb6d41e655cc4f9cd8cef5b98c45424d53fa"
+    },
+    {
+      "id": "asset-54de533f3ce4de5beededacee794908154e35d4bffc09b2f4f42068222fdf223",
+      "path": "ledgers/pptx-picture-replacement.json",
+      "bytes": 19430,
+      "sha256": "54de533f3ce4de5beededacee794908154e35d4bffc09b2f4f42068222fdf223"
+    },
+    {
+      "id": "asset-7a81ed30d71842cd1245916269d16fcc034f209bb6108ae857ac4a1e31a6a56d",
+      "path": "ledgers/pptx-picture-svg.json",
+      "bytes": 12477,
+      "sha256": "7a81ed30d71842cd1245916269d16fcc034f209bb6108ae857ac4a1e31a6a56d"
+    },
+    {
+      "id": "asset-999d694d25fc93fbec3d785d55465c31279172f75d03d6d5432f80a8f2bdec0a",
+      "path": "ledgers/pptx-picture-transform.json",
+      "bytes": 20416,
+      "sha256": "999d694d25fc93fbec3d785d55465c31279172f75d03d6d5432f80a8f2bdec0a"
+    },
+    {
+      "id": "asset-98c3f06074895019e7759d42a0e94d6ad816a1ec2b89cb957c77ff12704d96b1",
+      "path": "ledgers/pptx-shape-group.json",
+      "bytes": 12858,
+      "sha256": "98c3f06074895019e7759d42a0e94d6ad816a1ec2b89cb957c77ff12704d96b1"
+    },
+    {
+      "id": "asset-0344cd89f03b04ae21db67bfe3263956df56a7e9719230b8bf218de3bb217c5c",
+      "path": "ledgers/pptx-smartart-copy.json",
+      "bytes": 43980,
+      "sha256": "0344cd89f03b04ae21db67bfe3263956df56a7e9719230b8bf218de3bb217c5c"
+    },
+    {
+      "id": "asset-0f0a8cb5b73182205d5eaa74200dbe94e8f891d36bedcda7163833f89f37de1e",
+      "path": "ledgers/pptx-smartart-inspection.json",
+      "bytes": 63959,
+      "sha256": "0f0a8cb5b73182205d5eaa74200dbe94e8f891d36bedcda7163833f89f37de1e"
+    },
+    {
+      "id": "asset-593dc0960906a7f5180f3097a0123c7651bfe89ec40a2078c9617b9e36974f04",
+      "path": "ledgers/pptx-smartart-office-source.json",
+      "bytes": 6088,
+      "sha256": "593dc0960906a7f5180f3097a0123c7651bfe89ec40a2078c9617b9e36974f04"
+    },
+    {
+      "id": "asset-784d5873e3d80a78d4f97a8b3d410d44ddf0cde4c29344f571b13bd75b25b015",
+      "path": "ledgers/pptx-z-order.json",
+      "bytes": 22725,
+      "sha256": "784d5873e3d80a78d4f97a8b3d410d44ddf0cde4c29344f571b13bd75b25b015"
+    },
+    {
+      "id": "asset-d1c9c5cb1a4de2edac1e17f18f829e17b15a40edd79b62d67a9dec6981c63127",
+      "path": "workflows/pptx/autoshapes.feature",
+      "bytes": 1797,
+      "sha256": "d1c9c5cb1a4de2edac1e17f18f829e17b15a40edd79b62d67a9dec6981c63127"
+    },
+    {
+      "id": "asset-5c817aa20094f83af5ba618378fa0e1bdea23a124cebe2cd09a7b4fe4b1ec594",
+      "path": "workflows/pptx/connectors.feature",
+      "bytes": 1800,
+      "sha256": "5c817aa20094f83af5ba618378fa0e1bdea23a124cebe2cd09a7b4fe4b1ec594"
+    },
+    {
+      "id": "asset-2947a691b99c8e28ff9530b064b2e6c91f58df10e5f11905cb83d8c700f25206",
+      "path": "workflows/pptx/diagrams.feature",
+      "bytes": 1681,
+      "sha256": "2947a691b99c8e28ff9530b064b2e6c91f58df10e5f11905cb83d8c700f25206"
+    },
+    {
+      "id": "asset-a388df9fd2e70efa2c5e988e4070e795430cbcdb22ee02f02da28e7934c3624c",
+      "path": "workflows/pptx/freeform.feature",
+      "bytes": 1687,
+      "sha256": "a388df9fd2e70efa2c5e988e4070e795430cbcdb22ee02f02da28e7934c3624c"
+    },
+    {
+      "id": "asset-c3d76371bafa8aa6ccfa2e3d3609d7dba899ec2b62de7e25bb9c6ecd156235a1",
+      "path": "workflows/pptx/gradients.feature",
+      "bytes": 1861,
+      "sha256": "c3d76371bafa8aa6ccfa2e3d3609d7dba899ec2b62de7e25bb9c6ecd156235a1"
+    },
+    {
+      "id": "asset-af30e75a382fbd07a589291a4cadebeedbc8170fa7083be747e2c7cce45143ab",
+      "path": "workflows/pptx/group-transform.feature",
+      "bytes": 2286,
+      "sha256": "af30e75a382fbd07a589291a4cadebeedbc8170fa7083be747e2c7cce45143ab"
+    },
+    {
+      "id": "asset-af3d14d8ea34ed97ca8172f035dc88f401861a85b35ff9e233656f045dd8310f",
+      "path": "workflows/pptx/opacity.feature",
+      "bytes": 2462,
+      "sha256": "af3d14d8ea34ed97ca8172f035dc88f401861a85b35ff9e233656f045dd8310f"
+    },
+    {
+      "id": "asset-bd6e9a08151a017f6fdca23b26ab79a0a7c7b4b7be105df48f7e1a59d5ee6325",
+      "path": "workflows/pptx/outlines.feature",
+      "bytes": 1965,
+      "sha256": "bd6e9a08151a017f6fdca23b26ab79a0a7c7b4b7be105df48f7e1a59d5ee6325"
+    },
+    {
+      "id": "asset-e5eff16a0bc311d8f16be6b34cf16d0be4564033ec1cb4830e68bdda17e93804",
+      "path": "workflows/pptx/picture-crop.feature",
+      "bytes": 1721,
+      "sha256": "e5eff16a0bc311d8f16be6b34cf16d0be4564033ec1cb4830e68bdda17e93804"
+    },
+    {
+      "id": "asset-43a0876539d6e58f605696b07f9fbf783464e6cdcad204b309fb6d64220d0c98",
+      "path": "workflows/pptx/picture-delete.feature",
+      "bytes": 1828,
+      "sha256": "43a0876539d6e58f605696b07f9fbf783464e6cdcad204b309fb6d64220d0c98"
+    },
+    {
+      "id": "asset-bf76016391d0e353d9a00a759a4d68af67867067fba4ffdc26adde836d7bdf57",
+      "path": "workflows/pptx/picture-insertion.feature",
+      "bytes": 3591,
+      "sha256": "bf76016391d0e353d9a00a759a4d68af67867067fba4ffdc26adde836d7bdf57"
+    },
+    {
+      "id": "asset-1ad7b5dbb60abba310f7f7fcf6bbee6207b82234e90f76943b6e19932d2e3e01",
+      "path": "workflows/pptx/picture-placement.feature",
+      "bytes": 2299,
+      "sha256": "1ad7b5dbb60abba310f7f7fcf6bbee6207b82234e90f76943b6e19932d2e3e01"
+    },
+    {
+      "id": "asset-2c8de11cd78eb80004cd5d5cd508161231fe8664dc2d2a2fff4bd2cd4e113bb4",
+      "path": "workflows/pptx/picture-replacement.feature",
+      "bytes": 2955,
+      "sha256": "2c8de11cd78eb80004cd5d5cd508161231fe8664dc2d2a2fff4bd2cd4e113bb4"
+    },
+    {
+      "id": "asset-95e99e0d0c9023ae3c5cb28a08c99a5dc5d04cd4d6a688a9652b69e04c560712",
+      "path": "workflows/pptx/picture-svg.feature",
+      "bytes": 1522,
+      "sha256": "95e99e0d0c9023ae3c5cb28a08c99a5dc5d04cd4d6a688a9652b69e04c560712"
+    },
+    {
+      "id": "asset-35c5af698de5fc6d3f7103445f0871659d95b3ff9b57b4f7c1b37248dc1f28be",
+      "path": "workflows/pptx/picture-transform.feature",
+      "bytes": 1820,
+      "sha256": "35c5af698de5fc6d3f7103445f0871659d95b3ff9b57b4f7c1b37248dc1f28be"
+    },
+    {
+      "id": "asset-6d83274656e9947b98f8edc04e7658a7c4fe724506ce74f3dbe72b9f7bbe686b",
+      "path": "workflows/pptx/pictures.feature",
+      "bytes": 3622,
+      "sha256": "6d83274656e9947b98f8edc04e7658a7c4fe724506ce74f3dbe72b9f7bbe686b"
+    },
+    {
+      "id": "asset-a8423ccc4797e0fe934df4593786f2e2b0f2302d56e238b779a7239389d93d49",
+      "path": "workflows/pptx/shape-group.feature",
+      "bytes": 1836,
+      "sha256": "a8423ccc4797e0fe934df4593786f2e2b0f2302d56e238b779a7239389d93d49"
+    },
+    {
+      "id": "asset-1a475b1233d2c4e71bedf1b24362c346df94eaf0ae8b3e80d016e4ff76c93ba8",
+      "path": "workflows/pptx/smartart-copy.feature",
+      "bytes": 1672,
+      "sha256": "1a475b1233d2c4e71bedf1b24362c346df94eaf0ae8b3e80d016e4ff76c93ba8"
+    },
+    {
+      "id": "asset-92e3c0e7c5e53f0e05801a271d8b4914fd8d90ce79615e732c8d2fbb7907d2a7",
+      "path": "workflows/pptx/smartart-inspection.feature",
+      "bytes": 1849,
+      "sha256": "92e3c0e7c5e53f0e05801a271d8b4914fd8d90ce79615e732c8d2fbb7907d2a7"
+    },
+    {
+      "id": "asset-0d2d5bd4a986408090b4567f94652161feacaaccf0be93c10863fc92fb5787da",
+      "path": "workflows/pptx/smartart-office-source.feature",
+      "bytes": 1667,
+      "sha256": "0d2d5bd4a986408090b4567f94652161feacaaccf0be93c10863fc92fb5787da"
+    },
+    {
+      "id": "asset-a9f63d6a7f46fe60836ca89895bbd2bc0d45fb0bfae33399f58b1dac59c56da2",
+      "path": "workflows/pptx/z-order.feature",
+      "bytes": 1797,
+      "sha256": "a9f63d6a7f46fe60836ca89895bbd2bc0d45fb0bfae33399f58b1dac59c56da2"
+    }
+  ],
+  "slices": [
+    {
+      "ledger": "ledgers/pptx-picture-inspection.json",
+      "feature": "workflows/pptx/pictures.feature",
+      "contract": "contracts/pptx-pictures.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-picture-inspection-literal",
+          "caseId": "embedded",
+          "goLeaf": "TestGraphicsPictureInspectionRecipes/@id-pptx-graphics-picture-inspection-literal_[embedded]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-inspection-links",
+          "caseId": "external",
+          "goLeaf": "TestGraphicsPictureInspectionRecipes/@id-pptx-graphics-picture-inspection-links_[external]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-inspection-groups",
+          "caseId": "grouped",
+          "goLeaf": "TestGraphicsPictureInspectionRecipes/@id-pptx-graphics-picture-inspection-groups_[grouped]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-inspection-transformed",
+          "caseId": "transformed-dual",
+          "goLeaf": "TestGraphicsPictureInspectionRecipes/@id-pptx-graphics-picture-inspection-transformed_[transformed-dual]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-inspection-empty",
+          "caseId": "empty",
+          "goLeaf": "TestGraphicsPictureInspectionRecipes/@id-pptx-graphics-picture-inspection-empty_[empty]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-inspection-refusals",
+          "caseId": "duplicate-shape-identity",
+          "goLeaf": "TestGraphicsPictureInspectionRecipes/@id-pptx-graphics-picture-inspection-refusals_[duplicate-shape-identity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-inspection-refusals",
+          "caseId": "duplicate-image-leaf",
+          "goLeaf": "TestGraphicsPictureInspectionRecipes/@id-pptx-graphics-picture-inspection-refusals_[duplicate-image-leaf]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-inspection-refusals",
+          "caseId": "wrong-relationship-type",
+          "goLeaf": "TestGraphicsPictureInspectionRecipes/@id-pptx-graphics-picture-inspection-refusals_[wrong-relationship-type]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-inspection-refusals",
+          "caseId": "non-image-content-type",
+          "goLeaf": "TestGraphicsPictureInspectionRecipes/@id-pptx-graphics-picture-inspection-refusals_[non-image-content-type]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-inspection-refusals",
+          "caseId": "invalid-transform-extent",
+          "goLeaf": "TestGraphicsPictureInspectionRecipes/@id-pptx-graphics-picture-inspection-refusals_[invalid-transform-extent]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-inspection-refusals",
+          "caseId": "wrong-attribute-namespace",
+          "goLeaf": "TestGraphicsPictureInspectionRecipes/@id-pptx-graphics-picture-inspection-refusals_[wrong-attribute-namespace]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-inspection-refusals",
+          "caseId": "misplaced-picture-owner",
+          "goLeaf": "TestGraphicsPictureInspectionRecipes/@id-pptx-graphics-picture-inspection-refusals_[misplaced-picture-owner]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-picture-insertion.json",
+      "feature": "workflows/pptx/picture-insertion.feature",
+      "contract": "contracts/pptx-picture-insertion.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-add",
+          "caseId": "png",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-add_[png]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-add",
+          "caseId": "jpeg",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-add_[jpeg]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-repeat",
+          "caseId": "repeat-png",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-repeat_[repeat-png]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-collision",
+          "caseId": "orphan-collision",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-collision_[orphan-collision]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-content-types",
+          "caseId": "conflicting-MIME",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-content-types_[conflicting-MIME]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-extension",
+          "caseId": "terminal-extension",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-extension_[terminal-extension]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-refusals",
+          "caseId": "empty-payload",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-refusals_[empty-payload]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-refusals",
+          "caseId": "mime-mismatch",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-refusals_[mime-mismatch]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-refusals",
+          "caseId": "unsupported-mime",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-refusals_[unsupported-mime]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-refusals",
+          "caseId": "fractional-position",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-refusals_[fractional-position]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-refusals",
+          "caseId": "zero-extent",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-refusals_[zero-extent]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-refusals",
+          "caseId": "out-of-range-position",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-refusals_[out-of-range-position]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-refusals",
+          "caseId": "unknown-option",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-refusals_[unknown-option]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-refusals",
+          "caseId": "invalid-xml-name",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-refusals_[invalid-xml-name]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-refusals",
+          "caseId": "duplicate-identity",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-refusals_[duplicate-identity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-refusals",
+          "caseId": "nonidentity-root-transform",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-refusals_[nonidentity-root-transform]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-refusals_[protected-presentation]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-insertion-refusals",
+          "caseId": "exhausted-identity",
+          "goLeaf": "TestGraphicsPictureInsertionRecipes/@id-pptx-graphics-picture-insertion-refusals_[exhausted-identity]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-picture-replacement.json",
+      "feature": "workflows/pptx/picture-replacement.feature",
+      "contract": "contracts/pptx-picture-replacement.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-replace",
+          "caseId": "PNG",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-replace_[PNG]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-replace",
+          "caseId": "JPEG",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-replace_[JPEG]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-isolation",
+          "caseId": "shared-relationship",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-isolation_[shared-relationship]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-isolation",
+          "caseId": "shared-media",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-isolation_[shared-media]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-prefix",
+          "caseId": "aliased-prefix",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-prefix_[aliased-prefix]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-grouped",
+          "caseId": "grouped",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-grouped_[grouped]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-refusals",
+          "caseId": "missing-picture",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-refusals_[missing-picture]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-refusals",
+          "caseId": "nonpicture-identity",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-refusals_[nonpicture-identity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-refusals",
+          "caseId": "linked-picture",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-refusals_[linked-picture]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-refusals",
+          "caseId": "dual-image-assets",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-refusals_[dual-image-assets]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-refusals",
+          "caseId": "duplicate-identity",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-refusals_[duplicate-identity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-refusals",
+          "caseId": "mime-mismatch",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-refusals_[mime-mismatch]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-refusals_[protected-presentation]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-replacement-refusals",
+          "caseId": "paired-image-extension",
+          "goLeaf": "TestGraphicsPictureReplacementRecipes/@id-pptx-graphics-picture-replacement-refusals_[paired-image-extension]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-picture-crop.json",
+      "feature": "workflows/pptx/picture-crop.feature",
+      "contract": "contracts/pptx-picture-crop.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-roundtrip",
+          "caseId": "existing",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-roundtrip_[existing]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-roundtrip",
+          "caseId": "reset",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-roundtrip_[reset]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-roundtrip",
+          "caseId": "absent",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-roundtrip_[absent]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-roundtrip",
+          "caseId": "no-op",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-roundtrip_[no-op]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-roundtrip",
+          "caseId": "absent-zero",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-roundtrip_[absent-zero]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-roundtrip",
+          "caseId": "aliased",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-roundtrip_[aliased]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-roundtrip",
+          "caseId": "grouped",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-roundtrip_[grouped]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-roundtrip",
+          "caseId": "linked",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-roundtrip_[linked]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-refusals",
+          "caseId": "negative-side",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-refusals_[negative-side]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-refusals",
+          "caseId": "fractional-side",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-refusals_[fractional-side]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-refusals",
+          "caseId": "empty-visible-region",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-refusals_[empty-visible-region]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-refusals",
+          "caseId": "unknown-crop-field",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-refusals_[unknown-crop-field]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-refusals",
+          "caseId": "missing-picture",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-refusals_[missing-picture]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-refusals",
+          "caseId": "duplicate-rectangle",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-refusals_[duplicate-rectangle]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-refusals",
+          "caseId": "foreign-crop-attribute",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-refusals_[foreign-crop-attribute]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-refusals",
+          "caseId": "negative-source-crop",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-refusals_[negative-source-crop]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-crop-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-crop-refusals_[protected-presentation]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-picture-transform.json",
+      "feature": "workflows/pptx/picture-transform.feature",
+      "contract": "contracts/pptx-picture-transform.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-roundtrip",
+          "caseId": "rotation",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-roundtrip_[rotation]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-roundtrip",
+          "caseId": "flips",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-roundtrip_[flips]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-roundtrip",
+          "caseId": "reset",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-roundtrip_[reset]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-roundtrip",
+          "caseId": "no-op",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-roundtrip_[no-op]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-roundtrip",
+          "caseId": "empty patch",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-roundtrip_[empty_patch]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-roundtrip",
+          "caseId": "grouped",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-roundtrip_[grouped]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-roundtrip",
+          "caseId": "linked",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-roundtrip_[linked]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-roundtrip",
+          "caseId": "aliased",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-roundtrip_[aliased]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-refusals",
+          "caseId": "negative-rotation",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-refusals_[negative-rotation]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-refusals",
+          "caseId": "full-turn-rotation",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-refusals_[full-turn-rotation]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-refusals",
+          "caseId": "fractional-rotation",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-refusals_[fractional-rotation]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-refusals",
+          "caseId": "nonboolean-flip",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-refusals_[nonboolean-flip]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-refusals",
+          "caseId": "unknown-transform-field",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-refusals_[unknown-transform-field]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-refusals",
+          "caseId": "missing-picture",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-refusals_[missing-picture]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-refusals",
+          "caseId": "missing-direct-transform",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-refusals_[missing-direct-transform]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-refusals",
+          "caseId": "foreign-rotation-attribute",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-refusals_[foreign-rotation-attribute]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-refusals",
+          "caseId": "duplicate-transform",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-refusals_[duplicate-transform]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-transform-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsPictureMetadataRecipes/@id-pptx-graphics-picture-transform-refusals_[protected-presentation]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-picture-placement.json",
+      "feature": "workflows/pptx/picture-placement.feature",
+      "contract": "contracts/pptx-picture-placement.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-policies",
+          "caseId": "contain landscape",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-policies_[contain_landscape]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-policies",
+          "caseId": "contain portrait",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-policies_[contain_portrait]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-policies",
+          "caseId": "cover landscape",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-policies_[cover_landscape]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-policies",
+          "caseId": "cover portrait",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-policies_[cover_portrait]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-policies",
+          "caseId": "stretch landscape",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-policies_[stretch_landscape]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-policies",
+          "caseId": "equal aspect",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-policies_[equal_aspect]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-rounding",
+          "caseId": "contain odd",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-rounding_[contain_odd]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-rounding",
+          "caseId": "cover fractional",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-rounding_[cover_fractional]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-rounding",
+          "caseId": "large rational",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-rounding_[large_rational]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-refusals",
+          "caseId": "unknown-fit",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-refusals_[unknown-fit]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-refusals",
+          "caseId": "zero-intrinsic-dimension",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-refusals_[zero-intrinsic-dimension]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-refusals",
+          "caseId": "fractional-intrinsic-dimension",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-refusals_[fractional-intrinsic-dimension]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-refusals",
+          "caseId": "zero-box-extent",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-refusals_[zero-box-extent]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-refusals",
+          "caseId": "subunit-contain-extent",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-refusals_[subunit-contain-extent]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-refusals",
+          "caseId": "unrepresentable-cover-crop",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-refusals_[unrepresentable-cover-crop]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-placement-refusals",
+          "caseId": "centred-coordinate-overflow",
+          "goLeaf": "TestGraphicsPicturePlacementRecipes/@id-pptx-graphics-picture-placement-refusals_[centred-coordinate-overflow]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-picture-svg.json",
+      "feature": "workflows/pptx/picture-svg.feature",
+      "contract": "contracts/pptx-picture-svg.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-picture-svg-add",
+          "caseId": "PNG",
+          "goLeaf": "TestGraphicsPictureSVGRecipes/@id-pptx-graphics-picture-svg-add_[PNG]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-svg-add",
+          "caseId": "JPEG",
+          "goLeaf": "TestGraphicsPictureSVGRecipes/@id-pptx-graphics-picture-svg-add_[JPEG]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-svg-refusals",
+          "caseId": "script",
+          "goLeaf": "TestGraphicsPictureSVGRecipes/@id-pptx-graphics-picture-svg-refusals_[script]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-svg-refusals",
+          "caseId": "external reference",
+          "goLeaf": "TestGraphicsPictureSVGRecipes/@id-pptx-graphics-picture-svg-refusals_[external_reference]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-svg-refusals",
+          "caseId": "event handler",
+          "goLeaf": "TestGraphicsPictureSVGRecipes/@id-pptx-graphics-picture-svg-refusals_[event_handler]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-svg-refusals",
+          "caseId": "CSS style",
+          "goLeaf": "TestGraphicsPictureSVGRecipes/@id-pptx-graphics-picture-svg-refusals_[CSS_style]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-svg-refusals",
+          "caseId": "paint URL",
+          "goLeaf": "TestGraphicsPictureSVGRecipes/@id-pptx-graphics-picture-svg-refusals_[paint_URL]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-svg-refusals",
+          "caseId": "wrong namespace",
+          "goLeaf": "TestGraphicsPictureSVGRecipes/@id-pptx-graphics-picture-svg-refusals_[wrong_namespace]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-svg-refusals",
+          "caseId": "malformed XML",
+          "goLeaf": "TestGraphicsPictureSVGRecipes/@id-pptx-graphics-picture-svg-refusals_[malformed_XML]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-svg-refusals",
+          "caseId": "DOCTYPE",
+          "goLeaf": "TestGraphicsPictureSVGRecipes/@id-pptx-graphics-picture-svg-refusals_[DOCTYPE]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-svg-refusals",
+          "caseId": "invalid fallback",
+          "goLeaf": "TestGraphicsPictureSVGRecipes/@id-pptx-graphics-picture-svg-refusals_[invalid_fallback]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-picture-delete.json",
+      "feature": "workflows/pptx/picture-delete.feature",
+      "contract": "contracts/pptx-picture-delete.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-custody",
+          "caseId": "retain dependencies",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-custody_[retain_dependencies]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-custody",
+          "caseId": "collect unique",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-custody_[collect_unique]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-custody",
+          "caseId": "shared relationship",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-custody_[shared_relationship]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-custody",
+          "caseId": "shared media",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-custody_[shared_media]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-custody",
+          "caseId": "other owner reference",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-custody_[other_owner_reference]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-custody",
+          "caseId": "grouped",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-custody_[grouped]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-custody",
+          "caseId": "linked",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-custody_[linked]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-custody",
+          "caseId": "SVG pair",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-custody_[SVG_pair]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-custody",
+          "caseId": "opaque reference",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-custody_[opaque_reference]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-custody",
+          "caseId": "comment reference",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-custody_[comment_reference]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-custody",
+          "caseId": "opaque text",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-custody_[opaque_text]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-refusals",
+          "caseId": "missing-picture",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-refusals_[missing-picture]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-refusals",
+          "caseId": "duplicate-identity",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-refusals_[duplicate-identity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-refusals",
+          "caseId": "wrong-image-relationship",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-refusals_[wrong-image-relationship]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-refusals",
+          "caseId": "nonboolean-collection",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-refusals_[nonboolean-collection]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-refusals_[protected-presentation]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-picture-delete-refusals",
+          "caseId": "attached-connector",
+          "goLeaf": "TestGraphicsPictureDeletionRecipes/@id-pptx-graphics-picture-delete-refusals_[attached-connector]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-shape-group.json",
+      "feature": "workflows/pptx/shape-group.feature",
+      "contract": "contracts/pptx-shape-group.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-create",
+          "caseId": "picture and text",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-create_[picture_and_text]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-create",
+          "caseId": "source order",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-create_[source_order]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-create",
+          "caseId": "terminal extension",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-create_[terminal_extension]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-create",
+          "caseId": "default name",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-create_[default_name]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-refusals",
+          "caseId": "noncontiguous-selection",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-refusals_[noncontiguous-selection]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-refusals",
+          "caseId": "duplicate-selection",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-refusals_[duplicate-selection]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-refusals",
+          "caseId": "missing-identity",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-refusals_[missing-identity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-refusals",
+          "caseId": "single-child",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-refusals_[single-child]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-refusals",
+          "caseId": "zero-group-extent",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-refusals_[zero-group-extent]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-refusals",
+          "caseId": "duplicate-source-identity",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-refusals_[duplicate-source-identity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-refusals",
+          "caseId": "nonidentity-root-transform",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-refusals_[nonidentity-root-transform]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-refusals_[protected-presentation]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-refusals",
+          "caseId": "exhausted-identity",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-refusals_[exhausted-identity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-refusals",
+          "caseId": "placeholder-child",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-refusals_[placeholder-child]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-refusals",
+          "caseId": "grouping-lock",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-refusals_[grouping-lock]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-shape-group-refusals",
+          "caseId": "attached-connector",
+          "goLeaf": "TestGraphicsShapeGroupingRecipes/@id-pptx-graphics-shape-group-refusals_[attached-connector]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-group-transform.json",
+      "feature": "workflows/pptx/group-transform.feature",
+      "contract": "contracts/pptx-group-transform.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-roundtrip",
+          "caseId": "translate",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-roundtrip_[translate]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-roundtrip",
+          "caseId": "resize",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-roundtrip_[resize]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-roundtrip",
+          "caseId": "child frame",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-roundtrip_[child_frame]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-roundtrip",
+          "caseId": "orientation",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-roundtrip_[orientation]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-roundtrip",
+          "caseId": "no-op",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-roundtrip_[no-op]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-roundtrip",
+          "caseId": "empty patch",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-roundtrip_[empty_patch]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-refusals",
+          "caseId": "zero-parent-extent",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-refusals_[zero-parent-extent]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-refusals",
+          "caseId": "zero-child-extent",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-refusals_[zero-child-extent]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-refusals",
+          "caseId": "fractional-coordinate",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-refusals_[fractional-coordinate]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-refusals",
+          "caseId": "invalid-rotation",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-refusals_[invalid-rotation]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-refusals",
+          "caseId": "unknown-field",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-refusals_[unknown-field]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-refusals",
+          "caseId": "missing-group",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-refusals_[missing-group]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-refusals",
+          "caseId": "foreign-child-coordinate",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-refusals_[foreign-child-coordinate]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-refusals",
+          "caseId": "duplicate-transform",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-refusals_[duplicate-transform]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-refusals_[protected-presentation]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-mapping",
+          "caseId": "scale translate",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-mapping_[scale_translate]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-mapping",
+          "caseId": "rotate clockwise",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-mapping_[rotate_clockwise]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-mapping",
+          "caseId": "flip horizontal",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-mapping_[flip_horizontal]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-mapping",
+          "caseId": "rotate and flip",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-mapping_[rotate_and_flip]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-mapping",
+          "caseId": "nested scales",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-mapping_[nested_scales]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-group-transform-mapping",
+          "caseId": "fractional mapping",
+          "goLeaf": "TestGraphicsGroupTransformRecipes/@id-pptx-graphics-group-transform-mapping_[fractional_mapping]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-connectors.json",
+      "feature": "workflows/pptx/connectors.feature",
+      "contract": "contracts/pptx-connectors.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-add",
+          "caseId": "right to left",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-add_[right_to_left]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-add",
+          "caseId": "top to bottom",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-add_[top_to_bottom]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-add",
+          "caseId": "reverse endpoints",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-add_[reverse_endpoints]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-add",
+          "caseId": "bottom to top",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-add_[bottom_to_top]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-add",
+          "caseId": "decreasing direction",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-add_[decreasing_direction]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-add",
+          "caseId": "odd midpoint",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-add_[odd_midpoint]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-refusals",
+          "caseId": "missing-endpoint",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-refusals_[missing-endpoint]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-refusals",
+          "caseId": "unknown-site",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-refusals_[unknown-site]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-refusals",
+          "caseId": "same-endpoint",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-refusals_[same-endpoint]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-refusals",
+          "caseId": "invalid-color",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-refusals_[invalid-color]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-refusals",
+          "caseId": "zero-line-width",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-refusals_[zero-line-width]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-refusals",
+          "caseId": "rotated-endpoint",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-refusals_[rotated-endpoint]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-refusals",
+          "caseId": "unsupported-preset",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-refusals_[unsupported-preset]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-refusals",
+          "caseId": "duplicate-source-identity",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-refusals_[duplicate-source-identity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-connectors-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsConnectorRecipes/@id-pptx-graphics-connectors-refusals_[protected-presentation]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-diagrams.json",
+      "feature": "workflows/pptx/diagrams.feature",
+      "contract": "contracts/pptx-diagrams.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-create",
+          "caseId": "row chain",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-create_[row_chain]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-create",
+          "caseId": "column chain",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-create_[column_chain]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-create",
+          "caseId": "reverse and cycle",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-create_[reverse_and_cycle]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-create",
+          "caseId": "nodes only",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-create_[nodes_only]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-refusals",
+          "caseId": "duplicate-node-key",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-refusals_[duplicate-node-key]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-refusals",
+          "caseId": "missing-edge-node",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-refusals_[missing-edge-node]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-refusals",
+          "caseId": "self-edge",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-refusals_[self-edge]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-refusals",
+          "caseId": "duplicate-edge",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-refusals_[duplicate-edge]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-refusals",
+          "caseId": "invalid-label",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-refusals_[invalid-label]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-refusals",
+          "caseId": "invalid-direction",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-refusals_[invalid-direction]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-refusals",
+          "caseId": "negative-gap",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-refusals_[negative-gap]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-refusals",
+          "caseId": "layout-overflow",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-refusals_[layout-overflow]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-refusals",
+          "caseId": "too-many-nodes",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-refusals_[too-many-nodes]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-diagrams-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsDiagramRecipes/@id-pptx-graphics-diagrams-refusals_[protected-presentation]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-smartart-inspection.json",
+      "feature": "workflows/pptx/smartart-inspection.feature",
+      "contract": "contracts/pptx-smartart-inspection.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-inspection-read",
+          "caseId": "dependency graph",
+          "goLeaf": "TestGraphicsSmartArtInspectionRecipes/@id-pptx-graphics-smartart-inspection-read_[dependency_graph]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-inspection-read",
+          "caseId": "cyclic transitive graph",
+          "goLeaf": "TestGraphicsSmartArtInspectionRecipes/@id-pptx-graphics-smartart-inspection-read_[cyclic_transitive_graph]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-inspection-read",
+          "caseId": "empty",
+          "goLeaf": "TestGraphicsSmartArtInspectionRecipes/@id-pptx-graphics-smartart-inspection-read_[empty]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-inspection-refusals",
+          "caseId": "duplicate-frame-identity",
+          "goLeaf": "TestGraphicsSmartArtInspectionRecipes/@id-pptx-graphics-smartart-inspection-refusals_[duplicate-frame-identity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-inspection-refusals",
+          "caseId": "wrong-role-relationship",
+          "goLeaf": "TestGraphicsSmartArtInspectionRecipes/@id-pptx-graphics-smartart-inspection-refusals_[wrong-role-relationship]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-inspection-refusals",
+          "caseId": "wrong-content-type",
+          "goLeaf": "TestGraphicsSmartArtInspectionRecipes/@id-pptx-graphics-smartart-inspection-refusals_[wrong-content-type]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-inspection-refusals",
+          "caseId": "wrong-root-namespace",
+          "goLeaf": "TestGraphicsSmartArtInspectionRecipes/@id-pptx-graphics-smartart-inspection-refusals_[wrong-root-namespace]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-inspection-refusals",
+          "caseId": "foreign-relationship-attribute",
+          "goLeaf": "TestGraphicsSmartArtInspectionRecipes/@id-pptx-graphics-smartart-inspection-refusals_[foreign-relationship-attribute]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-inspection-refusals",
+          "caseId": "duplicate-relIds",
+          "goLeaf": "TestGraphicsSmartArtInspectionRecipes/@id-pptx-graphics-smartart-inspection-refusals_[duplicate-relIds]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-inspection-refusals",
+          "caseId": "stale-drawing-metadata",
+          "goLeaf": "TestGraphicsSmartArtInspectionRecipes/@id-pptx-graphics-smartart-inspection-refusals_[stale-drawing-metadata]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-inspection-refusals",
+          "caseId": "external-role-root",
+          "goLeaf": "TestGraphicsSmartArtInspectionRecipes/@id-pptx-graphics-smartart-inspection-refusals_[external-role-root]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-inspection-refusals",
+          "caseId": "wrong-drawing-content-type",
+          "goLeaf": "TestGraphicsSmartArtInspectionRecipes/@id-pptx-graphics-smartart-inspection-refusals_[wrong-drawing-content-type]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-smartart-copy.json",
+      "feature": "workflows/pptx/smartart-copy.feature",
+      "contract": "contracts/pptx-smartart-copy.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-copy-copy",
+          "caseId": "cross presentation",
+          "goLeaf": "TestGraphicsSmartArtCopyRecipes/@id-pptx-graphics-smartart-copy-copy_[cross_presentation]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-copy-copy",
+          "caseId": "same slide",
+          "goLeaf": "TestGraphicsSmartArtCopyRecipes/@id-pptx-graphics-smartart-copy-copy_[same_slide]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-copy-copy",
+          "caseId": "cyclic media closure",
+          "goLeaf": "TestGraphicsSmartArtCopyRecipes/@id-pptx-graphics-smartart-copy-copy_[cyclic_media_closure]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-copy-refusals",
+          "caseId": "missing-frame",
+          "goLeaf": "TestGraphicsSmartArtCopyRecipes/@id-pptx-graphics-smartart-copy-refusals_[missing-frame]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-copy-refusals",
+          "caseId": "unsupported-dependency",
+          "goLeaf": "TestGraphicsSmartArtCopyRecipes/@id-pptx-graphics-smartart-copy-refusals_[unsupported-dependency]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-copy-refusals",
+          "caseId": "duplicate-model-identity",
+          "goLeaf": "TestGraphicsSmartArtCopyRecipes/@id-pptx-graphics-smartart-copy-refusals_[duplicate-model-identity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-copy-refusals",
+          "caseId": "dangling-model-reference",
+          "goLeaf": "TestGraphicsSmartArtCopyRecipes/@id-pptx-graphics-smartart-copy-refusals_[dangling-model-reference]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-smartart-copy-refusals",
+          "caseId": "protected-destination",
+          "goLeaf": "TestGraphicsSmartArtCopyRecipes/@id-pptx-graphics-smartart-copy-refusals_[protected-destination]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-autoshapes.json",
+      "feature": "workflows/pptx/autoshapes.feature",
+      "contract": "contracts/pptx-autoshapes.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-author",
+          "caseId": "rect",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-author_[rect]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-author",
+          "caseId": "ellipse",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-author_[ellipse]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-author",
+          "caseId": "triangle",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-author_[triangle]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-author",
+          "caseId": "diamond",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-author_[diamond]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-author",
+          "caseId": "roundRect",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-author_[roundRect]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-author",
+          "caseId": "roundRect zero",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-author_[roundRect_zero]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-author",
+          "caseId": "roundRect maximum",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-author_[roundRect_maximum]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-author",
+          "caseId": "default metadata",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-author_[default_metadata]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-refusals",
+          "caseId": "unsupported-preset",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-refusals_[unsupported-preset]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-refusals",
+          "caseId": "unknown-adjustment",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-refusals_[unknown-adjustment]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-refusals",
+          "caseId": "adjustment-on-fixed-preset",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-refusals_[adjustment-on-fixed-preset]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-refusals",
+          "caseId": "negative-adjustment",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-refusals_[negative-adjustment]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-refusals",
+          "caseId": "excess-adjustment",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-refusals_[excess-adjustment]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-refusals",
+          "caseId": "fractional-adjustment",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-refusals_[fractional-adjustment]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-refusals",
+          "caseId": "zero-extent",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-refusals_[zero-extent]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-refusals",
+          "caseId": "invalid-fill",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-refusals_[invalid-fill]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-refusals",
+          "caseId": "invalid-text",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-refusals_[invalid-text]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-autoshapes-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsAutoShapeRecipes/@id-pptx-graphics-autoshapes-refusals_[protected-presentation]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-freeform.json",
+      "feature": "workflows/pptx/freeform.feature",
+      "contract": "contracts/pptx-freeform.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-author",
+          "caseId": "closed triangle",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-author_[closed_triangle]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-author",
+          "caseId": "open polyline",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-author_[open_polyline]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-author",
+          "caseId": "multiple subpaths",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-author_[multiple_subpaths]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-author",
+          "caseId": "boundary points",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-author_[boundary_points]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-author",
+          "caseId": "default metadata",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-author_[default_metadata]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-refusals",
+          "caseId": "line-before-move",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-refusals_[line-before-move]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-refusals",
+          "caseId": "unsupported-curve",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-refusals_[unsupported-curve]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-refusals",
+          "caseId": "point-outside-path",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-refusals_[point-outside-path]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-refusals",
+          "caseId": "fractional-point",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-refusals_[fractional-point]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-refusals",
+          "caseId": "degenerate-subpath",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-refusals_[degenerate-subpath]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-refusals",
+          "caseId": "unclosed-filled-path",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-refusals_[unclosed-filled-path]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-refusals",
+          "caseId": "zero-path-dimension",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-refusals_[zero-path-dimension]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-refusals",
+          "caseId": "too-many-commands",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-refusals_[too-many-commands]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-refusals",
+          "caseId": "unknown-command-field",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-refusals_[unknown-command-field]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-freeform-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsFreeformRecipes/@id-pptx-graphics-freeform-refusals_[protected-presentation]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-z-order.json",
+      "feature": "workflows/pptx/z-order.feature",
+      "contract": "contracts/pptx-z-order.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-reorder",
+          "caseId": "full reverse",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-reorder_[full_reverse]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-reorder",
+          "caseId": "selected picture swap",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-reorder_[selected_picture_swap]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-reorder",
+          "caseId": "no-op",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-reorder_[no-op]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-reorder",
+          "caseId": "empty order",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-reorder_[empty_order]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-reorder",
+          "caseId": "group siblings",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-reorder_[group_siblings]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-reorder",
+          "caseId": "terminal extension",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-reorder_[terminal_extension]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-reorder",
+          "caseId": "mixed graphical spans",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-reorder_[mixed_graphical_spans]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-refusals",
+          "caseId": "duplicate-requested-ID",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-refusals_[duplicate-requested-ID]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-refusals",
+          "caseId": "missing-requested-ID",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-refusals_[missing-requested-ID]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-refusals",
+          "caseId": "missing-group",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-refusals_[missing-group]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-refusals",
+          "caseId": "cross-parent-selection",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-refusals_[cross-parent-selection]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-refusals",
+          "caseId": "metadata-identity",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-refusals_[metadata-identity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-refusals",
+          "caseId": "duplicate-source-identity",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-refusals_[duplicate-source-identity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-refusals",
+          "caseId": "lexical-barrier",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-refusals_[lexical-barrier]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-z-order-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsZOrderRecipes/@id-pptx-graphics-z-order-refusals_[protected-presentation]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-gradients.json",
+      "feature": "workflows/pptx/gradients.feature",
+      "contract": "contracts/pptx-gradients.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-write",
+          "caseId": "RGB stops",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-write_[RGB_stops]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-write",
+          "caseId": "theme references",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-write_[theme_references]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-write",
+          "caseId": "replace gradient",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-write_[replace_gradient]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-write",
+          "caseId": "exact no-op",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-write_[exact_no-op]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-write",
+          "caseId": "aliased no-op",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-write_[aliased_no-op]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-write",
+          "caseId": "absent fill",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-write_[absent_fill]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-refusals",
+          "caseId": "one-stop",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-refusals_[one-stop]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-refusals",
+          "caseId": "unordered-stops",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-refusals_[unordered-stops]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-refusals",
+          "caseId": "duplicate-positions",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-refusals_[duplicate-positions]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-refusals",
+          "caseId": "missing-boundary",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-refusals_[missing-boundary]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-refusals",
+          "caseId": "invalid-angle",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-refusals_[invalid-angle]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-refusals",
+          "caseId": "invalid-RGB",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-refusals_[invalid-RGB]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-refusals",
+          "caseId": "unknown-theme-token",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-refusals_[unknown-theme-token]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-refusals",
+          "caseId": "out-of-range-transform",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-refusals_[out-of-range-transform]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-refusals",
+          "caseId": "duplicate-source-fills",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-refusals_[duplicate-source-fills]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-refusals",
+          "caseId": "path-gradient",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-refusals_[path-gradient]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-refusals",
+          "caseId": "missing-shape",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-refusals_[missing-shape]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-gradients-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsGradientRecipes/@id-pptx-graphics-gradients-refusals_[protected-presentation]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-opacity.json",
+      "feature": "workflows/pptx/opacity.feature",
+      "contract": "contracts/pptx-opacity.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-shape",
+          "caseId": "theme fill",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-shape_[theme_fill]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-shape",
+          "caseId": "transparent fill",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-shape_[transparent_fill]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-shape",
+          "caseId": "opaque no-op",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-shape_[opaque_no-op]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-shape",
+          "caseId": "existing alpha",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-shape_[existing_alpha]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-shape",
+          "caseId": "RGB fill",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-shape_[RGB_fill]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-picture",
+          "caseId": "existing picture",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-picture_[existing_picture]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-picture",
+          "caseId": "picture no-op",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-picture_[picture_no-op]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-picture",
+          "caseId": "opaque picture",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-picture_[opaque_picture]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-picture",
+          "caseId": "transparent picture",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-picture_[transparent_picture]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-picture",
+          "caseId": "absent picture effect",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-picture_[absent_picture_effect]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-picture",
+          "caseId": "grouped picture",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-picture_[grouped_picture]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-picture",
+          "caseId": "linked picture",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-picture_[linked_picture]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-refusals",
+          "caseId": "negative-opacity",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-refusals_[negative-opacity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-refusals",
+          "caseId": "excess-opacity",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-refusals_[excess-opacity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-refusals",
+          "caseId": "fractional-opacity",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-refusals_[fractional-opacity]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-refusals",
+          "caseId": "negative-transparency",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-refusals_[negative-transparency]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-refusals",
+          "caseId": "excess-transparency",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-refusals_[excess-transparency]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-refusals",
+          "caseId": "duplicate-shape-alpha",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-refusals_[duplicate-shape-alpha]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-refusals",
+          "caseId": "competing-picture-alpha",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-refusals_[competing-picture-alpha]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-refusals",
+          "caseId": "duplicate-picture-effect",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-refusals_[duplicate-picture-effect]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-refusals",
+          "caseId": "foreign-alpha-attribute",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-refusals_[foreign-alpha-attribute]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-refusals",
+          "caseId": "no-solid-fill",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-refusals_[no-solid-fill]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-refusals",
+          "caseId": "missing-picture",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-refusals_[missing-picture]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-opacity-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsOpacityRecipes/@id-pptx-graphics-opacity-refusals_[protected-presentation]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-outlines.json",
+      "feature": "workflows/pptx/outlines.feature",
+      "contract": "contracts/pptx-outlines.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-patch",
+          "caseId": "shape arrows",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-patch_[shape_arrows]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-patch",
+          "caseId": "miter and triple",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-patch_[miter_and_triple]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-patch",
+          "caseId": "bevel and thick thin",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-patch_[bevel_and_thick_thin]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-patch",
+          "caseId": "thin thick",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-patch_[thin_thick]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-patch",
+          "caseId": "connector arrows",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-patch_[connector_arrows]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-patch",
+          "caseId": "exact no-op",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-patch_[exact_no-op]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-patch",
+          "caseId": "remove decorations",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-patch_[remove_decorations]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-patch",
+          "caseId": "empty patch",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-patch_[empty_patch]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-patch",
+          "caseId": "colour dash extension custody",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-patch_[colour_dash_extension_custody]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-patch",
+          "caseId": "aliased scalar update",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-patch_[aliased_scalar_update]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-refusals",
+          "caseId": "invalid-cap",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-refusals_[invalid-cap]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-refusals",
+          "caseId": "invalid-compound",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-refusals_[invalid-compound]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-refusals",
+          "caseId": "invalid-arrow",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-refusals_[invalid-arrow]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-refusals",
+          "caseId": "invalid-arrow-size",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-refusals_[invalid-arrow-size]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-refusals",
+          "caseId": "negative-miter",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-refusals_[negative-miter]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-refusals",
+          "caseId": "unknown-patch-field",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-refusals_[unknown-patch-field]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-refusals",
+          "caseId": "duplicate-join",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-refusals_[duplicate-join]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-refusals",
+          "caseId": "foreign-cap",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-refusals_[foreign-cap]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-refusals",
+          "caseId": "missing-line",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-refusals_[missing-line]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-refusals",
+          "caseId": "missing-shape",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-refusals_[missing-shape]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-graphics-outlines-refusals",
+          "caseId": "protected-presentation",
+          "goLeaf": "TestGraphicsOutlineRecipes/@id-pptx-graphics-outlines-refusals_[protected-presentation]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "ledger": "ledgers/pptx-smartart-office-source.json",
+      "feature": "workflows/pptx/smartart-office-source.feature",
+      "contract": "contracts/pptx-smartart-office-source.md",
+      "cases": [
+        {
+          "scenarioId": "@id-pptx-smartart-office-source-inspection",
+          "caseId": "inspection",
+          "goLeaf": "TestGraphicsSmartArtSealedSourceInspection/@id-pptx-smartart-office-source-inspection_[inspection]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-smartart-office-source-copy",
+          "caseId": "cross-presentation",
+          "goLeaf": "TestGraphicsSmartArtSealedSourceCopies/@id-pptx-smartart-office-source-copy_[cross-presentation]",
+          "status": "passed"
+        },
+        {
+          "scenarioId": "@id-pptx-smartart-office-source-copy",
+          "caseId": "same-slide",
+          "goLeaf": "TestGraphicsSmartArtSealedSourceCopies/@id-pptx-smartart-office-source-copy_[same-slide]",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Native recipe leaf execution only; no shared lifecycle or Gherkin-step execution credit",
+    "Hashes check sealed input provenance only; generated outputs are checked by semantic and lexical custody tests",
+    "LibreOffice quality results are recorded separately; no Microsoft application certification or general visual equivalence"
+  ]
+}

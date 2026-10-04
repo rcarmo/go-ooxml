@@ -1,6 +1,6 @@
 # Bounded PowerPoint graphics parity
 
-The Go port targets the twenty Bun graphics operations and its admitted SmartArt source encoding, using centrally sealed workflows, recipes and literal expected results. LibreOffice is the application quality gate. Microsoft Office testing is not required for this task.
+Go implements all twenty bounded Bun graphics operations and its admitted SmartArt source encoding. All 320 original recipe cases and three sealed-source cases pass, using centrally sealed workflows, recipes and literal expected results. LibreOffice is the application quality gate. Microsoft Office testing is not required for this task.
 
 ## Shared inputs and tests
 
@@ -15,6 +15,12 @@ OOXML_GRAPHICS_ROOT=/path/to/fixtures-ooxml GOMAXPROCS=2 make test-batch
 ```
 
 The new graphics helper verifies the clean committed checkout, root manifest seal, fixture IDs and sealed recipe/contract/feature bytes. It uses an independent ZIP reader to apply the literal recipes to temporary in-memory archives. Shared files remain unchanged. These tests do not change the default acceptance selector or grant shared lifecycle credit.
+
+## Specification and implementation boundaries
+
+The sealed shared candidate and Bun baseline define the expected behaviour. Go API constraints and LibreOffice import/export observations are recorded below as implementation or oracle limits. They do not add shared requirements, exclusions or permitted results. A port that fails a shared expectation needs a fix or an explicit unresolved gap; its behaviour alone does not justify changing that expectation.
+
+The final hardening changes only Go tests, development tooling and evidence. Shared contracts, recipes, workflows and expected values remain unchanged. LibreOffice normalisations do not relax native scalar, geometry or byte-custody assertions.
 
 ## Implemented slices
 
@@ -149,4 +155,17 @@ All twenty-one shared cases pass with exact decoded records, detached returns, t
 
 ## Final reconciliation
 
-All twenty slices and the three sealed-source SmartArt cases are implemented in the graphics candidate tests. Final case reconciliation and combined fresh/full quality evidence are recorded separately before parity closure. Shared lifecycle remains planned and the default released pin is unchanged.
+[`graphics-reconciliation.json`](../interop/graphics-reconciliation.json) maps all 320 original cases across 54 IDs and all three sealed-source cases across two IDs to exactly one passing Go leaf. It verifies 65 referenced sealed assets: twenty-one recipes, contracts and workflows each, plus the two input presentations. Fixture provenance and licence metadata stay in the sealed shared checkout. Missing, skipped, failed, duplicate and unmatched recipe leaves reject reconciliation. Main and isolated checkouts pass the same inventory.
+
+```sh
+GOMAXPROCS=2 make graphics-reconcile
+GOMAXPROCS=2 make graphics-quality
+```
+
+The first target writes fresh Go JSON events and native outputs under `artifacts/graphics/final`; the second runs all seventeen optional LibreOffice oracles on those outputs. Set `GRAPHICS_ROOT` and `GRAPHICS_EVIDENCE` to use isolated input/output directories.
+
+[`graphics-quality.json`](../interop/graphics-quality.json) records 116 passing LibreOffice 24.2.7.2 checks, selected native-label edits, PDF exports and measured geometry/scalar custody. Linked cases and the impractical large-placement probe stay native-only. SmartArt imports as six-child groups. Fully transparent solid fill normalises to `noFill`. Visual equivalence, full compound-line semantics and SmartArt semantic editing are untested.
+
+Default and candidate-enabled root/acceptance batches pass in both checkouts. Oracle Python compilation passes. Explicit `go vet` reports two pre-existing `WriteTo` signature warnings in `pkg/packaging/package.go` and `preserved.go`; these APIs are unchanged. Raw logs, outputs and render previews are retained locally under `/workspace/analysis/ooxml-go-graphics-20261003/final`.
+
+Style tests now compare literal slide XML outside the selected fill/alpha/outline spans. Sealed SmartArt tests check detached inspection, save/reopen byte custody, every remapped instance scalar, all six unique drawing IDs, copied role roots, template bytes and unchanged destination siblings/registries. Shared lifecycle stays planned; the default released pin, gitlink and published tags are unchanged.

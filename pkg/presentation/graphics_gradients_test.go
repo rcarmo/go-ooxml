@@ -86,6 +86,7 @@ func TestGraphicsGradientRecipes(t *testing.T) {
 				t.Fatal("gradient literal readback", got, e)
 			}
 			after := graphicsSessionMembers(t, s)
+			graphicsAssertStyleCustody(t, before[r.SlidePart], after[r.SlidePart], c.Request.ShapeID, "gradient")
 			for n, b := range before {
 				if n != r.SlidePart || changed == 0 {
 					if !bytes.Equal(b, after[n]) {

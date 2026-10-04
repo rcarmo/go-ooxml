@@ -1,0 +1,1173 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "bunBaseline": "ee7bac4c334b35eed0a01704962475d55776de6e",
+  "goImplementation": "9afdf243299a888442eb1db70a3ec18d184616eb",
+  "sharedCandidate": "0cf83c156c8e9433347e446e58c415db011b17be",
+  "releasedReference": "28e492f50979aaec6ab8d8d001cd9c37790e7fc6",
+  "reconciliation": {
+    "originalCases": 320,
+    "originalIDs": 54,
+    "sealedSourceCases": 3,
+    "sealedSourceIDs": 2,
+    "sealedAssets": 65,
+    "main": "passed",
+    "isolated": "passed"
+  },
+  "gates": {
+    "mainDefaultBatch": "passed",
+    "mainGraphicsCandidateBatch": "passed",
+    "isolatedDefaultBatch": "passed",
+    "isolatedGraphicsCandidateBatch": "passed",
+    "pythonOracleCompilation": "passed",
+    "explicitGoVet": {
+      "status": "warnings",
+      "details": [
+        "Existing pkg/packaging/package.go:180 WriteTo signature differs from io.WriterTo",
+        "Existing pkg/packaging/preserved.go:179 WriteTo signature differs from io.WriterTo"
+      ]
+    }
+  },
+  "qualityOracles": 17,
+  "qualityChecks": 116,
+  "quality": [
+    {
+      "oracle": "autoshapes-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 8,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "autoshapes-default metadata.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "shapesPreserved": 1,
+          "editedLabelPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "autoshapes-diamond.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "shapesPreserved": 1,
+          "editedLabelPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "autoshapes-ellipse.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "shapesPreserved": 1,
+          "editedLabelPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "autoshapes-rect.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "shapesPreserved": 1,
+          "editedLabelPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "autoshapes-roundRect maximum.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "shapesPreserved": 1,
+          "editedLabelPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "autoshapes-roundRect zero.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "shapesPreserved": 1,
+          "editedLabelPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "autoshapes-roundRect.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "shapesPreserved": 1,
+          "editedLabelPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "autoshapes-triangle.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "shapesPreserved": 1,
+          "editedLabelPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "Eight preset variants; native shape label edited through UNO and retained on save/reopen; full preset guide and visual fidelity not compared",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "connectors-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 6,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "connectors-bottom to top.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "connectorsPreserved": 1,
+          "attachmentsPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "connectors-decreasing direction.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "connectorsPreserved": 1,
+          "attachmentsPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "connectors-odd midpoint.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "connectorsPreserved": 1,
+          "attachmentsPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "connectors-reverse endpoints.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "connectorsPreserved": 1,
+          "attachmentsPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "connectors-right to left.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "connectorsPreserved": 1,
+          "attachmentsPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "connectors-top to bottom.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "connectorsPreserved": 1,
+          "attachmentsPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "Six attached connector variants; endpoints and site indices survive save/reopen; no independent routing/visual comparison",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "delete-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 10,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "picture-delete-SVG pair.pptx",
+          "picturesImported": 0,
+          "picturesReopened": 0,
+          "deletedPictureAbsent": true,
+          "maximumGeometryDeltaHundredthsMm": 0
+        },
+        {
+          "file": "picture-delete-collect unique.pptx",
+          "picturesImported": 0,
+          "picturesReopened": 0,
+          "deletedPictureAbsent": true,
+          "maximumGeometryDeltaHundredthsMm": 0
+        },
+        {
+          "file": "picture-delete-comment reference.pptx",
+          "picturesImported": 0,
+          "picturesReopened": 0,
+          "deletedPictureAbsent": true,
+          "maximumGeometryDeltaHundredthsMm": 0
+        },
+        {
+          "file": "picture-delete-grouped.pptx",
+          "picturesImported": 0,
+          "picturesReopened": 0,
+          "deletedPictureAbsent": true,
+          "maximumGeometryDeltaHundredthsMm": 0
+        },
+        {
+          "file": "picture-delete-opaque reference.pptx",
+          "picturesImported": 0,
+          "picturesReopened": 0,
+          "deletedPictureAbsent": true,
+          "maximumGeometryDeltaHundredthsMm": 0
+        },
+        {
+          "file": "picture-delete-opaque text.pptx",
+          "picturesImported": 0,
+          "picturesReopened": 0,
+          "deletedPictureAbsent": true,
+          "maximumGeometryDeltaHundredthsMm": 0
+        },
+        {
+          "file": "picture-delete-other owner reference.pptx",
+          "picturesImported": 0,
+          "picturesReopened": 0,
+          "deletedPictureAbsent": true,
+          "maximumGeometryDeltaHundredthsMm": 0
+        },
+        {
+          "file": "picture-delete-retain dependencies.pptx",
+          "picturesImported": 0,
+          "picturesReopened": 0,
+          "deletedPictureAbsent": true,
+          "maximumGeometryDeltaHundredthsMm": 0
+        },
+        {
+          "file": "picture-delete-shared media.pptx",
+          "picturesImported": 0,
+          "picturesReopened": 0,
+          "deletedPictureAbsent": true,
+          "maximumGeometryDeltaHundredthsMm": 0
+        },
+        {
+          "file": "picture-delete-shared relationship.pptx",
+          "picturesImported": 0,
+          "picturesReopened": 0,
+          "deletedPictureAbsent": true,
+          "maximumGeometryDeltaHundredthsMm": 0
+        }
+      ],
+      "limits": [
+        "Deletion outputs except linked input (avoid fetch); absent target and remaining imported picture counts/names tested",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "diagrams-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 5,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "diagrams-column chain.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "nodesPreserved": 3,
+          "connectorsPreserved": 2,
+          "attachmentsPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "diagrams-nodes only.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "nodesPreserved": 3,
+          "connectorsPreserved": 0,
+          "attachmentsPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "diagrams-practical.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "nodesPreserved": 3,
+          "connectorsPreserved": 2,
+          "attachmentsPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "diagrams-reverse and cycle.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "nodesPreserved": 3,
+          "connectorsPreserved": 2,
+          "attachmentsPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "diagrams-row chain.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "nodesPreserved": 3,
+          "connectorsPreserved": 2,
+          "attachmentsPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "Four contract probes plus practical diagram; node labels and attached connectors survive save/reopen; practical label edited through UNO and PDF produced; no independent routing/visual comparison",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "freeform-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 5,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "freeform-boundary points.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "freeformObjectsPreserved": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "freeform-closed triangle.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "freeformObjectsPreserved": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "freeform-default metadata.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "freeformObjectsPreserved": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "freeform-multiple subpaths.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "freeformObjectsPreserved": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "freeform-open polyline.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "freeformObjectsPreserved": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "Five custom vector variants retain editable drawing-object type/name on save/reopen; path evaluation and visual fidelity not compared",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "gradients-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 6,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "gradients-RGB stops.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "gradientPropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "gradients-absent fill.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "gradientPropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "gradients-aliased no-op.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "gradientPropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "gradients-exact no-op.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "gradientPropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "gradients-replace gradient.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "gradientPropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "gradients-theme references.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "gradientPropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "Six gradient targets import as gradient fill and preserve UNO gradient scalars on save/reopen; full theme stop/visual equivalence not compared",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "group-transform-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 6,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "group-transform-child frame.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "groupChildPictures": 1,
+          "groupsPreserved": 1,
+          "childrenPerGroup": 1,
+          "maximumGeometryDeltaHundredthsMm": 2
+        },
+        {
+          "file": "group-transform-empty patch.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "groupChildPictures": 1,
+          "groupsPreserved": 1,
+          "childrenPerGroup": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "group-transform-no-op.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "groupChildPictures": 1,
+          "groupsPreserved": 1,
+          "childrenPerGroup": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "group-transform-orientation.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "groupChildPictures": 1,
+          "groupsPreserved": 1,
+          "childrenPerGroup": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "group-transform-resize.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "groupChildPictures": 1,
+          "groupsPreserved": 1,
+          "childrenPerGroup": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "group-transform-translate.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "groupChildPictures": 1,
+          "groupsPreserved": 1,
+          "childrenPerGroup": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "Six group-frame variants; group remains with its picture child; raster geometry measured, no independent visual fidelity",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Nested group/child composed position tolerance: 0.02 mm (two independently quantised UNO coordinates); observed max=0.02 mm in child-frame variant",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "group-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 4,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "shape-group-default name.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "groupChildPictures": 1,
+          "groupsPreserved": 1,
+          "childrenPerGroup": 2,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "shape-group-picture and text.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "groupChildPictures": 1,
+          "groupsPreserved": 1,
+          "childrenPerGroup": 2,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "shape-group-source order.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "groupChildPictures": 1,
+          "groupsPreserved": 1,
+          "childrenPerGroup": 2,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "shape-group-terminal extension.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "groupChildPictures": 1,
+          "groupsPreserved": 1,
+          "childrenPerGroup": 2,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "Four successful grouping variants; group has two editable child objects and text survives save/reopen; no independent visual fidelity",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "insertion-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 6,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "picture-insertion-conflicting-MIME.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "insertedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-insertion-jpeg.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "insertedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-insertion-orphan-collision.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "insertedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-insertion-png.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "insertedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-insertion-repeat-png.pptx",
+          "picturesImported": 3,
+          "picturesReopened": 3,
+          "insertedPictures": 2,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-insertion-terminal-extension.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "insertedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "One successful output per shared insertion variant; no independent image visual fidelity",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "metadata-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 14,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "picture-crop-absent-zero.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-crop-absent.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-crop-aliased.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-crop-existing.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-crop-grouped.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-crop-no-op.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-crop-reset.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-transform-aliased.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-transform-empty patch.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-transform-flips.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-transform-grouped.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-transform-no-op.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-transform-reset.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-transform-rotation.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "Embedded crop/transform outputs only; linked cases excluded to avoid external fetching; no independent visual fidelity",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "opacity-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 11,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "opacity-RGB fill.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "opacity-absent picture effect.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "opacity-existing alpha.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "opacity-existing picture.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "opacity-grouped picture.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "opacity-opaque no-op.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "opacity-opaque picture.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "opacity-picture no-op.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "opacity-theme fill.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "opacity-transparent fill.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "opacity-transparent picture.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "Eleven shape/picture alpha outputs; linked case excluded to avoid fetching; literal UNO transparency and reopened scalar checked; fully transparent fill may normalise to noFill; no visual fidelity",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": [
+        {
+          "file": "opacity-transparent fill.pptx",
+          "change": "100% transparent solid fill exported as noFill; scalar changes from100 to0 but effective fill is absent"
+        }
+      ]
+    },
+    {
+      "oracle": "outlines-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 10,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "outlines-aliased scalar update.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "linePropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "outlines-bevel and thick thin.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "linePropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "outlines-colour dash extension custody.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "linePropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "outlines-connector arrows.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "linePropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "outlines-empty patch.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "linePropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "outlines-exact no-op.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "linePropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "outlines-miter and triple.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "linePropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "outlines-remove decorations.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "linePropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "outlines-shape arrows.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "linePropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "outlines-thin thick.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "linePropertiesPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "Ten outline outputs retain inspected cap/join/arrow/line scalar properties; compound semantics and visual fidelity not compared",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "placement-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 8,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "picture-placement-contain landscape.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-placement-contain odd.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-placement-contain portrait.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-placement-cover fractional.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-placement-cover landscape.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-placement-cover portrait.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-placement-equal aspect.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-placement-stretch landscape.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "selectedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "Eight fit outputs; large-rational case excluded because its 2^31-sized extents exceed practical application dimensions; no visual fidelity claim",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "replacement-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 6,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "picture-replacement-JPEG.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "replacedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-replacement-PNG.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "replacedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-replacement-aliased-prefix.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "replacedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-replacement-grouped.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "replacedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-replacement-shared-media.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "replacedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-replacement-shared-relationship.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "replacedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "One successful output per shared replacement variant; no independent image visual fidelity",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "smartart-outputs/libreoffice/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 3,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "smartart-source.pptx",
+          "groups": 1,
+          "texts": [],
+          "maximumGroupGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "smartart-cross-presentation.pptx",
+          "groups": 1,
+          "texts": [
+            "Copied source SmartArt"
+          ],
+          "maximumGroupGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "smartart-same-slide.pptx",
+          "groups": 2,
+          "texts": [],
+          "maximumGroupGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "No Microsoft PowerPoint application test",
+        "No SmartArt semantic editing or visual equivalence",
+        "LibreOffice imports these drawings as groups; six children and group geometry inspected",
+        "PPTX export classification-label content type prevents SDK reopening"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "svg-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 2,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "picture-svg-JPEG.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "insertedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "picture-svg-PNG.pptx",
+          "picturesImported": 2,
+          "picturesReopened": 2,
+          "insertedPictures": 1,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "SVG with PNG/JPEG caller fallback import/save/reopen; no visual equivalence of SVG and fallback",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    },
+    {
+      "oracle": "z-order-uno/report.json",
+      "status": "passed",
+      "producer": "LibreOffice 24.2.7.2 420(Build:2)",
+      "checks": 6,
+      "interactions": [],
+      "rows": [
+        {
+          "file": "z-order-empty order.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "graphicalNamesOrderPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "z-order-full reverse.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "graphicalNamesOrderPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "z-order-group siblings.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "graphicalNamesOrderPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "z-order-no-op.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "graphicalNamesOrderPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "z-order-selected picture swap.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "graphicalNamesOrderPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        },
+        {
+          "file": "z-order-terminal extension.pptx",
+          "picturesImported": 1,
+          "picturesReopened": 1,
+          "graphicalNamesOrderPreserved": true,
+          "maximumGeometryDeltaHundredthsMm": 1
+        }
+      ],
+      "limits": [
+        "Six original graphical ordering variants retain imported name/order after save/reopen; synthetic empty mixed frames excluded; no overlap/visual comparison",
+        "PPTX export changes unsupported original vector picture into a shape",
+        "Picture position/extents comparison tolerance: 0.01 mm",
+        "Not Microsoft PowerPoint application evidence"
+      ],
+      "normalisations": []
+    }
+  ],
+  "limits": [
+    "Bounded Bun graphics parity, no shared lifecycle changes or Gherkin-step execution credit",
+    "LibreOffice import/export object/scalar checks plus selected label edits and PDF export; full visual equivalence and SmartArt semantic editing untested",
+    "Linked quality samples excluded to avoid external fetching",
+    "Runtime standard library only; optional development oracles use LibreOffice/system UNO"
+  ]
+}

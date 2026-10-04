@@ -91,6 +91,11 @@ func TestGraphicsOpacityRecipes(t *testing.T) {
 				t.Fatal("alpha readback", got, e)
 			}
 			after := graphicsSessionMembers(t, s)
+			profile := "shape-alpha"
+			if c.Request.Profile == "picture" {
+				profile = "picture-alpha"
+			}
+			graphicsAssertStyleCustody(t, before[r.SlidePart], after[r.SlidePart], c.Request.ShapeID, profile)
 			if len(after) != len(before) {
 				t.Fatal("alpha membership")
 			}

@@ -93,6 +93,7 @@ func TestGraphicsOutlineRecipes(t *testing.T) {
 				t.Fatal("outline aliasing")
 			}
 			after := graphicsSessionMembers(t, s)
+			graphicsAssertStyleCustody(t, before[r.SlidePart], after[r.SlidePart], c.Request.ShapeID, "outline")
 			if len(after) != len(before) {
 				t.Fatal("outline membership")
 			}

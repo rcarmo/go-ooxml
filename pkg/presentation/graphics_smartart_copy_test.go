@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -106,8 +107,19 @@ func graphicsVerifySmartCopy(t *testing.T, source, target *EditSession, sourcePa
 			copied = &b[i]
 		}
 	}
-	if copied == nil || len(copied.Parts) != len(original.Parts) {
+	if copied == nil || len(copied.Parts) != len(original.Parts) || len(copied.Roots) != len(original.Roots) {
 		t.Fatal("copied graph closure")
+	}
+	for _, root := range original.Roots {
+		found := false
+		for _, next := range copied.Roots {
+			if next.Role == root.Role && next.PartName == receipt.PartMap[root.PartName] {
+				found = true
+			}
+		}
+		if !found {
+			t.Fatal("copied role root mapping", root)
+		}
 	}
 	after := graphicsSessionMembers(t, target)
 	for _, p := range original.Parts {
@@ -270,9 +282,12 @@ func TestGraphicsSmartArtSealedSourceCopies(t *testing.T) {
 	if e := json.Unmarshal(graphicsReadAsset(t, root, assets, "ledgers/pptx-smartart-office-source.json"), &r); e != nil {
 		t.Fatal(e)
 	}
+	graphicsReadAsset(t, root, assets, "workflows/pptx/smartart-office-source.feature")
+	graphicsReadAsset(t, root, assets, "contracts/pptx-smartart-office-source.md")
 	input := graphicsReadAsset(t, root, assets, r.FixtureID)
+	original := bytes.Clone(input)
 	for _, same := range []bool{false, true} {
-		t.Run(map[bool]string{false: "cross-presentation", true: "same-slide"}[same], func(t *testing.T) {
+		t.Run("@id-pptx-smartart-office-source-copy ["+map[bool]string{false: "cross-presentation", true: "same-slide"}[same]+"]", func(t *testing.T) {
 			source, e := OpenEditing(input, packaging.Limits{})
 			if e != nil {
 				t.Fatal(e)
@@ -283,11 +298,29 @@ func TestGraphicsSmartArtSealedSourceCopies(t *testing.T) {
 			}
 			part := "ppt/slides/slide1.xml"
 			sb, tb := graphicsSessionMembers(t, source), graphicsSessionMembers(t, target)
+			version := target.generation
 			receipt, e := target.CopySmartArtFrom(part, source, part, 4)
 			if e != nil {
 				t.Fatal(e)
 			}
-			if len(receipt.PartMap) != 5 || len(receipt.ModelIDMap) != 46 || len(receipt.DrawingIDMap) != 6 {
+			maxID := uint64(0)
+			targetDoc, err := losslessxml.Parse(tb[part])
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, n := range targetDoc.Elements() {
+				if n.Name() == name(packaging.NSPresentationML, "cNvPr") {
+					raw, _ := graphicsAttr(n, "", "id")
+					v, err := strconv.ParseUint(raw, 10, 32)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if v > maxID {
+						maxID = v
+					}
+				}
+			}
+			if uint64(receipt.ShapeID) != maxID+1 || target.generation != version+1 || !bytes.Equal(input, original) || len(receipt.PartMap) != 5 || len(receipt.ModelIDMap) != 46 || len(receipt.DrawingIDMap) != 6 {
 				t.Fatal("source copy maps")
 			}
 			graphicsVerifySmartCopy(t, source, target, part, part, 4, receipt, sb, tb, same)
@@ -324,6 +357,7 @@ func TestGraphicsSmartArtSealedSourceCopies(t *testing.T) {
 			if !found {
 				t.Fatal("copied slide drawing binding")
 			}
+			graphicsAssertSealedSmartCopy(t, target, part, receipt, sb, tb, rid)
 			var out bytes.Buffer
 			if e = target.pkg.WriteTo(&out); e != nil {
 				t.Fatal(e)
@@ -336,4 +370,158 @@ func TestGraphicsSmartArtSealedSourceCopies(t *testing.T) {
 		})
 	}
 	graphicsWriteOutput(t, root, "smartart-source.pptx", input)
+}
+
+// Compare parsed attributes independently, then mask only their original value
+// spans. Template IDs, URIs, text, prefixes, whitespace and quotes stay literal.
+func graphicsAssertSealedSmartCopy(t *testing.T, target *EditSession, part string, receipt SmartArtCopyReceipt, sourceBefore, targetBefore map[string][]byte, drawingRID string) {
+	t.Helper()
+	after := graphicsSessionMembers(t, target)
+	if len(after) != len(targetBefore)+5 {
+		t.Fatal("exact sealed copy membership")
+	}
+	fresh := map[string]bool{}
+	for old, next := range receipt.ModelIDMap {
+		if !graphicsGUID.MatchString(next) || fresh[next] || old == next {
+			t.Fatal("unique fresh model GUID", old, next)
+		}
+		fresh[next] = true
+	}
+	refs := map[string]bool{}
+	drawings := map[uint32]bool{}
+	for _, p := range []string{"ppt/diagrams/data1.xml", "ppt/diagrams/drawing1.xml"} {
+		old, e := losslessxml.Parse(sourceBefore[p])
+		if e != nil {
+			t.Fatal(e)
+		}
+		next, e := losslessxml.Parse(after[receipt.PartMap[p]])
+		if e != nil {
+			t.Fatal(e)
+		}
+		a, b := old.Elements(), next.Elements()
+		if len(a) != len(b) {
+			t.Fatal("instance element topology")
+		}
+		oldEdits, newEdits := []losslessxml.AttributeEdit{}, []losslessxml.AttributeEdit{}
+		drawingIndex := 0
+		for i, n := range a {
+			if n.Name() != b[i].Name() {
+				t.Fatal("instance element identity")
+			}
+			attrs := n.Attributes()
+			if len(attrs) != len(b[i].Attributes()) {
+				t.Fatal("instance attribute topology")
+			}
+			for j, attr := range attrs {
+				want := attr.Value
+				allowed := false
+				if attr.Name.Space == "" && graphicsChoice(attr.Name.Local, []string{"modelId", "srcId", "destId", "cxnId", "parTransId", "sibTransId", "presId", "presAssocID"}) {
+					if mapped, ok := receipt.ModelIDMap[attr.Value]; ok {
+						want = mapped
+						allowed = true
+						refs[attr.Value] = true
+					}
+				}
+				if n.Name() == name(graphicsPersistDiagramNS, "cNvPr") && attr.Name == name("", "id") {
+					key := p + "#0@" + strconv.Itoa(drawingIndex)
+					drawingIndex++
+					mapped, ok := receipt.DrawingIDMap[key]
+					if !ok || mapped == 0 || drawings[mapped] {
+						t.Fatal("zero drawing identity isolation", key)
+					}
+					drawings[mapped] = true
+					want = strconv.FormatUint(uint64(mapped), 10)
+					allowed = true
+				}
+				if n.Name() == name(graphicsPersistDiagramNS, "dataModelExt") && attr.Name == name("", "relId") {
+					want = drawingRID
+					allowed = true
+				}
+				got := b[i].Attributes()[j]
+				if got.Name != attr.Name || got.Value != want {
+					t.Fatal("copied instance attribute", p, n.Name(), attr.Name, got.Value, want)
+				}
+				if allowed {
+					oldEdits = append(oldEdits, losslessxml.AttributeEdit{Target: n, Name: attr.Name, Value: "MASK"})
+					newEdits = append(newEdits, losslessxml.AttributeEdit{Target: b[i], Name: attr.Name, Value: "MASK"})
+				}
+			}
+		}
+		maskedOld, e := old.Edit(nil, oldEdits)
+		if e != nil {
+			t.Fatal(e)
+		}
+		maskedNew, e := next.Edit(nil, newEdits)
+		if e != nil {
+			t.Fatal(e)
+		}
+		if !bytes.Equal(maskedOld, maskedNew) {
+			t.Fatal("instance XML changed outside remapped scalar spans", p)
+		}
+	}
+	if len(refs) != 46 || len(drawings) != 6 {
+		t.Fatal("all sealed instance identities must be checked")
+	}
+	slide, e := losslessxml.Parse(after[part])
+	if e != nil {
+		t.Fatal(e)
+	}
+	var copied []losslessxml.Element
+	for _, n := range slide.Elements() {
+		if n.Name() != name(packaging.NSPresentationML, "graphicFrame") {
+			continue
+		}
+		nv, e := graphicsOne(slide, n, packaging.NSPresentationML, "nvGraphicFramePr", false)
+		if e != nil {
+			t.Fatal(e)
+		}
+		props, e := graphicsOne(slide, nv, packaging.NSPresentationML, "cNvPr", false)
+		if e != nil {
+			t.Fatal(e)
+		}
+		id, _ := graphicsAttr(props, "", "id")
+		if id == strconv.FormatUint(uint64(receipt.ShapeID), 10) {
+			copied = append(copied, n)
+		}
+	}
+	if len(copied) != 1 {
+		t.Fatal("one appended frame")
+	}
+	unchanged, e := slide.RemoveElements(copied)
+	if e != nil || !bytes.Equal(unchanged, targetBefore[part]) {
+		t.Fatal("destination literal frame/sibling custody", e)
+	}
+	for _, registry := range []string{packaging.RelationshipsPathForPart(part), packaging.ContentTypesPath} {
+		d, e := losslessxml.Parse(after[registry])
+		if e != nil {
+			t.Fatal(e)
+		}
+		remove := []losslessxml.Element{}
+		original, e := losslessxml.Parse(targetBefore[registry])
+		if e != nil {
+			t.Fatal(e)
+		}
+		known := map[string]bool{}
+		key := "Id"
+		if registry == packaging.ContentTypesPath {
+			key = "PartName"
+		}
+		for _, n := range original.Elements()[1:] {
+			v, _ := graphicsAttr(n, "", key)
+			known[v] = true
+		}
+		for _, n := range d.Elements()[1:] {
+			v, _ := graphicsAttr(n, "", key)
+			if !known[v] {
+				remove = append(remove, n)
+			}
+		}
+		if len(remove) != 5 {
+			t.Fatal("exactly five registry additions", registry, len(remove))
+		}
+		retained, e := d.RemoveElements(remove)
+		if e != nil || !bytes.Equal(retained, targetBefore[registry]) {
+			t.Fatal("unrelated registry lexical custody", registry, e)
+		}
+	}
 }

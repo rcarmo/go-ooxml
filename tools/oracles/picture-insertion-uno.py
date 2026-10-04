@@ -36,7 +36,7 @@ try:
  def load(path):
   doc=desktop.loadComponentFromURL(uno.systemPathToFileUrl(path),'_blank',0,(prop('Hidden',True),prop('MacroExecutionMode',NEVER_EXECUTE),prop('UpdateDocMode',0),prop('InteractionHandler',handler)));assert doc is not None;return doc
  for file in sorted(os.listdir(ROOT+'/insertion-outputs')):
-  if not file.endswith('.pptx'):continue
+  if not file.startswith('picture-insertion-') or not file.endswith('.pptx'):continue
   doc=load(ROOT+'/insertion-outputs/'+file)
   try:
    old=snapshot(doc);assert len(old)==1

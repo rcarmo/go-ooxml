@@ -59,6 +59,27 @@ GRAPHICS_ROOT ?= $(abspath ../fixtures-ooxml)
 graphics-test: ## Run graphics-related packages against the sealed shared candidate
 	OOXML_GRAPHICS_ROOT="$(GRAPHICS_ROOT)" GOMAXPROCS=2 $(GO) test -p $(TEST_JOBS) ./pkg/presentation ./pkg/packaging ./internal/losslessxml
 
+GRAPHICS_EVIDENCE ?= $(abspath artifacts/graphics/final)
+.PHONY: graphics-reconcile graphics-quality
+graphics-reconcile: ## Reconcile every sealed graphics recipe with a passing Go leaf
+	mkdir -p "$(GRAPHICS_EVIDENCE)/outputs"
+	OOXML_GRAPHICS_ROOT="$(GRAPHICS_ROOT)" OOXML_GRAPHICS_OUTPUT="$(GRAPHICS_EVIDENCE)/outputs" GOMAXPROCS=2 $(GO) test -count=1 -json -p $(TEST_JOBS) ./pkg/presentation ./pkg/packaging ./internal/losslessxml > "$(GRAPHICS_EVIDENCE)/go-events.jsonl"
+	GOMAXPROCS=2 $(GO) run ./tools/graphicsreconcile -root "$(GRAPHICS_ROOT)" -events "$(GRAPHICS_EVIDENCE)/go-events.jsonl" -output "$(GRAPHICS_EVIDENCE)/reconciliation.json"
+
+# Generate once with graphics-reconcile; all optional oracles share those outputs.
+graphics-quality: ## Run all LibreOffice quality oracles on reconciled outputs
+	@test -f "$(GRAPHICS_EVIDENCE)/reconciliation.json"
+	@set -e; for spec in insertion:picture-insertion replacement:picture-replacement metadata:picture placement:picture-placement svg:picture-svg delete:picture-delete group:shape-group group-transform:group-transform connectors:connectors diagrams:diagrams smartart:smartart autoshapes:autoshapes freeform:freeform z-order:z-order gradients:gradients opacity:opacity outlines:outlines; do \
+		name=$${spec%%:*}; prefix=$${spec#*:}; \
+		mkdir -p "$(GRAPHICS_EVIDENCE)/quality/$$name-outputs"; \
+		cp "$(GRAPHICS_EVIDENCE)/outputs/$$prefix-"*.pptx "$(GRAPHICS_EVIDENCE)/quality/$$name-outputs/"; \
+	done
+	@set -e; for oracle in picture-insertion picture-replacement picture-metadata picture-placement picture-svg picture-delete shape-group group-transform connectors diagrams autoshapes freeform z-order gradients opacity outlines; do \
+		echo "LibreOffice $$oracle"; \
+		timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/$$oracle-uno.py "$(GRAPHICS_EVIDENCE)/quality" > "$(GRAPHICS_EVIDENCE)/$$oracle-quality.log" 2>&1 || { tail -30 "$(GRAPHICS_EVIDENCE)/$$oracle-quality.log"; exit 1; }; \
+	done
+	timeout --kill-after=5s 180s /usr/bin/python3 tools/oracles/smartart-uno.py "$(GRAPHICS_EVIDENCE)/quality/smartart-outputs" > "$(GRAPHICS_EVIDENCE)/smartart-quality.log" 2>&1
+
 .PHONY: graphics-insertion-quality
 graphics-insertion-quality: ## Run optional LibreOffice insertion save/reopen oracle
 	OOXML_GRAPHICS_OUTPUT="$(abspath artifacts/graphics/insertion-outputs)" $(MAKE) graphics-test
