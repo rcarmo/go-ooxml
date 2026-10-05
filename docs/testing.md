@@ -545,9 +545,16 @@ Changes to facts or workflows fail even when fixture manifest hashes still match
 `assume-unchanged` does not hide altered tracked bytes. Verification is read-only.
 An absent Git checkout, mismatched pin or missing input is a failure, not a skip.
 
-Write outputs under `t.TempDir()` or consumer-local `artifacts/generated`.
-Persistent output guards reject reference-root descendants, including symlink
-redirects. Never regenerate or rebaseline the shared inputs during a test run.
+Write disposable test outputs under `t.TempDir()` rooted at the isolated
+`/workspace/tmp/go-ooxml/runs/tests/<run-id>/` package directory. Retained
+outputs/profiles/receipts belong in consumer-local `artifacts/` or the existing
+analysis evidence location. The Makefile and profiling runner route Go build,
+module and test caches to the project-owned root, resolved via
+`scripts/project-tmp.sh`; direct/CI commands must do the same. On hosts without
+writable `/workspace/tmp`, a validated `PROJECT_TMP_ROOT`, `RUNNER_TEMP`, original
+`TMPDIR` or platform temp base still produces a canonical `go-ooxml/{cache,build,runs}`
+hierarchy. Persistent output guards reject reference-root descendants, including
+symlink redirects. Never regenerate or rebaseline shared inputs during a test.
 
 ## Mutation workflow contract
 
@@ -567,9 +574,13 @@ recorded separately in `../reports/batches/095.md`.
 ## Batched verification
 
 `make test` covers the root Go module only. `make test-batch` also runs the separate
-acceptance module. Use `GOMAXPROCS=2` and `-p 2`; run related packages together,
-including failure reruns. Individual-test retry loops are not part of the workflow.
-Full/race checks belong at integration points; reuse caches and avoid concurrent
+acceptance module. Both use `scripts/test-profile.sh`, retaining per-package CPU,
+heap, binary, command, log, and cumulative CPU/allocation summaries under
+`artifacts/profiles/`. Use `GOMAXPROCS=2` and bounded package batches; review the
+profiles after every run, including failures. Empty CPU samples require a
+representative workload before a performance claim. Individual-test retry loops
+are not part of the workflow. Full/race/fuzz checks belong at integration points;
+route those through the profiling runner, reuse caches and avoid concurrent
 duplicate suites. The runtime has no external dependencies; Godog/Gherkin are
 isolated in the acceptance module, and checkout verification uses Git only in tests.
 

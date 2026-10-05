@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Optional test-only LibreOffice deletion import/save/reopen oracle."""
 import json, os, signal, subprocess, sys, time, uuid
+from project_tmp import oracle_profile
 import uno, unohelper
 from com.sun.star.task import XInteractionHandler
 from com.sun.star.document.MacroExecMode import NEVER_EXECUTE
@@ -24,7 +25,8 @@ def snapshot(doc):
   return row
  return [[scan(pages.getByIndex(i).getByIndex(j)) for j in range(pages.getByIndex(i).getCount())] for i in range(pages.getCount())]
 pipe='go_pictures_'+uuid.uuid4().hex
-server=subprocess.Popen(['libreoffice','-env:UserInstallation=file://'+OUT+'/profile','--headless','--nologo','--nodefault','--nofirststartwizard','--accept=pipe,name='+pipe+';urp;StarOffice.ServiceManager'],stdout=open(OUT+'/server.stdout.log','w'),stderr=open(OUT+'/server.stderr.log','w'),start_new_session=True)
+profile=oracle_profile()
+server=subprocess.Popen(['libreoffice','-env:UserInstallation=file://'+profile,'--headless','--nologo','--nodefault','--nofirststartwizard','--accept=pipe,name='+pipe+';urp;StarOffice.ServiceManager'],stdout=open(OUT+'/server.stdout.log','w'),stderr=open(OUT+'/server.stderr.log','w'),start_new_session=True)
 desktop=None
 try:
  ctx=uno.getComponentContext();resolver=ctx.ServiceManager.createInstanceWithContext('com.sun.star.bridge.UnoUrlResolver',ctx)

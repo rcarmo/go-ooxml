@@ -275,7 +275,14 @@ type Validator struct {
 
 // NewValidator creates a validator instance.
 func NewValidator() *Validator {
-	validatorPath := "../../tools/validator/OoxmlValidator/bin/Release/net10.0/OoxmlValidator.dll"
+	validatorPath := os.Getenv("OOXML_VALIDATOR_DLL")
+	if validatorPath == "" {
+		root := os.Getenv("PROJECT_TMP_ROOT")
+		if root == "" {
+			root = filepath.Join(os.TempDir(), "go-ooxml")
+		}
+		validatorPath = filepath.Join(root, "build", "dotnet", "OoxmlValidator.dll")
+	}
 	_, err := os.Stat(validatorPath)
 	return &Validator{
 		path:      validatorPath,

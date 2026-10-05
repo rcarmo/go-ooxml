@@ -15,9 +15,9 @@ Use the Makefile for all standard operations:
 ```bash
 make help          # Show all available targets
 make build-all     # Full build (clean + deps + lint + test + build)
-GOMAXPROCS=2 make test-batch  # Root and acceptance modules after reference setup
-make test          # Root module only
-make coverage      # Run tests with coverage
+GOMAXPROCS=2 make test-batch  # Profiled root and acceptance modules after reference setup
+make test          # Profiled root module only
+make coverage      # Profiled root module plus retained coverage
 make lint          # Run golangci-lint
 make format        # Format code with gofumpt
 make check         # Run lint + tests
@@ -31,12 +31,17 @@ If you need a new workflow step, add a Make target rather than running ad-hoc co
 
 CI should call lint plus `GOMAXPROCS=2 make test-batch`; root `go test ./...`
 does not discover the separate acceptance module. Read `docs/testing.md` for
-candidate/released reference setup before running either module.
+candidate/released reference setup before running either module. CI must set
+project-owned cache/temp paths using `scripts/project-tmp.sh` even outside
+this host; invalid explicit overrides fail, and no unprofiled test commands
+or home-cache fallback are allowed.
 
-Run related package batches with bounded concurrency; do not run individual tests:
+Run related package batches with bounded concurrency and per-package profiles;
+do not run individual tests:
 
 ```bash
-GOMAXPROCS=2 go test -p 2 ./pkg/document ./pkg/packaging
+make prepare-temp
+GOMAXPROCS=2 bash scripts/test-profile.sh ./pkg/document ./pkg/packaging
 ```
 
 ## Architecture
@@ -136,6 +141,7 @@ to manifest records, not hard-coded origin trees. Required licence/provenance da
 stays in that repository. Do not copy fixtures or add compatibility symlinks.
 
 See `docs/testing.md` for the exact candidate/released pin rules and clean-checkout
-verification. Outputs belong in temporary directories or local `artifacts`; never
-write to references. Keep native semantic assertions and use round trips where
+verification. Disposable test output belongs under `/workspace/tmp/go-ooxml/runs/`, with
+cache/build under the sibling `cache/` and `build/` directories; retained
+profiles, logs and OOXML evidence belong in `artifacts/`. Never write to references. Keep native semantic assertions and use round trips where
 appropriate. Local catalogue files are staging for the central canonical registry.
