@@ -1,28 +1,34 @@
 .PHONY: help install lint format test coverage check clean clean-all build build-all bump-patch push validate security prepare-temp
 
-# Resolve once before replacing TMPDIR; explicit invalid PROJECT_TMP_ROOT fails.
-# The repository-owned resolver is also available to CI without the host Makefile.
+# Snapshot inherited TMPDIR before redirecting child scratch. CI uses runner/original
+# temp before platform temp even if /workspace/tmp exists; local prefers workspace.
+ifeq ($(origin PROJECT_ORIGINAL_TMPDIR),undefined)
+PROJECT_ORIGINAL_TMPDIR := $(if $(filter environment environment override,$(origin TMPDIR)),$(TMPDIR),)
+endif
+export PROJECT_ORIGINAL_TMPDIR
+# Resolve once; invalid PROJECT_TMP_BASE/ROOT overrides fail rather than fall back.
+# The repository-owned resolver works in CI without the host Makefile.
 PROJECT_TMP := $(shell PROJECT=go-ooxml bash scripts/project-tmp.sh paths 2>/dev/null | sed -n 's/^PROJECT_TMP_ROOT=//p')
 ifeq ($(strip $(PROJECT_TMP)),)
-$(error Cannot resolve safe Go project temporary root; inspect PROJECT_TMP_ROOT / RUNNER_TEMP / original TMPDIR)
+$(error Cannot resolve safe Go project temporary root; inspect PROJECT_TMP_BASE / PROJECT_TMP_ROOT / RUNNER_TEMP / original TMPDIR)
 endif
 export PROJECT_TMP_ROOT := $(PROJECT_TMP)
 RUN_ID ?= $(shell date -u +%Y%m%dT%H%M%S%N)
 PROJECT_RUN := $(PROJECT_TMP)/runs/make/$(RUN_ID)
-export TMPDIR := $(PROJECT_RUN)
-export TMP := $(PROJECT_RUN)
-export TEMP := $(PROJECT_RUN)
-export GOTMPDIR := $(PROJECT_TMP)/build/go
-export GOCACHE := $(PROJECT_TMP)/cache/go/build
-export GOMODCACHE := $(PROJECT_TMP)/cache/go/mod
-export GOPATH := $(PROJECT_TMP)/cache/go/path
-export XDG_CACHE_HOME := $(PROJECT_TMP)/cache/xdg
-export NUGET_PACKAGES := $(PROJECT_TMP)/cache/nuget
-export DOTNET_CLI_HOME := $(PROJECT_TMP)/cache/dotnet/home
-export OOXML_VALIDATOR_DLL := $(PROJECT_TMP)/build/dotnet/OoxmlValidator.dll
-export OOXML_ORACLE_SCRATCH := $(PROJECT_RUN)/oracles
-export PYTHONDONTWRITEBYTECODE := 1
-export PYTHONPYCACHEPREFIX := $(PROJECT_TMP)/cache/python/pycache
+override export TMPDIR := $(PROJECT_RUN)
+override export TMP := $(PROJECT_RUN)
+override export TEMP := $(PROJECT_RUN)
+override export GOTMPDIR := $(PROJECT_TMP)/build/go
+override export GOCACHE := $(PROJECT_TMP)/cache/go/build
+override export GOMODCACHE := $(PROJECT_TMP)/cache/go/mod
+override export GOPATH := $(PROJECT_TMP)/cache/go/path
+override export XDG_CACHE_HOME := $(PROJECT_TMP)/cache/xdg
+override export NUGET_PACKAGES := $(PROJECT_TMP)/cache/nuget
+override export DOTNET_CLI_HOME := $(PROJECT_TMP)/cache/dotnet/home
+override export OOXML_VALIDATOR_DLL := $(PROJECT_TMP)/build/dotnet/OoxmlValidator.dll
+override export OOXML_ORACLE_SCRATCH := $(PROJECT_RUN)/oracles
+override export PYTHONDONTWRITEBYTECODE := 1
+override export PYTHONPYCACHEPREFIX := $(PROJECT_TMP)/cache/python/pycache
 
 GO ?= go
 GOFMT ?= gofumpt
@@ -33,6 +39,7 @@ DOTNET_ROOT ?= /home/linuxbrew/.linuxbrew/opt/dotnet/libexec
 VALIDATOR ?= tools/validator/OoxmlValidator
 
 prepare-temp:
+	@PROJECT=go-ooxml bash scripts/project-tmp.sh init >/dev/null
 	@mkdir -p "$(TMPDIR)" "$(GOTMPDIR)" "$(GOCACHE)" "$(GOMODCACHE)" "$(GOPATH)" "$(XDG_CACHE_HOME)" "$(NUGET_PACKAGES)" "$(DOTNET_CLI_HOME)" "$(OOXML_ORACLE_SCRATCH)" "$(PYTHONPYCACHEPREFIX)" "$(PROJECT_TMP)/build/dotnet/obj"
 
 # Binary name
@@ -214,7 +221,7 @@ build: prepare-temp ## Build the library (verify compilation)
 # =============================================================================
 
 clean: ## Safe default: do not delete shared caches, active run scratch or retained evidence
-	@echo 'No automatic deletion: $(PROJECT_TMP)/{cache,build,runs} may contain active jobs. Review and remove confirmed idle disposable paths manually; preserve artifacts/profiles.'
+	@echo 'No automatic deletion: $(PROJECT_TMP)/{cache,build,tests,logs,runs} may contain active jobs. Review and remove confirmed idle disposable paths manually; preserve artifacts/profiles.'
 
 clean-all: clean ## Same safe scope; never remove vendor, evidence or installed toolchains
 

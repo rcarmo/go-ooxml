@@ -33,8 +33,10 @@ CI should call lint plus `GOMAXPROCS=2 make test-batch`; root `go test ./...`
 does not discover the separate acceptance module. Read `docs/testing.md` for
 candidate/released reference setup before running either module. CI must set
 project-owned cache/temp paths using `scripts/project-tmp.sh` even outside
-this host; invalid explicit overrides fail, and no unprofiled test commands
-or home-cache fallback are allowed.
+this host. `PROJECT_TMP_BASE` and compatible `PROJECT_TMP_ROOT` are validated;
+CI prefers runner/original inherited temp over the host workspace, while local
+prefers the writable workspace. Invalid explicit overrides fail; no unprofiled
+test commands or home-cache fallback are allowed.
 
 Run related package batches with bounded concurrency and per-package profiles;
 do not run individual tests:

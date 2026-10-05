@@ -550,10 +550,13 @@ Write disposable test outputs under `t.TempDir()` rooted at the isolated
 outputs/profiles/receipts belong in consumer-local `artifacts/` or the existing
 analysis evidence location. The Makefile and profiling runner route Go build,
 module and test caches to the project-owned root, resolved via
-`scripts/project-tmp.sh`; direct/CI commands must do the same. On hosts without
-writable `/workspace/tmp`, a validated `PROJECT_TMP_ROOT`, `RUNNER_TEMP`, original
-`TMPDIR` or platform temp base still produces a canonical `go-ooxml/{cache,build,runs}`
-hierarchy. Persistent output guards reject reference-root descendants, including
+`scripts/project-tmp.sh`; direct/CI commands must do the same. An explicit
+absolute `PROJECT_TMP_BASE` selects `<base>/go-ooxml`; a compatible validated
+`PROJECT_TMP_ROOT` also works, but conflicts/invalid overrides fail. Without
+overrides, CI prefers `RUNNER_TEMP`, then original inherited `TMPDIR`, then
+platform temp even if `/workspace/tmp` exists; local use prefers writable
+`/workspace/tmp`, then platform temp. Both append `/go-ooxml`, with predictable
+`cache/`, `build/`, `tests/`, `logs/` and `runs/` children. Persistent output guards reject reference-root descendants, including
 symlink redirects. Never regenerate or rebaseline shared inputs during a test.
 
 ## Mutation workflow contract

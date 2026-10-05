@@ -1,6 +1,5 @@
 """Project-owned disposable LibreOffice profile roots for standalone/CI oracles."""
 import os
-import tempfile
 import uuid
 
 PROJECT = "go-ooxml"
@@ -18,10 +17,7 @@ def _usable(path):
     if os.path.exists(path):
         if not os.path.isdir(path) or not os.access(path, os.W_OK | os.X_OK):
             return False
-        try:
-            if os.stat(path).st_uid != os.geteuid():
-                return False
-        except OSError:
+        if os.stat(path).st_uid != os.geteuid():
             return False
     parent = path
     while not os.path.exists(parent):
@@ -29,19 +25,37 @@ def _usable(path):
     return os.path.isdir(parent) and os.access(parent, os.W_OK | os.X_OK)
 
 
+def _ci():
+    if os.environ.get("CI", "").lower() not in ("", "0", "false"):
+        return True
+    return any(os.environ.get(name, "").lower() == "true" for name in
+               ("GITHUB_ACTIONS", "GITLAB_CI", "TF_BUILD", "CIRCLECI"))
+
+
 def project_root():
+    base = os.environ.get("PROJECT_TMP_BASE")
     explicit = os.environ.get("PROJECT_TMP_ROOT")
+    base_root = None
+    if base is not None:
+        if not base:
+            raise ValueError("PROJECT_TMP_BASE must not be empty")
+        base_root = os.path.join(base.rstrip("/"), PROJECT)
+        if not _usable(base_root):
+            raise ValueError("Invalid PROJECT_TMP_BASE (absolute usable base required)")
     if explicit is not None:
-        if os.path.basename(explicit.rstrip("/")) != PROJECT or not _usable(explicit.rstrip("/")):
-            raise ValueError("Invalid PROJECT_TMP_ROOT (absolute, usable, project-named, non-symlink required)")
-        return explicit.rstrip("/")
-    # Resolve platform base before mutating TMPDIR in the child process.
-    original_tmp = os.environ.get("TMPDIR")
-    # tempfile.gettempdir() caches its first lookup; use the platform base
-    # only after considering the unchanged incoming TMPDIR and runner path.
-    for base in ("/workspace/tmp", os.environ.get("RUNNER_TEMP"), original_tmp, tempfile.gettempdir()):
-        if base and os.path.isabs(base) and _usable(os.path.join(base, PROJECT)):
-            return os.path.join(base, PROJECT)
+        candidate = explicit.rstrip("/")
+        if os.path.basename(candidate) != PROJECT or not _usable(candidate):
+            raise ValueError("Invalid PROJECT_TMP_ROOT (absolute usable project-named root required)")
+        if base_root is not None and candidate != base_root:
+            raise ValueError("Conflicting PROJECT_TMP_BASE and PROJECT_TMP_ROOT")
+        return candidate
+    if base_root is not None:
+        return base_root
+    original_tmp = os.environ.get("PROJECT_ORIGINAL_TMPDIR", os.environ.get("TMPDIR", ""))
+    bases = (os.environ.get("RUNNER_TEMP"), original_tmp, "/tmp") if _ci() else ("/workspace/tmp", "/tmp")
+    for candidate_base in bases:
+        if candidate_base and _usable(os.path.join(candidate_base.rstrip("/"), PROJECT)):
+            return os.path.join(candidate_base.rstrip("/"), PROJECT)
     raise ValueError("No usable project-owned temporary root")
 
 

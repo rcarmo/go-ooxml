@@ -10,6 +10,8 @@ source "$repo/scripts/project-tmp.sh"
 project_tmp=$(project_tmp_resolve go-ooxml)
 project_tmp_init "$project_tmp"
 export PROJECT_TMP_ROOT="$project_tmp"
+# Any inherited Make scratch is disposable; keep the original pre-redirect base.
+# A direct invocation snapshots the incoming TMPDIR in project-tmp.sh above.
 if [[ -n "${PROFILE_OUTPUT_DIR:-}" ]]; then
  case "$PROFILE_OUTPUT_DIR" in "$repo"/artifacts/*) ;; *) echo 'PROFILE_OUTPUT_DIR must be retained under repository artifacts/' >&2; exit 2;; esac
 fi

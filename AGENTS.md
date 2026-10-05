@@ -25,32 +25,35 @@ authorisation does not grant repository write permission.
 
 ## Project-owned caches, temporary files and evidence
 
-The canonical host disposable root is `/workspace/tmp/go-ooxml/`. The repository
-ships `scripts/project-tmp.sh` for CI/other hosts: a validated absolute
-`PROJECT_TMP_ROOT` ending in `go-ooxml` wins (an invalid explicit override
-fails); otherwise choose writable `/workspace/tmp/go-ooxml`, then
-`RUNNER_TEMP/go-ooxml`, original `TMPDIR/go-ooxml`, then platform temp base
-plus `go-ooxml`. Resolve once before replacing `TMPDIR`; no home-cache
-fallback. `Makefile` exports `TMPDIR`/`TMP`/`TEMP` to `runs/make/<run-id>/`,
-`GOTMPDIR` to `build/go/`,
-`GOCACHE` to `cache/go/build/`, `GOMODCACHE` to `cache/go/mod/`, `GOPATH` to
-`cache/go/path/`, plus project-owned XDG, NuGet and dotnet-home caches. The
-profiling runner creates isolated `runs/tests/<run-id>/<module>/pkg-<n>/`
-roots for each package. For direct commands, source the repository resolver, use the same variables
-and create the corresponding directories first; never use bare `/tmp`, ad-hoc
-top-level `/workspace/tmp` output, or home caches. Do not change production atomic-save
+The canonical host disposable root is `/workspace/tmp/go-ooxml/`. This repo's
+`scripts/project-tmp.sh` resolves it portably before redirecting child `TMPDIR`:
+`PROJECT_TMP_BASE` selects an absolute usable base plus `/go-ooxml`;
+`PROJECT_TMP_ROOT` is a validated absolute project-named compatibility override.
+If both are set, they must agree; invalid or unusable explicit overrides fail.
+Otherwise CI prefers `RUNNER_TEMP`, then original inherited `TMPDIR`, then
+platform temp; local use prefers writable `/workspace/tmp`, then platform temp.
+Every fallback appends `/go-ooxml`. Preserve `PROJECT_ORIGINAL_TMPDIR` before
+redirecting and propagate the resolved root; no home-cache fallback.
+`Makefile` exports `TMPDIR`/`TMP`/`TEMP` to `runs/make/<run-id>/`, `GOTMPDIR`
+to `build/go/`, `GOCACHE` to `cache/go/build/`, `GOMODCACHE` to `cache/go/mod/`,
+`GOPATH` to `cache/go/path/`, plus project-owned XDG, Python, NuGet and dotnet
+caches. Disposable `tests/` and `logs/` are separate; the profiling runner
+creates isolated `runs/tests/<run-id>/<module>/pkg-<n>/` roots. For direct
+commands, source the repository resolver and create these directories first;
+never use bare `/tmp`, ad-hoc top-level `/workspace/tmp` output, or home caches. Do not change production atomic-save
 semantics: its short-lived staging file must stay alongside the caller-chosen
 output to preserve same-filesystem rename. Test-owned output must remain under
 an isolated project run root, not a live checkout or shared fixtures.
 
-Disposable output belongs only under `cache/`, `build/` or `runs/`; retained
-CPU/heap profiles, matching binaries, logs, Go test JSON, receipts and generated
+Disposable output belongs only under `cache/`, `build/`, `tests/`, `logs/` or
+`runs/`; retained CPU/heap profiles, matching binaries, logs, Go test JSON, receipts and generated
 OOXML quality evidence stay in `artifacts/` or their existing retained analysis
 location. Never move or remove active jobs or historical graphics evidence.
 `make clean` intentionally deletes nothing: inspect jobs and remove only idle,
-confirmed disposable directories beneath this project's root. Release/CI runners outside this host must use the repository resolver or an
-explicit validated root to provision the same hierarchy; the platform temp
-fallback still appends `/go-ooxml` and never uses a home cache.
+confirmed disposable directories beneath this project's root. Release/CI runners
+outside this host must use the repository resolver or an explicit validated
+root to provision the same hierarchy; the platform temp fallback still
+appends `/go-ooxml` and never uses a home cache.
 
 ## Verification
 
